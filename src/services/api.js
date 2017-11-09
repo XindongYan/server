@@ -60,32 +60,32 @@ export async function queryTasks(params) {
 //   return request(`/api/fake_list?${stringify(params)}`);
 // }
 
-// export async function fakeAccountLogin(params) {
-//   return request('/api/user/login', {
-//     method: 'POST',
-//     body: params,
-//   });
-// }
+export async function fakeAccountLogin(params) {
+  return request('/api/user/login', {
+    method: 'POST',
+    body: params,
+  });
+}
 
-// export async function accountLogout() {
-//   return request('/api/user/logout', {
-//     method: 'DELETE',
-//   });
-// }
+export async function accountLogout() {
+  return request('/api/user/logout', {
+    method: 'DELETE',
+  });
+}
 
-// export async function fakeMobileLogin(params) {
-//   return request('/api/login/mobile', {
-//     method: 'POST',
-//     body: params,
-//   });
-// }
+export async function fakeMobileLogin(params) {
+  return request('/api/login/mobile', {
+    method: 'POST',
+    body: params,
+  });
+}
 
-// export async function fakeRegister(params) {
-//   return request('/api/register', {
-//     method: 'POST',
-//     body: params,
-//   });
-// }
+export async function fakeRegister(params) {
+  return request('/api/register', {
+    method: 'POST',
+    body: params,
+  });
+}
 
 // export async function queryNotices() {
 //   return request('/api/notices');

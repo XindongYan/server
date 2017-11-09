@@ -353,15 +353,7 @@ class BasicLayout extends React.PureComponent {
             <GlobalFooter
               links={[{
                 title: '首页',
-                href: '',
-                blankTarget: true,
-              }, {
-                title: '',
-                href: '',
-                blankTarget: true,
-              }, {
-                title: '',
-                href: '',
+                href: '1',
                 blankTarget: true,
               }]}
               copyright={
