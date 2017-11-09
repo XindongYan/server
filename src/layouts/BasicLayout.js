@@ -163,7 +163,7 @@ class BasicLayout extends React.PureComponent {
     const { location } = this.props;
     const { pathname } = location;
     let title = '信遇后台管理';
-    getRouteData('UserLayout').forEach((item) => {
+    getRouteData('BasicLayout').forEach((item) => {
       if (item.path === pathname) {
         title = `${item.name} - 信遇后台管理`;
       }
@@ -348,20 +348,20 @@ class BasicLayout extends React.PureComponent {
                   )
                 )
               }
-              <Redirect to="/list/table-list" />
+              <Redirect to="/list/dispatch-list" />
             </Switch>
             <GlobalFooter
               links={[{
-                title: 'Pro 首页',
-                href: 'http://pro.ant.design',
+                title: '首页',
+                href: '',
                 blankTarget: true,
               }, {
-                title: 'GitHub',
-                href: 'https://github.com/ant-design/ant-design-pro',
+                title: '',
+                href: '',
                 blankTarget: true,
               }, {
-                title: 'Ant Design',
-                href: 'http://ant.design',
+                title: '',
+                href: '',
                 blankTarget: true,
               }]}
               copyright={

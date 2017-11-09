@@ -44,53 +44,37 @@ class StandardTable extends PureComponent {
 
     const columns = [
       {
-        title: '姓名',
-        dataIndex: 'name',
+        title: '稿子ID',
+        dataIndex: 'id',
       },
       {
-        title: '电话',
-        dataIndex: 'phone',
+        title: '内容标题',
+        dataIndex: 'title',
       },
       {
-        title: '权限',
-        dataIndex: 'rights',
-        render(val) {
-          return val.map(item => RIGHTS.find(item1 => item1.value === item).label).join(',');
-        },
-      },
-      {
-        title: '审批角色',
-        dataIndex: 'approve_role',
-        render(val) {
-          return val.map(item => APPROVE_ROLES.find(item1 => item1.value === item).label).join(',');
-        },
-      },
-      {
-        title: '角色',
-        dataIndex: 'role',
-        render(val) {
-          return val.map(item => ROLES.find(item1 => item1.value === item).label).join(',');
-        },
-      },
-      {
-        title: '注册时间',
-        dataIndex: 'create_time',
+        title: '提交时间',
+        dataIndex: 'last_update_time',
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
-        title: '注册IP',
-        dataIndex: 'reg_ip',
+        title: '修改',
+        dataIndex: 'update_times',
       },
       {
-        title: '最近登录时间',
-        dataIndex: 'last_login_time',
+        title: '写手',
+        dataIndex: 'publisher_id',
         sorter: true,
-        render: val => <span>{val ? moment(val).format('YYYY-MM-DD HH:mm:ss') : ''}</span>,
+        render: val => val ? val.name : '',
       },
       {
-        title: '最近登录IP',
-        dataIndex: 'last_login_ip',
+        title: '发布渠道',
+        dataIndex: 'channel_name',
+        render: val => val[0] || '',
+      },
+      {
+        title: '商家标签',
+        dataIndex: 'merchant_tag',
       },
       {
         title: '操作',

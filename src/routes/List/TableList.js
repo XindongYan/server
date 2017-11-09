@@ -12,7 +12,7 @@ const CheckboxGroup = Checkbox.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  rule: state.rule,
+  task: state.task,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -26,7 +26,8 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'task/fetch',
+      payload: {approve_status: 0}
     });
   }
 
@@ -51,7 +52,7 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'task/fetch',
       payload: params,
     });
   }
@@ -60,7 +61,7 @@ export default class TableList extends PureComponent {
     const { form, dispatch } = this.props;
     form.resetFields();
     dispatch({
-      type: 'rule/fetch',
+      type: 'task/fetch',
       payload: {},
     });
   }
@@ -74,7 +75,7 @@ export default class TableList extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'task/remove',
           payload: {
             no: selectedRows.map(row => row.no).join(','),
           },
@@ -114,7 +115,7 @@ export default class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'task/fetch',
         payload: values,
       });
     });
@@ -138,7 +139,7 @@ export default class TableList extends PureComponent {
 
   handleChangeUser = () => {
     this.props.dispatch({
-      type: 'rule/update',
+      type: 'task/update',
       payload: this.state.user,
     });
 
@@ -162,7 +163,7 @@ export default class TableList extends PureComponent {
   }
 
   render() {
-    const { rule: { loading: ruleLoading, data } } = this.props;
+    const { task: { loading: ruleLoading, data } } = this.props;
     const { selectedRows, modalVisible, user } = this.state;
 
     const menu = (
@@ -173,7 +174,7 @@ export default class TableList extends PureComponent {
     );
 
     return (
-      <PageHeaderLayout title="用户">
+      <PageHeaderLayout title="">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
@@ -206,27 +207,7 @@ export default class TableList extends PureComponent {
           onOk={this.handleChangeUser}
           onCancel={() => this.handleModalVisible()}
         >
-          <FormItem
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 14 }}
-            label="权限"
-          >
-            <CheckboxGroup options={RIGHTS} value={user.rights} onChange={this.handleRightsChange} />
-          </FormItem>
-          <FormItem
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 14 }}
-            label="审批角色"
-          >
-            <CheckboxGroup options={APPROVE_ROLES} value={user.approve_role} onChange={this.handleApproveRolesChange} />
-          </FormItem>
-          <FormItem
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 14 }}
-            label="角色"
-          >
-            <CheckboxGroup options={ROLES} value={user.role} onChange={this.handleRolesChange} />
-          </FormItem>
+          
         </Modal>
       </PageHeaderLayout>
     );

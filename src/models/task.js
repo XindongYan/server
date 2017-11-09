@@ -1,7 +1,7 @@
-import { queryUsers, removeRule, updateUser } from '../services/api';
+import { queryTasks, removeRule, updateUser } from '../services/api';
 
 export default {
-  namespace: 'rule',
+  namespace: 'task',
 
   state: {
     data: {
@@ -17,7 +17,7 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      const response = yield call(queryUsers, payload);
+      const response = yield call(queryTasks, payload);
       if (!response.error) {
         yield put({
           type: 'save',
@@ -35,7 +35,7 @@ export default {
         payload: true,
       });
       yield call(updateUser, payload);
-      const response = yield call(queryUsers, {});
+      const response = yield call(queryTasks, {});
       yield put({
         type: 'save',
         payload: response,

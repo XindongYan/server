@@ -27,10 +27,18 @@ export default {
     },
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
+      if (!response.error) {
       yield put({
         type: 'saveCurrentUser',
-        payload: response,
+        payload: response.user,
       });
+      } else {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response,
+        });
+      }
+      
     },
   },
 

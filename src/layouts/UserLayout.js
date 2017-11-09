@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, Route } from 'dva/router';
+import { Link, Route, Switch, Redirect } from 'dva/router';
 import DocumentTitle from 'react-document-title';
 import { Icon } from 'antd';
 import GlobalFooter from '../components/GlobalFooter';
 import styles from './UserLayout.less';
-import { getRouteData } from '../utils/utils';
+
+import Login from '../routes/User/Login';
+import Register from '../routes/User/Register';
+import RegisterResult from '../routes/User/RegisterResult';
 
 const links = [{
   title: '帮助',
@@ -18,7 +21,7 @@ const links = [{
   href: '',
 }];
 
-const copyright = <div>Copyright <Icon type="copyright" /> 2017 蚂蚁金服体验技术部出品</div>;
+const copyright = <div>Copyright <Icon type="copyright" /> 2017 信誉技术部出品</div>;
 
 class UserLayout extends React.PureComponent {
   static childContextTypes = {
@@ -32,11 +35,6 @@ class UserLayout extends React.PureComponent {
     const { location } = this.props;
     const { pathname } = location;
     let title = '信遇后台管理';
-    getRouteData('UserLayout').forEach((item) => {
-      if (item.path === pathname) {
-        title = `${item.name} - 信遇后台管理`;
-      }
-    });
     return title;
   }
   render() {
@@ -46,24 +44,17 @@ class UserLayout extends React.PureComponent {
           <div className={styles.top}>
             <div className={styles.header}>
               <Link to="/">
-                <img alt="" className={styles.logo} src="https://gw.alipayobjects.com/zos/rmsportal/NGCCBOENpgTXpBWUIPnI.svg" />
-                <span className={styles.title}>Ant Design</span>
+                <img alt="" className={styles.logo} src="" />
+                <span className={styles.title}>信誉</span>
               </Link>
             </div>
-            <p className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</p>
+            <p className={styles.desc}>信誉</p>
           </div>
-          {
-            getRouteData('UserLayout').map(item =>
-              (
-                <Route
-                  exact={item.exact}
-                  key={item.path}
-                  path={item.path}
-                  component={item.component}
-                />
-              )
-            )
-          }
+          <Switch>
+            <Route key="login" path="/user/login" component={Login} />
+            <Route key="register" path="/user/register" component={Register} />
+            <Redirect to="/user/login" />
+          </Switch>
           <GlobalFooter className={styles.footer} links={links} copyright={copyright} />
         </div>
       </DocumentTitle>
