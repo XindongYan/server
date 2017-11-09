@@ -34,7 +34,7 @@ class UserLayout extends React.PureComponent {
   getPageTitle() {
     const { location } = this.props;
     const { pathname } = location;
-    let title = '信遇后台管理';
+    let title = '信遇';
     return title;
   }
   render() {

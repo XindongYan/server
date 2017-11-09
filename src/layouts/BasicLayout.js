@@ -162,10 +162,10 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { location } = this.props;
     const { pathname } = location;
-    let title = '信遇后台管理';
+    let title = '信遇';
     getRouteData('BasicLayout').forEach((item) => {
       if (item.path === pathname) {
-        title = `${item.name} - 信遇后台管理`;
+        title = `${item.name} - 信遇`;
       }
     });
     return title;

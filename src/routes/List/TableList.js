@@ -27,7 +27,7 @@ export default class TableList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'task/fetch',
-      payload: {approve_status: 0}
+      payload: {approve_status: -1}
     });
   }
 
