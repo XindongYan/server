@@ -1,2 +1,2 @@
-# xinyu-web
-xinyu-web
+# xinyu-admin
+xinyu-admin
