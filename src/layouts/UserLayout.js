@@ -53,6 +53,7 @@ class UserLayout extends React.PureComponent {
           <Switch>
             <Route key="login" path="/user/login" component={Login} />
             <Route key="register" path="/user/register" component={Register} />
+            <Route key="register-result" path="/user/register-result" component={RegisterResult} />
             <Redirect to="/user/login" />
           </Switch>
           <GlobalFooter className={styles.footer} links={links} copyright={copyright} />
