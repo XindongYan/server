@@ -24,6 +24,11 @@ const data = [{
   }],
 }];
 
+// {
+//   name: 'xx',
+//   path: `${location.origin}/task/list`,
+// }
+
 export function getNavData() {
   return data;
 }
