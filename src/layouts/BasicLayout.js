@@ -67,13 +67,13 @@ class BasicLayout extends React.PureComponent {
       type: 'user/fetchCurrent',
     });
   }
-  componentWillUnmount() {
-    clearTimeout(this.resizeTimeout);
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentUser.error) {
       this.props.dispatch(routerRedux.push('/user/login'));
     }
+  }
+  componentWillUnmount() {
+    clearTimeout(this.resizeTimeout);
   }
   onCollapse = (collapsed) => {
     this.props.dispatch({
@@ -260,12 +260,12 @@ class BasicLayout extends React.PureComponent {
         >
           <div className={styles.logo}>
             <Link to="http://120.27.215.205/">
-              <img src="https://gw.alipayobjects.com/zos/rmsportal/iwWyPinUoseUxIAeElSx.svg" alt="logo" />
-              <h1>信遇</h1>
+              { /* <img src="" alt="logo" /> */ }
+              <h1>尼采创作平台</h1>
             </Link>
           </div>
           <Menu
-            theme="dark"
+            theme="light"
             mode="inline"
             {...menuProps}
             onOpenChange={this.handleOpenChange}
