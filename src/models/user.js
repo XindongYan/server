@@ -7,6 +7,8 @@ export default {
     list: [],
     loading: false,
     currentUser: {},
+    teamUsers: [],
+    teams: [],
   },
 
   effects: {
@@ -28,10 +30,10 @@ export default {
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
       if (!response.error) {
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response.user,
-      });
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response,
+        });
       } else {
         yield put({
           type: 'saveCurrentUser',
@@ -58,7 +60,8 @@ export default {
     saveCurrentUser(state, action) {
       return {
         ...state,
-        currentUser: action.payload,
+        currentUser: action.payload.user || action.payload,
+        ...action.payload,
       };
     },
     changeNotifyCount(state, action) {

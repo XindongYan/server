@@ -162,10 +162,10 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { location } = this.props;
     const { pathname } = location;
-    let title = '信遇';
+    let title = '尼彩';
     getRouteData('BasicLayout').forEach((item) => {
       if (item.path === pathname) {
-        title = `${item.name} - 信遇`;
+        title = `${item.name} - 尼彩`;
       }
     });
     return title;
@@ -334,7 +334,7 @@ class BasicLayout extends React.PureComponent {
               ) : <Spin size="small" style={{ marginLeft: 8 }} />}
             </div>
           </Header>
-          <Content style={{ margin: '24px 24px 0', height: '100%' }}>
+          <Content style={{ margin: '12px 12px 0', height: '100%' }}>
             <Switch>
               {
                 getRouteData('BasicLayout').map(item =>
