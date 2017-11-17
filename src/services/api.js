@@ -74,7 +74,14 @@ export async function accountLogout() {
 }
 
 export async function fakeMobileLogin(params) {
-  return request('/api/login/mobile', {
+  return request('/api/user/login/sms', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function getSmsCode(params) {
+  return request('/api/sms/send', {
     method: 'POST',
     body: params,
   });

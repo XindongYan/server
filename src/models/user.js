@@ -7,8 +7,9 @@ export default {
     list: [],
     loading: false,
     currentUser: {},
-    teamUsers: [],
-    teams: [],
+    teamUser: {},
+    team: {},
+    projects: [],
   },
 
   effects: {

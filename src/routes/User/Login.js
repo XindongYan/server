@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
-import { Form, Input, Tabs, Button, Icon, Checkbox, Row, Col, Alert } from 'antd';
+import { Form, Input, Tabs, Button, Icon, Checkbox, Row, Col, Alert, message } from 'antd';
 import styles from './Login.less';
 
 const FormItem = Form.Item;
@@ -34,6 +34,12 @@ export default class Login extends Component {
   }
 
   onGetCaptcha = () => {
+    this.props.dispatch({
+      type: `login/getSmsCode`,
+      payload: {
+        phone: this.props.form.getFieldValue('phone')
+      },
+    });
     let count = 59;
     this.setState({ count });
     this.interval = setInterval(() => {
@@ -84,7 +90,7 @@ export default class Login extends Component {
                 login.status === 'error' &&
                 login.type === 'account' &&
                 login.submitting === false &&
-                this.renderMessage('账户或密码错误')
+                this.renderMessage(login.msg ? login.msg : '')
               }
               <FormItem>
                 {getFieldDecorator('phone', {
@@ -119,10 +125,10 @@ export default class Login extends Component {
                 login.status === 'error' &&
                 login.type === 'mobile' &&
                 login.submitting === false &&
-                this.renderMessage('验证码错误')
+                this.renderMessage(login.msg ? login.msg : '')
               }
               <FormItem>
-                {getFieldDecorator('mobile', {
+                {getFieldDecorator('phone', {
                   rules: [{
                     required: type === 'mobile', message: '请输入手机号！',
                   }, {
@@ -139,7 +145,7 @@ export default class Login extends Component {
               <FormItem>
                 <Row gutter={8}>
                   <Col span={16}>
-                    {getFieldDecorator('captcha', {
+                    {getFieldDecorator('sms_code', {
                       rules: [{
                         required: type === 'mobile', message: '请输入验证码！',
                       }],

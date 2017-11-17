@@ -1,10 +1,12 @@
-import { fakeAccountLogin, fakeMobileLogin, accountLogout } from '../services/api';
+import { fakeAccountLogin, fakeMobileLogin, accountLogout, getSmsCode } from '../services/api';
 
 export default {
   namespace: 'login',
 
   state: {
+    type: 'account',
     status: undefined,
+    msg: '',
   },
 
   effects: {
@@ -17,25 +19,33 @@ export default {
       let status = '';
       if (!response.error && response.user.rights.indexOf(8) >= 0) {
         status = 'ok';
+      } else {
+        status = 'error';
       }
       yield put({
         type: 'loginHandle',
-        payload: {...response, status},
+        payload: {...response, status, msg: response.msg, type: 'account'},
       });
       yield put({
         type: 'changeSubmitting',
         payload: false,
       });
     },
-    *mobileSubmit(_, { call, put }) {
+    *mobileSubmit({ payload }, { call, put }) {
       yield put({
         type: 'changeSubmitting',
         payload: true,
       });
-      const response = yield call(fakeMobileLogin);
+      const response = yield call(fakeMobileLogin, payload);
+      let status = '';
+      if (!response.error && response.user.rights.indexOf(8) >= 0) {
+        status = 'ok';
+      } else {
+        status = 'error';
+      }
       yield put({
         type: 'loginHandle',
-        payload: response,
+        payload: {...response, status, msg: response.msg, type: 'mobile'},
       });
       yield put({
         type: 'changeSubmitting',
@@ -52,6 +62,9 @@ export default {
         callback();
       }
     },
+    *getSmsCode({ payload, callback }, { call, put }) {
+      yield call(getSmsCode, payload);
+    },
   },
 
   reducers: {
@@ -60,6 +73,7 @@ export default {
         ...state,
         status: payload.status,
         type: payload.type,
+        msg: payload.msg,
       };
     },
     changeSubmitting(state, { payload }) {

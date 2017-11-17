@@ -348,7 +348,7 @@ class BasicLayout extends React.PureComponent {
                   )
                 )
               }
-              <Redirect to="/list/dispatch-list" />
+              <Redirect to="/list/teamUser-list" />
             </Switch>
             <GlobalFooter
               links={[{
