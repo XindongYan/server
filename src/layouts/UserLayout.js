@@ -21,7 +21,7 @@ const links = [{
   href: '',
 }];
 
-const copyright = <div>Copyright <Icon type="copyright" /> 2017 信誉技术部出品</div>;
+const copyright = <div>Copyright <Icon type="copyright" /> 2017 尼采技术部出品</div>;
 
 class UserLayout extends React.PureComponent {
   static childContextTypes = {
@@ -32,9 +32,9 @@ class UserLayout extends React.PureComponent {
     return { location };
   }
   getPageTitle() {
-    const { location } = this.props;
-    const { pathname } = location;
-    let title = '信遇';
+    // const { location } = this.props;
+    // const { pathname } = location;
+    const title = '尼采创作平台';
     return title;
   }
   render() {
@@ -45,10 +45,10 @@ class UserLayout extends React.PureComponent {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="" className={styles.logo} src="" />
-                <span className={styles.title}>信誉</span>
+                <span className={styles.title}>尼采创作平台</span>
               </Link>
             </div>
-            <p className={styles.desc}>信誉</p>
+            <p className={styles.desc}>尼采创作平台</p>
           </div>
           <Switch>
             <Route key="login" path="/user/login" component={Login} />
