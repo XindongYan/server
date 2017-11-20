@@ -1,4 +1,4 @@
-import { queryTeamUsers } from '../services/team';
+import { queryTeamUsers, updateUser } from '../services/team';
 
 export default {
   namespace: 'team',
@@ -9,12 +9,6 @@ export default {
       pagination: {},
     },
     loading: true,
-    teamUsers: {
-      list: [],
-      pagination: {},
-    },
-    teamUsersLoading: true,
-    teamUsersModalVisible: false,
   },
 
   effects: {
@@ -59,7 +53,7 @@ export default {
         payload: true,
       });
       yield call(updateUser, payload);
-      const response = yield call(queryTeamUsers, {});
+      const response = yield call(queryTeamUsers, {team_id: payload.team_id});
       yield put({
         type: 'save',
         payload: response,
@@ -88,23 +82,6 @@ export default {
 
       if (callback) callback();
     },
-    *fetchTeamUsers({ payload }, { call, put }) {
-      yield put({
-        type: 'changeTeamUsersLoading',
-        payload: true,
-      });
-      const response = yield call(queryTeamUsers, payload);
-      if (!response.error) {
-        yield put({
-          type: 'saveTeamUsers',
-          payload: response,
-        });
-      }
-      yield put({
-        type: 'changeTeamUsersLoading',
-        payload: false,
-      });
-    },
     *toggleTeamUsersModal({ payload }, { call, put }) {
       yield put({
         type: 'changeTeamUsersModalVisible',
@@ -124,18 +101,6 @@ export default {
       return {
         ...state,
         loading: action.payload,
-      };
-    },
-    saveTeamUsers(state, action) {
-      return {
-        ...state,
-        teamUsers: action.payload,
-      };
-    },
-    changeTeamUsersLoading(state, action) {
-      return {
-        ...state,
-        teamUsersLoading: action.payload,
       };
     },
     changeTeamUsersModalVisible(state, action) {

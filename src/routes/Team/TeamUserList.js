@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Icon, Table, Avatar, message } from 'antd';
+import { Card, Icon, Table, Form, Checkbox, Avatar, Modal, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-
+import { RIGHTS } from '../../constants';
 import styles from './TeamList.less';
 
+const FormItem = Form.Item;
+const CheckboxGroup = Checkbox.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
@@ -19,6 +21,7 @@ export default class TableList extends PureComponent {
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
+    user: {},
   };
 
   componentDidMount() {
@@ -100,8 +103,32 @@ export default class TableList extends PureComponent {
       });
     });
   }
-
-
+  handleModalVisible = (flag) => {
+    this.setState({
+      modalVisible: !!flag,
+    });
+  }
+  handleEdit = (record) => {
+    this.setState({
+      user: record,
+    });
+    this.handleModalVisible(true);
+  }
+  handleRightsChange = (checkedValues) => {
+    this.setState({
+      user: { ...this.state.user, rights: checkedValues}
+    });
+  }
+  handleModalOk = () => {
+    this.props.dispatch({
+      type: 'team/update',
+      payload: {
+        team_id: this.props.teamUser.team_id,
+        ...this.state.user,
+      },
+    });
+    this.handleModalVisible(false);
+  }
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
 
     if (this.props.onSelectRow) {
@@ -112,7 +139,7 @@ export default class TableList extends PureComponent {
   }
   render() {
     const { team: { loading, data: { list, pagination } } } = this.props;
-    const { selectedRows, selectedRowKeys } = this.state;
+    const { selectedRows, selectedRowKeys, modalVisible, user } = this.state;
 
     const columns = [
       {
@@ -123,6 +150,13 @@ export default class TableList extends PureComponent {
       {
         title: '姓名',
         dataIndex: 'user_id.name',
+      },
+      {
+        title: '角色',
+        dataIndex: 'user_id.rights',
+        render(val) {
+          return val.map(item => RIGHTS.find(item1 => item1.value === item).label).join(',');
+        },
       },
       {
         title: '电话',
@@ -136,6 +170,14 @@ export default class TableList extends PureComponent {
         title: '创建时间',
         dataIndex: 'create_time',
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+      },
+      {
+        title: '操作',
+        render: (record) => (
+          <p>
+            <a onClick={() => this.handleEdit(record.user_id)}>修改</a>
+          </p>
+        ),
       },
     ];
     const paginationProps = {
@@ -157,7 +199,6 @@ export default class TableList extends PureComponent {
           <div className={styles.tableList}>
             <Table
               loading={loading}
-              rowSelection={rowSelection}
               dataSource={list}
               columns={columns}
               pagination={paginationProps}
@@ -166,6 +207,20 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
+        <Modal
+          title="用户权限"
+          visible={modalVisible}
+          onOk={this.handleModalOk}
+          onCancel={() => this.handleModalVisible()}
+        >
+          <FormItem
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+            label="权限"
+          >
+            <CheckboxGroup options={RIGHTS.filter(item => item.value !== 8)} value={user.rights} onChange={this.handleRightsChange} />
+          </FormItem>
+        </Modal>
       </PageHeaderLayout>
     );
   }

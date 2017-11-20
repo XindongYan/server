@@ -12,6 +12,7 @@ import styles from './BasicLayout.less';
 import HeaderSearch from '../components/HeaderSearch';
 import NoticeIcon from '../components/NoticeIcon';
 import GlobalFooter from '../components/GlobalFooter';
+import ProjectForm from '../routes/Project/ProjectForm';
 import { getNavData } from '../common/nav';
 import { getRouteData } from '../utils/utils';
 
@@ -348,6 +349,7 @@ class BasicLayout extends React.PureComponent {
                   )
                 )
               }
+              <Route path="/project/form" component={ProjectForm} />
               <Redirect to="/list/teamUser-list" />
             </Switch>
             <GlobalFooter

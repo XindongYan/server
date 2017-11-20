@@ -62,6 +62,7 @@ export default {
       return {
         ...state,
         currentUser: action.payload.user || action.payload,
+        teamUser: action.payload.teamUser || {},
         ...action.payload,
       };
     },

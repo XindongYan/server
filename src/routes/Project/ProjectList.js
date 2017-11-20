@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
-import styles from './FlowList.less';
+import styles from './Project.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  flow: state.flow,
+  project: state.project,
   teamUser: state.user.teamUser,
 }))
 @Form.create()
@@ -21,8 +22,6 @@ export default class FlowList extends PureComponent {
     name: '',
     desc: '',
     flow: [],
-    modalVisible: false,
-    modalType: 'add',
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
@@ -32,13 +31,7 @@ export default class FlowList extends PureComponent {
     const { dispatch, teamUser } = this.props;
     if (teamUser.team_id) {
       dispatch({
-        type: 'flow/fetch',
-        payload: {
-          team_id: teamUser.team_id,
-        },
-      });
-      dispatch({
-        type: 'flow/fetchApproveRoles',
+        type: 'project/fetch',
         payload: {
           team_id: teamUser.team_id,
         },
@@ -49,13 +42,7 @@ export default class FlowList extends PureComponent {
     const { dispatch, teamUser } = nextProps;
     if (teamUser.team_id !== this.props.teamUser.team_id) {
       dispatch({
-        type: 'flow/fetch',
-        payload: {
-          team_id: teamUser.team_id,
-        },
-      });
-      dispatch({
-        type: 'flow/fetchApproveRoles',
+        type: 'project/fetch',
         payload: {
           team_id: teamUser.team_id,
         },
@@ -85,7 +72,7 @@ export default class FlowList extends PureComponent {
     }
 
     dispatch({
-      type: 'flow/fetch',
+      type: 'project/fetch',
       payload: params,
     });
   }
@@ -94,7 +81,7 @@ export default class FlowList extends PureComponent {
     const { form, dispatch } = this.props;
     form.resetFields();
     dispatch({
-      type: 'flow/fetch',
+      type: 'project/fetch',
       payload: {},
     });
   }
@@ -108,7 +95,7 @@ export default class FlowList extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'flow/remove',
+          type: 'project/remove',
           payload: {
             no: selectedRows.map(row => row.no).join(','),
           },
@@ -148,72 +135,26 @@ export default class FlowList extends PureComponent {
       });
 
       dispatch({
-        type: 'flow/fetch',
+        type: 'project/fetch',
         payload: values,
       });
     });
   }
-
-  handleModalVisible = (flag, modalType) => {
-    this.setState({
-      modalVisible: !!flag,
-      modalType,
-    });
+  handleAdd = () => {
+    this.props.dispatch(routerRedux.push('/project/form'));
   }
   handleEdit = (record) => {
-    this.setState({
-      _id: record._id,
-      name: record.name,
-      desc: record.desc,
-      flow: record.flow,
-    });
-    this.handleModalVisible(true, 'edit');
+    
   }
   handleRemove = (record) => {
     this.props.dispatch({
-      type: 'flow/remove',
+      type: 'project/remove',
       payload: {
         _id: record._id,
         team_id: this.props.teamUser.team_id,
       },
     });
     message.success('删除成功');
-  }
-  handleModalOk = () => {
-    if (this.state.modalType === 'add') {
-      this.props.dispatch({
-        type: 'flow/add',
-        payload: {
-          team_id: this.props.teamUser.team_id,
-          name: this.state.name,
-          desc: this.state.desc,
-          flow: this.state.flow,
-        },
-      });
-      message.success('添加成功');
-    } else if (this.state.modalType === 'edit') {
-      this.props.dispatch({
-        type: 'flow/update',
-        payload: {
-          team_id: this.props.teamUser.team_id,
-          _id: this.state._id,
-          name: this.state.name,
-          desc: this.state.desc,
-          flow: this.state.flow,
-        },
-      });
-      message.success('修改成功');
-    }
-
-    
-    this.setState({
-      modalVisible: false,
-      _id: '',
-      name: '',
-      desc: '',
-      flow: [],
-      modalType: '',
-    });
   }
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
 
@@ -224,7 +165,7 @@ export default class FlowList extends PureComponent {
     this.setState({ selectedRowKeys });
   }
   render() {
-    const { flow: { loading, data: { list, pagination }, approveRoles } } = this.props;
+    const { project: { loading, data: { list, pagination }, approveRoles } } = this.props;
     const { selectedRows, modalVisible, name, desc, flow, selectedRowKeys } = this.state;
 
     const menu = (
@@ -235,20 +176,12 @@ export default class FlowList extends PureComponent {
     );
     const columns = [
       {
-        title: '名称',
-        dataIndex: 'name',
+        title: '标题',
+        dataIndex: 'title',
       },
       {
         title: '描述',
         dataIndex: 'desc',
-      },
-      {
-        title: '流程',
-        dataIndex: 'flow',
-        render: val => val.map(item => {
-          const role = approveRoles.find(item1 => item1.id === item);
-          return role ? role.name : '';
-        }).join(','),
       },
       {
         title: '创建时间',
@@ -261,7 +194,7 @@ export default class FlowList extends PureComponent {
           <p>
             <a onClick={() => this.handleEdit(record)}>修改</a>
             <span className={styles.splitLine} />
-            <Popconfirm placement="left" title={`确认删除 ${record.name}?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
+            <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
               <a>删除</a>
             </Popconfirm>
             
@@ -287,7 +220,7 @@ export default class FlowList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true, 'add')}>新建</Button>
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建项目</Button>
               {
                 selectedRows.length > 0 && (
                   <span>
@@ -312,44 +245,6 @@ export default class FlowList extends PureComponent {
             />
           </div>
         </Card>
-        <Modal
-          title="新建审批流程"
-          visible={modalVisible}
-          onOk={this.handleModalOk}
-          onCancel={() => this.handleModalVisible()}
-        >
-          <FormItem
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 15 }}
-            label="名称"
-          >
-            <Input placeholder="请输入" onChange={e => this.setState({ name: e.target.value })} value={name} />
-          </FormItem>
-          <FormItem
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 15 }}
-            label="描述"
-          >
-            <Input placeholder="请输入" onChange={e => this.setState({ desc: e.target.value })} value={desc} />
-          </FormItem>
-          <FormItem
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 15 }}
-            label="流程"
-          >
-            <Select
-              mode="multiple"
-              placeholder="Please select"
-              value={flow.map(item => String(item))}
-              onChange={(e) => this.setState({ flow: e.map(item => Number(item)) })}
-              style={{ width: '100%' }}
-            >
-              {
-                approveRoles.map(item => (<Option key={item.id} value={String(item.id)}>{item.name}</Option>))
-              }
-            </Select>
-          </FormItem>
-        </Modal>
       </PageHeaderLayout>
     );
   }

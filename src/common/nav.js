@@ -2,8 +2,7 @@ import BasicLayout from '../layouts/BasicLayout';
 import BlankLayout from '../layouts/BlankLayout';
 
 import TableList from '../routes/List/TableList';
-import FlowList from '../routes/Flow/FlowList';
-import ApproveRoleList from '../routes/Flow/ApproveRoleList';
+import ProjectList from '../routes/Project/ProjectList';
 import TeamUserList from '../routes/Team/TeamUserList';
 
 import Invitation from '../routes/Invitation/InvitationList';
@@ -29,21 +28,15 @@ const team = {
   component: TeamUserList,
 };
 
-const flow = {
-  name: '审核模板',
-  path: 'flow-list',
-  component: FlowList,
-};
-
-const approveRole = {
-  name: '审核角色',
-  path: 'approveRole-list',
-  component: ApproveRoleList,
+const project = {
+  name: '项目',
+  path: 'project-list',
+  component: ProjectList,
 };
 
 const invitation = {
   name: '邀请码',
-  path: 'invitationCode-list',
+  path: 'invitation-list',
   component: Invitation,
 };
 
@@ -57,7 +50,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [approve, create, team, flow, approveRole, invitation],
+    children: [approve, create, team, project, invitation],
   }, {
     name: '工具',
     path: 'tool',
