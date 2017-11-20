@@ -6,6 +6,8 @@ import FlowList from '../routes/Flow/FlowList';
 import ApproveRoleList from '../routes/Flow/ApproveRoleList';
 import TeamUserList from '../routes/Team/TeamUserList';
 
+import Invitation from '../routes/Invitation/InvitationList';
+
 import Success from '../routes/Result/Success';
 import Error from '../routes/Result/Error';
 
@@ -39,10 +41,10 @@ const approveRole = {
   component: ApproveRoleList,
 };
 
-const invitationCode = {
+const invitation = {
   name: '邀请码',
   path: 'invitationCode-list',
-  component: ApproveRoleList,
+  component: Invitation,
 };
 
 
@@ -55,7 +57,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [approve, create, team, flow, approveRole],
+    children: [approve, create, team, flow, approveRole, invitation],
   }, {
     name: '工具',
     path: 'tool',

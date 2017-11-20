@@ -1,5 +1,5 @@
 @import '~antd/lib/style/v2-compatible-reset.less';
-
+@import "~antd/lib/style/themes/default.less";
 html, body, :global(#root) {
   height: 100%;
 }
@@ -8,4 +8,12 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.splitLine {
+  background: @border-color-split;
+  display: inline-block;
+  margin: 0 4px;
+  width: 1px;
+  height: 12px;
 }
