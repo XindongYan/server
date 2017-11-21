@@ -24,7 +24,6 @@ export async function updateProject(params) {
 }
 
 export async function removeProject(params) {
-  console.log(params);
   return request('/api/task/project', {
     method: 'DELETE',
     body: {
@@ -32,3 +31,8 @@ export async function removeProject(params) {
     },
   });
 }
+
+export async function queryProject(params) {
+  return request(`/api/task/project?${stringify(params)}`);
+}
+

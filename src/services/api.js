@@ -88,7 +88,7 @@ export async function getSmsCode(params) {
 }
 
 export async function fakeRegister(params) {
-  return request('/api/register', {
+  return request('/api/user/signup', {
     method: 'POST',
     body: params,
   });

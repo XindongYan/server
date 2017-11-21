@@ -141,10 +141,10 @@ export default class FlowList extends PureComponent {
     });
   }
   handleAdd = () => {
-    this.props.dispatch(routerRedux.push('/project/form'));
+    this.props.dispatch(routerRedux.push('/project/create'));
   }
   handleEdit = (record) => {
-    
+    this.props.dispatch(routerRedux.push(`/project/edit?_id=${record._id}`));
   }
   handleRemove = (record) => {
     this.props.dispatch({
@@ -182,6 +182,11 @@ export default class FlowList extends PureComponent {
       {
         title: '描述',
         dataIndex: 'desc',
+      },
+      {
+        title: '截止时间',
+        dataIndex: 'deadline',
+        render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
       },
       {
         title: '创建时间',

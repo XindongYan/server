@@ -16,3 +16,5 @@ export const APPROVE_ROLES = [
 export const ROLES = [
   { label: '商家', value: 1 },
 ];
+
+export const QINIU_DOMAIN = 'http://oyufgm5i2.bkt.clouddn.com';

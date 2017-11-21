@@ -17,7 +17,7 @@ export default {
       });
       const response = yield call(fakeAccountLogin, payload);
       let status = '';
-      if (!response.error && response.user.rights.indexOf(8) >= 0) {
+      if (!response.error) {
         status = 'ok';
       } else {
         status = 'error';

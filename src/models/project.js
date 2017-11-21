@@ -1,4 +1,4 @@
-import { queryProjects, addProject, updateProject, removeProject } from '../services/project';
+import { queryProjects, addProject, updateProject, removeProject, queryProject } from '../services/project';
 
 export default {
   namespace: 'project',
@@ -9,6 +9,7 @@ export default {
       pagination: {},
     },
     loading: true,
+    formData: {},
   },
 
   effects: {
@@ -83,6 +84,15 @@ export default {
 
       if (callback) callback();
     },
+    *fetchProject({ payload }, { call, put }) {
+      const response = yield call(queryProject, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveProject',
+          payload: response.project,
+        });
+      }
+    },
   },
 
   reducers: {
@@ -90,6 +100,13 @@ export default {
       return {
         ...state,
         data: action.payload,
+        formData: {},
+      };
+    },
+    saveProject(state, action) {
+      return {
+        ...state,
+        formData: action.payload,
       };
     },
     changeLoading(state, action) {
