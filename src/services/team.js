@@ -13,3 +13,25 @@ export async function updateUser(params) {
     },
   });
 }
+
+export async function removeTeamUser(params) {
+  return request('/api/task/team/user', {
+    method: 'DELETE',
+    body: {
+      ...params,
+    },
+  });
+}
+
+export async function queryTeamUsersByPhone(params) {
+  return request(`/api/task/users/by/phone?${stringify(params)}`);
+}
+
+export async function createTeamUser(params) {
+  return request('/api/task/team/user', {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}

@@ -1,26 +1,28 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Mention, message } from 'antd';
+import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS } from '../../constants';
 import styles from './TeamList.less';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+const Option = Select.Option;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
   team: state.team,
   teamUser: state.user.teamUser,
+  currentUser: state.user.currentUser,
 }))
 export default class TableList extends PureComponent {
   state = {
-    addInputValue: '',
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
+    value: '',
     user: {},
   };
 
@@ -114,6 +116,17 @@ export default class TableList extends PureComponent {
     });
     this.handleModalVisible(true);
   }
+  handleRemove = (record) => {
+    const { dispatch, teamUser } = this.props;
+    dispatch({
+      type: 'team/remove',
+      payload: {
+        _id: record._id,
+        team_id: teamUser.team_id,
+      },
+    });
+    message.success('删除成功');
+  }
   handleRightsChange = (checkedValues) => {
     this.setState({
       user: { ...this.state.user, rights: checkedValues}
@@ -137,14 +150,35 @@ export default class TableList extends PureComponent {
 
     this.setState({ selectedRowKeys });
   }
-  onSearchChange = () => {
-    
+  onSearch = (value) => {
+    console.log(value);
+    this.setState({
+      value,
+    });
+    if (value.length >= 10) {
+      this.props.dispatch({
+        type: 'team/fetchUsersByPhone',
+        payload: {
+          phone: value
+        },
+      });
+    }
   }
-  onSelect = () => {
-
+  onSelect = (value) => {
+    console.log(value);
+    const { dispatch, teamUser } = this.props;
+    this.setState({ value });
+    dispatch({
+      type: 'team/add',
+      payload: {
+        user_id: value,
+        team_id: teamUser.team_id,
+      },
+    });
+    message.info('添加成功');
   }
   render() {
-    const { team: { loading, data: { list, pagination } } } = this.props;
+    const { team: { loading, data: { list, pagination }, suggestionUsers }, currentUser } = this.props;
     const { selectedRows, selectedRowKeys, modalVisible, user } = this.state;
 
     const columns = [
@@ -182,6 +216,12 @@ export default class TableList extends PureComponent {
         render: (record) => (
           <p>
             <a onClick={() => this.handleEdit(record.user_id)}>修改</a>
+            {record.user_id._id !== currentUser._id &&
+              <span><span className={styles.splitLine} />
+              <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
+                <a>删除</a>
+              </Popconfirm></span> }
+            
           </p>
         ),
       },
@@ -204,13 +244,21 @@ export default class TableList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Mention
-                placeholder="@电话 将此用户添加到团队"
-                style={{ width: '60%' }}
-                suggestions={['afc163', 'benjycui', 'yiminghe', 'jljsj33', 'dqaria', 'RaoHai']}
-                onSearchChange={this.onSearchChange}
+              <Select
+                style={{ width: '40%' }}
+                mode="combobox"
+                optionLabelProp="children"
+                value={this.state.value}
+                placeholder="输入用户电话号码搜索"
+                notFoundContent=""
+                defaultActiveFirstOption={false}
+                showArrow={false}
+                filterOption={false}
                 onSelect={this.onSelect}
-              />
+                onSearch={this.onSearch}
+              >
+                {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.name}</Option>)}
+              </Select>
             </div>
             <Table
               loading={loading}

@@ -1,4 +1,4 @@
-import { queryTeamUsers, updateUser } from '../services/team';
+import { queryTeamUsers, updateUser, queryTeamUsersByPhone, createTeamUser, removeTeamUser } from '../services/team';
 
 export default {
   namespace: 'team',
@@ -9,6 +9,7 @@ export default {
       pagination: {},
     },
     loading: true,
+    suggestionUsers: [],
   },
 
   effects: {
@@ -34,8 +35,8 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      yield call(addTeam, payload);
-      const response = yield call(queryTeamUsers, payload);
+      yield call(createTeamUser, payload);
+      const response = yield call(queryTeamUsers, {team_id: payload.team_id});
       yield put({
         type: 'save',
         payload: response,
@@ -70,7 +71,8 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      const response = yield call(removeRule, payload);
+      yield call(removeTeamUser, payload);
+      const response = yield call(queryTeamUsers, {team_id: payload.team_id});
       yield put({
         type: 'save',
         payload: response,
@@ -86,6 +88,13 @@ export default {
       yield put({
         type: 'changeTeamUsersModalVisible',
         payload,
+      });
+    },
+    *fetchUsersByPhone({ payload }, { call, put }) {
+      const response = yield call(queryTeamUsersByPhone, payload);
+      yield put({
+        type: 'saveSuggestionUsers',
+        payload: response.users,
       });
     },
   },
@@ -109,5 +118,11 @@ export default {
         teamUsersModalVisible: action.payload,
       };
     },
+    saveSuggestionUsers(state, action) {
+      return {
+        ...state,
+        suggestionUsers: action.payload || [],
+      };
+    }
   },
 };

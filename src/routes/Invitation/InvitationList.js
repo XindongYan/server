@@ -180,7 +180,7 @@ export default class TableList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 10 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAddInvitationCodes()}>添加</Button>
+              <Button icon="plus" type="primary" onClick={() => this.handleAddInvitationCodes()}>生成5个邀请码</Button>
             </div>
             <Table
               loading={loading}
