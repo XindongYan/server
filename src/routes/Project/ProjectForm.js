@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { QINIU_DOMAIN } from '../../constants';
+import { QINIU_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_TYPES } from '../../constants';
 import path from 'path';
 import querystring from 'querystring';
 
@@ -47,6 +47,7 @@ export default class ProjectForm extends PureComponent {
         price: nextProps.formData.price,
         project_type: nextProps.formData.project_type,
         attachments: nextProps.formData.attachments,
+        approve_flow: nextProps.formData.approve_flow,
       });
     }
   }
@@ -147,8 +148,7 @@ export default class ProjectForm extends PureComponent {
                 placeholder="请选择任务类型"
                 onChange={this.handleSelectChange}
               >
-                <Option value="male">male</Option>
-                <Option value="female">female</Option>
+                {PROJECT_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
             )}
           </FormItem>
@@ -160,7 +160,7 @@ export default class ProjectForm extends PureComponent {
             {getFieldDecorator('desc', {
               rules: [{ required: true, message: 'Please input your note!' }],
             })(
-              <Input />
+              <Input.TextArea />
             )}
           </FormItem>
           <FormItem
@@ -216,8 +216,7 @@ export default class ProjectForm extends PureComponent {
                 placeholder="Select a option and change input text above"
                 onChange={this.handleSelectChange}
               >
-                <Option value="male">male</Option>
-                <Option value="female">female</Option>
+                {PROJECT_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
             )}
           </FormItem>
@@ -226,12 +225,11 @@ export default class ProjectForm extends PureComponent {
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
-            {getFieldDecorator('flow', {
+            {getFieldDecorator('approve_flow', {
               rules: [{ required: true, message: 'Please input your note!' }],
             })(
               <Select style={{ width: '100%' }}>
-                <Option value="male">male</Option>
-                <Option value="female">female</Option>
+                {APPROVE_FLOWS.map(item => <Option value={item.value} key={item.value}>{item.texts.join(',')}</Option>)}
               </Select>
             )}
           </FormItem>

@@ -18,3 +18,18 @@ export const ROLES = [
 ];
 
 export const QINIU_DOMAIN = 'http://oyufgm5i2.bkt.clouddn.com';
+
+export const APPROVE_FLOWS = [
+  {value: 1, texts: ['一审', '二审'] },
+  {value: 2, texts: ['一审', '二审', '三审'] },
+];
+
+export const TASK_TYPES = [
+  {value: 1, text: 'AA' },
+  {value: 2, text: 'bb' },
+];
+
+export const PROJECT_TYPES = [
+  {value: 1, text: 'AA' },
+  {value: 2, text: 'bb' },
+];

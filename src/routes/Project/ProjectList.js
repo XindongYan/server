@@ -180,8 +180,8 @@ export default class FlowList extends PureComponent {
         dataIndex: 'title',
       },
       {
-        title: '描述',
-        dataIndex: 'desc',
+        title: '商家标签',
+        dataIndex: 'merchant_tag',
       },
       {
         title: '截止时间',
