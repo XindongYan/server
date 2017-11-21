@@ -158,7 +158,6 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('desc', {
-              rules: [{ required: true, message: 'Please input your note!' }],
             })(
               <Input.TextArea />
             )}
@@ -169,7 +168,6 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('deadline', {
-              rules: [{ required: true, message: '请选择截止日期！' }],
             })(
               <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} showTime />
             )}

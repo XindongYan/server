@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Icon, Table, Form, Checkbox, Avatar, Modal, message } from 'antd';
+import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Mention, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS } from '../../constants';
 import styles from './TeamList.less';
@@ -137,6 +137,12 @@ export default class TableList extends PureComponent {
 
     this.setState({ selectedRowKeys });
   }
+  onSearchChange = () => {
+    
+  }
+  onSelect = () => {
+
+  }
   render() {
     const { team: { loading, data: { list, pagination } } } = this.props;
     const { selectedRows, selectedRowKeys, modalVisible, user } = this.state;
@@ -195,8 +201,17 @@ export default class TableList extends PureComponent {
     };
     return (
       <PageHeaderLayout title="">
-        <Card bordered={false} bodyStyle={{ padding: 0 }}>
+        <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
+            <div className={styles.tableListOperator}>
+              <Mention
+                placeholder="@电话 将此用户添加到团队"
+                style={{ width: '60%' }}
+                suggestions={['afc163', 'benjycui', 'yiminghe', 'jljsj33', 'dqaria', 'RaoHai']}
+                onSearchChange={this.onSearchChange}
+                onSelect={this.onSelect}
+              />
+            </div>
             <Table
               loading={loading}
               dataSource={list}
