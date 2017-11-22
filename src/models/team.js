@@ -53,22 +53,24 @@ export default {
       if (callback) callback(addResult);
     },
     *update({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      yield call(updateUser, payload);
-      const response = yield call(queryTeamUsers, {team_id: payload.team_id});
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-
-      if (callback) callback();
+      
+      const updateResult = yield call(updateUser, payload);
+      if (!updateResult.error) {
+        yield put({
+          type: 'changeLoading',
+          payload: true,
+        });
+        const response = yield call(queryTeamUsers, {team_id: payload.team_id});
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+        yield put({
+          type: 'changeLoading',
+          payload: false,
+        });
+      }
+      if (callback) callback(updateResult);
     },
     *remove({ payload, callback }, { call, put }) {
       yield put({

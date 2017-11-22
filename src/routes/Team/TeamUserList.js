@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { RIGHTS } from '../../constants';
+import { RIGHTS, APPROVE_ROLES } from '../../constants';
 import styles from './TeamList.less';
 
 const FormItem = Form.Item;
@@ -112,7 +112,11 @@ export default class TableList extends PureComponent {
   }
   handleEdit = (record) => {
     this.setState({
-      user: record,
+      user: {
+        user_id: record.user_id._id,
+        rights: record.user_id.rights,
+        approve_roles: record.approve_roles,
+      },
     });
     this.handleModalVisible(true);
   }
@@ -132,6 +136,11 @@ export default class TableList extends PureComponent {
       user: { ...this.state.user, rights: checkedValues}
     });
   }
+  handleApproveRolesChange = (checkedValues) => {
+    this.setState({
+      user: { ...this.state.user, approve_roles: checkedValues}
+    });
+  }
   handleModalOk = () => {
     this.props.dispatch({
       type: 'team/update',
@@ -139,6 +148,13 @@ export default class TableList extends PureComponent {
         team_id: this.props.teamUser.team_id,
         ...this.state.user,
       },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+        }
+      }
     });
     this.handleModalVisible(false);
   }
@@ -204,6 +220,13 @@ export default class TableList extends PureComponent {
         },
       },
       {
+        title: '审核角色',
+        dataIndex: 'approve_roles',
+        render(val) {
+          return val.map(item => APPROVE_ROLES.find(item1 => item1.value === item).label).join(',');
+        },
+      },
+      {
         title: '电话',
         dataIndex: 'user_id.phone',
       },
@@ -220,7 +243,7 @@ export default class TableList extends PureComponent {
         title: '操作',
         render: (record) => (
           <p>
-            <a onClick={() => this.handleEdit(record.user_id)}>修改</a>
+            <a onClick={() => this.handleEdit(record)}>修改</a>
             {record.user_id._id !== currentUser._id &&
               <span><span className={styles.splitLine} />
               <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
@@ -287,6 +310,13 @@ export default class TableList extends PureComponent {
             label="权限"
           >
             <CheckboxGroup options={RIGHTS.filter(item => item.value !== 8)} value={user.rights} onChange={this.handleRightsChange} />
+          </FormItem>
+          <FormItem
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+            label="审核角色"
+          >
+            <CheckboxGroup options={APPROVE_ROLES} value={user.approve_roles} onChange={this.handleApproveRolesChange} />
           </FormItem>
         </Modal>
       </PageHeaderLayout>

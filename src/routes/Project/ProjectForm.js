@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
-import { Row, Col, Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
+import { Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { QINIU_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES } from '../../constants';
 import path from 'path';
@@ -63,7 +63,7 @@ export default class ProjectForm extends PureComponent {
       });
       setTimeout(() => {
         this.props.form.setFieldsValue(approvers);
-      }, 300);
+      }, 100);
     }
   }
   handleSubmit = () => {
@@ -71,7 +71,6 @@ export default class ProjectForm extends PureComponent {
     const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
         const approvers = (flow ? flow.texts : [] ).map(item => values[`approvers${item}`])
         const payload = {
           team_id: teamUser.team_id,
@@ -102,15 +101,12 @@ export default class ProjectForm extends PureComponent {
             payload,
           });
         }
-        console.log(payload);
-        
         this.props.dispatch(routerRedux.push('/list/project-list'));
       }
     });
     
   }
   normFile = (e) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
