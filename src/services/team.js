@@ -35,3 +35,7 @@ export async function createTeamUser(params) {
     },
   });
 }
+
+export async function queryTeamUsersByRole(params) {
+  return request(`/api/task/teamUsers/by/role?${stringify(params)}`);
+}

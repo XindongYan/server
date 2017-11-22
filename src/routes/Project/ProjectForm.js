@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { QINIU_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_TYPES } from '../../constants';
+import { QINIU_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES } from '../../constants';
 import path from 'path';
 import querystring from 'querystring';
 
@@ -17,7 +17,8 @@ const { Option } = Select;
   project: state.project,
   teamUser: state.user.teamUser,
   qiniucloud: state.qiniucloud,
-  formData: state.project.formData
+  formData: state.project.formData,
+  teamUsers: state.team.teamUsers,
 }))
 @Form.create()
 export default class ProjectForm extends PureComponent {
@@ -35,9 +36,19 @@ export default class ProjectForm extends PureComponent {
     this.props.dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
+    this.props.dispatch({
+      type: 'team/fetchTeamUsers',
+      payload: { team_id: this.props.teamUser.team_id },
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
+      const approvers = {};
+      const flow = APPROVE_FLOWS.find(item => item.value === nextProps.formData.approve_flow);
+      
+      (flow ? flow.texts : []).forEach((item, index) => {
+        approvers[`approvers${item}`] = nextProps.formData.approvers[index];
+      })
       this.props.form.setFieldsValue({
         title: nextProps.formData.title,
         merchant_tag: nextProps.formData.merchant_tag,
@@ -45,17 +56,23 @@ export default class ProjectForm extends PureComponent {
         desc: nextProps.formData.desc,
         deadline: moment(nextProps.formData.deadline),
         price: nextProps.formData.price,
-        project_type: nextProps.formData.project_type,
         attachments: nextProps.formData.attachments,
         approve_flow: nextProps.formData.approve_flow,
+        max_take: nextProps.formData.max_take,
+        project_level: nextProps.formData.project_level,
       });
+      setTimeout(() => {
+        this.props.form.setFieldsValue(approvers);
+      }, 300);
     }
   }
   handleSubmit = () => {
-    const { teamUser, formData } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, teamUser, formData } = this.props;
+    const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log(values);
+        const approvers = (flow ? flow.texts : [] ).map(item => values[`approvers${item}`])
         const payload = {
           team_id: teamUser.team_id,
           user_id: teamUser.user_id,
@@ -69,6 +86,7 @@ export default class ProjectForm extends PureComponent {
               };
             }
           }) : [],
+          approvers,
         };
         if (this.props.operation === 'edit') {
           this.props.dispatch({
@@ -107,9 +125,8 @@ export default class ProjectForm extends PureComponent {
     }
   }
   render() {
-    const { form: { getFieldDecorator }, qiniucloud, operation} = this.props;
-    const { formValues } = this.state;
-
+    const { form: { getFieldDecorator, getFieldValue }, qiniucloud, operation, teamUsers, formData } = this.props;
+    const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow || getFieldValue('approve_flow'));
     
     return (
       <Card bordered={false}>
@@ -142,13 +159,14 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('task_type', {
+              initialValue: 1,
               rules: [{ required: true, message: '请选择任务类型！' }],
             })(
               <Select
                 placeholder="请选择任务类型"
                 onChange={this.handleSelectChange}
               >
-                {PROJECT_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
+                {TASK_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
             )}
           </FormItem>
@@ -169,7 +187,8 @@ export default class ProjectForm extends PureComponent {
           >
             {getFieldDecorator('deadline', {
             })(
-              <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} showTime />
+              <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}
+              showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }} />
             )}
           </FormItem>
           <FormItem
@@ -203,18 +222,34 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="项目类型"
+            label="最多抢单数"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
-            {getFieldDecorator('project_type', {
-              rules: [{ required: true, message: 'Please select your gender!' }],
+            {getFieldDecorator('max_take', {
+              initialValue: 0,
+              rules: [{
+                required: true, message: '请输入最多抢单数'
+              }],
+            })(
+              <Input type="number"/>
+            )}
+          </FormItem>
+          <FormItem
+            label="项目级别"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('project_level', {
+              initialValue: 1,
+              rules: [{
+                required: true, message: '请选择项目级别'
+              }],
             })(
               <Select
-                placeholder="Select a option and change input text above"
-                onChange={this.handleSelectChange}
+                placeholder="择项目级别"
               >
-                {PROJECT_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
+                {PROJECT_LEVELS.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
             )}
           </FormItem>
@@ -227,10 +262,33 @@ export default class ProjectForm extends PureComponent {
               rules: [{ required: true, message: 'Please input your note!' }],
             })(
               <Select style={{ width: '100%' }}>
-                {APPROVE_FLOWS.map(item => <Option value={item.value} key={item.value}>{item.texts.join(',')}</Option>)}
+                {APPROVE_FLOWS.map(item =>
+                  <Option value={item.value} key={item.value}>{item.texts.map(item => APPROVE_ROLES.find(item1 => item1.value === item).label).join(',')}</Option>)}
               </Select>
             )}
           </FormItem>
+          {
+            (flow ? flow.texts : [] ).map((item) => {
+              return (<FormItem
+                label={APPROVE_ROLES.find(item1 => item1.value === item).label}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 8 }}
+                key={item}
+              >
+                {getFieldDecorator(`approvers${item}`, {
+                  rules: [{ required: true, message: 'Please input your note!' }],
+                })(
+                  <Select
+                    mode="tags"
+                    style={{ width: '100%' }}
+                    placeholder="选择审核人员"
+                  >
+                    {teamUsers.map(item => <Option key={item._id} value={item.user_id._id}>{item.user_id.name}</Option>)}
+                  </Select>
+                )}
+              </FormItem>)
+            })
+          }
           <FormItem
             wrapperCol={{ span: 8, offset: 4 }}
           >

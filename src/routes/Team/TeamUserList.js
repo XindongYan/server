@@ -151,7 +151,6 @@ export default class TableList extends PureComponent {
     this.setState({ selectedRowKeys });
   }
   onSearch = (value) => {
-    console.log(value);
     this.setState({
       value,
     });
@@ -165,7 +164,6 @@ export default class TableList extends PureComponent {
     }
   }
   onSelect = (value) => {
-    console.log(value);
     const { dispatch, teamUser } = this.props;
     this.setState({ value });
     dispatch({
@@ -174,8 +172,15 @@ export default class TableList extends PureComponent {
         user_id: value,
         team_id: teamUser.team_id,
       },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success('添加成功');
+        }
+      },
     });
-    message.info('添加成功');
+    
   }
   render() {
     const { team: { loading, data: { list, pagination }, suggestionUsers }, currentUser } = this.props;

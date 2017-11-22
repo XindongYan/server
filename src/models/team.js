@@ -1,4 +1,5 @@
-import { queryTeamUsers, updateUser, queryTeamUsersByPhone, createTeamUser, removeTeamUser } from '../services/team';
+import { queryTeamUsers, updateUser, queryTeamUsersByPhone, createTeamUser, removeTeamUser,
+  queryTeamUsersByRole } from '../services/team';
 
 export default {
   namespace: 'team',
@@ -10,6 +11,7 @@ export default {
     },
     loading: true,
     suggestionUsers: [],
+    teamUsers: [],
   },
 
   effects: {
@@ -31,22 +33,24 @@ export default {
       });
     },
     *add({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      yield call(createTeamUser, payload);
-      const response = yield call(queryTeamUsers, {team_id: payload.team_id});
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-
-      if (callback) callback();
+      
+      const addResult = yield call(createTeamUser, payload);
+      if (!addResult.error) {
+        yield put({
+          type: 'changeLoading',
+          payload: true,
+        });
+        const response = yield call(queryTeamUsers, {team_id: payload.team_id});
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+        yield put({
+          type: 'changeLoading',
+          payload: false,
+        });
+      }
+      if (callback) callback(addResult);
     },
     *update({ payload, callback }, { call, put }) {
       yield put({
@@ -97,6 +101,13 @@ export default {
         payload: response.users,
       });
     },
+    *fetchTeamUsers({ payload }, { call, put }) {
+      const response = yield call(queryTeamUsersByRole, payload);
+      yield put({
+        type: 'saveTeamUsersByRole',
+        payload: response.teamUsers,
+      });
+    },
   },
 
   reducers: {
@@ -123,6 +134,12 @@ export default {
         ...state,
         suggestionUsers: action.payload || [],
       };
-    }
+    },
+    saveTeamUsersByRole(state, action) {
+      return {
+        ...state,
+        teamUsers: action.payload || [],
+      };
+    },
   },
 };

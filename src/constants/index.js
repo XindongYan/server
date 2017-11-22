@@ -20,16 +20,24 @@ export const ROLES = [
 export const QINIU_DOMAIN = 'http://oyufgm5i2.bkt.clouddn.com';
 
 export const APPROVE_FLOWS = [
-  {value: 1, texts: ['一审', '二审'] },
-  {value: 2, texts: ['一审', '二审', '三审'] },
+  {value: 1, texts: [1, 2] },
+  {value: 2, texts: [1, 2, 3] },
 ];
 
 export const TASK_TYPES = [
-  {value: 1, text: 'AA' },
-  {value: 2, text: 'bb' },
+  {value: 1, text: '图文' },
+  {value: 2, text: '视频' },
 ];
 
-export const PROJECT_TYPES = [
-  {value: 1, text: 'AA' },
-  {value: 2, text: 'bb' },
+export const PROJECT_LEVELS = [
+  {value: 0, text: 'P0' },
+  {value: 1, text: 'P1' },
+  {value: 2, text: 'P2' },
+  {value: 3, text: 'P3' },
+  {value: 4, text: 'P4' },
+  {value: 5, text: 'P5' },
+  {value: 6, text: 'P6' },
+  {value: 7, text: 'P7' },
+  {value: 8, text: 'P8' },
+  {value: 9, text: 'P9' },
 ];
