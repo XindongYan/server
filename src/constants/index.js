@@ -18,6 +18,7 @@ export const ROLES = [
 ];
 
 export const QINIU_DOMAIN = 'http://oyufgm5i2.bkt.clouddn.com';
+export const QINIU_UPLOAD_DOMAIN = 'http://up.qiniu.com';
 
 export const APPROVE_FLOWS = [
   {value: 1, texts: [1, 2] },

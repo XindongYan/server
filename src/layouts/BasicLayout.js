@@ -14,6 +14,7 @@ import NoticeIcon from '../components/NoticeIcon';
 import GlobalFooter from '../components/GlobalFooter';
 import ProjectCreate from '../routes/Project/ProjectCreate';
 import ProjectEdit from '../routes/Project/ProjectEdit';
+import TaskCreate from '../routes/TaskCreate/TableList';
 import { getNavData } from '../common/nav';
 import { getRouteData } from '../utils/utils';
 
@@ -352,6 +353,7 @@ class BasicLayout extends React.PureComponent {
               }
               <Route path="/project/create" component={ProjectCreate} />
               <Route path="/project/edit" component={ProjectEdit} />
+              <Route path="/task/create" component={TaskCreate} />
               <Redirect to="/list/teamUser-list" />
             </Switch>
             <GlobalFooter

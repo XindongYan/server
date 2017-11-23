@@ -1,37 +1,45 @@
 import BasicLayout from '../layouts/BasicLayout';
 import BlankLayout from '../layouts/BlankLayout';
 
-import TableList from '../routes/List/TableList';
-import ProjectList from '../routes/Project/ProjectList';
-import TeamUserList from '../routes/Team/TeamUserList';
+import Approve from '../routes/Approve/TableList';
+import Create from '../routes/Create/TableList';
+import Project from '../routes/Project/ProjectList';
+import TeamUser from '../routes/Team/TeamUserList';
+// import Writer from '../routes/Writer/TableList';
 
 import Invitation from '../routes/Invitation/InvitationList';
 
 import Success from '../routes/Result/Success';
 import Error from '../routes/Result/Error';
 
+// const writer = {
+//   name: '写手列表',
+//   path: 'approve-list',
+//   component: Writer,
+// };
+
 const approve = {
-  name: '审核',
+  name: '审核列表',
   path: 'approve-list',
-  component: TableList,
+  component: Approve,
 };
 
 const create = {
-  name: '全部作品',
+  name: '创建任务',
   path: 'create-list',
-  component: TableList,
+  component: Create,
 };
 
 const team = {
   name: '团队成员',
   path: 'teamUser-list',
-  component: TeamUserList,
+  component: TeamUser,
 };
 
 const project = {
-  name: '项目',
+  name: '项目列表',
   path: 'project-list',
-  component: ProjectList,
+  component: Project,
 };
 
 const invitation = {

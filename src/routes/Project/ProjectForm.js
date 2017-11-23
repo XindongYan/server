@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { QINIU_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES } from '../../constants';
 import path from 'path';
 import querystring from 'querystring';
 
@@ -54,7 +54,7 @@ export default class ProjectForm extends PureComponent {
         merchant_tag: nextProps.formData.merchant_tag,
         task_type: nextProps.formData.task_type,
         desc: nextProps.formData.desc,
-        deadline: moment(nextProps.formData.deadline),
+        deadline: nextProps.formData.deadline ? moment(nextProps.formData.deadline) : null,
         price: nextProps.formData.price,
         attachments: nextProps.formData.attachments,
         approve_flow: nextProps.formData.approve_flow,
@@ -196,7 +196,7 @@ export default class ProjectForm extends PureComponent {
               valuePropName: 'fileList',
               getValueFromEvent: this.normFile,
             })(
-              <Upload name="file" action="http://up.qiniu.com" listType="text" data={this.makeUploadData}>
+              <Upload name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
                 <Button>
                   <Icon type="upload" /> 点击上传
                 </Button>
@@ -279,7 +279,8 @@ export default class ProjectForm extends PureComponent {
                     style={{ width: '100%' }}
                     placeholder="选择审核人员"
                   >
-                    {teamUsers.map(item => <Option key={item._id} value={item.user_id._id}>{item.user_id.name}</Option>)}
+                    {teamUsers.filter(item => item.approve_roles.indexOf(item) >= 0)
+                      .map(item => <Option key={item._id} value={item.user_id._id}>{item.user_id.name}</Option>)}
                   </Select>
                 )}
               </FormItem>)

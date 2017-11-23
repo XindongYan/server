@@ -197,6 +197,8 @@ export default class FlowList extends PureComponent {
         title: '操作',
         render: (record) => (
           <p>
+            <a onClick={() => this.handleEdit(record)}>创建任务</a>
+            <span className={styles.splitLine} />
             <a onClick={() => this.handleEdit(record)}>修改</a>
             <span className={styles.splitLine} />
             <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
