@@ -15,7 +15,8 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @connect(state => ({
-  approve: state.approve,
+  data: state.approve.data,
+  loading: state.approve.loading,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -29,10 +30,10 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, data: { pagination }, } = this.props;
     dispatch({
       type: 'approve/fetch',
-      payload: { approve_status: this.state.approve_status }
+      payload: { ...pagination, approve_status: this.state.approve_status }
     });
   }
 
@@ -131,8 +132,7 @@ export default class TableList extends PureComponent {
     });
   }
   changeApproveStatus = (e) => {
-    const { approve: { loading: ruleLoading, data: { pagination } } } = this.props;
-    const { dispatch } = this.props;
+    const { data: { pagination }, dispatch } = this.props;
     dispatch({
       type: 'approve/fetch',
       payload: { ...pagination, approve_status: e.target.value, }
@@ -142,7 +142,7 @@ export default class TableList extends PureComponent {
     });
   }
   render() {
-    const { approve: { loading: ruleLoading, data } } = this.props;
+    const { data, loading, } = this.props;
     const { selectedRows, modalVisible, approve_status, user, selectedRowKeys } = this.state;
     const columns = [
       {
@@ -210,8 +210,6 @@ export default class TableList extends PureComponent {
         ),
       },
     ];
-
-
     return (
       <PageHeaderLayout title="">
 	      <div style={{ background: '#fff' , marginBottom:'10px' }}>
@@ -229,7 +227,7 @@ export default class TableList extends PureComponent {
             </div>
             
             <Table
-              loading={ruleLoading}
+              loading={loading}
               rowKey={record => record.key}
               dataSource={data.list}
               columns={columns}
