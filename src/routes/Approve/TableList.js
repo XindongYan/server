@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
+import TaskTitleColumn from '../../components/TaskTitleColumn'
 import { Link } from 'dva/router';
 import moment from 'moment';
 import styles from './TableList.less';
@@ -134,7 +135,7 @@ export default class TableList extends PureComponent {
     const { data: { pagination }, dispatch } = this.props;
     dispatch({
       type: 'approve/fetch',
-      payload: { ...pagination, ...this.state.formValues }
+      payload: { ...pagination, ...this.state.formValues, approve_status: e.target.value, }
     });
     this.setState({
       formValues: { ...this.state.formValues, approve_status: e.target.value, }
@@ -151,9 +152,10 @@ export default class TableList extends PureComponent {
       {
         title: '内容标题',
         dataIndex: 'title',
+        width: 200,
         render: (record) => (
-          <Link to="">
-            <span>{record}</span>
+          <Link to="http://120.27.215.205/">
+            <TaskTitleColumn text={record} length={10}/>
           </Link>
         )
       },
@@ -197,21 +199,84 @@ export default class TableList extends PureComponent {
         }
       },
       {
+        title: '审核时间',
+        dataIndex: 'approve_time',
+        colSpan: formValues.approve_status === 0 ? 0 : 'none',
+        render: (value, row, index) => {
+          const obj = {
+            children: value,
+            props: {},
+          };
+          if (formValues.approve_status === 0) {
+            obj.props.colSpan = 0;
+          } else {
+            return <span>{moment(value).format('YYYY-MM-DD HH:mm:ss')}</span>;
+          }
+          return obj;
+        }
+      },
+      {
+        title: '审核分数',
+        dataIndex: 'grade',
+        colSpan: formValues.approve_status === 0 ? 0 : '',
+        render: (value, row, index) => {
+          const obj = {
+            children: value,
+            props: {},
+          };
+          if (formValues.approve_status === 0) {
+            obj.props.colSpan = 0;
+          } else if (value < 0) {
+            return 0;
+          }
+          return obj;
+        }
+      },
+      {
+        title: '审核人',
+        dataIndex: 'approver_id',
+        colSpan: formValues.approve_status === 0 ? 0 : '',
+        render: (value, row, index) => {
+          const obj = {
+            children: value,
+            props: {},
+          };
+          if (formValues.approve_status === 0) {
+            obj.props.colSpan = 0;
+          } else if (value) {
+            return value.name;
+          }
+          return obj;
+        }
+      },
+      {
         title: '操作',
-        render: (record) => (
-          <div>
-            <Link to="http://120.27.215.205/">
-                <span>审核</span>
-            </Link>
-            <span className={styles.splitLine} />
-            <a onClick={() => this.handleShowModal(record)}>退回</a>
-          </div>
-        ),
+        render: (record) => {
+          if (formValues.approve_status === 0) {
+            return (
+              <div>
+                <Link to="http://120.27.215.205/">
+                    <span>审核</span>
+                </Link>
+                <span className={styles.splitLine} />
+                <a onClick={() => this.handleShowModal(record)}>退回</a>
+              </div>
+            )
+          } else {
+            return (
+              <div>
+                <Link to="http://120.27.215.205/">
+                    <span>详情</span>
+                </Link>
+              </div>
+            )
+          }
+        },
       },
     ];
     return (
       <PageHeaderLayout title="">
-	      <div style={{ background: '#fff' , marginBottom:'10px' }}>
+	      <div style={{ marginBottom:'10px' }}>
           <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}>
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
