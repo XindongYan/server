@@ -5,11 +5,17 @@ import Approve from '../routes/Approve/TableList';
 import Project from '../routes/Project/ProjectList';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
-
+import TaskSquare from '../routes/TaskSquare/ProjectList';
 import Invitation from '../routes/Invitation/InvitationList';
 
 import Success from '../routes/Result/Success';
 import Error from '../routes/Result/Error';
+
+const taskSquare = {
+  name: '任务广场',
+  path: 'task-square',
+  component: TaskSquare,
+};
 
 const writer = {
   name: '我的任务',
@@ -51,7 +57,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [writer, approve, team, project, invitation],
+    children: [taskSquare, writer, approve, team, project, invitation],
   }, {
     name: '工具',
     path: 'tool',

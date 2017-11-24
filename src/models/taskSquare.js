@@ -1,7 +1,7 @@
 import { fakeRegister } from '../services/api';
 
 export default {
-  namespace: 'register',
+  namespace: 'taskSquare',
 
   state: {
     status: undefined,
