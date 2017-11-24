@@ -1,20 +1,19 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message } from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { RIGHTS, APPROVE_ROLES, ROLES } from '../../constants';
 import moment from 'moment';
+import querystring from 'querystring';
+import { Table, Card, Button, Menu, Checkbox, Popconfirm, message } from 'antd';
+import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+
 import styles from './TableList.less';
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const CheckboxGroup = Checkbox.Group;
+
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
   task: state.task,
 }))
-@Form.create()
+
 export default class TableList extends PureComponent {
   state = {
     modalVisible: false,
@@ -26,9 +25,11 @@ export default class TableList extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
+    const query = querystring.parse(this.props.location.search.substr(1));
+    console.log(query);
+    this.props.dispatch({
       type: 'task/fetch',
-      payload: {approve_status: -1}
+      payload: { project_id: query.project_id , approve_status: -1},
     });
   }
 
@@ -94,7 +95,6 @@ export default class TableList extends PureComponent {
   }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-
     this.setState({ selectedRowKeys, selectedRows });
   }
   handleSearch = (e) => {
@@ -134,18 +134,6 @@ export default class TableList extends PureComponent {
   handleRolesChange = (checkedValues) => {
     this.setState({
       user: { ...this.state.user, role: checkedValues}
-    });
-  }
-
-  handleChangeUser = () => {
-    this.props.dispatch({
-      type: 'task/update',
-      payload: this.state.user,
-    });
-
-    message.success('修改成功');
-    this.setState({
-      modalVisible: false,
     });
   }
 
@@ -193,12 +181,6 @@ export default class TableList extends PureComponent {
         dataIndex: 'update_times',
       },
       {
-        title: '写手',
-        dataIndex: 'publisher_id',
-        sorter: true,
-        render: val => val ? val.name : '',
-      },
-      {
         title: '发布渠道',
         dataIndex: 'channel_name',
         render: val => val[0] || '',
@@ -211,7 +193,12 @@ export default class TableList extends PureComponent {
         title: '操作',
         render: (record) => (
           <p>
-            <a onClick={() => this.handleShowModal(record)}>分配</a>
+            <span className={styles.splitLine} />
+            <a onClick={() => this.handleEdit(record)}>修改</a>
+            <span className={styles.splitLine} />
+            <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
+              <a>删除</a>
+            </Popconfirm>
           </p>
         ),
       },
@@ -225,7 +212,6 @@ export default class TableList extends PureComponent {
             </div>
             <Table
               loading={ruleLoading}
-              rowKey={record => record.key}
               dataSource={data.list}
               columns={columns}
               pagination={{
@@ -238,14 +224,6 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <Modal
-          title="配置用户"
-          visible={modalVisible}
-          onOk={this.handleChangeUser}
-          onCancel={() => this.handleModalVisible()}
-        >
-          
-        </Modal>
       </PageHeaderLayout>
     );
   }

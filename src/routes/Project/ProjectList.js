@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
+import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './Project.less';
@@ -197,14 +198,13 @@ export default class FlowList extends PureComponent {
         title: '操作',
         render: (record) => (
           <p>
-            <a onClick={() => this.handleEdit(record)}>创建任务</a>
+            <Link to={`/project/task/list?project_id=${record._id}`}>添加任务</Link>
             <span className={styles.splitLine} />
             <a onClick={() => this.handleEdit(record)}>修改</a>
             <span className={styles.splitLine} />
             <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
               <a>删除</a>
             </Popconfirm>
-            
           </p>
         ),
       },

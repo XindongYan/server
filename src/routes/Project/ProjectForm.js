@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
+import querystring from 'querystring';
+import path from 'path';
 import moment from 'moment';
+import { routerRedux } from 'dva/router';
 import { Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES } from '../../constants';
-import path from 'path';
-import querystring from 'querystring';
 
 import styles from './Project.less';
 
@@ -14,7 +14,6 @@ const FormItem = Form.Item;
 const { Option } = Select;
 
 @connect(state => ({
-  project: state.project,
   teamUser: state.user.teamUser,
   qiniucloud: state.qiniucloud,
   formData: state.project.formData,
