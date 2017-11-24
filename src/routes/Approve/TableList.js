@@ -201,82 +201,49 @@ export default class TableList extends PureComponent {
           }
         }
       },
-      {
-        title: '审核时间',
-        dataIndex: 'approve_time',
-        colSpan: formValues.approve_status === 0 ? 0 : 'none',
-        render: (value, row, index) => {
-          const obj = {
-            children: value,
-            props: {},
-          };
-          if (formValues.approve_status === 0) {
-            obj.props.colSpan = 0;
-          } else {
-            return <span>{moment(value).format('YYYY-MM-DD HH:mm:ss')}</span>;
-          }
-          return obj;
-        }
-      },
-      {
-        title: '审核分数',
-        dataIndex: 'grade',
-        colSpan: formValues.approve_status === 0 ? 0 : '',
-        render: (value, row, index) => {
-          const obj = {
-            children: value,
-            props: {},
-          };
-          if (formValues.approve_status === 0) {
-            obj.props.colSpan = 0;
-          } else if (value < 0) {
-            return 0;
-          }
-          return obj;
-        }
-      },
-      {
-        title: '审核人',
-        dataIndex: 'approver_id',
-        colSpan: formValues.approve_status === 0 ? 0 : '',
-        render: (value, row, index) => {
-          const obj = {
-            children: value,
-            props: {},
-          };
-          if (formValues.approve_status === 0) {
-            obj.props.colSpan = 0;
-          } else if (value) {
-            return value.name;
-          }
-          return obj;
-        }
-      },
-      {
-        title: '操作',
-        render: (record) => {
-          if (formValues.approve_status === 0) {
-            return (
-              <div>
-                <Link to="http://120.27.215.205/">
-                    <span>审核</span>
-                </Link>
-                <span className={styles.splitLine} />
-                <a onClick={() => this.handleShowModal(record)}>退回</a>
-              </div>
-            )
-          } else {
-            return (
-              <div>
-                <Link to="http://120.27.215.205/">
-                    <span>详情</span>
-                </Link>
-              </div>
-            )
-          }
-        },
-      },
     ];
+    const approver = {
+      title: '审核人',
+      dataIndex: 'approver_id',
+      render: value => value ? value.name : '',
+    }
+    const grade = {
+      title: '审核分数',
+      dataIndex: 'grade',
+      render: value => value < 0 ? 0 : value,
+    }
+    const approveTime = {
+      title: '审核时间',
+      dataIndex: 'approve_time',
+      render: value => <span>{moment(value).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    }
+    const opera = {
+      title: '操作',
+      render: (record) => {
+        if (formValues.approve_status === 0) {
+          return (
+            <div>
+              <Link to="http://120.27.215.205/">
+                  <span>审核</span>
+              </Link>
+              <span className={styles.splitLine} />
+              <a onClick={() => this.handleShowModal(record)}>退回</a>
+            </div>
+          )
+        } else {
+          return (
+            <Link to="http://120.27.215.205/">
+                <span>详情</span>
+            </Link>
+          )
+        }
+      },
+    }
+    if (formValues.approve_status === 0){
+      columns.push(opera)
+    } else {
+      columns.push( approver, grade, approveTime, opera)
+    }
     return (
       <PageHeaderLayout title="">
 	      <div style={{ marginBottom:'10px' }}>

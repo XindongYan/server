@@ -143,7 +143,6 @@ export default class TableList extends PureComponent {
   render() {
     const { projectTask, loading, formData } = this.props;
     const { selectedRows, modalVisible, user, selectedRowKeys } = this.state;
-
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="remove">删除</Menu.Item>
@@ -188,38 +187,50 @@ export default class TableList extends PureComponent {
         ),
       },
     ];
+    const gridStyle = {
+      width: '32%',
+      margin: '5px',
+      padding: '10px',
+    };
     return (
-      <Card bordered={false} bodyStyle={{ padding: 14 }}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
-            {
-              selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )
-            }
+      <div>
+        <Card title={formData.title} noHovering bordered={false} style={{ margin: '10px 0' }} bodyStyle={{ padding:'10px 5px' }}>
+          <Card.Grid style={gridStyle}>商家标签：{ formData.merchant_tag }</Card.Grid>
+          <Card.Grid style={gridStyle}>截止日期：{ formData.deadline ? moment(formData.deadline).format('YYYY-MM-DD HH:mm') : '未设置' }</Card.Grid>
+          <Card.Grid style={gridStyle}>项目奖励：{ formData.price }</Card.Grid>
+        </Card>
+        <Card bordered={false} bodyStyle={{ padding: 14 }}>
+          <div className={styles.tableList}>
+            <div className={styles.tableListOperator}>
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
+              {
+                selectedRows.length > 0 && (
+                  <span>
+                    <Button>批量操作</Button>
+                    <Dropdown overlay={menu}>
+                      <Button>
+                        更多操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
+                )
+              }
+            </div>
+            <Table
+              loading={loading}
+              dataSource={projectTask.list}
+              columns={columns}
+              pagination={{
+                showSizeChanger: true,
+                showQuickJumper: true,
+                ...projectTask.pagination,
+              }}
+              onChange={this.handleStandardTableChange}
+              rowKey="_id"
+            />
           </div>
-          <Table
-            loading={loading}
-            dataSource={projectTask.list}
-            columns={columns}
-            pagination={{
-              showSizeChanger: true,
-              showQuickJumper: true,
-              ...projectTask.pagination,
-            }}
-            onChange={this.handleStandardTableChange}
-            rowKey="_id"
-          />
-        </div>
-      </Card>
+        </Card>
+      </div>
     );
   }
 }
