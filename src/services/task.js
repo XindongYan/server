@@ -1,8 +1,8 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
 
-export async function queryTasks(params) {
-  return request(`/api/task/list/create?${stringify(params)}`);
+export async function queryApproveTasks(params) {
+  return request(`/api/task/list/approve?${stringify(params)}`);
 }
 
 export async function queryTask(params) {

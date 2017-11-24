@@ -1,4 +1,4 @@
-import { queryTasks, removeRule, updateUser } from '../services/task';
+import { queryApproveTasks, updateUser } from '../services/task';
 
 export default {
   namespace: 'approve',
@@ -17,8 +17,7 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      const response = yield call(queryTasks, payload);
-
+      const response = yield call(queryApproveTasks, payload);
       if (!response.error) {
         yield put({
           type: 'save',
@@ -36,24 +35,7 @@ export default {
         payload: true,
       });
       yield call(updateUser, payload);
-      const response = yield call(queryTasks, {});
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-
-      if (callback) callback();
-    },
-    *remove({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(removeRule, payload);
+      const response = yield call(queryApproveTasks, {});
       yield put({
         type: 'save',
         payload: response,

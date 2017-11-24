@@ -278,8 +278,8 @@ export default class ProjectForm extends PureComponent {
                     style={{ width: '100%' }}
                     placeholder="选择审核人员"
                   >
-                    {teamUsers.filter(item => item.approve_roles.indexOf(item) >= 0)
-                      .map(item => <Option key={item._id} value={item.user_id._id}>{item.user_id.name}</Option>)}
+                    {teamUsers.filter(teamUser => teamUser.approve_roles.indexOf(item) >= 0)
+                      .map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.name}</Option>)}
                   </Select>
                 )}
               </FormItem>)

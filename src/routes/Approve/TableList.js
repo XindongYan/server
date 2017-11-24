@@ -18,6 +18,7 @@ const RadioGroup = Radio.Group;
 @connect(state => ({
   data: state.approve.data,
   loading: state.approve.loading,
+  currentUser: state.user.currentUser,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -30,15 +31,15 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch, data: { pagination }, } = this.props;
+    const { dispatch, data: { pagination }, currentUser } = this.props;
     dispatch({
       type: 'approve/fetch',
-      payload: { ...pagination, ...this.state.formValues }
+      payload: { ...pagination, ...this.state.formValues, user_id: currentUser._id }
     });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser } = this.props;
     const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -50,6 +51,7 @@ export default class TableList extends PureComponent {
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
+      user_id: currentUser._id,
       ...formValues,
       ...filters,
     };
@@ -70,12 +72,13 @@ export default class TableList extends PureComponent {
   handleSearch = (e) => {
     e.preventDefault();
 
-    const { dispatch, form } = this.props;
+    const { dispatch, form, currentUser } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
       const values = {
+        user_id: currentUser._id,
         ...fieldsValue,
         updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
       };
@@ -132,13 +135,13 @@ export default class TableList extends PureComponent {
     });
   }
   changeApproveStatus = (e) => {
-    const { data: { pagination }, dispatch } = this.props;
+    const { data: { pagination }, dispatch, currentUser } = this.props;
     dispatch({
       type: 'approve/fetch',
-      payload: { ...pagination, ...this.state.formValues, approve_status: e.target.value, }
+      payload: { ...pagination, ...this.state.formValues, user_id: currentUser._id, approve_status: e.target.value, }
     });
     this.setState({
-      formValues: { ...this.state.formValues, approve_status: e.target.value, }
+      formValues: { ...this.state.formValues, user_id: currentUser._id, approve_status: e.target.value, }
     });
   }
   render() {
