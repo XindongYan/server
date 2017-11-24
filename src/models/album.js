@@ -1,10 +1,13 @@
-import { queryPhotos } from '../services/album';
+import { queryPhotos, addPhoto, removePhoto } from '../services/album';
 
 export default {
   namespace: 'album',
 
   state: {
-    list: [],
+    data: {
+      list: [],
+      pagination: {},
+    },
     loading: true,
     visible: true,
   },
@@ -18,12 +21,20 @@ export default {
       const response = yield call(queryPhotos, payload);
       yield put({
         type: 'save',
-        payload: response.photos,
+        payload: response,
       });
       yield put({
         type: 'changeLoading',
         payload: false,
       });
+    },
+    *add({ payload, callback }, { call, put }) {
+      const response = yield call(addPhoto, payload);
+      if (callback) callback(response);
+    },
+    *remove({ payload, callback }, { call, put }) {
+      const response = yield call(removePhoto, payload);
+      if (callback) callback(response);
     },
     *show({ payload, callback }, { call, put }) {
       yield put({
@@ -44,7 +55,7 @@ export default {
     save(state, action) {
       return {
         ...state,
-        list: action.payload,
+        data: action.payload,
       };
     },
     changeLoading(state, action) {
