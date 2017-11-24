@@ -14,7 +14,7 @@ const { Option } = Select;
 @connect(state => ({
   teamUser: state.user.teamUser,
   qiniucloud: state.qiniucloud,
-  formData: state.project.formData,
+  formData: state.task.formData,
   teamUsers: state.team.teamUsers,
 }))
 @Form.create()
@@ -26,7 +26,7 @@ export default class TaskForm extends PureComponent {
     if (this.props.operation === 'edit') {
       const query = querystring.parse(this.props.location.search.substr(1));
       this.props.dispatch({
-        type: 'project/fetchProject',
+        type: 'task/fetchTask',
         payload: query,
       });
     }
@@ -86,7 +86,7 @@ export default class TaskForm extends PureComponent {
         };
         if (this.props.operation === 'edit') {
           this.props.dispatch({
-            type: 'project/update',
+            type: 'task/update',
             payload: {
               ...payload,
               _id: formData._id,
@@ -94,7 +94,7 @@ export default class TaskForm extends PureComponent {
           });
         } else if (this.props.operation === 'create') {
           this.props.dispatch({
-            type: 'project/add',
+            type: 'task/add',
             payload,
           });
         }

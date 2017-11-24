@@ -19,10 +19,6 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 @Form.create()
 export default class FlowList extends PureComponent {
   state = {
-    _id: '',
-    name: '',
-    desc: '',
-    flow: [],
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
@@ -167,7 +163,7 @@ export default class FlowList extends PureComponent {
   }
   render() {
     const { project: { loading, data: { list, pagination }, approveRoles } } = this.props;
-    const { selectedRows, modalVisible, name, desc, flow, selectedRowKeys } = this.state;
+    const { selectedRows, selectedRowKeys } = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
