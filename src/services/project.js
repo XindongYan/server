@@ -36,3 +36,6 @@ export async function queryProject(params) {
   return request(`/api/task/project?${stringify(params)}`);
 }
 
+export async function queryTaskSquareProjects(params) {
+  return request(`/api/task/projects/taskSquare?${stringify(params)}`);
+}

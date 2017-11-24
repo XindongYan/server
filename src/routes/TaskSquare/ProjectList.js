@@ -4,7 +4,8 @@ import { Card, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, R
 import { Link } from 'dva/router';
 import moment from 'moment';
 @connect(state => ({
-
+  projects: state.taskSquare.projects,
+  loading: state.taskSquare.projectsLoading,
 }))
 
 export default class FlowList extends PureComponent {

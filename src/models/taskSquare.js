@@ -1,50 +1,97 @@
-import { fakeRegister } from '../services/api';
-
+import { queryProjectTasks, queryTask } from '../services/task';
+import { queryTaskSquareProjects } from '../services/project';
 export default {
   namespace: 'taskSquare',
 
   state: {
-    status: undefined,
-    msg: '',
+    projects: {
+      list: [],
+      pagination: {},
+    },
+    projectsLoading: true,
+    project: {},
+    tasks: {
+      list: [],
+      pagination: {},
+    },
+    tasksLoading: true,
+    task: {},
   },
 
   effects: {
-    *submit({ payload }, { call, put }) {
+    *fetchProjects({ payload }, { call, put }) {
       yield put({
-        type: 'changeSubmitting',
+        type: 'changeProjectsLoading',
         payload: true,
       });
-      const response = yield call(fakeRegister, payload);
-      console.log(response);
-      let status = '';
+      const response = yield call(queryTaskSquareProjects, payload);
       if (!response.error) {
-        status = 'ok';
-      } else {
-        status = 'error';
+        yield put({
+          type: 'saveProjects',
+          payload: response,
+        });
       }
       yield put({
-        type: 'registerHandle',
-        payload: { status, msg: response.msg },
-      });
-      yield put({
-        type: 'changeSubmitting',
+        type: 'changeProjectsLoading',
         payload: false,
+      });
+    },
+    *fetchProjectTasks({ payload }, { call, put }) {
+      yield put({
+        type: 'changeTasksLoading',
+        payload: true,
+      });
+      const response = yield call(queryProjectTasks, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveTasks',
+          payload: response,
+        });
+      }
+      yield put({
+        type: 'changeTasksLoading',
+        payload: false,
+      });
+    },
+    *fetchTask({ payload }, { call, put }) {
+      const response = yield call(queryTask, payload);
+      yield put({
+        type: 'saveTask',
+        payload: response.task || {},
       });
     },
   },
 
   reducers: {
-    registerHandle(state, { payload }) {
+    saveProjects(state, action) {
       return {
         ...state,
-        status: payload.status,
-        msg: payload.msg,
+        projects: action.payload,
       };
     },
-    changeSubmitting(state, { payload }) {
+    changeProjectsLoading(state, action) {
       return {
         ...state,
-        submitting: payload,
+        projectsLoading: action.payload,
+      };
+    },
+    saveTasks(state, action) {
+      return {
+        ...state,
+        tasks: action.payload,
+      };
+    },
+    changeTasksLoading(state, action) {
+      return {
+        ...state,
+        tasksLoading: action.payload,
+      };
+    },
+
+    saveTask(state, action) {
+      return {
+        ...state,
+        task: action.payload,
       };
     },
   },
