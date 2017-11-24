@@ -251,7 +251,7 @@ export default class TableList extends PureComponent {
     return (
       <PageHeaderLayout title="">
 	      <div style={{ background: '#fff' , marginBottom:'10px' }}>
-          <RadioGroup value="0" onChange={this.changeListWithStatus}>
+          <RadioGroup defaultValue="0" onChange={this.changeListWithStatus}>
             <RadioButton value="0">待审核</RadioButton>
             <RadioButton value="1">已通过</RadioButton>
             <RadioButton value="2">未通过</RadioButton>
