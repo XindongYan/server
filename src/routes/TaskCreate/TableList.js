@@ -6,6 +6,7 @@ import querystring from 'querystring';
 import { Table, Card, Button, Menu, Checkbox, Popconfirm, message } from 'antd';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
+import TaskTitleColumn from '../../components/TaskTitleColumn'
 
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
@@ -158,6 +159,9 @@ export default class TableList extends PureComponent {
       {
         title: '内容标题',
         dataIndex: 'title',
+        render: (record) => (
+          <TaskTitleColumn text={record} length={10}/>
+        )
       },
       {
         title: '创建时间',
