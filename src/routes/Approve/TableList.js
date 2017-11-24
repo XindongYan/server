@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message } from 'antd';
+import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS, APPROVE_ROLES, ROLES } from '../../constants';
+import { Link } from 'dva/router';
 import moment from 'moment';
 import styles from './TableList.less';
 
@@ -10,9 +11,11 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @connect(state => ({
-  task: state.task,
+  approve: state.approve,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -27,7 +30,7 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'task/fetch',
+      type: 'approve/fetch',
       payload: {approve_status: -1}
     });
   }
@@ -53,7 +56,7 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'task/fetch',
+      type: 'approve/fetch',
       payload: params,
     });
   }
@@ -62,7 +65,7 @@ export default class TableList extends PureComponent {
     const { form, dispatch } = this.props;
     form.resetFields();
     dispatch({
-      type: 'task/fetch',
+      type: 'approve/fetch',
       payload: {},
     });
   }
@@ -76,7 +79,7 @@ export default class TableList extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'task/remove',
+          type: 'approve/remove',
           payload: {
             no: selectedRows.map(row => row.no).join(','),
           },
@@ -115,7 +118,7 @@ export default class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'task/fetch',
+        type: 'approve/fetch',
         payload: values,
       });
     });
@@ -139,7 +142,7 @@ export default class TableList extends PureComponent {
 
   handleChangeUser = () => {
     this.props.dispatch({
-      type: 'task/update',
+      type: 'approve/update',
       payload: this.state.user,
     });
 
@@ -161,9 +164,14 @@ export default class TableList extends PureComponent {
       modalVisible: !!flag,
     });
   }
-
+  changeListWithStatus = (e) => {
+    console.log(e.target.value);
+    this.setState({
+      value3: e.target.value,
+    });
+  }
   render() {
-    const { task: { loading: ruleLoading, data } } = this.props;
+    const { approve: { loading: ruleLoading, data } } = this.props;
     const { selectedRows, modalVisible, user, selectedRowKeys } = this.state;
 
     const menu = (
@@ -172,7 +180,6 @@ export default class TableList extends PureComponent {
         <Menu.Item key="approval">批量审批</Menu.Item>
       </Menu>
     );
-
     const columns = [
       {
         title: '稿子ID',
@@ -181,6 +188,11 @@ export default class TableList extends PureComponent {
       {
         title: '内容标题',
         dataIndex: 'title',
+        render: (record) => (
+          <Link to="">
+            <span>{record}</span>
+          </Link>
+        )
       },
       {
         title: '提交时间',
@@ -206,23 +218,52 @@ export default class TableList extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
+        render: val => val ? val : '',
+      },
+      {
+        title: '审核状态',
+        dataIndex: 'approve_status',
+        render: val => {
+          if (!val) {
+            return '待审核';
+          } else if (val===1) {
+            return '已通过';
+          } else if (val===2) {
+            return '未通过';
+          }
+        }
       },
       {
         title: '操作',
         render: (record) => (
-          <p>
-            <a onClick={() => this.handleShowModal(record)}>分配</a>
-          </p>
+          <div>
+            <Link to="http://120.27.215.205/">
+                <span>审核</span>
+            </Link>
+            <span className={styles.splitLine} />
+            <a onClick={() => this.handleShowModal(record)}>退回</a>
+          </div>
         ),
       },
     ];
+
+
     return (
       <PageHeaderLayout title="">
+	      <div style={{ background: '#fff' , marginBottom:'10px' }}>
+          <RadioGroup value="0" onChange={this.changeListWithStatus}>
+            <RadioButton value="0">待审核</RadioButton>
+            <RadioButton value="1">已通过</RadioButton>
+            <RadioButton value="2">未通过</RadioButton>
+          </RadioGroup> 
+        </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
+        
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               
             </div>
+            
             <Table
               loading={ruleLoading}
               rowKey={record => record.key}
