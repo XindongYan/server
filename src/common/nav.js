@@ -7,6 +7,7 @@ import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
 import TaskSquare from '../routes/TaskSquare/ProjectList';
 import Invitation from '../routes/Invitation/InvitationList';
+import Album from '../routes/Album';
 
 import Success from '../routes/Result/Success';
 import Error from '../routes/Result/Error';
@@ -47,6 +48,12 @@ const invitation = {
   component: Invitation,
 };
 
+const album = {
+  name: '素材',
+  path: 'album-list',
+  component: Album,
+};
+
 
 const data = [{
   component: BasicLayout,
@@ -57,7 +64,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [taskSquare, writer, approve, team, project, invitation],
+    children: [taskSquare, writer, approve, team, project, invitation, album],
   }, {
     name: '工具',
     path: 'tool',

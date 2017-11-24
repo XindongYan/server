@@ -1,4 +1,4 @@
-import { getUptoken } from '../services/qiniucloud';
+import { getUptoken, getImageInfo } from '../services/qiniucloud';
 
 export default {
   namespace: 'qiniucloud',
