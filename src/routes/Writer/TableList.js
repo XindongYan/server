@@ -12,7 +12,9 @@ const CheckboxGroup = Checkbox.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  task: state.task,
+  takerTask: state.task.takerTask,
+  loading: state.task.takerTaskLoading,
+  currentUser: state.user.currentUser,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -21,14 +23,13 @@ export default class TableList extends PureComponent {
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
-    user: {},
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser } = this.props;
     dispatch({
-      type: 'task/fetch',
-      payload: {approve_status: -1}
+      type: 'task/fetchTakerTasks',
+      payload: {approve_status: -1, user_id: currentUser._id }
     });
   }
 
@@ -53,44 +54,18 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'task/fetch',
+      type: 'task/fetchTakerTasks',
       payload: params,
     });
   }
 
   handleFormReset = () => {
-    const { form, dispatch } = this.props;
+    const { form, dispatch, currentUser } = this.props;
     form.resetFields();
     dispatch({
-      type: 'task/fetch',
+      type: 'task/fetchTakerTasks',
       payload: {},
     });
-  }
-
-  handleMenuClick = (e) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'task/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-              selectedRowKeys: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
   }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -115,7 +90,7 @@ export default class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'task/fetch',
+        type: 'task/fetchTakerTasks',
         payload: values,
       });
     });
@@ -163,15 +138,8 @@ export default class TableList extends PureComponent {
   }
 
   render() {
-    const { task: { loading: ruleLoading, data } } = this.props;
+    const { takerTask, loading } = this.props;
     const { selectedRows, modalVisible, user, selectedRowKeys } = this.state;
-
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
 
     const columns = [
       {
@@ -224,14 +192,14 @@ export default class TableList extends PureComponent {
               
             </div>
             <Table
-              loading={ruleLoading}
+              loading={loading}
               rowKey={record => record.key}
-              dataSource={data.list}
+              dataSource={takerTask.list}
               columns={columns}
               pagination={{
                 showSizeChanger: true,
                 showQuickJumper: true,
-                ...data.pagination,
+                ...takerTask.pagination,
               }}
               onChange={this.handleStandardTableChange}
               rowKey="_id"

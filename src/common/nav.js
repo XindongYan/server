@@ -4,18 +4,18 @@ import BlankLayout from '../layouts/BlankLayout';
 import Approve from '../routes/Approve/TableList';
 import Project from '../routes/Project/ProjectList';
 import TeamUser from '../routes/Team/TeamUserList';
-// import Writer from '../routes/Writer/TableList';
+import Writer from '../routes/Writer/TableList';
 
 import Invitation from '../routes/Invitation/InvitationList';
 
 import Success from '../routes/Result/Success';
 import Error from '../routes/Result/Error';
 
-// const writer = {
-//   name: '写手列表',
-//   path: 'approve-list',
-//   component: Writer,
-// };
+const writer = {
+  name: '我的任务',
+  path: 'writer-list',
+  component: Writer,
+};
 
 const approve = {
   name: '审核列表',
@@ -51,7 +51,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [approve, team, project, invitation],
+    children: [writer, approve, team, project, invitation],
   }, {
     name: '工具',
     path: 'tool',

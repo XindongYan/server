@@ -31,3 +31,6 @@ export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }
 
+export async function queryTakerTasks(params) {
+  return request(`/api/task/list/taker?${stringify(params)}`);
+}

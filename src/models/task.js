@@ -1,4 +1,4 @@
-import { queryTask, queryTasks, removeRule, updateTask, addTask, queryProjectTasks } from '../services/task';
+import { queryTask, queryTasks, removeRule, updateTask, addTask, queryProjectTasks, queryTakerTasks } from '../services/task';
 
 export default {
   namespace: 'task',
@@ -15,6 +15,11 @@ export default {
       pagination: {},
     },
     projectTaskLoading: true,
+    takerTask: {
+      list: [],
+      pagination: {},
+    },
+    takerTaskLoading: true,
   },
 
   effects: {
@@ -88,6 +93,23 @@ export default {
         payload: false,
       });
     },
+    *fetchTakerTasks({ payload }, { call, put }) {
+      yield put({
+        type: 'changeTakerTasksLoading',
+        payload: true,
+      });
+      const response = yield call(queryTakerTasks, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveTakerTasks',
+          payload: response,
+        });
+      }
+      yield put({
+        type: 'changeTakerTasksLoading',
+        payload: false,
+      });
+    },
   },
 
   reducers: {
@@ -119,6 +141,18 @@ export default {
       return {
         ...state,
         projectTaskLoading: action.payload,
+      };
+    },
+    saveTakerTasks(state, action) {
+      return {
+        ...state,
+        takerTask: action.payload,
+      };
+    },
+    changeTakerTasksLoading(state, action) {
+      return {
+        ...state,
+        takerTaskLoading: action.payload,
       };
     },
   },
