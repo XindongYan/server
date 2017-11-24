@@ -2,7 +2,7 @@ import BasicLayout from '../layouts/BasicLayout';
 import BlankLayout from '../layouts/BlankLayout';
 
 import Approve from '../routes/Approve/TableList';
-import Create from '../routes/Create/TableList';
+import TaskCreate from '../routes/TaskCreate/TableList';
 import Project from '../routes/Project/ProjectList';
 import TeamUser from '../routes/Team/TeamUserList';
 // import Writer from '../routes/Writer/TableList';
@@ -27,7 +27,7 @@ const approve = {
 const create = {
   name: '创建任务',
   path: 'create-list',
-  component: Create,
+  component: TaskCreate,
 };
 
 const team = {

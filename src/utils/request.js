@@ -34,7 +34,9 @@ export default function request(url, options) {
     };
     newOptions.body = JSON.stringify(newOptions.body);
   }
-  return fetch(/^http/.test(url) ? url : `http://${window.location.hostname}:3000${url}`, newOptions)
+  const origin = 'http://120.27.215.205:81';
+  // const origin = `http://${window.location.hostname}:3000`;
+  return fetch(/^http/.test(url) ? url : `${origin}${url}`, newOptions)
     .then(checkStatus)
     .then(response => response.json())
     .catch((error) => {
