@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, TASK_APPROVE_STATUS } from '../../constants';
 import path from 'path';
 import querystring from 'querystring';
 
@@ -15,7 +15,6 @@ const { Option } = Select;
   teamUser: state.user.teamUser,
   qiniucloud: state.qiniucloud,
   formData: state.task.formData,
-  teamUsers: state.team.teamUsers,
 }))
 @Form.create()
 export default class TaskForm extends PureComponent {
@@ -23,66 +22,44 @@ export default class TaskForm extends PureComponent {
 
   }
   componentDidMount() {
-    if (this.props.operation === 'edit') {
+    const { operation, formData } = this.props;
+    if (operation === 'edit') {
       const query = querystring.parse(this.props.location.search.substr(1));
       this.props.dispatch({
         type: 'task/fetchTask',
-        payload: query,
+        payload: { _id: query._id },
+      });
+      this.props.form.setFieldsValue({
+        title: formData.title,
+        merchant_tag: formData.merchant_tag,
+        task_type: formData.task_type,
       });
     }
     this.props.dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
-    this.props.dispatch({
-      type: 'team/fetchTeamUsers',
-      payload: { team_id: this.props.teamUser.team_id },
-    });
+    
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
-      const approvers = {};
-      const flow = APPROVE_FLOWS.find(item => item.value === nextProps.formData.approve_flow);
-      
-      (flow ? flow.texts : []).forEach((item, index) => {
-        approvers[`approvers${item}`] = nextProps.formData.approvers[index];
-      })
       this.props.form.setFieldsValue({
         title: nextProps.formData.title,
         merchant_tag: nextProps.formData.merchant_tag,
         task_type: nextProps.formData.task_type,
-        desc: nextProps.formData.desc,
-        deadline: nextProps.formData.deadline ? moment(nextProps.formData.deadline) : null,
-        price: nextProps.formData.price,
-        attachments: nextProps.formData.attachments,
-        approve_flow: nextProps.formData.approve_flow,
-        max_take: nextProps.formData.max_take,
-        project_level: nextProps.formData.project_level,
       });
-      setTimeout(() => {
-        this.props.form.setFieldsValue(approvers);
-      }, 100);
     }
   }
   handleSubmit = () => {
     const { form: { getFieldDecorator, getFieldValue }, teamUser, formData } = this.props;
-    const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
+    const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const approvers = (flow ? flow.texts : [] ).map(item => values[`approvers${item}`])
         const payload = {
-          team_id: teamUser.team_id,
-          user_id: teamUser.user_id,
           ...values,
-          attachments: values.attachments ? values.attachments.filter(item => !item.error).map(item => {
-            if (!item.error) {
-              return {
-                name: item.name,
-                url: item.url || `${QINIU_DOMAIN}/${item.response.key}`,
-                uid: item.uid,
-              };
-            }
-          }) : [],
-          approvers,
+          team_id: teamUser.team_id,
+          project_id: query.project_id,
+          creator_id: teamUser.user_id,
+          approve_status: TASK_APPROVE_STATUS.created,
         };
         if (this.props.operation === 'edit') {
           this.props.dispatch({
@@ -91,14 +68,30 @@ export default class TaskForm extends PureComponent {
               ...payload,
               _id: formData._id,
             },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                message.success(result.msg);
+                this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${query.project_id}`));
+              }
+            }, 
           });
         } else if (this.props.operation === 'create') {
           this.props.dispatch({
             type: 'task/add',
             payload,
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                message.success(result.msg);
+                this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${query.project_id}`));
+              }
+            }, 
           });
         }
-        this.props.dispatch(routerRedux.push('/list/project-list'));
+        
       }
     });
   }
@@ -117,14 +110,13 @@ export default class TaskForm extends PureComponent {
     }
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, qiniucloud, operation, teamUsers, formData } = this.props;
-    const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow || getFieldValue('approve_flow'));
+    const { form: { getFieldDecorator, getFieldValue }, qiniucloud, operation, formData } = this.props;
     
     return (
       <Card bordered={false}>
         <Form onSubmit={this.handleSubmit}>
           <FormItem
-            label="项目标题"
+            label="任务标题"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -156,132 +148,11 @@ export default class TaskForm extends PureComponent {
             })(
               <Select
                 placeholder="请选择任务类型"
-                onChange={this.handleSelectChange}
               >
                 {TASK_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
             )}
           </FormItem>
-          <FormItem
-            label="项目描述"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('desc', {
-            })(
-              <Input.TextArea />
-            )}
-          </FormItem>
-          <FormItem
-            label="截止日期"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('deadline', {
-            })(
-              <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}
-              showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }} />
-            )}
-          </FormItem>
-          <FormItem
-            label="项目附件"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('attachments', {
-              valuePropName: 'fileList',
-              getValueFromEvent: this.normFile,
-            })(
-              <Upload name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
-                <Button>
-                  <Icon type="upload" /> 点击上传
-                </Button>
-              </Upload>
-            )}
-          </FormItem>
-          <FormItem
-            label="项目奖励"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('price', {
-              initialValue: 0,
-              rules: [{
-                required: true, message: '请输入项目奖励'
-              }],
-            })(
-              <Input type="number"/>
-            )}
-          </FormItem>
-          <FormItem
-            label="最多抢单数"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('max_take', {
-              initialValue: 0,
-              rules: [{
-                required: true, message: '请输入最多抢单数'
-              }],
-            })(
-              <Input type="number"/>
-            )}
-          </FormItem>
-          <FormItem
-            label="项目级别"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('project_level', {
-              initialValue: 1,
-              rules: [{
-                required: true, message: '请选择项目级别'
-              }],
-            })(
-              <Select
-                placeholder="择项目级别"
-              >
-                {PROJECT_LEVELS.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
-              </Select>
-            )}
-          </FormItem>
-          <FormItem
-            label="审核流程"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('approve_flow', {
-              rules: [{ required: true, message: 'Please input your note!' }],
-            })(
-              <Select style={{ width: '100%' }}>
-                {APPROVE_FLOWS.map(item =>
-                  <Option value={item.value} key={item.value}>{item.texts.map(item => APPROVE_ROLES.find(item1 => item1.value === item).label).join(',')}</Option>)}
-              </Select>
-            )}
-          </FormItem>
-          {
-            (flow ? flow.texts : [] ).map((item) => {
-              return (<FormItem
-                label={APPROVE_ROLES.find(item1 => item1.value === item).label}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 8 }}
-                key={item}
-              >
-                {getFieldDecorator(`approvers${item}`, {
-                  rules: [{ required: true, message: 'Please input your note!' }],
-                })(
-                  <Select
-                    mode="tags"
-                    style={{ width: '100%' }}
-                    placeholder="选择审核人员"
-                  >
-                    {teamUsers.filter(item => item.approve_roles.indexOf(item) >= 0)
-                      .map(item => <Option key={item._id} value={item.user_id._id}>{item.user_id.name}</Option>)}
-                  </Select>
-                )}
-              </FormItem>)
-            })
-          }
           <FormItem
             wrapperCol={{ span: 8, offset: 4 }}
           >

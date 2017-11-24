@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
 import { Table, Card, Button, Menu, Checkbox, Popconfirm, message } from 'antd';
@@ -11,7 +12,8 @@ import styles from './TableList.less';
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  task: state.task,
+  projectTask: state.task.projectTask,
+  loading: state.task.projectTaskLoading,
 }))
 
 export default class TableList extends PureComponent {
@@ -26,10 +28,9 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    console.log(query);
     this.props.dispatch({
-      type: 'task/fetch',
-      payload: { project_id: query.project_id , approve_status: TASK_APPROVE_STATUS.created},
+      type: 'task/fetchProjectTasks',
+      payload: { project_id: query.project_id, approve_status: TASK_APPROVE_STATUS.created},
     });
   }
 
@@ -54,7 +55,7 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'task/fetch',
+      type: 'task/fetchProjectTasks',
       payload: params,
     });
   }
@@ -63,7 +64,7 @@ export default class TableList extends PureComponent {
     const { form, dispatch } = this.props;
     form.resetFields();
     dispatch({
-      type: 'task/fetch',
+      type: 'task/fetchProjectTasks',
       payload: {},
     });
   }
@@ -121,30 +122,14 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleRightsChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, rights: checkedValues}
-    });
+  handleAdd = () => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    this.props.dispatch(routerRedux.push(`/project/task/create?project_id=${query.project_id}`));
   }
-  handleApproveRolesChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, approve_role: checkedValues}
-    });
+  handleEdit = (record) => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    this.props.dispatch(routerRedux.push(`/project/task/edit?project_id=${query.project_id}&_id=${record._id}`));
   }
-
-  handleRolesChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, role: checkedValues}
-    });
-  }
-
-  handleShowModal = (user) => {
-    this.setState({
-      modalVisible: true,
-      user,
-    });
-  }
-
   handleModalVisible = (flag) => {
     this.setState({
       modalVisible: !!flag,
@@ -152,7 +137,7 @@ export default class TableList extends PureComponent {
   }
 
   render() {
-    const { task: { loading: ruleLoading, data } } = this.props;
+    const { projectTask, loading } = this.props;
     const { selectedRows, modalVisible, user, selectedRowKeys } = this.state;
 
     const menu = (
@@ -175,10 +160,10 @@ export default class TableList extends PureComponent {
         title: '创建时间',
         dataIndex: 'create_time',
         sorter: true,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
       },
       {
-        title: '发布渠道',
+        title: '渠道',
         dataIndex: 'channel_name',
         render: val => val[0] || '',
       },
@@ -219,13 +204,13 @@ export default class TableList extends PureComponent {
               }
             </div>
             <Table
-              loading={ruleLoading}
-              dataSource={data.list}
+              loading={loading}
+              dataSource={projectTask.list}
               columns={columns}
               pagination={{
                 showSizeChanger: true,
                 showQuickJumper: true,
-                ...data.pagination,
+                ...projectTask.pagination,
               }}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
