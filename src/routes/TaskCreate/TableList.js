@@ -4,7 +4,6 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
 import { Table, Card, Button, Menu, Checkbox, Popconfirm, message } from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
 
@@ -14,6 +13,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 @connect(state => ({
   projectTask: state.task.projectTask,
   loading: state.task.projectTaskLoading,
+  formData: state.project.formData,
 }))
 
 export default class TableList extends PureComponent {
@@ -31,6 +31,10 @@ export default class TableList extends PureComponent {
     this.props.dispatch({
       type: 'task/fetchProjectTasks',
       payload: { project_id: query.project_id, approve_status: TASK_APPROVE_STATUS.created},
+    });
+    this.props.dispatch({
+      type: 'project/fetchProject',
+      payload: { _id: query.project_id },
     });
   }
 
@@ -137,7 +141,7 @@ export default class TableList extends PureComponent {
   }
 
   render() {
-    const { projectTask, loading } = this.props;
+    const { projectTask, loading, formData } = this.props;
     const { selectedRows, modalVisible, user, selectedRowKeys } = this.state;
 
     const menu = (
@@ -185,39 +189,37 @@ export default class TableList extends PureComponent {
       },
     ];
     return (
-      <PageHeaderLayout title="">
-        <Card bordered={false} bodyStyle={{ padding: 14 }}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
-              {
-                selectedRows.length > 0 && (
-                  <span>
-                    <Button>批量操作</Button>
-                    <Dropdown overlay={menu}>
-                      <Button>
-                        更多操作 <Icon type="down" />
-                      </Button>
-                    </Dropdown>
-                  </span>
-                )
-              }
-            </div>
-            <Table
-              loading={loading}
-              dataSource={projectTask.list}
-              columns={columns}
-              pagination={{
-                showSizeChanger: true,
-                showQuickJumper: true,
-                ...projectTask.pagination,
-              }}
-              onChange={this.handleStandardTableChange}
-              rowKey="_id"
-            />
+      <Card bordered={false} bodyStyle={{ padding: 14 }}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
+            {
+              selectedRows.length > 0 && (
+                <span>
+                  <Button>批量操作</Button>
+                  <Dropdown overlay={menu}>
+                    <Button>
+                      更多操作 <Icon type="down" />
+                    </Button>
+                  </Dropdown>
+                </span>
+              )
+            }
           </div>
-        </Card>
-      </PageHeaderLayout>
+          <Table
+            loading={loading}
+            dataSource={projectTask.list}
+            columns={columns}
+            pagination={{
+              showSizeChanger: true,
+              showQuickJumper: true,
+              ...projectTask.pagination,
+            }}
+            onChange={this.handleStandardTableChange}
+            rowKey="_id"
+          />
+        </div>
+      </Card>
     );
   }
 }

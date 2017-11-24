@@ -124,7 +124,7 @@ export default class ProjectForm extends PureComponent {
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow || getFieldValue('approve_flow'));
     
     return (
-      <Card bordered={false}>
+      <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}项目`}>
         <Form onSubmit={this.handleSubmit}>
           <FormItem
             label="项目标题"

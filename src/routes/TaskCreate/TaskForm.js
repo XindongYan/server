@@ -113,7 +113,7 @@ export default class TaskForm extends PureComponent {
     const { form: { getFieldDecorator, getFieldValue }, qiniucloud, operation, formData } = this.props;
     
     return (
-      <Card bordered={false}>
+      <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}任务`}>
         <Form onSubmit={this.handleSubmit}>
           <FormItem
             label="任务标题"
