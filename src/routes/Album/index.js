@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import fetch from 'dva/fetch';
 import path from 'path';
-import { Table, Card, Button, Upload, Icon, message } from 'antd';
+import { Table, Card, Button, Upload, Icon, message, Modal} from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
+import styles from './index.less'
 
 @connect(state => ({
   currentUser: state.user.currentUser,
@@ -88,13 +89,17 @@ export default class Album extends PureComponent {
   renderPhoto = (photo) => {
     const isChoosen = this.state.choosen.find(item => item._id === photo._id);
     return (
-      <Card style={{ width: 140, display: 'inline-block', margin: 5 }} bodyStyle={{ padding: 0 }} key={photo._id} >
-        <div className="custom-image">
-          <img style={{ display: 'block' }} alt="example" width="100%" src={`${photo.href}?imageView2/2/w/300/h/300/q/100`} />
+      <Card style={{ width: 160, display: 'inline-block', margin: 10 }} bodyStyle={{ padding: 0 }} key={photo._id} >
+        <div className={styles.customImageBox}>
+          <img className={styles.customImage} alt="example" width="100%" src={`${photo.href}?imageView2/2/w/300/h/300/q/100`} />
+          <div className={styles.customModals}>
+            <Icon type="eye" className={styles.customIcon}/>
+            <Icon type="delete" className={styles.customIcon} onClick={this.handleRemove} />
+          </div>
         </div>
         <div className="custom-card">
-          <h3>{photo.width} x {photo.height}</h3>
-          <p style={{ color: "#999" }}>{photo.originalname}</p>
+          <p className={styles.customNodes}>{photo.width} * {photo.height}</p>
+          <p className={styles.customNodes}>{photo.originalname}</p>
         </div>
       </Card>
     );
@@ -107,7 +112,7 @@ export default class Album extends PureComponent {
           <Icon type="upload" /> 点击上传
         </Button>
       </Upload>
-      );
+    );
     return (
       <Card
         title="素材"
