@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { RIGHTS, APPROVE_ROLES, ROLES } from '../../constants';
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
 import { Link } from 'dva/router';
 import moment from 'moment';
 import styles from './TableList.less';
@@ -15,7 +15,8 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @connect(state => ({
-  approve: state.approve,
+  data: state.approve.data,
+  loading: state.approve.loading,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -25,13 +26,14 @@ export default class TableList extends PureComponent {
     selectedRowKeys: [],
     formValues: {},
     user: {},
+    approve_status: TASK_APPROVE_STATUS.waitingForApprove,
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, data: { pagination }, } = this.props;
     dispatch({
       type: 'approve/fetch',
-      payload: {approve_status: -1}
+      payload: { ...pagination, approve_status: this.state.approve_status }
     });
   }
 
@@ -59,41 +61,6 @@ export default class TableList extends PureComponent {
       type: 'approve/fetch',
       payload: params,
     });
-  }
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    dispatch({
-      type: 'approve/fetch',
-      payload: {},
-    });
-  }
-
-  handleMenuClick = (e) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'approve/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-              selectedRowKeys: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
   }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -164,22 +131,19 @@ export default class TableList extends PureComponent {
       modalVisible: !!flag,
     });
   }
-  changeListWithStatus = (e) => {
-    console.log(e.target.value);
+  changeApproveStatus = (e) => {
+    const { data: { pagination }, dispatch } = this.props;
+    dispatch({
+      type: 'approve/fetch',
+      payload: { ...pagination, approve_status: e.target.value, }
+    });
     this.setState({
-      value3: e.target.value,
+      approve_status: e.target.value,
     });
   }
   render() {
-    const { approve: { loading: ruleLoading, data } } = this.props;
-    const { selectedRows, modalVisible, user, selectedRowKeys } = this.state;
-
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
+    const { data, loading, } = this.props;
+    const { selectedRows, modalVisible, approve_status, user, selectedRowKeys } = this.state;
     const columns = [
       {
         title: '稿子ID',
@@ -246,15 +210,13 @@ export default class TableList extends PureComponent {
         ),
       },
     ];
-
-
     return (
       <PageHeaderLayout title="">
 	      <div style={{ background: '#fff' , marginBottom:'10px' }}>
-          <RadioGroup defaultValue="0" onChange={this.changeListWithStatus}>
-            <RadioButton value="0">待审核</RadioButton>
-            <RadioButton value="1">已通过</RadioButton>
-            <RadioButton value="2">未通过</RadioButton>
+          <RadioGroup value={approve_status} onChange={this.changeApproveStatus}>
+            <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
+            <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
+            <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
           </RadioGroup> 
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
@@ -265,7 +227,7 @@ export default class TableList extends PureComponent {
             </div>
             
             <Table
-              loading={ruleLoading}
+              loading={loading}
               rowKey={record => record.key}
               dataSource={data.list}
               columns={columns}

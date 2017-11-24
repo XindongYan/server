@@ -4,7 +4,7 @@ import moment from 'moment';
 import querystring from 'querystring';
 import { Table, Card, Button, Menu, Checkbox, Popconfirm, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-
+import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
 
 
@@ -29,7 +29,7 @@ export default class TableList extends PureComponent {
     console.log(query);
     this.props.dispatch({
       type: 'task/fetch',
-      payload: { project_id: query.project_id , approve_status: -1},
+      payload: { project_id: query.project_id , approve_status: TASK_APPROVE_STATUS.created},
     });
   }
 
@@ -131,6 +131,7 @@ export default class TableList extends PureComponent {
       user: { ...this.state.user, approve_role: checkedValues}
     });
   }
+
   handleRolesChange = (checkedValues) => {
     this.setState({
       user: { ...this.state.user, role: checkedValues}
@@ -171,14 +172,10 @@ export default class TableList extends PureComponent {
         dataIndex: 'title',
       },
       {
-        title: '提交时间',
-        dataIndex: 'last_update_time',
+        title: '创建时间',
+        dataIndex: 'create_time',
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-      },
-      {
-        title: '修改',
-        dataIndex: 'update_times',
       },
       {
         title: '发布渠道',
@@ -193,7 +190,6 @@ export default class TableList extends PureComponent {
         title: '操作',
         render: (record) => (
           <p>
-            <span className={styles.splitLine} />
             <a onClick={() => this.handleEdit(record)}>修改</a>
             <span className={styles.splitLine} />
             <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
@@ -205,10 +201,22 @@ export default class TableList extends PureComponent {
     ];
     return (
       <PageHeaderLayout title="">
-        <Card bordered={false} bodyStyle={{ padding: 0 }}>
+        <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
+              {
+                selectedRows.length > 0 && (
+                  <span>
+                    <Button>批量操作</Button>
+                    <Dropdown overlay={menu}>
+                      <Button>
+                        更多操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
+                )
+              }
             </div>
             <Table
               loading={ruleLoading}

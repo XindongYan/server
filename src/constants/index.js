@@ -42,3 +42,12 @@ export const PROJECT_LEVELS = [
   {value: 8, text: 'P8' },
   {value: 9, text: 'P9' },
 ];
+
+export const TASK_APPROVE_STATUS = {
+  created: -3,
+  published: -2,
+  taken: -1,
+  waitingForApprove: 0,
+  passed: 1,
+  rejected: 2,
+};
