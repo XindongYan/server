@@ -15,7 +15,8 @@ import styles from './index.less'
 
 export default class Album extends PureComponent {
   state = {
-    choosen: [],
+    previewVisible: false,
+    previewImage: '',
   }
   componentDidMount() {
     const { dispatch, currentUser } = this.props;
@@ -78,6 +79,14 @@ export default class Album extends PureComponent {
       },
     });
   }
+  handleCancel = () => this.setState({ previewVisible: false })
+
+  handlePreview = (photo) => {
+    this.setState({
+      previewImage: photo.href,
+      previewVisible: true,
+    });
+  }
   makeUploadData = (file) => {
     const { qiniucloud } = this.props;
     const extname = path.extname(file.name);
@@ -87,14 +96,13 @@ export default class Album extends PureComponent {
     }
   }
   renderPhoto = (photo) => {
-    const isChoosen = this.state.choosen.find(item => item._id === photo._id);
     return (
       <Card style={{ width: 160, display: 'inline-block', margin: 10 }} bodyStyle={{ padding: 0 }} key={photo._id} >
         <div className={styles.customImageBox}>
           <img className={styles.customImage} alt="example" width="100%" src={`${photo.href}?imageView2/2/w/300/h/300/q/100`} />
           <div className={styles.customModals}>
-            <Icon type="eye" className={styles.customIcon}/>
-            <Icon type="delete" className={styles.customIcon} onClick={this.handleRemove} />
+            <Icon type="eye" className={styles.customIcon} onClick={() => this.handlePreview(photo)}/>
+            <Icon type="delete" className={styles.customIcon} onClick={() => this.handleRemove(photo)} />
           </div>
         </div>
         <div className="custom-card">
@@ -106,6 +114,7 @@ export default class Album extends PureComponent {
   }
   render() {
     const { data, loading, visible } = this.props;
+    const { previewVisible, previewImage } = this.state;
     const extra = (
       <Upload name="file" action={QINIU_UPLOAD_DOMAIN} showUploadList={false} data={this.makeUploadData} onChange={this.handleChange}>
         <Button>
@@ -114,13 +123,18 @@ export default class Album extends PureComponent {
       </Upload>
     );
     return (
-      <Card
-        title="素材"
-        bodyStyle={{ padding: 15 }}
-        extra={extra}
-      >
-        {data.list.map(this.renderPhoto)}
-      </Card>
+      <div>
+        <Card
+          title="素材"
+          bodyStyle={{ padding: 15 }}
+          extra={extra}
+        >
+          {data.list.map(this.renderPhoto)}
+        </Card>
+        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+          <img alt="example" style={{ width: '100%' }} src={previewImage} />
+        </Modal>
+      </div>
     );
   }
 }
