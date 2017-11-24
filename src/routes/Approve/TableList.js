@@ -24,16 +24,15 @@ export default class TableList extends PureComponent {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
-    formValues: {},
+    formValues: { approve_status: TASK_APPROVE_STATUS.waitingForApprove },
     user: {},
-    approve_status: TASK_APPROVE_STATUS.waitingForApprove,
   };
 
   componentDidMount() {
     const { dispatch, data: { pagination }, } = this.props;
     dispatch({
       type: 'approve/fetch',
-      payload: { ...pagination, approve_status: this.state.approve_status }
+      payload: { ...pagination, ...this.state.formValues }
     });
   }
 
@@ -135,15 +134,15 @@ export default class TableList extends PureComponent {
     const { data: { pagination }, dispatch } = this.props;
     dispatch({
       type: 'approve/fetch',
-      payload: { ...pagination, approve_status: e.target.value, }
+      payload: { ...pagination, ...this.state.formValues }
     });
     this.setState({
-      approve_status: e.target.value,
+      formValues: { ...this.state.formValues, approve_status: e.target.value, }
     });
   }
   render() {
     const { data, loading, } = this.props;
-    const { selectedRows, modalVisible, approve_status, user, selectedRowKeys } = this.state;
+    const { selectedRows, modalVisible, formValues, selectedRowKeys } = this.state;
     const columns = [
       {
         title: '稿子ID',
@@ -213,7 +212,7 @@ export default class TableList extends PureComponent {
     return (
       <PageHeaderLayout title="">
 	      <div style={{ background: '#fff' , marginBottom:'10px' }}>
-          <RadioGroup value={approve_status} onChange={this.changeApproveStatus}>
+          <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}>
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
