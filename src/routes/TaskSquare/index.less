@@ -49,17 +49,51 @@
   margin: 10px 5px;
   cursor: pointer;
 }
-.cardCol p{
-  width: 100%;
-  height: 22px;
-  line-height: 22px;
-  font-size: 14px;
+.cardCol:hover{
+  box-shadow: 0 0 3px 1px #ccc;
+}
+/*项目列表*/
+.cardColTop{
+  padding: 10px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.cardColTop h3{
+  height: 24px;
+  line-height: 24px;
   overflow: hidden;
   text-overflow: ellipsis;
-  word-spacing: normal;
+  white-space: nowrap;
 }
+.cardColTop p{
+  height: 22px;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardColBottom{
+  padding: 10px;
+}
+.cardMsgDesc{
+  height: 60px;
+  line-height: 20px;
+  word-wrap:break-word;
+}
+
 .ant-card-head-title{
   padding: 0;
+}
+.cardMsgB:after{
+  clear: both;
+  content: '';
+  display: block;
+}
+.cardMsgPrice{
+  float: left;
+}
+.cardMsgDeadline{
+  float: right;
 }
 /*任务列表*/
 .customImage{
