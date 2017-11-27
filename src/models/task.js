@@ -1,4 +1,4 @@
-import { queryTask, queryTasks, removeRule, updateTask, addTask, queryProjectTasks, queryTakerTasks } from '../services/task';
+import { queryTask, removeRule, updateTask, addTask, queryProjectTasks, queryTakerTasks } from '../services/task';
 
 export default {
   namespace: 'task',
@@ -24,20 +24,10 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
+      const response = yield call(queryTask, payload);
       yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(queryTasks, payload);
-      if (!response.error) {
-        yield put({
-          type: 'save',
-          payload: response,
-        });
-      }
-      yield put({
-        type: 'changeLoading',
-        payload: false,
+        type: 'saveTask',
+        payload: response.task || {},
       });
     },
     *fetchTask({ payload }, { call, put }) {
@@ -47,7 +37,7 @@ export default {
         payload: response.task || {},
       });
     },
-    *add({ payload, callback }, { call, put }) {
+    *add({ payload, callback }, { call }) {
       const result = yield call(addTask, payload);
       if (callback) callback(result);
     },

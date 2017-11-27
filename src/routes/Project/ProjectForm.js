@@ -62,7 +62,7 @@ export default class ProjectForm extends PureComponent {
       });
       setTimeout(() => {
         this.props.form.setFieldsValue(approvers);
-      }, 100);
+      }, 200);
     }
   }
   handleSubmit = () => {
