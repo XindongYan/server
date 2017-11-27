@@ -73,7 +73,7 @@ export default class TaskList extends PureComponent {
     return (
       <Card bordered={false} bodyStyle={{ padding: "10px" }} className="myCard">
         <Row gutter={16}>
-          {list.map((item,index) => 
+          {list.map((item,index) =>
             <TaskCard task={item} key={index} onTake={this.handleTake}/>)
           }
         </Row>
