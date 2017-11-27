@@ -143,6 +143,25 @@ export default class FlowList extends PureComponent {
   handleEdit = (record) => {
     this.props.dispatch(routerRedux.push(`/project/edit?_id=${record._id}`));
   }
+  handlePublish = (record) => {
+    
+    const { dispatch, teamUser } = this.props;
+    dispatch({
+      type: 'project/publish',
+      payload: {
+        _id: record._id,
+        team_id: teamUser.team_id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${record._id}`));
+        }
+      },
+    });
+  }
   handleRemove = (record) => {
     this.props.dispatch({
       type: 'project/remove',
@@ -198,7 +217,11 @@ export default class FlowList extends PureComponent {
             <span className={styles.splitLine} />
             <a onClick={() => this.handleEdit(record)}>修改</a>
             <span className={styles.splitLine} />
-            <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
+            <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+              <a>发布</a>
+            </Popconfirm>
+            <span className={styles.splitLine} />
+            <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
               <a>删除</a>
             </Popconfirm>
           </p>

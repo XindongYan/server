@@ -23,6 +23,15 @@ export async function updateProject(params) {
   });
 }
 
+export async function publishProject(params) {
+  return request('/api/task/project/publish', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function removeProject(params) {
   return request('/api/task/project', {
     method: 'DELETE',

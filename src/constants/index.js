@@ -51,3 +51,12 @@ export const TASK_APPROVE_STATUS = {
   passed: 1,
   rejected: 2,
 };
+
+export const TASK_APPROVE_STATUS_TEXT = {
+  '-3': '已创建',
+  '-2': '已发布',
+  '-1': '已接单',
+  '0': '待审核',
+  '1': '已通过',
+  '2': '未通过',
+};

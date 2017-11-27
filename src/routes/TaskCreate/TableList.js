@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
 import { Table, Card, Button, Menu, Checkbox, Popconfirm, message } from 'antd';
-import { TASK_APPROVE_STATUS } from '../../constants';
+import { TASK_APPROVE_STATUS, TASK_APPROVE_STATUS_TEXT } from '../../constants';
 import styles from './TableList.less';
 import TaskTitleColumn from '../../components/TaskTitleColumn'
 
@@ -177,6 +177,11 @@ export default class TableList extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
+      },
+      {
+        title: '状态',
+        dataIndex: 'approve_status',
+        render: val => TASK_APPROVE_STATUS_TEXT[val],
       },
       {
         title: '操作',

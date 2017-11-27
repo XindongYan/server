@@ -33,7 +33,7 @@ export default class FlowList extends PureComponent {
       <Card bordered={false} bodyStyle={{ padding: "0 10px" }}>
         <Row gutter={16}>
           {projects.list.map((item,index) => 
-            <ProjectCard key={index} item={item} />)
+            <ProjectCard key={index} project={item} />)
           }
         </Row>
       </Card>

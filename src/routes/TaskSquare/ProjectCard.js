@@ -21,18 +21,18 @@ export default class ProjectCard extends PureComponent {
     
   }
 
-  projectInto = () => {
-    this.props.dispatch(routerRedux.push('/taskSquare/task/list'));
+  projectInto = (project) => {
+    this.props.dispatch(routerRedux.push(`/taskSquare/task/list?project_id=${project._id}`));
   }
   render() {
-    const { item } = this.props;
+    const { project } = this.props;
     return (
-      <Col span={8} onClick={() => this.projectInto()}>
-        <Card title={item.title} className={styles.cardCol}>
-          <p>商家标签：{ item.merchant_tag ? item.merchant_tag : '无' }</p>
-          <p>项目描述：{ item.desc ? item.desc : '无' }</p>
-          <p>截止日期：{ item.deadline ? moment(item.deadline).format('YYYY-MM-DD HH:mm:ss') : '无' }</p>
-          <p>项目奖励：{ item.price ? item.price : '无' }</p>
+      <Col span={8} onClick={() => this.projectInto(project)}>
+        <Card title={project.title} className={styles.cardCol}>
+          <p>商家标签：{ project.merchant_tag ? project.merchant_tag : '无' }</p>
+          <p>项目描述：{ project.desc ? project.desc : '无' }</p>
+          <p>截止日期：{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD HH:mm:ss') : '无' }</p>
+          <p>项目奖励：{ project.price ? project.price : '无' }</p>
         </Card>
       </Col>
     );

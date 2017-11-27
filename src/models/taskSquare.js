@@ -1,4 +1,4 @@
-import { queryProjectTasks, queryTask } from '../services/task';
+import { queryProjectTasks, queryTask, takeTask } from '../services/task';
 import { queryTaskSquareProjects } from '../services/project';
 export default {
   namespace: 'taskSquare',
@@ -60,6 +60,23 @@ export default {
         payload: response.task || {},
       });
     },
+    *takeTask({ payload, callback }, { call, put }) {
+      const response = yield call(takeTask, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveTakeTask',
+          payload: { _id: payload._id },
+        });
+      }
+      if (callback) callback(response);
+    },
+    *responseTasken({ payload }, { call, put }) {
+      yield put({
+        type: 'saveTakeTask',
+        payload: { _id: payload._id },
+      });
+    },
+
   },
 
   reducers: {
@@ -87,11 +104,19 @@ export default {
         tasksLoading: action.payload,
       };
     },
-
     saveTask(state, action) {
       return {
         ...state,
         task: action.payload,
+      };
+    },
+    saveTakeTask(state, action) {
+      const tasks = [...state.tasks.list];
+      const index = tasks.findIndex(item => item._id === action.payload._id);
+      tasks[index].approve_status = -1;
+      return {
+        ...state,
+        tasks: { ...state.tasks, list: tasks },
       };
     },
   },

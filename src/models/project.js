@@ -1,4 +1,4 @@
-import { queryProjects, addProject, updateProject, removeProject, queryProject } from '../services/project';
+import { queryProjects, addProject, updateProject, removeProject, queryProject, publishProject } from '../services/project';
 
 export default {
   namespace: 'project',
@@ -65,6 +65,24 @@ export default {
       });
 
       if (callback) callback();
+    },
+    *publish({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const publishResult = yield call(publishProject, payload);
+      const response = yield call(queryProjects, {team_id: payload.team_id});
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+
+      if (callback) callback(publishResult);
     },
     *remove({ payload, callback }, { call, put }) {
       yield put({
