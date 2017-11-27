@@ -17,6 +17,7 @@ import ProjectEdit from '../routes/Project/ProjectEdit';
 import TaskCreateList from '../routes/TaskCreate/TableList';
 import TaskCreate from '../routes/TaskCreate/TaskCreate';
 import TaskEdit from '../routes/TaskCreate/TaskEdit';
+import TaskSquareTaskList from '../routes/TaskSquare/TaskList';
 import { getNavData } from '../common/nav';
 import { getRouteData } from '../utils/utils';
 
@@ -358,6 +359,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/project/task/list" component={TaskCreateList} />
               <Route path="/project/task/create" component={TaskCreate} />
               <Route path="/project/task/edit" component={TaskEdit} />
+              <Route path="/taskSquare/task/list" component={TaskSquareTaskList} />
               <Redirect to="/list/teamUser-list" />
             </Switch>
             <GlobalFooter

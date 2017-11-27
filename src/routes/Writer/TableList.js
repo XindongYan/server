@@ -243,7 +243,7 @@ export default class TableList extends PureComponent {
       <PageHeaderLayout title="">
         <div style={{ marginBottom:'10px' }}>
           <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}>
-            <RadioButton value={TASK_APPROVE_STATUS.taken}>已接单</RadioButton>
+            <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
