@@ -31,7 +31,7 @@ export default class TableList extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
       type: 'task/fetchProjectTasks',
-      payload: { project_id: query.project_id, approve_status: TASK_APPROVE_STATUS.created},
+      payload: { project_id: query.project_id },
     });
     this.props.dispatch({
       type: 'project/fetchProject',
