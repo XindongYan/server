@@ -168,10 +168,10 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { location } = this.props;
     const { pathname } = location;
-    let title = '尼彩';
+    let title = '尼采';
     getRouteData('BasicLayout').forEach((item) => {
       if (item.path === pathname) {
-        title = `${item.name} - 尼彩`;
+        title = `${item.name} - 尼采`;
       }
     });
     return title;
@@ -364,13 +364,13 @@ class BasicLayout extends React.PureComponent {
             </Switch>
             <GlobalFooter
               links={[{
-                title: '首页',
-                href: '1',
+                title: '',
+                href: '',
                 blankTarget: true,
               }]}
               copyright={
                 <div>
-                  Copyright <Icon type="copyright" /> 2017 信遇
+                  Copyright <Icon type="copyright" /> 2017 尼采
                 </div>
               }
             />
