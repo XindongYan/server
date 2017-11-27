@@ -9,7 +9,7 @@ export default {
       pagination: {},
     },
     loading: true,
-    visible: true,
+    visible: false,
   },
 
   effects: {

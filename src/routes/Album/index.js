@@ -4,7 +4,8 @@ import fetch from 'dva/fetch';
 import path from 'path';
 import { Table, Card, Button, Upload, Icon, message, Modal} from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
-import styles from './index.less'
+import styles from './index.less';
+import AlbumModal from '../../components/AlbumModal';
 
 @connect(state => ({
   currentUser: state.user.currentUser,
@@ -17,6 +18,7 @@ export default class Album extends PureComponent {
   state = {
     previewVisible: false,
     previewImage: '',
+    visible: false,
   }
   componentDidMount() {
     const { dispatch, currentUser } = this.props;
@@ -112,6 +114,16 @@ export default class Album extends PureComponent {
       </Card>
     );
   }
+  showAlbumModal = () => {
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'album/show',
+    });
+    dispatch({
+      type: 'album/fetch',
+      payload: { user_id: currentUser._id }
+    });
+  }
   render() {
     const { data, loading, visible } = this.props;
     const { previewVisible, previewImage } = this.state;
@@ -131,9 +143,16 @@ export default class Album extends PureComponent {
         >
           {data.list.map(this.renderPhoto)}
         </Card>
+
+        <Button onClick={this.showAlbumModal}>
+            <Icon type="upload"/> 点击上传
+        </Button>
+
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
+
+        <AlbumModal  />
       </div>
     );
   }
