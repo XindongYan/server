@@ -18,6 +18,7 @@ import TaskCreateList from '../routes/TaskCreate/TableList';
 import TaskCreate from '../routes/TaskCreate/TaskCreate';
 import TaskEdit from '../routes/TaskCreate/TaskEdit';
 import TaskSquareTaskList from '../routes/TaskSquare/TaskList';
+import WriterTaskEdit from '../routes/Writer/TaskEdit';
 import { getNavData } from '../common/nav';
 import { getRouteData } from '../utils/utils';
 
@@ -168,10 +169,10 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { location } = this.props;
     const { pathname } = location;
-    let title = '尼彩';
+    let title = '尼采';
     getRouteData('BasicLayout').forEach((item) => {
       if (item.path === pathname) {
-        title = `${item.name} - 尼彩`;
+        title = `${item.name} - 尼采`;
       }
     });
     return title;
@@ -360,17 +361,18 @@ class BasicLayout extends React.PureComponent {
               <Route path="/project/task/create" component={TaskCreate} />
               <Route path="/project/task/edit" component={TaskEdit} />
               <Route path="/taskSquare/task/list" component={TaskSquareTaskList} />
+              <Route path="/writer/task/edit" component={WriterTaskEdit} />
               <Redirect to="/list/teamUser-list" />
             </Switch>
             <GlobalFooter
               links={[{
-                title: '首页',
-                href: '1',
+                title: '',
+                href: '',
                 blankTarget: true,
               }]}
               copyright={
                 <div>
-                  Copyright <Icon type="copyright" /> 2017 信遇
+                  Copyright <Icon type="copyright" /> 2017 尼采
                 </div>
               }
             />

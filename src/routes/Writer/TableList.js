@@ -1,16 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio  } from 'antd';
+import { Table, Card, Modal, message, Radio } from 'antd';
+import moment from 'moment';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
-import TaskTitleColumn from '../../components/TaskTitleColumn'
-import moment from 'moment';
+import TaskTitleColumn from '../../components/TaskTitleColumn';
+import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const CheckboxGroup = Checkbox.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -20,12 +17,9 @@ const RadioGroup = Radio.Group;
   loading: state.task.takerTaskLoading,
   currentUser: state.user.currentUser,
 }))
-@Form.create()
 export default class TableList extends PureComponent {
   state = {
     modalVisible: false,
-    selectedRows: [],
-    selectedRowKeys: [],
     formValues: { approve_status: TASK_APPROVE_STATUS.waitingForApprove },
   };
 
@@ -33,12 +27,12 @@ export default class TableList extends PureComponent {
     const { dispatch, currentUser } = this.props;
     dispatch({
       type: 'task/fetchTakerTasks',
-      payload: { ...this.state.formValues, user_id: currentUser._id }
+      payload: { ...this.state.formValues, user_id: currentUser._id },
     });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser } = this.props;
     const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -50,6 +44,7 @@ export default class TableList extends PureComponent {
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
+      user_id: currentUser._id,
       ...formValues,
       ...filters,
     };
@@ -63,19 +58,6 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleFormReset = () => {
-    const { form, dispatch, currentUser } = this.props;
-    form.resetFields();
-    dispatch({
-      type: 'task/fetchTakerTasks',
-      payload: {},
-    });
-  }
-
-  handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-
-    this.setState({ selectedRowKeys, selectedRows });
-  }
   handleSearch = (e) => {
     e.preventDefault();
 
@@ -102,17 +84,17 @@ export default class TableList extends PureComponent {
 
   handleRightsChange = (checkedValues) => {
     this.setState({
-      user: { ...this.state.user, rights: checkedValues}
+      user: { ...this.state.user, rights: checkedValues },
     });
   }
   handleApproveRolesChange = (checkedValues) => {
     this.setState({
-      user: { ...this.state.user, approve_role: checkedValues}
+      user: { ...this.state.user, approve_role: checkedValues },
     });
   }
   handleRolesChange = (checkedValues) => {
     this.setState({
-      user: { ...this.state.user, role: checkedValues}
+      user: { ...this.state.user, role: checkedValues },
     });
   }
 
@@ -153,7 +135,7 @@ export default class TableList extends PureComponent {
   }
   render() {
     const { takerTask, loading } = this.props;
-    const { selectedRows, modalVisible, user, selectedRowKeys, formValues } = this.state;
+    const { modalVisible, formValues } = this.state;
     const columns = [
       {
         title: '稿子ID',
@@ -162,17 +144,17 @@ export default class TableList extends PureComponent {
       {
         title: '内容标题',
         dataIndex: 'title',
-        render: (record) => (
+        render: record => (
           <Link to="http://120.27.215.205/">
-            <TaskTitleColumn text={record} length={10}/>
+            <TaskTitleColumn text={record} length={10} />
           </Link>
-        )
+        ),
       },
       {
         title: '接单时间',
         dataIndex: 'take_time',
         sorter: true,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
       },
       {
         title: '发布渠道',
@@ -188,11 +170,11 @@ export default class TableList extends PureComponent {
       title: '审核状态',
       dataIndex: 'approve_status',
       render: value => {
-        if (value===0) {
+        if (value === 0) {
           return '审核中';
-        } else if (value===1) {
+        } else if (value === 1) {
           return '已通过';
-        } else if (value===2) {
+        } else if (value === 2) {
           return '未通过';
         }
       }
@@ -225,7 +207,7 @@ export default class TableList extends PureComponent {
           )
         } else {
           return (
-            <Link to="http://120.27.215.205/">
+            <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
             </Link>
           )
