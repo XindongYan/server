@@ -26,9 +26,9 @@ export default class TaskList extends PureComponent {
     });
     
     if (!this.state.socket) {
-      const hostname = location.hostname;
-      const port = '81';
-      const socket = io.connect(`http://${hostname}:${port}/tasks`);
+      const origin = 'http://120.27.215.205:81';
+      // const origin = `http://${location.hostname}:3000`;
+      const socket = io.connect(`${origin}/tasks`);
       socket.on('connect',function(){
         console.log('socket.io connect OK');
         socket.emit('join', { roomId: query.project_id });
