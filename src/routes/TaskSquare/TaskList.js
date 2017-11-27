@@ -24,7 +24,7 @@ export default class TaskList extends PureComponent {
       type: 'taskSquare/fetchProjectTasks',
       payload: { project_id: query.project_id }
     });
-    
+
     if (!this.state.socket) {
       const origin = 'http://120.27.215.205:81';
       // const origin = `http://${location.hostname}:3000`;
@@ -45,6 +45,7 @@ export default class TaskList extends PureComponent {
       this.setState({ socket });
     }
   }
+  
   handleTake = (task) => {
     const { dispatch, currentUser } = this.props;
     this.props.dispatch({
@@ -73,7 +74,7 @@ export default class TaskList extends PureComponent {
     return (
       <Card bordered={false} bodyStyle={{ padding: "10px" }} className="myCard">
         <Row gutter={16}>
-          {list.map((item,index) =>
+          {list.map((item,index) => 
             <TaskCard task={item} key={index} onTake={this.handleTake}/>)
           }
         </Row>

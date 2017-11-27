@@ -30,6 +30,6 @@ export default class TaskCard extends PureComponent {
           </div>
         </Card>
       </Col>
-    );
+    )
   }
 }
