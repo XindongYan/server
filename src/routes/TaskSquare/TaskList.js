@@ -24,7 +24,7 @@ export default class TaskList extends PureComponent {
       type: 'taskSquare/fetchProjectTasks',
       payload: { project_id: query.project_id }
     });
-    
+
     if (!this.state.socket) {
       const origin = 'http://120.27.215.205:81';
       // const origin = `http://${location.hostname}:3000`;
@@ -45,6 +45,7 @@ export default class TaskList extends PureComponent {
       this.setState({ socket });
     }
   }
+  
   handleTake = (task) => {
     const { dispatch, currentUser } = this.props;
     this.props.dispatch({

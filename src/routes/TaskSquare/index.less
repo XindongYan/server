@@ -44,31 +44,77 @@
     margin-right: 8px;
   }
 }
-
+/*卡片块*/
 .cardCol{
   margin: 10px 5px;
-  font-size: 12px;
   cursor: pointer;
+}
+.cardCol:hover{
+  box-shadow: 0 0 3px 1px #ccc;
+}
+/*项目列表*/
+.cardColTop{
+  padding: 10px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.cardColTop h3{
+  height: 24px;
+  line-height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cardColTop p{
+  height: 22px;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardColBottom{
+  padding: 10px;
+}
+.cardMsgDesc{
+  height: 60px;
+  line-height: 20px;
+  word-wrap:break-word;
 }
 
 .ant-card-head-title{
   padding: 0;
+}
+.cardMsgB:after{
+  clear: both;
+  content: '';
+  display: block;
+}
+.cardMsgPrice{
+  float: left;
+}
+.cardMsgDeadline{
+  float: right;
 }
 /*任务列表*/
 .customImage{
   width: 100%;
   height: 80px;
 }
-
+.customImage h3{
+  box-sizing: border-box;
+  font-size: 16px;
+  color: #fff;
+  line-height: 20px;
+  padding: 10px;
+  word-wrap:break-word;
+}
 .customCard{
   padding: 10px;
 }
-.customCard h3{
-  font-size: 14px;
-  color: #555;
-}
 .customCard p{
   font-size: 12px;
+  height: 40px;
+  line-height: 18px;
 }
 .customBtn{
   padding: 10px;
