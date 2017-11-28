@@ -58,6 +58,7 @@ export default class ProjectForm extends PureComponent {
         attachments: nextProps.formData.attachments,
         approve_flow: nextProps.formData.approve_flow,
         max_take: nextProps.formData.max_take,
+        max_task: nextProps.formData.max_task,
         project_level: nextProps.formData.project_level,
       });
       setTimeout(() => {
@@ -124,10 +125,10 @@ export default class ProjectForm extends PureComponent {
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow || getFieldValue('approve_flow'));
     
     return (
-      <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}项目`}>
+      <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}活动`}>
         <Form onSubmit={this.handleSubmit}>
           <FormItem
-            label="项目标题"
+            label="标题"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -149,7 +150,7 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="任务类型"
+            label="类型"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -176,7 +177,7 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="截止日期"
+            label="截止时间"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -187,7 +188,7 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="项目附件"
+            label="附件"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -203,7 +204,7 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="项目奖励"
+            label="参考奖励"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -213,25 +214,11 @@ export default class ProjectForm extends PureComponent {
                 required: true, message: '请输入项目奖励'
               }],
             })(
-              <Input type="number"/>
+              <Input type="number" addonAfter="元"/>
             )}
           </FormItem>
           <FormItem
-            label="最多抢单数"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('max_take', {
-              initialValue: 0,
-              rules: [{
-                required: true, message: '请输入最多抢单数'
-              }],
-            })(
-              <Input type="number"/>
-            )}
-          </FormItem>
-          <FormItem
-            label="项目级别"
+            label="级别"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -249,12 +236,40 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
+            label="最多接单数"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('max_take', {
+              initialValue: 0,
+              rules: [{
+                required: true, message: '请输入最多抢单数'
+              }],
+            })(
+              <Input type="number" addonAfter="单"/>
+            )}
+          </FormItem>
+          <FormItem
+            label="最多投稿数"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('max_task', {
+              initialValue: 0,
+              rules: [{
+                required: true, message: '请输入最多投稿数'
+              }],
+            })(
+              <Input type="number" addonAfter="篇"/>
+            )}
+          </FormItem>
+          <FormItem
             label="审核流程"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('approve_flow', {
-              rules: [{ required: true, message: 'Please input your note!' }],
+              rules: [{ required: true, message: '请选择审核流程' }],
             })(
               <Select style={{ width: '100%' }}>
                 {APPROVE_FLOWS.map(item =>
@@ -264,19 +279,20 @@ export default class ProjectForm extends PureComponent {
           </FormItem>
           {
             (flow ? flow.texts : [] ).map((item) => {
+              const label = APPROVE_ROLES.find(item1 => item1.value === item).label;
               return (<FormItem
-                label={APPROVE_ROLES.find(item1 => item1.value === item).label}
+                label={label}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 8 }}
                 key={item}
               >
                 {getFieldDecorator(`approvers${item}`, {
-                  rules: [{ required: true, message: 'Please input your note!' }],
+                  rules: [{ required: true, message: `请选择${label}人员` }],
                 })(
                   <Select
                     mode="tags"
                     style={{ width: '100%' }}
-                    placeholder="选择审核人员"
+                    placeholder={`选择${label}人员`}
                   >
                     {teamUsers.filter(teamUser => teamUser.approve_roles.indexOf(item) >= 0)
                       .map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.name}</Option>)}
@@ -289,7 +305,7 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8, offset: 4 }}
           >
             <Button type="primary" htmlType="submit">
-              {operation === 'create' ? '创建' : '修改'}
+              {operation === 'create' ? '创建' : '保存'}
             </Button>
           </FormItem>
         </Form>

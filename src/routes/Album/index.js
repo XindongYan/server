@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import fetch from 'dva/fetch';
 import path from 'path';
-import { Table, Card, Button, Upload, Icon, message, Modal} from 'antd';
+import { Table, Card, Button, Upload, Icon, message, Modal, Pagination} from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
 import styles from './index.less';
 import AlbumModal from '../../components/AlbumModal';
@@ -18,13 +18,16 @@ export default class Album extends PureComponent {
   state = {
     previewVisible: false,
     previewImage: '',
-    visible: false,
   }
   componentDidMount() {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, data } = this.props;
     dispatch({
       type: 'album/fetch',
-      payload: { user_id: currentUser._id }
+      payload: {
+        user_id: currentUser._id,
+        ...data.pagination,
+        currentPage: data.pagination.current,
+      }
     });
     dispatch({
       type: 'qiniucloud/fetchUptoken'
@@ -119,13 +122,20 @@ export default class Album extends PureComponent {
     dispatch({
       type: 'album/show',
     });
+  }
+  changeAlbumPage = (current, pageSize) => {
+    const { dispatch, currentUser } = this.props;
     dispatch({
       type: 'album/fetch',
-      payload: { user_id: currentUser._id }
+      payload: {
+        user_id: currentUser._id,
+        pageSize,
+        currentPage: current,
+      }
     });
   }
   render() {
-    const { data, loading, visible } = this.props;
+    const { data, loading } = this.props;
     const { previewVisible, previewImage } = this.state;
     const extra = (
       <Upload name="file" action={QINIU_UPLOAD_DOMAIN} showUploadList={false} data={this.makeUploadData} onChange={this.handleChange}>
@@ -143,7 +153,11 @@ export default class Album extends PureComponent {
         >
           {data.list.map(this.renderPhoto)}
         </Card>
-
+        <Pagination
+          {...data.pagination}
+          onChange={this.changeAlbumPage}
+          style={{float: 'right', margin: '10px 20px'}}
+        />
         <Button onClick={this.showAlbumModal}>
             <Icon type="upload"/> 点击上传
         </Button>

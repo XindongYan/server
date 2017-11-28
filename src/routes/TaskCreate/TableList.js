@@ -172,7 +172,6 @@ export default class TableList extends PureComponent {
       {
         title: '渠道',
         dataIndex: 'channel_name',
-        render: val => val[0] || '',
       },
       {
         title: '商家标签',

@@ -25,20 +25,11 @@ export default class AlbumModal extends PureComponent {
   componentDidMount() {
     const { dispatch, currentUser } = this.props;
     dispatch({
-      type: 'album/fetch',
-      payload: {
-        user_id: currentUser._id,
-        ...this.state.pagination,
-        currentPage: this.state.pagination.current,
-      }
-    });
-    dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, data: { pagination } } = nextProps;
-    this.setState({ pagination });
     if (!this.props.visible && nextProps.visible) {
       dispatch({
         type: 'album/fetch',
@@ -68,7 +59,7 @@ export default class AlbumModal extends PureComponent {
   handleChoose = (photo) => {
     const index = this.state.choosen.findIndex(item => item._id === photo._id)
     if (index === -1) {
-      this.setState({ choosen: [ ...this.state.choosen, photo ] });
+      this.setState({ choosen: [ ...this.state.choosen, { ...photo, uid: photo._id } ] });
     } else {
       const choosed = [...this.state.choosen];
       choosed.splice(index,1);
@@ -117,7 +108,7 @@ export default class AlbumModal extends PureComponent {
       });
     }
   }
-  renderPhoto = (photo,index) => {
+  renderPhoto = (photo, index) => {
     const isChoosen = this.state.choosen.find(item => item._id === photo._id);
     return (
       <Card style={{ width: 140, display: 'inline-block', margin: 5 }} bodyStyle={{ padding: 0 }} key={photo._id}
@@ -148,11 +139,16 @@ export default class AlbumModal extends PureComponent {
         currentPage: current,
       }
     });
+    this.setState({
+      pagination: {
+        pageSize,
+        current,
+      }
+    });
   }
   render() {
     const { data, loading, visible } = this.props;
     const { choosen, pagination } = this.state;
-    console.log(data)
     return (
       <Modal
         title="素材"

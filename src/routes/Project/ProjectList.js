@@ -150,6 +150,7 @@ export default class FlowList extends PureComponent {
       type: 'project/publish',
       payload: {
         _id: record._id,
+        user_id: teamUser.user_id,
         team_id: teamUser.team_id,
       },
       callback: (result) => {
@@ -246,7 +247,7 @@ export default class FlowList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建项目</Button>
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建活动</Button>
               {
                 selectedRows.length > 0 && (
                   <span>

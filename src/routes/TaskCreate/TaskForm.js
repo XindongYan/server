@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
-import { Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
+import { Card, Form, Input, Select, Icon, Button, InputNumber, Upload, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, TASK_APPROVE_STATUS } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS } from '../../constants';
 import path from 'path';
 import querystring from 'querystring';
 
@@ -31,8 +31,9 @@ export default class TaskForm extends PureComponent {
       });
       this.props.form.setFieldsValue({
         title: formData.title,
-        merchant_tag: formData.merchant_tag,
-        task_type: formData.task_type,
+        channel_name: formData.channel_name,
+        desc: formData.desc,
+        attachments: formData.attachments,
       });
     }
     this.props.dispatch({
@@ -44,8 +45,9 @@ export default class TaskForm extends PureComponent {
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
       this.props.form.setFieldsValue({
         title: nextProps.formData.title,
-        merchant_tag: nextProps.formData.merchant_tag,
-        task_type: nextProps.formData.task_type,
+        channel_name: nextProps.formData.channel_name,
+        desc: nextProps.formData.desc,
+        attachments: nextProps.formData.attachments,
       });
     }
   }
@@ -56,10 +58,18 @@ export default class TaskForm extends PureComponent {
       if (!err) {
         const payload = {
           ...values,
+          attachments: values.attachments ? values.attachments.filter(item => !item.error).map(item => {
+            if (!item.error) {
+              return {
+                name: item.name,
+                url: item.url || `${QINIU_DOMAIN}/${item.response.key}`,
+                uid: item.uid,
+              };
+            }
+          }) : [],
           team_id: teamUser.team_id,
           project_id: query.project_id,
           creator_id: teamUser.user_id,
-          approve_status: TASK_APPROVE_STATUS.created,
         };
         if (this.props.operation === 'edit') {
           this.props.dispatch({
@@ -80,7 +90,10 @@ export default class TaskForm extends PureComponent {
         } else if (this.props.operation === 'create') {
           this.props.dispatch({
             type: 'task/add',
-            payload,
+            payload: {
+              ...payload,
+              approve_status: TASK_APPROVE_STATUS.created,
+            },
             callback: (result) => {
               if (result.error) {
                 message.error(result.msg);
@@ -127,37 +140,47 @@ export default class TaskForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="商家标签"
+            label="渠道"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
-            {getFieldDecorator('merchant_tag', {
-              rules: [{ required: true, message: '请输入项目标题！' }],
+            {getFieldDecorator('channel_name', {
+              rules: [{ required: true, message: '请输入渠道！' }],
             })(
               <Input />
             )}
           </FormItem>
           <FormItem
-            label="任务类型"
+            label="描述"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
-            {getFieldDecorator('task_type', {
-              initialValue: 1,
-              rules: [{ required: true, message: '请选择任务类型！' }],
+            {getFieldDecorator('desc', {
             })(
-              <Select
-                placeholder="请选择任务类型"
-              >
-                {TASK_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
-              </Select>
+              <Input.TextArea />
+            )}
+          </FormItem>
+          <FormItem
+            label="附件"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('attachments', {
+              valuePropName: 'fileList',
+              getValueFromEvent: this.normFile,
+            })(
+              <Upload name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
+                <Button>
+                  <Icon type="upload" /> 点击上传
+                </Button>
+              </Upload>
             )}
           </FormItem>
           <FormItem
             wrapperCol={{ span: 8, offset: 4 }}
           >
             <Button type="primary" htmlType="submit">
-              {operation === 'create' ? '创建' : '修改'}
+              {operation === 'create' ? '创建' : '保存'}
             </Button>
           </FormItem>
         </Form>

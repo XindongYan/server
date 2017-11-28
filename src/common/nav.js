@@ -37,7 +37,7 @@ const team = {
 };
 
 const project = {
-  name: '项目列表',
+  name: '活动列表',
   path: 'project-list',
   component: Project,
 };
