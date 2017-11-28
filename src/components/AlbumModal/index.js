@@ -24,14 +24,14 @@ export default class AlbumModal extends PureComponent {
   }
   componentDidMount() {
     const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'album/fetch',
-      payload: {
-        user_id: currentUser._id,
-        ...this.state.pagination,
-        currentPage: this.state.pagination.current,
-      }
-    });
+    // dispatch({
+    //   type: 'album/fetch',
+    //   payload: {
+    //     user_id: currentUser._id,
+    //     ...this.state.pagination,
+    //     currentPage: this.state.pagination.current,
+    //   }
+    // });
     dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
@@ -46,13 +46,13 @@ export default class AlbumModal extends PureComponent {
           user_id: currentUser._id,
           ...this.state.pagination,
           currentPage: this.state.pagination.current,
-        }
+        },
       });
     }
   }
   handleOk = () => {
     if (this.props.onOk) this.props.onOk(this.state.choosen);
-    console.log(this.state.choosen)
+    // console.log(this.state.choosen)
     this.setState({ choosen: [] });
     this.props.dispatch({
       type: 'album/hide',
@@ -152,7 +152,6 @@ export default class AlbumModal extends PureComponent {
   render() {
     const { data, loading, visible } = this.props;
     const { choosen, pagination } = this.state;
-    console.log(data)
     return (
       <Modal
         title="素材"

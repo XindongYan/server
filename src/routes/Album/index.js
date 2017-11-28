@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import fetch from 'dva/fetch';
 import path from 'path';
-import { Table, Card, Button, Upload, Icon, message, Modal} from 'antd';
+import { Table, Card, Button, Upload, Icon, message, Modal, Pagination} from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
 import styles from './index.less';
 import AlbumModal from '../../components/AlbumModal';
@@ -119,10 +119,6 @@ export default class Album extends PureComponent {
     dispatch({
       type: 'album/show',
     });
-    dispatch({
-      type: 'album/fetch',
-      payload: { user_id: currentUser._id }
-    });
   }
   render() {
     const { data, loading, visible } = this.props;
@@ -143,7 +139,6 @@ export default class Album extends PureComponent {
         >
           {data.list.map(this.renderPhoto)}
         </Card>
-
         <Button onClick={this.showAlbumModal}>
             <Icon type="upload"/> 点击上传
         </Button>
