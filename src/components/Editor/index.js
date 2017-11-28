@@ -1,19 +1,94 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
+import AlbumModal from '../AlbumModal';
 
-export default class AlbumModal extends PureComponent {
+@connect(state => ({
+
+}))
+export default class Editor extends PureComponent {
   state = {
+    ue: null,
   }
-  // componentDidMount() {
-  // }
-  // componentWillReceiveProps(nextProps) {
-  // }
-  handleOk = () => {
-    if (this.props.onOk) this.props.onOk(this.state.choosen);
+  componentDidMount() {
+    let script;
+    if (!document.getElementById('ueditor-config')) {
+      script = document.createElement('script');
+      script.id = 'ueditor-config';
+      script.src = '/ueditor/ueditor.config.js';
+      script.async = true;
+      document.body.appendChild(script);
+      script.onload = () => {
+        if (!document.getElementById('ueditor')) {
+          script = document.createElement('script');
+          script.id = 'ueditor';
+          script.src = '/ueditor/ueditor.all.min.js';
+          script.async = true;
+          document.body.appendChild(script);
+          script.onload = () => {
+            this.showUeditor();
+          };
+          script.onreadystatechange = script.onload;
+        }
+      };
+      script.onreadystatechange = script.onload;
+    } else {
+      this.showUeditor();
+    }
+  }
+  componentWillUnmount() {
+    this.state.ue.destroy();
+  }
+  showUeditor = () => {
+    const ue = window.UE.getEditor('editor', {
+      toolbars: [
+        [
+          'undo', //撤销
+          'redo', //重做
+          'bold', //加粗
+          'italic', //斜体
+          'underline', //下划线
+          'justifyleft', //居左对齐
+          'justifyright', //居右对齐
+          'justifycenter', //居中对齐
+          'justifyjustify', //两端对齐
+          'picture',
+          // 'taobao',
+          'drafts', // 从草稿箱加载
+        ]
+      ],
+      autoHeightEnabled: true,
+      scaleEnabled: false
+    });
+    ue.commands['picture'] = {
+      execCommand: () => {
+        this.props.dispatch({
+          type: 'album/show',
+        });
+      }
+    }
+    ue.addListener('contentChange', this.handleChange)
+    this.setState({ ue });
+  }
+  handleAddImg = (imgs) => {
+    if (imgs.length > 0) {
+      let html = '';
+      imgs.forEach(item => {
+        html += `<p><img style="width:500px;" src="${item.href}" /></p>`;
+      })
+      this.state.ue.execCommand('inserthtml', html);
+    }
+  }
+  handleChange = () => {
+    const content = this.state.ue.getContent();
+    if (this.props.onChange) this.props.onChange(content);
   }
   render() {
-    // const { list } = this.props;
+    const { style } = this.props
     return (
-      <div>6789hjj</div>
+      <div style={style}>
+        <div id="editor"></div>
+        <AlbumModal onOk={this.handleAddImg}/>
+      </div>
     );
   }
 }
