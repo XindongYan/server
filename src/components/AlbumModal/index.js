@@ -49,8 +49,9 @@ export default class AlbumModal extends PureComponent {
     if (index === -1) {
       this.setState({ choosen: [ ...this.state.choosen, photo ] });
     } else {
-      // console.log(this.state.choosen.splice(index,1))])
-      this.setState({ choosen: [...this.state.choosen] });
+      const choosed = [...this.state.choosen];
+      choosed.splice(index,1);
+      this.setState({ choosen: [...choosed] });
     }
   }
   renderPhoto = (photo,index) => {
