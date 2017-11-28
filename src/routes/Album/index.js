@@ -5,7 +5,6 @@ import path from 'path';
 import { Table, Card, Button, Upload, Icon, message, Modal, Pagination} from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
 import styles from './index.less';
-import AlbumModal from '../../components/AlbumModal';
 
 @connect(state => ({
   currentUser: state.user.currentUser,
@@ -158,14 +157,9 @@ export default class Album extends PureComponent {
           onChange={this.changeAlbumPage}
           style={{float: 'right', margin: '10px 20px'}}
         />
-        <Button onClick={this.showAlbumModal}>
-            <Icon type="upload"/> 点击上传
-        </Button>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
-
-        <AlbumModal  />
       </div>
     );
   }

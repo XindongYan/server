@@ -87,7 +87,7 @@ export default class AlbumModal extends PureComponent {
       payload.href = url;
       const result = await fetch(`${url}?imageInfo`, {
         Accept: 'application/json',
-      'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/json; charset=utf-8',
       }).then(response => response.json());
       payload.width = result.width;
       payload.height = result.height;

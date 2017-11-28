@@ -7,7 +7,7 @@ export default {
     data: {
       list: [],
       pagination: {
-        pageSize: 12,
+        pageSize: 20,
         current: 1,
       },
     },
