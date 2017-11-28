@@ -6,7 +6,10 @@ export default {
   state: {
     data: {
       list: [],
-      pagination: {},
+      pagination: {
+        pageSize: 12,
+        current: 1,
+      },
     },
     loading: true,
     visible: false,
