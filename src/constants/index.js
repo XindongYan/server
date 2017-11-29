@@ -60,3 +60,9 @@ export const TASK_APPROVE_STATUS_TEXT = {
   '1': '已通过',
   '2': '未通过',
 };
+
+export const PROJECT_STATUS_TEXT = {
+  '1': '创建',
+  '2': '已发布',
+  '3': '已下架',
+};

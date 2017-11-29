@@ -1,4 +1,4 @@
-import { queryProjects, addProject, updateProject, removeProject, queryProject, publishProject } from '../services/project';
+import { queryProjects, addProject, updateProject, removeProject, queryProject, publishProject, offshelfProject } from '../services/project';
 
 export default {
   namespace: 'project',
@@ -36,7 +36,7 @@ export default {
         payload: true,
       });
       yield call(addProject, payload);
-      const response = yield call(queryProjects, {team_id: payload.team_id});
+      const response = yield call(queryProjects, { team_id: payload.team_id });
       yield put({
         type: 'save',
         payload: response,
@@ -54,7 +54,7 @@ export default {
         payload: true,
       });
       yield call(updateProject, payload);
-      const response = yield call(queryProjects, {team_id: payload.team_id});
+      const response = yield call(queryProjects, { team_id: payload.team_id });
       yield put({
         type: 'save',
         payload: response,
@@ -71,8 +71,8 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      const publishResult = yield call(publishProject, payload);
-      const response = yield call(queryProjects, {team_id: payload.team_id});
+      const result = yield call(publishProject, payload);
+      const response = yield call(queryProjects, { team_id: payload.team_id });
       yield put({
         type: 'save',
         payload: response,
@@ -82,15 +82,33 @@ export default {
         payload: false,
       });
 
-      if (callback) callback(publishResult);
+      if (callback) callback(result);
+    },
+    *offshelf({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      const result = yield call(offshelfProject, payload);
+      const response = yield call(queryProjects, { team_id: payload.team_id });
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
+
+      if (callback) callback(result);
     },
     *remove({ payload, callback }, { call, put }) {
       yield put({
         type: 'changeLoading',
         payload: true,
       });
-      yield call(removeProject, payload);
-      const response = yield call(queryProjects, {team_id: payload.team_id});
+      const result = yield call(removeProject, payload);
+      const response = yield call(queryProjects, { team_id: payload.team_id });
       yield put({
         type: 'save',
         payload: response,
@@ -100,7 +118,7 @@ export default {
         payload: false,
       });
 
-      if (callback) callback();
+      if (callback) callback(result);
     },
     *fetchProject({ payload }, { call, put }) {
       const response = yield call(queryProject, payload);

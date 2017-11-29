@@ -32,6 +32,15 @@ export async function publishProject(params) {
   });
 }
 
+export async function offshelfProject(params) {
+  return request('/api/task/project/offshelf', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function removeProject(params) {
   return request('/api/task/project', {
     method: 'DELETE',
