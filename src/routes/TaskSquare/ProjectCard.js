@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Icon, Button, Dropdown, Menu, Modal, Col, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { routerRedux } from 'dva/router';

@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
-import { Card, Button, Dropdown, Menu, Modal, message, Col, Row } from 'antd';
+import { Card, message, Row, Spin } from 'antd';
 import styles from './index.less';
 import TaskCard from './TaskCard';
 import io from 'socket.io-client';
 
 @connect(state => ({
   tasks: state.taskSquare.tasks,
-  loading: state.taskSquare.projectsLoading,
+  loading: state.taskSquare.tasksLoading,
   currentUser: state.user.currentUser,
 }))
 
@@ -76,14 +76,16 @@ export default class TaskList extends PureComponent {
 
   
   render() {
-    const { tasks: { list } } = this.props;
+    const { tasks: { list }, loading } = this.props;
     return (
       <Card bordered={false} bodyStyle={{ padding: "10px" }} className="myCard">
-        <Row gutter={16}>
-          {list.map((item,index) => 
-            <TaskCard task={item} key={index} onTake={this.handleTake}/>)
-          }
-        </Row>
+        <Spin spinning={loading}>
+          <Row gutter={16}>
+            {list.map((item,index) => 
+              <TaskCard task={item} key={index} onTake={this.handleTake}/>)
+            }
+          </Row>
+        </Spin>
       </Card>
     );
   }

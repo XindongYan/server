@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Card, Button, Dropdown, Menu, Modal, Col, Row, message } from 'antd';
+import { Card, Button, Col } from 'antd';
 import moment from 'moment';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './index.less';
@@ -9,7 +9,7 @@ export default class TaskCard extends PureComponent {
   state = {
    
   }
-  
+
   render() {
     const { task, index } = this.props;
     const colorArr = ['#6a6aff','#2894ff','#00caca','#4f9d9d','#ffa042','#ffd306','#ff8040','#7373b9','#c07ab8','#a6a6d2'];
