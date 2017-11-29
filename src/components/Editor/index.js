@@ -64,6 +64,9 @@ export default class Editor extends PureComponent {
       execCommand: () => {
         this.props.dispatch({
           type: 'album/show',
+          payload: {
+            currentKey: 'editor',
+          }
         });
       }
     }
@@ -71,14 +74,12 @@ export default class Editor extends PureComponent {
     this.setState({ ue });
   }
   handleAddImg = (imgs) => {
-    // let html = '';
     imgs.forEach(item => {
       this.state.ue.execCommand( 'insertimage', {
            src:item.href,
-           width:'500px',
-           height:'500px'
+           maxWidth:'60%',
+           height:'auto'
       });
-      // html += `<p><img style="width:500px;" src="${item.href}" /></p>`;
     });
     // this.state.ue.execCommand('inserthtml', html);
   }
@@ -91,7 +92,7 @@ export default class Editor extends PureComponent {
     return (
       <div style={style}>
         <div id="editor"></div>
-        <AlbumModal onOk={this.handleAddImg}/>
+        <AlbumModal k="editor" onOk={this.handleAddImg}/>
       </div>
     );
   }

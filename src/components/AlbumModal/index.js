@@ -12,6 +12,7 @@ const TabPane = Tabs.TabPane;
   loading: state.album.loading,
   visible: state.album.visible,
   qiniucloud: state.qiniucloud,
+  currentKey: state.album.currentKey,
 }))
 
 export default class AlbumModal extends PureComponent {
@@ -21,6 +22,7 @@ export default class AlbumModal extends PureComponent {
       pageSize: 12,
       current: 1,
     },
+    fileList: [],
   }
   componentDidMount() {
     const { dispatch, currentUser } = this.props;
@@ -43,8 +45,7 @@ export default class AlbumModal extends PureComponent {
   }
   handleOk = () => {
     if (this.props.onOk) this.props.onOk(this.state.choosen);
-    // console.log(this.state.choosen)
-    this.setState({ choosen: [] });
+    this.setState({ choosen: [], fileList: [] });
     this.props.dispatch({
       type: 'album/hide',
     });
@@ -54,16 +55,21 @@ export default class AlbumModal extends PureComponent {
     dispatch({
       type: 'album/hide',
     });
-    this.setState({ choosen: [] });
+    this.setState({ choosen: [], fileList: [] });
   }
   handleChoose = (photo) => {
-    const index = this.state.choosen.findIndex(item => item._id === photo._id)
-    if (index === -1) {
-      this.setState({ choosen: [ ...this.state.choosen, { ...photo, uid: photo._id } ] });
+    const { mode } = this.props;
+    const index = this.state.choosen.findIndex(item => item._id === photo._id);
+    if( mode==='single' ) {
+      this.setState({ choosen: [ photo ] });
     } else {
-      const choosed = [...this.state.choosen];
-      choosed.splice(index,1);
-      this.setState({ choosen: [...choosed] });
+      if (index === -1) {
+        this.setState({ choosen: [ ...this.state.choosen, { ...photo, uid: photo._id } ] });
+      } else {
+        const choosed = [...this.state.choosen];
+        choosed.splice(index,1);
+        this.setState({ choosen: [...choosed] });
+      }
     }
   }
   makeUploadData = (file) => {
@@ -75,13 +81,18 @@ export default class AlbumModal extends PureComponent {
     }
   }
   handleChange = async ({file,fileList}) => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, mode } = this.props;
+    const that = this;
     const payload = {
       user_id: currentUser._id,
       originalname: file.name,
       album_name: '相册一',
     };
-    this.setState({ choosen: fileList });
+    if(mode==='single') {
+      that.setState({ fileList: [file] });
+    } else {
+      that.setState({ fileList: fileList });
+    }
     if (file.status === 'done' && file.response && !file.error) {
       const url = `${QINIU_DOMAIN}/${file.response.key}`;
       payload.href = url;
@@ -99,6 +110,11 @@ export default class AlbumModal extends PureComponent {
             message.error(result1.msg);
           } else {
             message.success(result1.msg);
+            if(mode==='single') {
+              that.setState({ choosen: [result1.photo] });
+            } else {
+              that.setState({ choosen: [ ...that.state.choosen, result1.photo ] });
+            }
             dispatch({
               type: 'album/fetch',
               payload: { user_id: currentUser._id }
@@ -147,13 +163,13 @@ export default class AlbumModal extends PureComponent {
     });
   }
   render() {
-    const { data, loading, visible } = this.props;
-    const { choosen, pagination } = this.state;
+    const { data, loading, visible, k, currentKey } = this.props;
+    const { choosen, pagination, fileList } = this.state;
     return (
       <Modal
         title="素材"
         width="992px"
-        visible={visible}
+        visible={k === currentKey && visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         bodyStyle={{ padding: '5px 20px' }}
@@ -178,7 +194,7 @@ export default class AlbumModal extends PureComponent {
                 data={this.makeUploadData}
                 onChange={this.handleChange}
                 listType="picture-card"
-                fileList={choosen}
+                fileList={fileList}
                 onRemove={this.handleRemove}
               >
                 <div style={{height: '120px', 'paddingTop': '40px'}}>

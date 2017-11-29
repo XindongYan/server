@@ -13,6 +13,7 @@ export default {
     },
     loading: true,
     visible: false,
+    currentKey: '',
   },
 
   effects: {
@@ -42,13 +43,13 @@ export default {
     *show({ payload, callback }, { call, put }) {
       yield put({
         type: 'changeVisible',
-        payload: true,
+        payload: { visible: true, currentKey: payload.currentKey },
       });
     },
     *hide(_, { call, put }) {
       yield put({
         type: 'changeVisible',
-        payload: false,
+        payload: { visible: false, currentKey: '' },
       });
     },
 
@@ -70,7 +71,8 @@ export default {
     changeVisible(state, action) {
       return {
         ...state,
-        visible: action.payload,
+        visible: action.payload.visible,
+        currentKey: action.payload.currentKey,
       };
     },
   },
