@@ -26,7 +26,8 @@ export default class TaskList extends PureComponent {
     });
 
     if (!this.state.socket) {
-      const origin = 'http://120.27.215.205:81';
+      const origin = 'http://test.nicai360.com';
+      // const origin = `http://www.nicai360.com`;
       // const origin = `http://${location.hostname}:3000`;
       const socket = io.connect(`${origin}/tasks`);
       socket.on('connect',function(){
