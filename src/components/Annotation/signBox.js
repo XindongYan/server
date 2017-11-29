@@ -7,14 +7,9 @@ export default class SignBox extends PureComponent {
   state = {
     signValue: ''
   }
-  componentDidMount() {
-    this.setState({
-      signValue: this.props.signContent.message
-    })
-  }
   componentWillReceiveProps(nextProps) {
     this.setState({
-      signValue: nextProps.signContent.message
+      signValue: nextProps.signContent.message || '',
     })
   }
   creatComment = () => {
@@ -39,7 +34,9 @@ export default class SignBox extends PureComponent {
     this.props.sureChange(commentMsg);
   }
   closeBox = () => {
-    $(this.refs.signInput).val('');
+    this.setState({
+      signValue: ''
+    });
     this.props.close();
   }
   render() {

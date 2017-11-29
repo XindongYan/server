@@ -20,7 +20,7 @@ export default class Annotation extends PureComponent {
     signVisible: false,
     commentContent: [],
     editIndex: -1,
-    signContent: '',
+    signContent: {},
   }
   componentDidMount() {
   }
@@ -54,9 +54,14 @@ export default class Annotation extends PureComponent {
     if(value==='add'){
       this.setState({
         direction: {...this.state.direction, visible: 'none'},
+<<<<<<< HEAD
         signContent: '',
       },() => {
         this.setState({signVisible: true})
+=======
+        signVisible: true,
+        signContent: {},
+>>>>>>> 362e7c69c4df29c5f22c20bce4d29c1efab53a4d
       })
     }
     if (value==='edit') {
@@ -88,7 +93,7 @@ export default class Annotation extends PureComponent {
     })
   }
   sureChange = (commentMsg) => {
-    console.log(commentMsg)
+    // console.log(commentMsg)
     this.setState({
       signVisible: false,
       commentContent: [...this.state.commentContent, commentMsg],

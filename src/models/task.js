@@ -1,4 +1,4 @@
-import { queryTask, removeRule, updateTask, addTask, queryProjectTasks, queryTakerTasks } from '../services/task';
+import { queryTask, removeRule, updateTask, addTask, queryProjectTasks, queryTakerTasks, approveTask } from '../services/task';
 
 export default {
   namespace: 'task',
