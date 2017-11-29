@@ -71,6 +71,9 @@ export default class Editor extends PureComponent {
       }
     }
     ue.addListener('contentChange', this.handleChange);
+    ue.addListener("ready", () => {  
+      ue.setContent(this.props.value);
+    });
     this.setState({ ue });
   }
   handleAddImg = (imgs) => {

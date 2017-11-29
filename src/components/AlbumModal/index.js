@@ -212,7 +212,7 @@ export default class AlbumModal extends PureComponent {
         bodyStyle={{ padding: '5px 20px' }}
       >
         <Tabs defaultActiveKey="album" onChange={this.changeTab}>
-          <TabPane tab={<span><Icon type="apple" />Tab 1</span>} key="album">
+          <TabPane tab={<span><Icon type="appstore" />素材库</span>} key="album">
             <div>
               {data.list.map(this.renderPhoto)}
             </div>
@@ -224,7 +224,7 @@ export default class AlbumModal extends PureComponent {
               style={{float: 'right', margin: '10px 20px'}}
             />
           </TabPane>
-          <TabPane tab={<span><Icon type="android" />Tab 2</span>} key="upload">
+          <TabPane tab={<span><Icon type="plus" />上传</span>} key="upload">
             <div className="uploadBox">
               <Upload name="file"
                 action={QINIU_UPLOAD_DOMAIN}

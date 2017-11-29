@@ -10,7 +10,7 @@ import Annotation from '../../components/Annotation';
   formData: state.task.formData,
 }))
 
-export default class ProjectForm extends PureComponent {
+export default class TaskCreate extends PureComponent {
   state = {
 
   }

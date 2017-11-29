@@ -62,7 +62,7 @@ export default class Annotation extends PureComponent {
       const {action, boxPosition, direction } = this.state;
     });
   }
-  operation = (e,value) => {
+  operation = (e, value) => {
     e.stopPropagation();
     this.setState({
       status: value,
@@ -90,6 +90,9 @@ export default class Annotation extends PureComponent {
         direction: {...this.state.direction, visible: 'none'},
       })
     }
+  }
+  handleChange = () => {
+
   }
   creatBox = (key) => {
     return (
