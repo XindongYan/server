@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { PROJECT_STATUS_TEXT } from '../../constants';
+import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
 
 import styles from './Project.less';
 
@@ -244,25 +244,53 @@ export default class FlowList extends PureComponent {
       },
       {
         title: '操作',
-        render: (record) => (
-          <p>
-            <Link to={`/project/task/list?project_id=${record._id}`}>添加任务</Link>
-            <span className={styles.splitLine} />
-            <a onClick={() => this.handleEdit(record)}>修改</a>
-            <span className={styles.splitLine} />
-            <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-              <a>发布</a>
-            </Popconfirm>
-            <span className={styles.splitLine} />
-            <Popconfirm placement="left" title={`确认下架?`} onConfirm={() => this.handleOffshelf(record)} okText="确认" cancelText="取消">
-              <a>下架</a>
-            </Popconfirm>
-            <span className={styles.splitLine} />
-            <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
-              <a>删除</a>
-            </Popconfirm>
-          </p>
-        ),
+        render: (record) => {
+          if (record.status === PROJECT_STATUS.created) {
+            return (
+              <p>
+                <Link to={`/project/task/list?project_id=${record._id}`}>添加任务</Link>
+                <span className={styles.splitLine} />
+                <a onClick={() => this.handleEdit(record)}>修改</a>
+                <span className={styles.splitLine} />
+                <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                  <a>发布</a>
+                </Popconfirm>
+                <span className={styles.splitLine} />
+                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
+                  <a>删除</a>
+                </Popconfirm>
+              </p>
+            );
+          } else if (record.status === PROJECT_STATUS.published) {
+            return (
+              <p>
+                <Link to={`/project/task/list?project_id=${record._id}`}>添加任务</Link>
+                <span className={styles.splitLine} />
+                <a onClick={() => this.handleEdit(record)}>修改</a>
+                <span className={styles.splitLine} />
+                <Popconfirm placement="left" title={`确认下架?`} onConfirm={() => this.handleOffshelf(record)} okText="确认" cancelText="取消">
+                  <a>下架</a>
+                </Popconfirm>
+              </p>
+            );
+          } else if (record.status === PROJECT_STATUS.offshelf) {
+            return (
+              <p>
+                <Link to={`/project/task/list?project_id=${record._id}`}>添加任务</Link>
+                <span className={styles.splitLine} />
+                <a onClick={() => this.handleEdit(record)}>修改</a>
+                <span className={styles.splitLine} />
+                <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                  <a>发布</a>
+                </Popconfirm>
+                <span className={styles.splitLine} />
+                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
+                  <a>删除</a>
+                </Popconfirm>
+              </p>
+            );
+          }
+        },
       },
     ];
     const paginationProps = {
