@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
 import { Card } from 'antd';
+import $ from 'jquery';
 import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
@@ -32,8 +33,15 @@ export default class ProjectForm extends PureComponent {
     // const { formData } = this.props;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox}>
-          <WeitaoForm style={{ width: 650 }} />
+        <div className={styles.taskOuterBox} ref="taskOuterBox">
+          <WeitaoForm operation="edit" style={{ width: 650 }} />
+
+          <div className={styles.taskComment} style={{height: $(this.refs.taskOuterBox).outerHeight()-40}}>
+            <div className={styles.commentTitle}>
+              批注
+            </div>
+            <Annotation />
+          </div>
         </div>
       </Card>
     );

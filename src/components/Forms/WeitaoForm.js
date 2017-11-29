@@ -40,14 +40,14 @@ export default class WeitaoForm extends PureComponent {
     })
   }
   render() {
-    const { style } = this.props;
+    const { style, operation } = this.props;
     const { coverPic } = this.state;
     return (
       <div className={styles.taskBox} style={style}>
         <div className={styles.taskTitBox}>
           内容创作
         </div>
-        <div className={styles.taskContentBox}>
+        <div className={styles.taskContentBox} style={{ display: operation==='edit' ? 'block' : 'none' }}>
           <div className={styles.taskList}>
             <div className={styles.taskListInp}>
               <Input type="text" id="task-title" placeholder="请在这里输入标题"/>
@@ -74,6 +74,21 @@ export default class WeitaoForm extends PureComponent {
               </div>
             </div>
             <p className={styles.promptGray}>请上传尺寸不小于750x422px的图片</p>
+          </div>
+        </div>
+        <div className={styles.taskContentBox} style={{ display: operation==='view' ? 'block' : 'none' }}>
+          <div className={styles.taskList}>
+            <div style={{ width: 375, height:211, textAlign: 'center', lineHeight: 211 }}>
+              <img src={coverPic.href} />
+            </div>
+          </div>
+          <div className={styles.taskList}>
+            <p style={{ fontSize: 18 }}>标题</p>
+          </div>
+          <div className={styles.taskList}>
+            <div>
+              正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文
+            </div>
           </div>
         </div>
         <AlbumModal mode="single" k="cover" minSize={this.state.minSize} onOk={this.handleAddImg}/>

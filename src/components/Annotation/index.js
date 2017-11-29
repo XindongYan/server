@@ -44,9 +44,6 @@ export default class Annotation extends PureComponent {
     e.preventDefault();
     let oX = e.pageX - $(e.target).offset().left;
     let oY = e.pageY - $(e.target).offset().top;
-    // if(oX + 100 > $(e.target).outerWidth()){
-    //   oX = $(e.target).outerWidth() - 100;
-    // }
     this.setState({
       action: [
         {'name': '添加','value': 'add'},
