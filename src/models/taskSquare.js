@@ -53,6 +53,15 @@ export default {
         payload: false,
       });
     },
+    *clearProjectTasks(_, { call, put }) {
+      yield put({
+        type: 'saveTasks',
+        payload: {
+          list: [],
+          pagination: {},
+        },
+      });
+    },
     *fetchTask({ payload }, { call, put }) {
       const response = yield call(queryTask, payload);
       yield put({
@@ -76,7 +85,6 @@ export default {
         payload: { _id: payload._id },
       });
     },
-
   },
 
   reducers: {
