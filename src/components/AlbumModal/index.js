@@ -6,6 +6,27 @@ import path from 'path';
 import styles from './index.less';
 const TabPane = Tabs.TabPane;
 
+function beforeUpload(file, minSize){
+  if (minSize) {
+    var promise = new Promise(function(resolve, reject) {
+      const image = new Image();
+      image.onload = function () {
+        if(image.width < minSize.width || image.height < minSize.height) {
+          message.error('图片大小不符合要求');
+          reject(false);
+        } else {
+          resolve(true);
+        }
+      };
+      const fr = new FileReader();
+      fr.onload = function() {
+          image.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+    return promise;
+  }
+}
 @connect(state => ({
   currentUser: state.user.currentUser,
   data: state.album.data,
@@ -15,6 +36,7 @@ const TabPane = Tabs.TabPane;
   currentKey: state.album.currentKey,
 }))
 
+  
 export default class AlbumModal extends PureComponent {
   state = {
     choosen: [],
@@ -44,8 +66,10 @@ export default class AlbumModal extends PureComponent {
     }
   }
   handleOk = () => {
-    if (this.props.onOk) this.props.onOk(this.state.choosen);
-    this.setState({ choosen: [], fileList: [] });
+    if (this.state.choosen.length) {
+      if (this.props.onOk) this.props.onOk(this.state.choosen);
+      this.setState({ choosen: [], fileList: [] });
+    }
     this.props.dispatch({
       type: 'album/hide',
     });
@@ -80,8 +104,9 @@ export default class AlbumModal extends PureComponent {
       key: `${file.uid}${extname}`,
     }
   }
+
   handleChange = async ({file,fileList}) => {
-    const { dispatch, currentUser, mode } = this.props;
+    const { dispatch, currentUser, mode, minSize } = this.props;
     const that = this;
     const payload = {
       user_id: currentUser._id,
@@ -89,9 +114,9 @@ export default class AlbumModal extends PureComponent {
       album_name: '相册一',
     };
     if(mode==='single') {
-      that.setState({ fileList: [file] });
+      this.setState({ fileList: [file] });
     } else {
-      that.setState({ fileList: fileList });
+      this.setState({ fileList: fileList });
     }
     if (file.status === 'done' && file.response && !file.error) {
       const url = `${QINIU_DOMAIN}/${file.response.key}`;
@@ -111,7 +136,7 @@ export default class AlbumModal extends PureComponent {
           } else {
             message.success(result1.msg);
             if(mode==='single') {
-              that.setState({ choosen: [result1.photo] });
+              that.setState({ choosen: [ result1.photo ] });
             } else {
               that.setState({ choosen: [ ...that.state.choosen, result1.photo ] });
             }
@@ -122,18 +147,30 @@ export default class AlbumModal extends PureComponent {
           }
         },
       });
+    } else if (file.status === 'removed') {
+      const index = this.state.choosen.findIndex(item => item.originalname === file.name);
+      this.state.choosen.splice(index,1);
+      this.setState({
+        fileList: fileList,
+      })
     }
   }
   renderPhoto = (photo, index) => {
+    const { minSize } = this.props;
     const isChoosen = this.state.choosen.find(item => item._id === photo._id);
     return (
-      <Card style={{ width: 140, display: 'inline-block', margin: 5 }} bodyStyle={{ padding: 0 }} key={photo._id}
-      onClick={() => this.handleChoose(photo)}>
-        <div className={styles.customImageBox}>
-          <img className={styles.customImage} alt="example" width="100%" src={`${photo.href}?imageView2/2/w/300/h/300/q/100`} />
+      <Card style={{ width: 140, display: 'inline-block', margin: 5 }} bodyStyle={{ padding: 0 }} key={photo._id}>
+        <div className={styles.customImageBox} onClick={() => this.handleChoose(photo)}>
+          <img
+            className={styles.customImage}
+            alt="example" width="100%"
+            src={`${photo.href}?imageView2/2/w/300/h/300/q/100`}
+          />
           <div style={{display: this.state.choosen.find(item => item._id === photo._id) ? 'block' : 'none'}} className={styles.chooseModal}>
-          </div> 
+            <Icon type="check" />
+          </div>          
         </div>
+        <div style={{display: minSize && (photo.width < minSize.width || photo.height < minSize.height) ? 'block' : 'none'}} className={styles.diabledModal}>尺寸不符</div>
         <div className="custom-card">
           <p className={styles.customNodes}>{photo.width} * {photo.height}</p>
           <p className={styles.customNodes}>{photo.originalname}</p>
@@ -163,7 +200,7 @@ export default class AlbumModal extends PureComponent {
     });
   }
   render() {
-    const { data, loading, visible, k, currentKey } = this.props;
+    const { data, loading, visible, k, currentKey, minSize } = this.props;
     const { choosen, pagination, fileList } = this.state;
     return (
       <Modal
@@ -180,7 +217,7 @@ export default class AlbumModal extends PureComponent {
               {data.list.map(this.renderPhoto)}
             </div>
             <Pagination
-              current={pagination.current}
+              current={this.props.data.pagination.current}
               pageSize={pagination.pageSize}
               total={data.pagination.total} 
               onChange={this.changeAlbumPage}
@@ -192,10 +229,10 @@ export default class AlbumModal extends PureComponent {
               <Upload name="file"
                 action={QINIU_UPLOAD_DOMAIN}
                 data={this.makeUploadData}
+                beforeUpload={(file) => beforeUpload(file,minSize)}
                 onChange={this.handleChange}
                 listType="picture-card"
                 fileList={fileList}
-                onRemove={this.handleRemove}
               >
                 <div style={{height: '120px', 'paddingTop': '40px'}}>
                   <Icon type="plus" />
