@@ -35,6 +35,8 @@ export default class Editor extends PureComponent {
       this.showUeditor();
     }
   }
+  componentWillReceiveProps(nextProps) {
+  }
   componentWillUnmount() {
     this.state.ue.destroy();
   }
@@ -72,7 +74,9 @@ export default class Editor extends PureComponent {
     }
     ue.addListener('contentChange', this.handleChange);
     ue.addListener("ready", () => {  
-      ue.setContent(this.props.value);
+      setTimeout(() => {
+        ue.setContent(this.props.value);
+      }, 200);
     });
     this.setState({ ue });
   }
