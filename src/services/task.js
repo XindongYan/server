@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
 
-export async function queryApproveTasks(params) {
+export async function queryApproverTasks(params) {
   return request(`/api/v2/task/list/approver?${stringify(params)}`);
 }
 
@@ -10,7 +10,7 @@ export async function queryTask(params) {
 }
 
 export async function addTask(params) {
-  return request('/api/task', {
+  return request('/api/v2/task', {
     method: 'POST',
     body: {
       ...params,
@@ -47,6 +47,15 @@ export async function handinTask(params) {
 
 export async function approveTask(params) {
   return request('/api/v2/task/approve', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
+export async function rejectTask(params) {
+  return request('/api/task/reject', {
     method: 'PUT',
     body: {
       ...params,
