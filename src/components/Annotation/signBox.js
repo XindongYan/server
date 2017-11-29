@@ -25,13 +25,16 @@ export default class SignBox extends PureComponent {
     if( direction.x > parentWidth/2 ){
       nWidth = `${parentWidth - direction.x}px`;
     }
-    const commentMsg = {
-      'message': this.refs.signInput.value,
-      'left': direction.x,
-      'top': direction.y,
-      'background': bgColors[n],
-      'width': nWidth,
-    };
+    let commentMsg = {};
+    if (this.state.signValue){
+      commentMsg = {
+        'message': this.refs.signInput.value,
+        'left': direction.x,
+        'top': direction.y,
+        'background': bgColors[n],
+        'width': nWidth,
+      };
+    }
     this.setState({
       signValue: ''
     })
@@ -45,13 +48,18 @@ export default class SignBox extends PureComponent {
     this.props.close();
   }
   render() {
-    const { signVisible, close, sureChange, direction, signContent } = this.props;
+    const { signVisible, close, sureChange, direction, signContent, boxSize } = this.props;
     const { action, signValue } = this.state;
     return (
       <div
         className={styles.signBox}
-        style={{ display: signVisible ? 'block' : 'none', top: direction.y}}
+        style={{
+          display: signVisible ? 'block' : 'none',
+          top: direction.y + $(this.refs.signBox).outerHeight() > boxSize ? boxSize - $(this.refs.signBox).outerHeight() : direction.y
+        }}
         onContextMenu={this.fnPrevent}
+        onClick={this.fnPrevent}
+        ref="signBox"
       >
         <div className={styles.SignTit}>批注
           <div className={styles.outSignbox} onClick={this.closeBox}>X</div>

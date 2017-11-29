@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
 import { Card } from 'antd';
+import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
 
 // import styles from './Project.less';
@@ -29,7 +30,12 @@ export default class ProjectForm extends PureComponent {
     // const { formData } = this.props;
     return (
       <Card bordered={false} title="">
-        <Annotation />
+        <div style={{ width: '600px' }}>
+          <Editor style={{ width: '100%' }}/>
+        </div>
+        <div style={{ width: '500px', height: 200}}>
+          <Annotation viewStatus="view" />
+        </div>
       </Card>
     );
   }
