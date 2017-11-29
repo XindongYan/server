@@ -20,7 +20,8 @@ export default class Annotation extends PureComponent {
     signVisible: false,
     commentContent: [],
     editIndex: -1,
-    signContent: {},
+    signContent: '',
+    status: '',
   }
   componentDidMount() {
   }
@@ -30,6 +31,15 @@ export default class Annotation extends PureComponent {
   fnPrevent = (e) => {
     e.preventDefault();
     e.stopPropagation();
+  }
+  fnClickDefult = (e) => {
+    this.setState({
+      direction: {
+        ...this.state.direction,
+        visible: 'none',
+      },
+      signVisible: false,
+    });
   }
   fnContextMenu = (e) => {
     e.preventDefault();
@@ -46,11 +56,39 @@ export default class Annotation extends PureComponent {
         y: (e.pageY - $(e.target).offset().top),
         visible: 'block',
       },
+      signVisible: false,
     }, (state) => {
       const {action, boxPosition, direction } = this.state;
     });
   }
-
+  operation = (value) => {
+    this.setState({
+      status: value,
+    })
+    if(value==='add'){
+      this.setState({
+        direction: {...this.state.direction, visible: 'none'},
+        signContent: {},
+      },() => {
+        this.setState({signVisible: true})
+      })
+    }
+    if (value==='edit') {
+      const { commentContent, editIndex } = this.state;
+      this.setState({
+        direction: {...this.state.direction, visible: 'none'},
+        signVisible: true,
+        signContent: commentContent[editIndex]
+      })
+    }
+    if (value==='delete') {
+      const { commentContent, editIndex } = this.state;
+      commentContent.splice(editIndex,1);
+      this.setState({
+        direction: {...this.state.direction, visible: 'none'},
+      })
+    }
+  }
   creatBox = (key) => {
     return (
       <Button
@@ -70,11 +108,19 @@ export default class Annotation extends PureComponent {
     })
   }
   sureChange = (commentMsg) => {
-    // console.log(commentMsg)
-    this.setState({
-      signVisible: false,
-      commentContent: [...this.state.commentContent, commentMsg],
-    })
+    const { status, editIndex, commentContent } = this.state;
+    if(status === 'add'){
+      this.setState({
+        signVisible: false,
+        commentContent: [...this.state.commentContent, commentMsg],
+      })
+    } else if(status === 'edit') {
+      const newComment = { ...commentContent[editIndex], message: commentMsg.message };
+      commentContent.splice(editIndex,1,newComment);
+      this.setState({
+        signVisible: false,
+      })
+    }
   }
   editComment = (e, index) => {
     e.preventDefault();
@@ -96,7 +142,12 @@ export default class Annotation extends PureComponent {
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     return (
       <div style={{ 'width': '500px', 'height': '600px', 'position': 'relative' }} ref="myTextInput">
-        <div ref="AnnotationBox" className={styles.AnnotationBox} onContextMenu={this.fnContextMenu}>
+        <div
+          ref="AnnotationBox"
+          className={styles.AnnotationBox}
+          onContextMenu={this.fnContextMenu}
+          onClick={this.fnClickDefult}
+        >
           <div className={styles.selectBox} style={{ left: direction.x, top: direction.y, display: direction.visible}}>
             {action.map(this.creatBox)}
           </div>
@@ -108,7 +159,9 @@ export default class Annotation extends PureComponent {
             parentWidth={$(this.refs.AnnotationBox).outerWidth()}
             signContent={signContent}
           />
-          {commentContent.map((item,index) => <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)}
+          {commentContent.map((item,index) => 
+            <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
+          }
         </div>
       </div> 
     );
