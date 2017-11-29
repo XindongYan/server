@@ -1,7 +1,7 @@
 import BasicLayout from '../layouts/BasicLayout';
 import BlankLayout from '../layouts/BlankLayout';
 
-import Approve from '../routes/Approve/TableList';
+import Approver from '../routes/Approver/TableList';
 import Project from '../routes/Project/ProjectList';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
@@ -24,10 +24,10 @@ const writer = {
   component: Writer,
 };
 
-const approve = {
+const approver = {
   name: '审核列表',
-  path: 'approve-list',
-  component: Approve,
+  path: 'approver-list',
+  component: Approver,
 };
 
 const team = {
@@ -64,7 +64,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [taskSquare, writer, approve, team, project, invitation, album],
+    children: [taskSquare, writer, approver, team, project, invitation, album],
   }, {
     name: '工具',
     path: 'tool',
