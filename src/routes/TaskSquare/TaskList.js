@@ -46,7 +46,12 @@ export default class TaskList extends PureComponent {
       this.setState({ socket });
     }
   }
-  
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'taskSquare/clearProjectTasks',
+    });
+  }
   handleTake = (task) => {
     const { dispatch, currentUser } = this.props;
     this.props.dispatch({
