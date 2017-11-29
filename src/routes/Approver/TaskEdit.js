@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import querystring from 'querystring';
 import { Card } from 'antd';
 import Editor from '../../components/Editor';
+import TaskChat from '../../components/TaskChat';
 
 // import styles from './Project.less';
 
@@ -26,9 +27,9 @@ export default class ProjectForm extends PureComponent {
     
   }
   render() {
-    // const { formData } = this.props;
+    const { formData } = this.props;
     return (
-      <Card bordered={false} title="">
+      <Card bordered={false} title="" extra={<TaskChat task={formData}/>}>
         <Editor style={{ width: '60%' }}/>
       </Card>
     );
