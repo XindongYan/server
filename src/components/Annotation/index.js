@@ -54,8 +54,9 @@ export default class Annotation extends PureComponent {
     if(value==='add'){
       this.setState({
         direction: {...this.state.direction, visible: 'none'},
-        signVisible: true,
         signContent: '',
+      },() => {
+        this.setState({signVisible: true})
       })
     }
     if (value==='edit') {
@@ -123,7 +124,7 @@ export default class Annotation extends PureComponent {
             close={this.hideSignBox}
             signVisible={signVisible}
             parentWidth={$(this.refs.AnnotationBox).outerWidth()}
-            signContent={signContent||''}
+            signContent={signContent}
           />
           {commentContent.map((item,index) => <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)}
         </div>

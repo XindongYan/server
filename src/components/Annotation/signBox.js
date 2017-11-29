@@ -13,15 +13,9 @@ export default class SignBox extends PureComponent {
     })
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.signContent)
     this.setState({
       signValue: nextProps.signContent.message
     })
-  }
-  componentWillUnmount() {
-    this.setState({
-      signValue: ''
-    });
   }
   creatComment = () => {
     const { direction, parentWidth } = this.props;
@@ -40,19 +34,18 @@ export default class SignBox extends PureComponent {
     };
     this.setState({
       signValue: ''
-    });
+    })
+    $(this.refs.signInput).val('');
     this.props.sureChange(commentMsg);
   }
   closeBox = () => {
-    this.setState({
-      signValue: ''
-    });
-    console.log($(this.refs.signInput).val());
+    $(this.refs.signInput).val('');
     this.props.close();
   }
   render() {
     const { signVisible, close, sureChange, direction, signContent } = this.props;
     const { action, signValue } = this.state;
+    console.log(signValue);
     return (
       <div className={styles.signBox} style={{ display: signVisible ? 'block' : 'none', top: direction.y}}>
         <div className={styles.SignTit}>批注
