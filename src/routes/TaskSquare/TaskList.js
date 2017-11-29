@@ -5,6 +5,7 @@ import { Card, message, Row, Spin } from 'antd';
 import styles from './index.less';
 import TaskCard from './TaskCard';
 import io from 'socket.io-client';
+import { ORIGIN } from '../../constants';
 
 @connect(state => ({
   tasks: state.taskSquare.tasks,
@@ -26,10 +27,7 @@ export default class TaskList extends PureComponent {
     });
 
     if (!this.state.socket) {
-      const origin = 'http://test.nicai360.com';
-      // const origin = `http://www.nicai360.com`;
-      // const origin = `http://${location.hostname}:3000`;
-      const socket = io.connect(`${origin}/tasks`);
+      const socket = io.connect(`${ORIGIN}/tasks`);
       socket.on('connect',function(){
         console.log('socket.io connect OK');
         socket.emit('join', { roomId: query.project_id });
