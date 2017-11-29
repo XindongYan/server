@@ -50,30 +50,7 @@ export default class Annotation extends PureComponent {
       const {action, boxPosition, direction } = this.state;
     });
   }
-  operation = (value) => {
-    if(value==='add'){
-      this.setState({
-        direction: {...this.state.direction, visible: 'none'},
-<<<<<<< HEAD
-        signContent: '',
-      },() => {
-        this.setState({signVisible: true})
-=======
-        signVisible: true,
-        signContent: {},
->>>>>>> 362e7c69c4df29c5f22c20bce4d29c1efab53a4d
-      })
-    }
-    if (value==='edit') {
-      const { commentContent, editIndex } = this.state;
-      this.setState({
-        direction: {...this.state.direction, visible: 'none'},
-        signVisible: true,
-        signContent: commentContent[editIndex]
-      })
-      console.log(this.state.signContent)
-    }
-  }
+
   creatBox = (key) => {
     return (
       <Button
