@@ -12,6 +12,11 @@ export default class SignBox extends PureComponent {
       signValue: nextProps.signContent.message || '',
     })
   }
+
+  fnPrevent = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }
   creatComment = () => {
     const { direction, parentWidth } = this.props;
     const bgColors = ['#1abc9c','#3498db','#8e44ad','#34495e','#16a085','#f1c40f','#e74c3c','#f39c12','#2980b9','#d35400'];
@@ -42,9 +47,12 @@ export default class SignBox extends PureComponent {
   render() {
     const { signVisible, close, sureChange, direction, signContent } = this.props;
     const { action, signValue } = this.state;
-    console.log(signValue);
     return (
-      <div className={styles.signBox} style={{ display: signVisible ? 'block' : 'none', top: direction.y}}>
+      <div
+        className={styles.signBox}
+        style={{ display: signVisible ? 'block' : 'none', top: direction.y}}
+        onContextMenu={this.fnPrevent}
+      >
         <div className={styles.SignTit}>批注
           <div className={styles.outSignbox} onClick={this.closeBox}>X</div>
         </div>
