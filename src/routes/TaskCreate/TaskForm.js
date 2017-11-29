@@ -83,7 +83,6 @@ export default class TaskForm extends PureComponent {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
-                this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${query.project_id}`));
               }
             }, 
           });
@@ -99,7 +98,6 @@ export default class TaskForm extends PureComponent {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
-                this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${query.project_id}`));
               }
             }, 
           });
