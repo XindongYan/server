@@ -54,8 +54,14 @@ export default class Annotation extends PureComponent {
     if(value==='add'){
       this.setState({
         direction: {...this.state.direction, visible: 'none'},
+<<<<<<< HEAD
+        signContent: '',
+      },() => {
+        this.setState({signVisible: true})
+=======
         signVisible: true,
         signContent: {},
+>>>>>>> 362e7c69c4df29c5f22c20bce4d29c1efab53a4d
       })
     }
     if (value==='edit') {
