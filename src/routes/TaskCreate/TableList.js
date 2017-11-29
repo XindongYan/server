@@ -4,10 +4,10 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
 import { Table, Card, Button, Menu, Checkbox, Popconfirm, message } from 'antd';
-import { TASK_APPROVE_STATUS, TASK_APPROVE_STATUS_TEXT } from '../../constants';
+import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
-import TaskTitleColumn from '../../components/TaskTitleColumn'
-
+import TaskTitleColumn from '../../components/TaskTitleColumn';
+import TaskStatusColumn from '../../components/TaskStatusColumn';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
@@ -180,7 +180,7 @@ export default class TableList extends PureComponent {
       {
         title: '状态',
         dataIndex: 'approve_status',
-        render: val => TASK_APPROVE_STATUS_TEXT[val],
+        render: val => (<TaskStatusColumn status={val}/>),
       },
       {
         title: '操作',

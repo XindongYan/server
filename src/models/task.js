@@ -1,4 +1,5 @@
-import { queryTask, removeRule, updateTask, addTask, queryProjectTasks, queryTakerTasks, approveTask } from '../services/task';
+import { queryTask, updateTask, addTask, queryProjectTasks, queryTakerTasks, approveTask, rejectTask,
+queryApproverTasks } from '../services/task';
 
 export default {
   namespace: 'task',
@@ -20,6 +21,11 @@ export default {
       pagination: {},
     },
     takerTaskLoading: true,
+    approverTask: {
+      list: [],
+      pagination: {},
+    },
+    approverTaskLoading: true,
   },
 
   effects: {
@@ -49,22 +55,21 @@ export default {
         payload: {},
       });
     },
-    *remove({ payload, callback }, { call, put }) {
+    *approve({ payload, callback }, { call, put }) {
+      const result = yield call(approveTask, payload);
+      if (callback) callback(result);
       yield put({
-        type: 'changeLoading',
-        payload: true,
+        type: 'saveTask',
+        payload: {},
       });
-      const response = yield call(removeRule, payload);
+    },
+    *reject({ payload, callback }, { call, put }) {
+      const result = yield call(rejectTask, payload);
+      if (callback) callback(result);
       yield put({
-        type: 'save',
-        payload: response,
+        type: 'saveTask',
+        payload: {},
       });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-
-      if (callback) callback();
     },
     *fetchProjectTasks({ payload }, { call, put }) {
       yield put({
@@ -97,6 +102,23 @@ export default {
       }
       yield put({
         type: 'changeTakerTasksLoading',
+        payload: false,
+      });
+    },
+    *fetchApproverTasks({ payload }, { call, put }) {
+      yield put({
+        type: 'changeApproverTasksLoading',
+        payload: true,
+      });
+      const response = yield call(queryApproverTasks, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveApproverTasks',
+          payload: response,
+        });
+      }
+      yield put({
+        type: 'changeApproverTasksLoading',
         payload: false,
       });
     },
@@ -143,6 +165,18 @@ export default {
       return {
         ...state,
         takerTaskLoading: action.payload,
+      };
+    },
+    saveApproverTasks(state, action) {
+      return {
+        ...state,
+        approverTask: action.payload,
+      };
+    },
+    changeApproverTasksLoading(state, action) {
+      return {
+        ...state,
+        approverTaskLoading: action.payload,
       };
     },
   },

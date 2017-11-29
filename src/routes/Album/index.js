@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import fetch from 'dva/fetch';
 import path from 'path';
-import { Table, Card, Button, Upload, Icon, message, Modal, Pagination} from 'antd';
+import { Card, Button, Upload, Icon, message, Modal, Pagination, Spin} from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
 import styles from './index.less';
 
@@ -150,7 +150,9 @@ export default class Album extends PureComponent {
           bodyStyle={{ padding: 15 }}
           extra={extra}
         >
-          {data.list.map(this.renderPhoto)}
+          <Spin spinning={loading}>
+            {data.list.map(this.renderPhoto)}
+          </Spin>
         </Card>
         <Pagination
           {...data.pagination}

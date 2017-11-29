@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, TASK_APPROVE_STATUS_TEXT } from '../../constants';
-import TaskTitleColumn from '../../components/TaskTitleColumn'
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
+import TaskTitleColumn from '../../components/TaskTitleColumn';
+import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { Link } from 'dva/router';
 import moment from 'moment';
 import styles from './TableList.less';
@@ -16,8 +17,8 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @connect(state => ({
-  data: state.approve.data,
-  loading: state.approve.loading,
+  data: state.task.approverTask,
+  loading: state.task.approverTaskLoading,
   currentUser: state.user.currentUser,
 }))
 @Form.create()
@@ -33,7 +34,7 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch, data: { pagination }, currentUser } = this.props;
     dispatch({
-      type: 'approve/fetch',
+      type: 'task/fetchApproverTasks',
       payload: { ...pagination, ...this.state.formValues, user_id: currentUser._id }
     });
   }
@@ -60,7 +61,7 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'approve/fetch',
+      type: 'task/fetchApproverTasks',
       payload: params,
     });
   }
@@ -88,56 +89,36 @@ export default class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'approve/fetch',
+        type: 'task/fetchApproverTasks',
         payload: values,
       });
     });
   }
 
-  handleRightsChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, rights: checkedValues}
+  handleReject = (record) => {
+    const { dispatch, data: { pagination }, currentUser } = this.props;
+    dispatch({
+      type: 'task/reject',
+      payload: { _id: record._id, approver_id: currentUser._id },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          dispatch({
+            type: 'task/fetchApproverTasks',
+            payload: { ...pagination, ...this.state.formValues, user_id: currentUser._id }
+          });
+        }
+      },
     });
-  }
-  handleApproveRolesChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, approve_role: checkedValues}
-    });
-  }
-  handleRolesChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, role: checkedValues}
-    });
-  }
-
-  handleChangeUser = () => {
-    this.props.dispatch({
-      type: 'approve/update',
-      payload: this.state.user,
-    });
-
-    message.success('修改成功');
-    this.setState({
-      modalVisible: false,
-    });
+    
   }
 
-  handleShowModal = (user) => {
-    this.setState({
-      modalVisible: true,
-      user,
-    });
-  }
-
-  handleModalVisible = (flag) => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  }
   changeApproveStatus = (e) => {
     const { data: { pagination }, dispatch, currentUser } = this.props;
     dispatch({
-      type: 'approve/fetch',
+      type: 'task/fetchApproverTasks',
       payload: { ...pagination, ...this.state.formValues, user_id: currentUser._id, approve_status: e.target.value, }
     });
     this.setState({
@@ -191,7 +172,7 @@ export default class TableList extends PureComponent {
       {
         title: '审核状态',
         dataIndex: 'approve_status',
-        render: val => TASK_APPROVE_STATUS_TEXT[val],
+        render: val => (<TaskStatusColumn status={val}/>),
       },
     ];
     const approver = {
@@ -219,7 +200,7 @@ export default class TableList extends PureComponent {
                   <span>审核</span>
               </Link>
               <span className={styles.splitLine} />
-              <a onClick={() => this.handleShowModal(record)}>退回</a>
+              <a onClick={() => this.handleReject(record)}>退回</a>
             </div>
           )
         } else {
@@ -267,14 +248,6 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <Modal
-          title="配置用户"
-          visible={modalVisible}
-          onOk={this.handleChangeUser}
-          onCancel={() => this.handleModalVisible()}
-        >
-          
-        </Modal>
       </PageHeaderLayout>
     );
   }

@@ -43,21 +43,25 @@ export default class Register extends Component {
   }
 
   onGetCaptcha = () => {
-    this.props.dispatch({
-      type: `login/getSmsCode`,
-      payload: {
-        phone: this.props.form.getFieldValue('phone')
-      },
-    });
-    let count = 59;
-    this.setState({ count });
-    this.interval = setInterval(() => {
-      count -= 1;
-      this.setState({ count });
-      if (count === 0) {
-        clearInterval(this.interval);
+    this.props.form.validateFields(['phone'], (err, values) => {
+      if (!err) {
+        this.props.dispatch({
+          type: `login/getSmsCode`,
+          payload: {
+            phone: this.props.form.getFieldValue('phone')
+          },
+        });
+        let count = 59;
+        this.setState({ count });
+        this.interval = setInterval(() => {
+          count -= 1;
+          this.setState({ count });
+          if (count === 0) {
+            clearInterval(this.interval);
+          }
+        }, 1000);
       }
-    }, 1000);
+    });
   }
 
   getPasswordStatus = () => {

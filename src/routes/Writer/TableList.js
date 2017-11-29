@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import TaskTitleColumn from '../../components/TaskTitleColumn';
+import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
 
@@ -169,15 +170,7 @@ export default class TableList extends PureComponent {
     const approveStatus = {
       title: '审核状态',
       dataIndex: 'approve_status',
-      render: value => {
-        if (value === 0) {
-          return '审核中';
-        } else if (value === 1) {
-          return '已通过';
-        } else if (value === 2) {
-          return '未通过';
-        }
-      }
+      render: val => (<TaskStatusColumn status={val}/>),
     }
     const approver = {
       title: '审核人',
