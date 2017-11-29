@@ -29,7 +29,7 @@ export default class ProjectForm extends PureComponent {
     // const { formData } = this.props;
     return (
       <Card bordered={false} title="">
-        <Editor style={{ width: '60%' }}/>
+        <Editor style={{ width: '60%', heeight: 100 }}/>
       </Card>
     );
   }

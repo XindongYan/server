@@ -36,6 +36,24 @@ export async function takeTask(params) {
   });
 }
 
+export async function handinTask(params) {
+  return request('/api/task/handin', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
+export async function approveTask(params) {
+  return request('/api/v2/task/approve', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }

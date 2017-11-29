@@ -39,6 +39,7 @@ export default class Editor extends PureComponent {
     this.state.ue.destroy();
   }
   showUeditor = () => {
+
     const ue = window.UE.getEditor('editor', {
       toolbars: [
         [
@@ -66,17 +67,20 @@ export default class Editor extends PureComponent {
         });
       }
     }
-    ue.addListener('contentChange', this.handleChange)
+    ue.addListener('contentChange', this.handleChange);
     this.setState({ ue });
   }
   handleAddImg = (imgs) => {
-    if (imgs.length > 0) {
-      let html = '';
-      imgs.forEach(item => {
-        html += `<p><img style="width:500px;" src="${item.href}" /></p>`;
-      })
-      this.state.ue.execCommand('inserthtml', html);
-    }
+    // let html = '';
+    imgs.forEach(item => {
+      this.state.ue.execCommand( 'insertimage', {
+           src:item.href,
+           width:'500px',
+           height:'500px'
+      });
+      // html += `<p><img style="width:500px;" src="${item.href}" /></p>`;
+    });
+    // this.state.ue.execCommand('inserthtml', html);
   }
   handleChange = () => {
     const content = this.state.ue.getContent();
