@@ -30,9 +30,7 @@ export default class TaskView extends PureComponent {
     // const { formData } = this.props;
     return (
       <Card bordered={false} title="">
-        <div style={{ width: '500px', height: 200}}>
-          <Annotation viewStatus="view" />
-        </div>
+        <Annotation style={{ width: 500, height: 200}} viewStatus="view" />
       </Card>
     );
   }

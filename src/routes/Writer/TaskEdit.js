@@ -4,6 +4,7 @@ import querystring from 'querystring';
 import { Card } from 'antd';
 import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
+import styles from './TableList.less';
 
 // import styles from './Project.less';
 
@@ -30,11 +31,9 @@ export default class ProjectForm extends PureComponent {
     // const { formData } = this.props;
     return (
       <Card bordered={false} title="">
-        <div style={{ width: '600px' }}>
-          <Editor style={{ width: '100%' }}/>
-        </div>
-        <div style={{ width: '500px', height: 200}}>
-          <Annotation viewStatus="view" />
+        <div className={styles.taskOuterBox}>
+          <Editor style={{ width: 650, float: 'left' }}/>
+          <Annotation viewStatus="edit" style={{ width: 350, height: 200, float: 'right' }}/>
         </div>
       </Card>
     );
