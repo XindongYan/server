@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, TASK_APPROVE_STATUS_TEXT } from '../../constants';
-import TaskTitleColumn from '../../components/TaskTitleColumn'
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
+import TaskTitleColumn from '../../components/TaskTitleColumn';
+import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { Link } from 'dva/router';
 import moment from 'moment';
 import styles from './TableList.less';
@@ -171,7 +172,7 @@ export default class TableList extends PureComponent {
       {
         title: '审核状态',
         dataIndex: 'approve_status',
-        render: val => TASK_APPROVE_STATUS_TEXT[val],
+        render: val => (<TaskStatusColumn status={val}/>),
       },
     ];
     const approver = {
