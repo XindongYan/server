@@ -38,11 +38,15 @@ export default class Annotation extends PureComponent {
         ...this.state.direction,
         visible: 'none',
       },
-      signVisible: false,
     });
   }
   fnContextMenu = (e) => {
     e.preventDefault();
+    let oX = e.pageX - $(e.target).offset().left;
+    let oY = e.pageY - $(e.target).offset().top;
+    // if(oX + 100 > $(e.target).outerWidth()){
+    //   oX = $(e.target).outerWidth() - 100;
+    // }
     this.setState({
       action: [
         {'name': '添加','value': 'add'},
@@ -52,8 +56,8 @@ export default class Annotation extends PureComponent {
         top: $(e.target).offset().top,
       },
       direction: {
-        x: (e.pageX - $(e.target).offset().left),
-        y: (e.pageY - $(e.target).offset().top),
+        x: oX,
+        y: oY,
         visible: 'block',
       },
       signVisible: false,
@@ -61,7 +65,8 @@ export default class Annotation extends PureComponent {
       const {action, boxPosition, direction } = this.state;
     });
   }
-  operation = (value) => {
+  operation = (e,value) => {
+    e.stopPropagation();
     this.setState({
       status: value,
     })
@@ -95,7 +100,7 @@ export default class Annotation extends PureComponent {
         key={key.value}
         size="small"
         style={{width: '100%', zIndex: '2333'}}
-        onClick={() => this.operation(key.value)}
+        onClick={(e) => this.operation(e,key.value)}
         onContextMenu={this.fnPrevent}
       >
         {key.name}
@@ -109,18 +114,19 @@ export default class Annotation extends PureComponent {
   }
   sureChange = (commentMsg) => {
     const { status, editIndex, commentContent } = this.state;
-    if(status === 'add'){
-      this.setState({
-        signVisible: false,
-        commentContent: [...this.state.commentContent, commentMsg],
-      })
-    } else if(status === 'edit') {
-      const newComment = { ...commentContent[editIndex], message: commentMsg.message };
-      commentContent.splice(editIndex,1,newComment);
-      this.setState({
-        signVisible: false,
-      })
+    if(commentMsg.message){
+      if(status === 'add'){
+        this.setState({
+          commentContent: [...this.state.commentContent, commentMsg],
+        })
+      } else if(status === 'edit') {
+        const newComment = { ...commentContent[editIndex], message: commentMsg.message };
+        commentContent.splice(editIndex,1,newComment);
+      }
     }
+    this.setState({
+      signVisible: false,
+    })
   }
   editComment = (e, index) => {
     e.preventDefault();
@@ -139,16 +145,24 @@ export default class Annotation extends PureComponent {
     })
   }
   render() {
+    const { viewStatus } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     return (
-      <div style={{ 'width': '500px', 'height': '600px', 'position': 'relative' }} ref="myTextInput">
+      <div style={{ 'width': '100%', 'height': '100%', 'position': 'relative' }} ref="myTextInput">
         <div
           ref="AnnotationBox"
           className={styles.AnnotationBox}
           onContextMenu={this.fnContextMenu}
           onClick={this.fnClickDefult}
         >
-          <div className={styles.selectBox} style={{ left: direction.x, top: direction.y, display: direction.visible}}>
+          <div
+            className={styles.selectBox}
+            style={{ 
+              left: direction.x + 100 > $(this.refs.AnnotationBox).outerWidth() ? ($(this.refs.AnnotationBox).outerWidth()-100 || 0) : direction.x, 
+              top: direction.y,
+              display: direction.visible
+            }}
+          >
             {action.map(this.creatBox)}
           </div>
           <SignBox
@@ -158,10 +172,16 @@ export default class Annotation extends PureComponent {
             signVisible={signVisible}
             parentWidth={$(this.refs.AnnotationBox).outerWidth()}
             signContent={signContent}
+            boxSize={$(this.refs.AnnotationBox).outerHeight()}
           />
           {commentContent.map((item,index) => 
             <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
           }
+        </div>
+        <div
+          className={styles.viewBox}
+          style={{display: viewStatus==='view' ? 'block' : 'none'}}
+        >
         </div>
       </div> 
     );

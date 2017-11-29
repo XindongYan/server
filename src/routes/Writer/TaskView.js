@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import querystring from 'querystring';
 import { Card } from 'antd';
 import Editor from '../../components/Editor';
+import Annotation from '../../components/Annotation';
 
 // import styles from './Project.less';
 
@@ -29,7 +30,9 @@ export default class TaskView extends PureComponent {
     // const { formData } = this.props;
     return (
       <Card bordered={false} title="">
-        <Editor style={{ width: '60%', heeight: 100 }}/>
+        <div style={{ width: '500px', height: 200}}>
+          <Annotation viewStatus="view" />
+        </div>
       </Card>
     );
   }
