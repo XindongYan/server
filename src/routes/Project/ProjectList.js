@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import { PROJECT_STATUS_TEXT } from '../../constants';
 
 import styles from './Project.less';
 
@@ -163,12 +164,38 @@ export default class FlowList extends PureComponent {
       },
     });
   }
+  handleOffshelf = (record) => {
+    const { dispatch, teamUser } = this.props;
+    dispatch({
+      type: 'project/offshelf',
+      payload: {
+        _id: record._id,
+        user_id: teamUser.user_id,
+        team_id: teamUser.team_id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+        }
+      },
+    });
+  }
   handleRemove = (record) => {
-    this.props.dispatch({
+    const { dispatch, teamUser } = this.props;
+    dispatch({
       type: 'project/remove',
       payload: {
         _id: record._id,
-        team_id: this.props.teamUser.team_id,
+        team_id: teamUser.team_id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+        }
       },
     });
     message.success('删除成功');
@@ -211,6 +238,11 @@ export default class FlowList extends PureComponent {
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
       },
       {
+        title: '状态',
+        dataIndex: 'status',
+        render: val => PROJECT_STATUS_TEXT[val],
+      },
+      {
         title: '操作',
         render: (record) => (
           <p>
@@ -220,6 +252,10 @@ export default class FlowList extends PureComponent {
             <span className={styles.splitLine} />
             <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
               <a>发布</a>
+            </Popconfirm>
+            <span className={styles.splitLine} />
+            <Popconfirm placement="left" title={`确认下架?`} onConfirm={() => this.handleOffshelf(record)} okText="确认" cancelText="取消">
+              <a>下架</a>
             </Popconfirm>
             <span className={styles.splitLine} />
             <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
