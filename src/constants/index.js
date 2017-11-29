@@ -1,7 +1,7 @@
 export const ORIGIN = 'http://test.nicai360.com';
-// const origin = 'http://test.nicai360.com';
-// const origin = `http://www.nicai360.com`;
-// const origin = `http://${location.hostname}:3000`;
+// export const ORIGIN = 'http://www.nicai360.com';
+// export const ORIGIN = `http://${location.hostname}:3000`;
+
 export const RIGHTS = [
   { label: '写手', value: 1 },
   { label: '团队管理', value: 2 },

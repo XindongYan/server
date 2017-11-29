@@ -23,7 +23,7 @@ export default class TaskChat extends PureComponent {
         <Popover
           content={
             <iframe src={`${ORIGIN}/htmls/taskChat.html?task_id=${task._id}`}
-              style={{ width: 380, height: '600px' }}>
+              style={{ width: 320, height: '500px' }}>
             </iframe>
           }
           title="聊天窗口"
