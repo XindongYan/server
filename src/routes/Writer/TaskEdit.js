@@ -92,7 +92,7 @@ export default class TaskEdit extends PureComponent {
             <div className={styles.commentTitle}>
               批注
             </div>
-            <Annotation />
+            <Annotation style={{height: '100%'}} />
           </div>
           <Button onClick={this.handleSubmit} style={{ position: 'fixed' }}>提交</Button>
           <Button onClick={this.handleSave} style={{ position: 'fixed', left: 300 }}>保存</Button>
