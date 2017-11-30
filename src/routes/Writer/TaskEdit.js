@@ -92,8 +92,8 @@ export default class TaskEdit extends PureComponent {
             <Annotation viewStatus="view" value={[]} />
           </div>
           <div className={styles.submitBox}>
-            <Button onClick={this.handleSubmit} style={{ position: 'fixed' }}>提交</Button>
-            <Button onClick={this.handleSave} style={{ position: 'fixed', left: 300 }}>保存</Button>
+            <Button onClick={this.handleSubmit}>提交</Button>
+            <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
         

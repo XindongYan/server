@@ -78,16 +78,15 @@ export default class WeitaoForm extends PureComponent {
         </div>
         <div className={styles.taskContentBox} style={{ display: operation==='view' ? 'block' : 'none' }}>
           <div className={styles.taskList}>
-            <div style={{ width: 375, height:211, textAlign: 'center', lineHeight: 211 }}>
+            <div style={{ width: 375, height:'211px', textAlign: 'center', lineHeight: '211px' }}>
               <img src={formData.cover_img} />
             </div>
           </div>
-          <div className={styles.taskList}>
-            <p style={{ fontSize: 18 }}>标题</p>
+          <div className={styles.taskList} style={{margin: '20px 0'}}>
+            <p style={{ fontSize: 18 }}>{formData.title}</p>
           </div>
           <div className={styles.taskList}>
-            <div>
-              正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文
+            <div dangerouslySetInnerHTML={{__html: formData.task_desc}}>
             </div>
           </div>
         </div>
