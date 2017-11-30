@@ -1,10 +1,22 @@
 import React, { PureComponent } from 'react';
-import { Popover, Button } from 'antd';
+import { Popover, Button, Badge } from 'antd';
 import { ORIGIN } from '../../constants';
 
 export default class TaskChat extends PureComponent {
   state = {
     visible: false,
+    taskChatMsgNum: 0,
+  }
+  componentDidMount() {
+    if (window.addEventListener) {
+      window.addEventListener("storage", this.handleNewMessge, false);
+    } else if (window.attachEvent) {
+      window.attachEvent("onstorage", this.handleNewMessge);
+    }
+  }
+  handleNewMessge = () => {
+    console.log(window.localStorage);
+    this.setState({ taskChatMsgNum: Number(window.localStorage.taskChatMsgNum) });
   }
   hide = () => {
     this.setState({
@@ -17,7 +29,7 @@ export default class TaskChat extends PureComponent {
 
   render() {
     const { task } = this.props;
-    const { visible } = this.state;
+    const { visible, taskChatMsgNum } = this.state;
     return (
       <div style={{ position: 'fixed', top: 80, right: 20 }}>
         <Popover
@@ -35,7 +47,9 @@ export default class TaskChat extends PureComponent {
           visible={visible}
           onVisibleChange={this.handleVisibleChange}
         >
-          <Button type="default" shape="circle" icon="message" size="large" />
+          <Badge count={taskChatMsgNum}>
+            <Button type="default" shape="circle" icon="message" size="large" />
+          </Badge>
         </Popover>
       </div>
     );

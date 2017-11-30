@@ -221,7 +221,7 @@ export default class FlowList extends PureComponent {
     const columns = [
       {
         title: '标题',
-        dataIndex: 'title',
+        dataIndex: 'name',
       },
       {
         title: '商家标签',
