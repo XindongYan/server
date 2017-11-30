@@ -25,10 +25,12 @@ export default class TableList extends PureComponent {
 
   componentDidMount() {
     const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'task/fetchTakerTasks',
-      payload: { ...this.state.formValues, user_id: currentUser._id },
-    });
+    if (currentUser._id) {
+      dispatch({
+        type: 'task/fetchTakerTasks',
+        payload: { ...this.state.formValues, user_id: currentUser._id },
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser } = nextProps;

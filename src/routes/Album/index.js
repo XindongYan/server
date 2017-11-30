@@ -20,14 +20,16 @@ export default class Album extends PureComponent {
   }
   componentDidMount() {
     const { dispatch, currentUser, data } = this.props;
-    dispatch({
-      type: 'album/fetch',
-      payload: {
-        user_id: currentUser._id,
-        ...data.pagination,
-        currentPage: data.pagination.current,
-      }
-    });
+    if (currentUser._id) {
+      dispatch({
+        type: 'album/fetch',
+        payload: {
+          user_id: currentUser._id,
+          ...data.pagination,
+          currentPage: data.pagination.current,
+        }
+      });
+    }
     dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
