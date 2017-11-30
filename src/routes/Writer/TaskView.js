@@ -9,7 +9,6 @@ import WeitaoForm from '../../components/Forms/WeitaoForm';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
 
-// import styles from './Project.less';
 
 @connect(state => ({
   formData: state.task.formData,
@@ -59,7 +58,7 @@ export default class TaskView extends PureComponent {
           <WeitaoForm operation="view" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange}/>
           { showAnnotation &&
             <div className={styles.taskComment} style={{height: taskOuterBoxHeight - 40}}>
-              <Annotation value={this.state.task.approve_notes} onChange={this.handleChange}/>
+              <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange}/>
             </div>
           }
         </div>

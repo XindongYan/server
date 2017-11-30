@@ -148,7 +148,7 @@ export default class Annotation extends PureComponent {
     const { viewStatus, style, value } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     return (
-      <div style={{height: style || 800}}>
+      <div style={{height: style || 600}}>
         <div className={styles.commentTitle}>
           批注
         </div>

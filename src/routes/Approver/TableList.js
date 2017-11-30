@@ -193,7 +193,7 @@ export default class TableList extends PureComponent {
     const opera = {
       title: '操作',
       render: (record) => {
-        if (formValues.approve_status === 0) {
+        if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
               <Link to={`/approver/task/edit?_id=${record._id}`}>
@@ -205,9 +205,15 @@ export default class TableList extends PureComponent {
               </Popconfirm>
             </div>
           )
-        } else {
+        } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <Link to="http://120.27.215.205/">
+                <span>详情</span>
+            </Link>
+          )
+        } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
+          return (
+            <Link to={`/approver/task/view?_id=${record._id}`}>
                 <span>详情</span>
             </Link>
           )

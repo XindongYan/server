@@ -84,6 +84,7 @@ export default class TaskEdit extends PureComponent {
   render() {
     const { formData } = this.props;
     const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    console.log(formData)
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
@@ -96,7 +97,6 @@ export default class TaskEdit extends PureComponent {
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
-        
       </Card>
     );
   }
