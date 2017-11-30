@@ -19,6 +19,22 @@ export default class TaskCreate extends PureComponent {
       cover_img: '',
     },
   }
+  componentDidMount() {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    this.props.dispatch({
+      type: 'task/fetchTask',
+      payload: { _id: query._id },
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      task: {
+        title: nextProps.formData.title,
+        task_desc: nextProps.formData.task_desc,
+        cover_img: nextProps.formData.cover_img,
+      }
+    });
+  }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });
   }
