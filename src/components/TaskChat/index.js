@@ -1,22 +1,35 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import { Popover, Button, Badge } from 'antd';
+import io from 'socket.io-client';
 import { ORIGIN } from '../../constants';
+
+@connect(state => ({
+  currentUser: state.user.currentUser,
+}))
 
 export default class TaskChat extends PureComponent {
   state = {
     visible: false,
     taskChatMsgNum: 0,
+    socket: null,
   }
-  componentDidMount() {
-    if (window.addEventListener) {
-      window.addEventListener("storage", this.handleNewMessge, false);
-    } else if (window.attachEvent) {
-      window.attachEvent("onstorage", this.handleNewMessge);
+  componentWillReceiveProps(nextProps) {
+    const { task } = nextProps;
+    if (this.props.task._id !== task._id) {
+      if (!this.state.socket) {
+        const socket = io.connect(`${ORIGIN}/taskChat`);
+        socket.on('connect', () => {
+          socket.emit('join', { roomId: task._id });
+        });
+        socket.on('message', (data) => {
+          if (data.from_user_id._id !== this.props.currentUser._id) {
+            this.setState({ taskChatMsgNum: this.state.taskChatMsgNum + 1 });
+          }
+        });
+        this.setState({ socket });
+      }
     }
-  }
-  handleNewMessge = () => {
-    console.log(window.localStorage);
-    this.setState({ taskChatMsgNum: Number(window.localStorage.taskChatMsgNum) });
   }
   hide = () => {
     this.setState({
@@ -24,7 +37,11 @@ export default class TaskChat extends PureComponent {
     });
   }
   handleVisibleChange = (visible) => {
-    this.setState({ visible });
+    if (visible) {
+      this.setState({ taskChatMsgNum: 0, visible });
+    } else {
+      this.setState({ visible });
+    }
   }
 
   render() {
