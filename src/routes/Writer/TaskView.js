@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import querystring from 'querystring';
 import { Card } from 'antd';
 import $ from 'jquery';
-import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import { TASK_APPROVE_STATUS } from '../../constants';
@@ -40,13 +39,8 @@ export default class TaskView extends PureComponent {
       }
     });
   }
-  handleSubmit = () => {
-    console.log(this.state.task);
-  }
-  handleChange = (task) => {
-    this.setState({ task: { ...this.state.task, ...task } }, () => {
-      console.log(this.state.task);
-    });
+  handleChange = () => {
+
   }
   render() {
     const { formData } = this.props;
@@ -55,10 +49,10 @@ export default class TaskView extends PureComponent {
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
-          <WeitaoForm operation="view" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange}/>
+          <WeitaoForm operation="view" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange} />
           { showAnnotation &&
-            <div className={styles.taskComment} style={{height: taskOuterBoxHeight - 40}}>
-              <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange}/>
+            <div className={styles.taskComment} style={{ height: taskOuterBoxHeight - 40 }}>
+              <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange} />
             </div>
           }
         </div>

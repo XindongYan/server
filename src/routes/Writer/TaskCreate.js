@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
-import { Card, Button } from 'antd';
-import $ from 'jquery';
-import Editor from '../../components/Editor';
+import { Card, Button, Popconfirm, message } from 'antd';
+// import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import styles from './TableList.less';
 
@@ -19,52 +19,44 @@ export default class TaskCreate extends PureComponent {
       cover_img: '',
     },
   }
-  componentDidMount() {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'task/fetchTask',
-      payload: query,
-    });
-  }
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      task: {
-        title: nextProps.formData.title,
-        task_desc: nextProps.formData.task_desc,
-        cover_img: nextProps.formData.cover_img,
-      }
-    });
-  }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });
   }
   handleSubmit = () => {
-    console.log(this.state.task);
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'task/update',
-      payload: { ...this.state.task, _id: query._id },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/handin',
-            payload: { _id: query._id },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                message.success(result1.msg);
+    const { task } = this.state;
+    if (!task.title || !task.title.replace(/\s+/g, '')) {
+      message.warn('请填写标题');
+    } else if (!task.task_desc) {
+      message.warn('请填写内容');
+    } else if (!task.cover_img) {
+      message.warn('请选择封面图');
+    } else {
+      const query = querystring.parse(this.props.location.search.substr(1));
+      this.props.dispatch({
+        type: 'task/update',
+        payload: { ...this.state.task, _id: query._id },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/handin',
+              payload: { _id: query._id },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  message.success(result1.msg);
+                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                }
               }
-            }
-          });
+            });
+          }
         }
-      }
-    });
+      });
+    }
   }
   handleSave = () => {
-    console.log(this.state.task);
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
       type: 'task/update',
@@ -79,13 +71,11 @@ export default class TaskCreate extends PureComponent {
     });
   }
   render() {
-    const { formData } = this.props;
-    console.log(formData)
-    const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
-          <WeitaoForm operation="edit" style={{ width: 720 }} formData={this.state.task} onChange={this.handleChange}/>
+          <WeitaoForm operation="edit" style={{ width: 720 }} formData={this.state.task} onChange={this.handleChange} />
           <div className={styles.taskComment} style={{ width: 200 }}>
             <p className={styles.titleDefult}>爆文写作参考</p>
             <ul className={styles.tPrompt}>
@@ -95,7 +85,9 @@ export default class TaskCreate extends PureComponent {
             </ul>
           </div>
           <div className={styles.submitBox}>
-            <Button onClick={this.handleSubmit}>提交</Button>
+            <Popconfirm placement="left" title="确认已经写完并提交给审核人员?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
+              <Button>提交</Button>
+            </Popconfirm>
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
