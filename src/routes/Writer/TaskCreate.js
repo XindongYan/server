@@ -5,6 +5,7 @@ import querystring from 'querystring';
 import { Card, Button, Popconfirm, message } from 'antd';
 // import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
 @connect(state => ({
@@ -107,6 +108,7 @@ export default class TaskCreate extends PureComponent {
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
+        <TaskChat task={this.props.formData} />
       </Card>
     );
   }

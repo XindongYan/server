@@ -6,6 +6,7 @@ import { Card, Button, Popconfirm, message } from 'antd';
 import $ from 'jquery';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
 // import styles from './Project.less';
@@ -42,7 +43,7 @@ export default class TaskEdit extends PureComponent {
   }
   handleSubmit = () => {
     const { task } = this.state;
-    if (!task.title || !task.title.replace(/\s+/g, "")) {
+    if (!task.title || !task.title.replace(/\s+/g, '')) {
       message.warn('请填写标题');
     } else if (!task.task_desc) {
       message.warn('请填写内容');
@@ -107,6 +108,7 @@ export default class TaskEdit extends PureComponent {
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
+        <TaskChat task={this.props.formData} />
       </Card>
     );
   }
