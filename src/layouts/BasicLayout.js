@@ -373,7 +373,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/writer/task/handin/success" component={WriterTaskSuccess} />
               <Route path="/approver/task/edit" component={ApproverTaskEdit} />
               <Route path="/approver/task/view" component={ApproverTaskView} />
-              <Redirect to="/list/teamUser-list" />
+              <Redirect to="/list/task-square" />
             </Switch>
             <GlobalFooter
               links={[{

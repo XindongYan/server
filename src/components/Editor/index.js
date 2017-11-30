@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import AlbumModal from '../AlbumModal';
 
-@connect(state => ({
+@connect(() => ({
 
 }))
 export default class Editor extends PureComponent {
@@ -35,34 +35,33 @@ export default class Editor extends PureComponent {
       this.showUeditor();
     }
   }
-  componentWillReceiveProps(nextProps) {
-  }
   componentWillUnmount() {
     this.state.ue.destroy();
   }
   showUeditor = () => {
-
     const ue = window.UE.getEditor('editor', {
       toolbars: [
         [
-          'undo', //撤销
-          'redo', //重做
-          'bold', //加粗
-          'italic', //斜体
-          'underline', //下划线
-          'justifyleft', //居左对齐
-          'justifyright', //居右对齐
-          'justifycenter', //居中对齐
-          'justifyjustify', //两端对齐
+          'undo', // 撤销
+          'redo', // 重做
+          'bold', // 加粗
+          'italic', // 斜体
+          'underline', // 下划线
+          'justifyleft', // 居左对齐
+          'justifyright', // 居右对齐
+          'justifycenter', // 居中对齐
+          'justifyjustify', // 两端对齐
           'picture',
           // 'taobao',
+          'forecolor', // 字体颜色
+          'backcolor', // 背景色
           'drafts', // 从草稿箱加载
         ]
       ],
       autoHeightEnabled: true,
       scaleEnabled: false
     });
-    ue.commands['picture'] = {
+    ue.commands.picture = {
       execCommand: () => {
         this.props.dispatch({
           type: 'album/show',
@@ -71,9 +70,9 @@ export default class Editor extends PureComponent {
           }
         });
       }
-    }
+    };
     ue.addListener('contentChange', this.handleChange);
-    ue.addListener("ready", () => {  
+    ue.addListener('ready', () => {
       setTimeout(() => {
         ue.setContent(this.props.value);
       }, 200);
@@ -81,11 +80,11 @@ export default class Editor extends PureComponent {
     this.setState({ ue });
   }
   handleAddImg = (imgs) => {
-    imgs.forEach(item => {
-      this.state.ue.execCommand( 'insertimage', {
-           src:item.href,
-           maxWidth:'60%',
-           height:'auto'
+    imgs.forEach((item) => {
+      this.state.ue.execCommand('insertimage', {
+        src: item.href,
+        maxWidth: '60%',
+        height: 'auto',
       });
     });
     // this.state.ue.execCommand('inserthtml', html);
@@ -95,11 +94,11 @@ export default class Editor extends PureComponent {
     if (this.props.onChange) this.props.onChange(content);
   }
   render() {
-    const { style } = this.props
+    const { style } = this.props;
     return (
       <div style={style}>
-        <div id="editor"></div>
-        <AlbumModal k="editor" onOk={this.handleAddImg}/>
+        <div id="editor" />
+        <AlbumModal k="editor" onOk={this.handleAddImg} />
       </div>
     );
   }
