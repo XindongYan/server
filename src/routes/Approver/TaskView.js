@@ -41,11 +41,9 @@ export default class TaskView extends PureComponent {
     });
   }
   handleSubmit = () => {
-    console.log(this.state.task);
   }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } }, () => {
-      console.log(this.state.task);
     });
   }
   render() {
@@ -61,9 +59,16 @@ export default class TaskView extends PureComponent {
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange}/>
             </div>
           }
-          <div className={styles.submitBox}>
-            <p>分数</p>
-          </div>
+          {this.state.grade > 0 &&
+            <div className={styles.submitBox}>
+              <dl className={styles.showGradeBox}>
+              <dt>分数</dt>
+              {grades.map((item) => 
+                <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
+              }
+              </dl>
+            </div>
+          }
         </div>
       </Card>
     );

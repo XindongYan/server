@@ -41,7 +41,6 @@ export default class TaskEdit extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps)
     this.setState({
       task: {
         title: nextProps.formData.title,
@@ -95,7 +94,6 @@ export default class TaskEdit extends PureComponent {
     });
   }
   handleSubmit = (status) => {
-    console.log
     const query = querystring.parse(this.props.location.search.substr(1));
     const { grade, grades, approve_status, approve_notes } = this.state;
     this.props.dispatch({
@@ -133,6 +131,7 @@ export default class TaskEdit extends PureComponent {
     const { formData } = this.props;
     const { grades, approve_notes } = this.state;
     const operation = formData.approve_step === 0 ? 'edit' : 'view';
+    // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 
@@ -149,7 +148,6 @@ export default class TaskEdit extends PureComponent {
         }
       </div>
     );
-    // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
@@ -163,12 +161,20 @@ export default class TaskEdit extends PureComponent {
             />
           </div>
           <div className={styles.submitBox}>
+            {this.state.grade > 0 && 
+              <dl className={styles.showGradeBox}>
+              <dt>分数</dt>
+              {grades.map((item) => 
+                <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
+              }
+              </dl>
+            }
             <Popconfirm
               placement="top"
               title="确认提交？"
               onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}
             >
-              { formData.approve_step === 0 ?
+              { formData.approve_step === 0 || formData.approve_status === 1 ?
                 <Popover content={content} title="评分" trigger="hover">
                   <Button>不通过</Button>
                 </Popover>
@@ -180,7 +186,7 @@ export default class TaskEdit extends PureComponent {
               title="确认提交？"
               onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}
             >
-              { formData.approve_step === 0 ?
+              { formData.approve_step === 0 || formData.approve_status === 1 ?
                 <Popover content={content} title="评分" trigger="hover">
                   <Button>通过</Button>
                 </Popover>

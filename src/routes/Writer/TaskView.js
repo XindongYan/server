@@ -22,6 +22,8 @@ export default class TaskView extends PureComponent {
       cover_img: '',
       approve_notes: [],
     },
+    grade: 0,
+    grades: [],
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -37,7 +39,9 @@ export default class TaskView extends PureComponent {
         task_desc: nextProps.formData.task_desc,
         cover_img: nextProps.formData.cover_img,
         approve_notes: nextProps.formData.approve_notes,
-      }
+      },
+      grade: nextProps.formData.grade,
+      grades: nextProps.formData.grades,
     });
   }
   handleChange = () => {
@@ -54,6 +58,16 @@ export default class TaskView extends PureComponent {
           { showAnnotation &&
             <div className={styles.taskComment} style={{ height: taskOuterBoxHeight - 40 }}>
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange} />
+            </div>
+          }
+          {this.state.grade > 0 &&
+            <div className={styles.submitBox}>
+              <dl className={styles.showGradeBox}>
+              <dt>分数</dt>
+              {this.state.grades.map((item) => 
+                <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
+              }
+              </dl>
             </div>
           }
         </div>

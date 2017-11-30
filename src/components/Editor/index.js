@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import AlbumModal from '../AlbumModal';
-
+import styles from './index.less';
 @connect(() => ({
 
 }))
@@ -97,7 +97,7 @@ export default class Editor extends PureComponent {
     const { style } = this.props;
     return (
       <div style={style}>
-        <div id="editor" />
+        <div id="editor" className={styles.editor} />
         <AlbumModal k="editor" onOk={this.handleAddImg} />
       </div>
     );

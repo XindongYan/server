@@ -23,6 +23,8 @@ export default class TaskEdit extends PureComponent {
       cover_img: '',
       approve_notes: [],
     },
+    grade: 0,
+    grades: [],
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -38,7 +40,9 @@ export default class TaskEdit extends PureComponent {
         task_desc: nextProps.formData.task_desc,
         cover_img: nextProps.formData.cover_img,
         approve_notes: nextProps.formData.approve_notes,
-      }
+      },
+      grade: nextProps.formData.grade,
+      grades: nextProps.formData.grades,
     });
   }
   handleSubmit = () => {
@@ -102,6 +106,14 @@ export default class TaskEdit extends PureComponent {
             <Annotation viewStatus="view" value={this.state.task.approve_notes} />
           </div>
           <div className={styles.submitBox}>
+            {this.state.grade > 0 &&
+              <dl className={styles.showGradeBox}>
+                <dt>分数</dt>
+                {this.state.grades.map((item) => 
+                  <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
+                }
+              </dl>
+            }
             <Popconfirm placement="left" title="确认已经写完并提交给审核人员?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
               <Button>提交</Button>
             </Popconfirm>

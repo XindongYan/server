@@ -219,7 +219,7 @@ export default class TableList extends PureComponent {
           )
         } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
-            <Link to="http://120.27.215.205/">
+            <Link to={`/approver/task/edit?_id=${record._id}`}>
                 <span>详情</span>
             </Link>
           )
