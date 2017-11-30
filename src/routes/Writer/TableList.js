@@ -190,15 +190,27 @@ export default class TableList extends PureComponent {
     const opera = {
       title: '操作',
       render: (record) => {
-        if (formValues.approve_status === 0 || formValues.approve_status === 1) {
+         if (record.approve_status === TASK_APPROVE_STATUS.taken) {
+          return (
+            <Link to={`/writer/task/create?_id=${record._id}`}>
+                <span>编辑</span>
+            </Link>
+          )
+        } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
-              <Link to={`/writer/task/view?_id=${record._id}`}>
-                  <span>详情</span>
+              <Link to={`/writer/task/create?_id=${record._id}`}>
+                  <span>查看</span>
               </Link>
             </div>
           )
-        } else {
+        } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
+          return (
+            <Link to={`/writer/task/view?_id=${record._id}`}>
+                <span>查看</span>
+            </Link>
+          )
+        } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>

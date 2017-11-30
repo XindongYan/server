@@ -202,7 +202,7 @@ export default class TableList extends PureComponent {
     };
     return (
       <div>
-        <Card title={formData.title} noHovering bordered={false} style={{ margin: '10px 0' }} bodyStyle={{ padding:'10px 5px' }}>
+        <Card title={formData.title} hoverable={false} bordered={false} style={{ margin: '10px 0' }} bodyStyle={{ padding:'10px 5px' }}>
           <Card.Grid style={gridStyle}>商家标签：{ formData.merchant_tag }</Card.Grid>
           <Card.Grid style={gridStyle}>截止日期：{ formData.deadline ? moment(formData.deadline).format('YYYY-MM-DD HH:mm') : '未设置' }</Card.Grid>
           <Card.Grid style={gridStyle}>项目奖励：{ formData.price }</Card.Grid>
