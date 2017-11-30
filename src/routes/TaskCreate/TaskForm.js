@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Card, Form, Input, Select, Icon, Button, InputNumber, Upload, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, CHANNEL_NAMES } from '../../constants';
 import path from 'path';
 import querystring from 'querystring';
 
@@ -30,7 +30,7 @@ export default class TaskForm extends PureComponent {
         payload: { _id: query._id },
       });
       this.props.form.setFieldsValue({
-        title: formData.title,
+        name: formData.name,
         channel_name: formData.channel_name,
         desc: formData.desc,
         attachments: formData.attachments,
@@ -44,7 +44,7 @@ export default class TaskForm extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
       this.props.form.setFieldsValue({
-        title: nextProps.formData.title,
+        name: nextProps.formData.name,
         channel_name: nextProps.formData.channel_name,
         desc: nextProps.formData.desc,
         attachments: nextProps.formData.attachments,
@@ -98,6 +98,7 @@ export default class TaskForm extends PureComponent {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
+                this.props.form.resetFields();
               }
             }, 
           });
@@ -131,7 +132,7 @@ export default class TaskForm extends PureComponent {
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
-            {getFieldDecorator('title', {
+            {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入项目标题！' }],
             })(
               <Input />
@@ -143,9 +144,13 @@ export default class TaskForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('channel_name', {
-              rules: [{ required: true, message: '请输入渠道！' }],
+              rules: [{ required: true, message: '请选择渠道！' }],
             })(
-              <Input />
+              <Select
+                placeholder="选择渠道"
+              >
+                {CHANNEL_NAMES.map(item => <Option value={item} key={item}>{item}</Option>)}
+              </Select>
             )}
           </FormItem>
           <FormItem

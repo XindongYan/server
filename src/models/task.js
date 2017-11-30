@@ -50,6 +50,10 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const result = yield call(updateTask, payload);
       if (callback) callback(result);
+      // yield put({
+      //   type: 'saveTask',
+      //   payload: {},
+      // });
     },
     *handin({ payload, callback }, { call, put }) {
       const result = yield call(handinTask, payload);

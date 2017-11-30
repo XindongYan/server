@@ -31,7 +31,7 @@ export default class ProjectCard extends PureComponent {
       <Col span={8} onClick={() => this.projectInto(project)}>
         <Card className={styles.cardCol} bodyStyle={{ padding: 0 }}>
           <div className={styles.cardColTop}>
-            <h3 title={project.title}>{project.title}</h3>
+            <h3 title={project.name}>{project.name}</h3>
             <p title={project.merchant_tag}>{ project.merchant_tag ? project.merchant_tag : '无' }</p>
           </div>
           <div className={styles.cardColBottom}>

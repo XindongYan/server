@@ -16,8 +16,8 @@ export default class TaskCard extends PureComponent {
     return (
       <Col span={4} key={index} style={{padding: "5px"}}>
         <Card style={{ width: "100%" }} bodyStyle={{ padding: 0 }}>
-          <div className={styles.customImage} style={{ background: colorArr[task.id%8] }}>
-            <h3><TaskTitleColumn text={task.title} length={23}/></h3>
+          <div className={styles.customImage} style={{ background: colorArr[ task.id % 8 ] }}>
+            <h3><TaskTitleColumn text={task.name} length={23}/></h3>
           </div>
           <div className={styles.customCard}>
             <p>商家标签:<TaskTitleColumn text={task.merchant_tag} length={16}/></p>

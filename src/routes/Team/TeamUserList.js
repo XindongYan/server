@@ -277,7 +277,7 @@ export default class TableList extends PureComponent {
                 mode="combobox"
                 optionLabelProp="children"
                 value={this.state.value}
-                placeholder="输入用户电话号码搜索"
+                placeholder="输入用户电话号码搜索添加"
                 notFoundContent=""
                 defaultActiveFirstOption={false}
                 showArrow={false}
