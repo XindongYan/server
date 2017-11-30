@@ -60,7 +60,7 @@ export default class TaskView extends PureComponent {
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange} />
             </div>
           }
-          {this.state.grade > 0 &&
+          {this.state.grade > 0 && this.state.approve_status > 0 &&
             <div className={styles.submitBox}>
               <dl className={styles.showGradeBox}>
               <dt>分数</dt>
