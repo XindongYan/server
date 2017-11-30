@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
-import { Card, Button, message, Popover, Slider } from 'antd';
+import { Card, Button, message, Popover, Slider, Popconfirm } from 'antd';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
 import Editor from '../../components/Editor';
 import TaskChat from '../../components/TaskChat';
@@ -119,7 +119,8 @@ export default class TaskEdit extends PureComponent {
   render() {
     const { formData } = this.props;
     const { grades, approve_notes } = this.state;
-    const operation = !formData.approve_step ? 'edit' : 'view';
+    // const operation = formData.approve_step === 0 ? 'edit' : 'view';
+    const operation = 'edit';
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 
@@ -150,12 +151,16 @@ export default class TaskEdit extends PureComponent {
             />
           </div>
           <div className={styles.submitBox}>
-            <Popover content={content} title="评分" trigger="hover">
-              <Button onClick={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}>不通过</Button>
-            </Popover>
-            <Popover content={content} title="评分" trigger="hover">
-              <Button onClick={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}>通过</Button>
-            </Popover>
+            <Popconfirm placement="top" title="确认提交？" onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}>
+              <Popover content={content} title="评分" trigger="hover">
+                <Button>不通过</Button>
+              </Popover>
+            </Popconfirm>
+            <Popconfirm placement="top" title="确认提交？" onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}>  
+              <Popover content={content} title="评分" trigger="hover">
+                <Button>通过</Button>
+              </Popover>
+            </Popconfirm>
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
