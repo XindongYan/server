@@ -193,7 +193,7 @@ export default class TableList extends PureComponent {
         if (formValues.approve_status === 0 || formValues.approve_status === 1) {
           return (
             <div>
-              <Link to="http://120.27.215.205/">
+              <Link to={`/writer/task/view?_id=${record._id}`}>
                   <span>详情</span>
               </Link>
             </div>

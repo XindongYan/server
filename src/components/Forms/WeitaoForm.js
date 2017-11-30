@@ -11,7 +11,6 @@ import AlbumModal from '../AlbumModal';
 
 export default class WeitaoForm extends PureComponent {
   state = {
-    coverPic: {},
     minSize: {
       width: 750,
       height: 422
@@ -23,10 +22,14 @@ export default class WeitaoForm extends PureComponent {
   componentWillUnmount() {
 
   }
+  handleDescChange = (content) => {
+    if (this.props.onChange) this.props.onChange({ task_desc: content });
+  }
+  handleTitleChange = (e) => {
+    if (this.props.onChange) this.props.onChange({ title: e.target.value });
+  }
   handleAddImg = (imgs) => {
-    this.setState({
-      coverPic: imgs[0],
-    })
+    if (this.props.onChange) this.props.onChange({ cover_img: imgs[0] ? imgs[0].href : '' });
   }
   uploadCoverImg = () => {
     this.props.dispatch({
@@ -35,13 +38,10 @@ export default class WeitaoForm extends PureComponent {
     });
   }
   deleteCover = () => {
-    this.setState({
-      coverPic: {},
-    })
+    if (this.props.onChange) this.props.onChange({ cover_img: '' });
   }
   render() {
-    const { style, operation } = this.props;
-    const { coverPic } = this.state;
+    const { style, operation, formData } = this.props;
     return (
       <div className={styles.taskBox} style={style}>
         <div className={styles.taskTitBox}>
@@ -50,24 +50,24 @@ export default class WeitaoForm extends PureComponent {
         <div className={styles.taskContentBox} style={{ display: operation==='edit' ? 'block' : 'none' }}>
           <div className={styles.taskList}>
             <div className={styles.taskListInp}>
-              <Input type="text" id="task-title" placeholder="请在这里输入标题"/>
+              <Input type="text" id="task-title" value={formData.title} onChange={this.handleTitleChange} placeholder="请在这里输入标题"/>
               <span>0/19</span>
             </div>
             <span className={styles.promptRed}></span>
           </div>
           <div className={styles.taskList}>
             <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
-            <Editor style={{ width: '100%' }} />
+            <Editor style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
           </div>
           <div className={styles.taskList} style={{ marginTop: 20 }}>
             <p>封面图</p>
             <div className={styles.coverPicBox}>
-              <div className={styles.upCover} onClick={this.uploadCoverImg} style={{display: coverPic.href ? 'none' : 'block'}}>
+              <div className={styles.upCover} onClick={this.uploadCoverImg} style={{display: formData.cover_img ? 'none' : 'block'}}>
                 <Icon type="plus" />
                 <p>上传封面图</p>
               </div>
-              <div className={styles.coverPic} style={{display: coverPic.href ? 'block' : 'none'}}>
-                <img src={coverPic.href} />
+              <div className={styles.coverPic} style={{display: formData.cover_img ? 'block' : 'none'}}>
+                <img src={formData.cover_img} />
                 <div className={styles.coverModal} onClick={this.deleteCover}>
                   <Icon type="delete" />
                 </div>
@@ -79,7 +79,7 @@ export default class WeitaoForm extends PureComponent {
         <div className={styles.taskContentBox} style={{ display: operation==='view' ? 'block' : 'none' }}>
           <div className={styles.taskList}>
             <div style={{ width: 375, height:211, textAlign: 'center', lineHeight: 211 }}>
-              <img src={coverPic.href} />
+              <img src={formData.cover_img} />
             </div>
           </div>
           <div className={styles.taskList}>

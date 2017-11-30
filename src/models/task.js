@@ -1,4 +1,4 @@
-import { queryTask, updateTask, addTask, queryProjectTasks, queryTakerTasks, approveTask, rejectTask,
+import { queryTask, updateTask, addTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
 queryApproverTasks } from '../services/task';
 
 export default {
@@ -50,10 +50,10 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const result = yield call(updateTask, payload);
       if (callback) callback(result);
-      yield put({
-        type: 'saveTask',
-        payload: {},
-      });
+    },
+    *handin({ payload, callback }, { call, put }) {
+      const result = yield call(handinTask, payload);
+      if (callback) callback(result);
     },
     *approve({ payload, callback }, { call, put }) {
       const result = yield call(approveTask, payload);

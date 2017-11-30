@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio } from 'antd';
+import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
 import TaskTitleColumn from '../../components/TaskTitleColumn';
@@ -200,7 +200,9 @@ export default class TableList extends PureComponent {
                   <span>审核</span>
               </Link>
               <span className={styles.splitLine} />
-              <a onClick={() => this.handleReject(record)}>退回</a>
+              <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <a>退回</a>
+              </Popconfirm>
             </div>
           )
         } else {
