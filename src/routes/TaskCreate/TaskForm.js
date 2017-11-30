@@ -1,12 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
-import moment from 'moment';
-import { Card, Form, Input, Select, Icon, Button, InputNumber, Upload, message } from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, CHANNEL_NAMES } from '../../constants';
+import { Card, Form, Input, Select, Icon, Button, Upload, message } from 'antd';
 import path from 'path';
 import querystring from 'querystring';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, CHANNEL_NAMES } from '../../constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -39,7 +36,6 @@ export default class TaskForm extends PureComponent {
     this.props.dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
-    
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
@@ -52,20 +48,18 @@ export default class TaskForm extends PureComponent {
     }
   }
   handleSubmit = () => {
-    const { form: { getFieldDecorator, getFieldValue }, teamUser, formData } = this.props;
+    const { teamUser, formData } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const payload = {
           ...values,
           attachments: values.attachments ? values.attachments.filter(item => !item.error).map(item => {
-            if (!item.error) {
-              return {
-                name: item.name,
-                url: item.url || `${QINIU_DOMAIN}/${item.response.key}`,
-                uid: item.uid,
-              };
-            }
+            return {
+              name: item.name,
+              url: item.url || `${QINIU_DOMAIN}/${item.response.key}`,
+              uid: item.uid,
+            };
           }) : [],
           team_id: teamUser.team_id,
           project_id: query.project_id,
@@ -84,7 +78,7 @@ export default class TaskForm extends PureComponent {
               } else {
                 message.success(result.msg);
               }
-            }, 
+            },
           });
         } else if (this.props.operation === 'create') {
           this.props.dispatch({
@@ -100,10 +94,9 @@ export default class TaskForm extends PureComponent {
                 message.success(result.msg);
                 this.props.form.resetFields();
               }
-            }, 
+            },
           });
         }
-        
       }
     });
   }
@@ -119,14 +112,13 @@ export default class TaskForm extends PureComponent {
     return {
       token: qiniucloud.uptoken,
       key: `${file.uid}${extname}`,
-    }
+    };
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, qiniucloud, operation, formData } = this.props;
-    
+    const { form: { getFieldDecorator }, operation } = this.props;
     return (
       <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}任务`}>
-        <Form onSubmit={this.handleSubmit}>
+        <Form>
           <FormItem
             label="任务标题"
             labelCol={{ span: 4 }}
@@ -182,7 +174,7 @@ export default class TaskForm extends PureComponent {
           <FormItem
             wrapperCol={{ span: 8, offset: 4 }}
           >
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" onClick={this.handleSubmit}>
               {operation === 'create' ? '创建' : '保存'}
             </Button>
           </FormItem>
