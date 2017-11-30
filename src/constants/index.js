@@ -67,3 +67,5 @@ export const PROJECT_STATUS_TEXT = {
   '2': '已发布',
   '3': '已下架',
 };
+
+export const CHANNEL_NAMES = [ '淘宝头条', '微淘' ];

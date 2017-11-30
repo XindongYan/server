@@ -122,8 +122,7 @@ export default class ProjectForm extends PureComponent {
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, qiniucloud, operation, teamUsers, formData } = this.props;
-    const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow || getFieldValue('approve_flow'));
-    
+    const flow = APPROVE_FLOWS.find(item => item.value === (formData.approve_flow || getFieldValue('approve_flow')));
     return (
       <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}活动`}>
         <Form onSubmit={this.handleSubmit}>
