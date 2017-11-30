@@ -63,7 +63,7 @@ export default class TaskEdit extends PureComponent {
     const img_grade = newGrades[2].value;
     const grade = (title_grade * 0.3 + desc_grade * 0.4 + img_grade * 0.3).toFixed(1);
     this.setState({
-      grade: grade,
+      grade: Number(grade),
       grades: newGrades,
     })
   }
@@ -95,6 +95,7 @@ export default class TaskEdit extends PureComponent {
     });
   }
   handleSubmit = (status) => {
+    console.log
     const query = querystring.parse(this.props.location.search.substr(1));
     const { grade, grades, approve_status, approve_notes } = this.state;
     this.props.dispatch({
@@ -110,7 +111,7 @@ export default class TaskEdit extends PureComponent {
               _id: query._id,
               grade: grade,
               grades: grades,
-              approve_status: status || approve_status,
+              approve_status: status,
               approver_id: this.props.currentUser._id,
               approve_notes: approve_notes,
             },
