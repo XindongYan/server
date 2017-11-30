@@ -39,6 +39,16 @@ export default class TableList extends PureComponent {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { dispatch, data: { pagination }, currentUser } = nextProps;
+    if (currentUser._id !== this.props.currentUser._id) {
+      dispatch({
+        type: 'task/fetchApproverTasks',
+        payload: { ...pagination, ...this.state.formValues, user_id: currentUser._id }
+      });
+    }
+  }
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, currentUser } = this.props;
     const { formValues } = this.state;

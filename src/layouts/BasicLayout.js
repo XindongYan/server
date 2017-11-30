@@ -272,7 +272,7 @@ class BasicLayout extends React.PureComponent {
           className={styles.sider}
         >
           <div className={styles.logo}>
-            <Link to="http://120.27.215.205/">
+            <Link to="/list/task-square">
               { /* <img src="" alt="logo" /> */ }
               <h1>尼采创作平台</h1>
             </Link>
@@ -296,7 +296,7 @@ class BasicLayout extends React.PureComponent {
               onClick={this.toggle}
             />
             <div className={styles.right}>
-              <HeaderSearch
+              { /* <HeaderSearch
                 className={`${styles.action} ${styles.search}`}
                 placeholder="站内搜索"
                 dataSource={['搜索提示一', '搜索提示二', '搜索提示三']}
@@ -306,7 +306,7 @@ class BasicLayout extends React.PureComponent {
                 onPressEnter={(value) => {
                   console.log('enter', value); // eslint-disable-line
                 }}
-              />
+              />*/ }
               <NoticeIcon
                 className={styles.action}
                 count={currentUser.notifyCount}
