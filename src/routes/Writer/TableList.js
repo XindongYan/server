@@ -190,7 +190,7 @@ export default class TableList extends PureComponent {
     const opera = {
       title: '操作',
       render: (record) => {
-         if (record.approve_status === TASK_APPROVE_STATUS.taken) {
+        if (record.approve_status === TASK_APPROVE_STATUS.taken) {
           return (
             <Link to={`/writer/task/create?_id=${record._id}`}>
                 <span>编辑</span>

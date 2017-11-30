@@ -40,28 +40,28 @@ export default class TaskEdit extends PureComponent {
   }
   handleSubmit = () => {
     console.log(this.state.task);
-    // const query = querystring.parse(this.props.location.search.substr(1));
-    // this.props.dispatch({
-    //   type: 'task/update',
-    //   payload: { ...this.state.task, _id: query._id },
-    //   callback: (result) => {
-    //     if (result.error) {
-    //       message.error(result.msg);
-    //     } else {
-    //       this.props.dispatch({
-    //         type: 'task/handin',
-    //         payload: { _id: query._id },
-    //         callback: (result1) => {
-    //           if (result1.error) {
-    //             message.error(result1.msg);
-    //           } else {
-    //             message.success(result1.msg);
-    //           }
-    //         }
-    //       });
-    //     }
-    //   }
-    // });
+    const query = querystring.parse(this.props.location.search.substr(1));
+    this.props.dispatch({
+      type: 'task/update',
+      payload: { ...this.state.task, _id: query._id },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          this.props.dispatch({
+            type: 'task/handin',
+            payload: { _id: query._id },
+            callback: (result1) => {
+              if (result1.error) {
+                message.error(result1.msg);
+              } else {
+                message.success(result1.msg);
+              }
+            }
+          });
+        }
+      }
+    });
   }
   handleSave = () => {
     console.log(this.state.task);
