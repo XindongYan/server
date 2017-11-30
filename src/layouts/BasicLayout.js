@@ -24,6 +24,7 @@ import WriterTaskCreate from '../routes/Writer/TaskCreate';
 import WriterTaskSuccess from '../routes/Result/Success';
 
 import ApproverTaskEdit from '../routes/Approver/TaskEdit';
+import ApproverTaskView from '../routes/Approver/TaskView';
 import { getNavData } from '../common/nav';
 import { getRouteData } from '../utils/utils';
 
@@ -371,6 +372,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/writer/task/create" component={WriterTaskCreate} />
               <Route path="/writer/task/handin/success" component={WriterTaskSuccess} />
               <Route path="/approver/task/edit" component={ApproverTaskEdit} />
+              <Route path="/approver/task/view" component={ApproverTaskView} />
               <Redirect to="/list/teamUser-list" />
             </Switch>
             <GlobalFooter
