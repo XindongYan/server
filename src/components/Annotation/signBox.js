@@ -19,8 +19,8 @@ export default class SignBox extends PureComponent {
   }
   creatComment = () => {
     const { direction, parentWidth } = this.props;
-    const bgColors = ['#1abc9c','#3498db','#8e44ad','#34495e','#16a085','#f1c40f','#e74c3c','#f39c12','#2980b9','#d35400'];
-    const n = parseInt(Math.random()*(bgColors.length - 1));
+    const bgColors = ['#1abc9c','#f39c12','#3498db','#e74c3c'];
+    const n = this.props.approve_step;
     let nWidth = '';
     if( direction.x > parentWidth/2 ){
       nWidth = `${parentWidth - direction.x}px`;

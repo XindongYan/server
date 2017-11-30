@@ -88,6 +88,8 @@ export default class Annotation extends PureComponent {
       commentContent.splice(editIndex,1);
       this.setState({
         direction: {...this.state.direction, visible: 'none'},
+      },() => {
+        if (this.props.changeApproveNode) this.props.changeApproveNode(this.state.commentContent);
       })
     }
   }
@@ -118,15 +120,18 @@ export default class Annotation extends PureComponent {
       if(status === 'add'){
         this.setState({
           commentContent: [...this.state.commentContent, commentMsg],
-        })
+        },() => {
+          if (this.props.changeApproveNode) this.props.changeApproveNode(this.state.commentContent);
+        });
       } else if(status === 'edit') {
         const newComment = { ...commentContent[editIndex], message: commentMsg.message };
         commentContent.splice(editIndex,1,newComment);
+        if (this.props.changeApproveNode) this.props.changeApproveNode(this.state.commentContent);
       }
     }
     this.setState({
       signVisible: false,
-    })
+    });
   }
   editComment = (e, index) => {
     e.preventDefault();
@@ -145,7 +150,7 @@ export default class Annotation extends PureComponent {
     })
   }
   render() {
-    const { viewStatus, style, value } = this.props;
+    const { viewStatus, style, value, approve_step } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     return (
       <div style={{height: style || 600}}>
@@ -177,6 +182,7 @@ export default class Annotation extends PureComponent {
               parentWidth={$(this.refs.AnnotationBox).outerWidth()}
               signContent={signContent}
               boxSize={$(this.refs.AnnotationBox).outerHeight()}
+              approve_step={approve_step}
             />
             {commentContent.map((item,index) => 
               <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
