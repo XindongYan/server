@@ -145,46 +145,50 @@ export default class Annotation extends PureComponent {
     })
   }
   render() {
-    const { viewStatus, style } = this.props;
+    const { viewStatus, style, value } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
-
     return (
-      <div className={styles.myTextInput} ref="myTextInput">
-        <div
-          ref="AnnotationBox"
-          className={styles.AnnotationBox}
-          onContextMenu={this.fnContextMenu}
-          onClick={this.fnClickDefult}
-        >
+      <div style={{height: style || 800}}>
+        <div className={styles.commentTitle}>
+          批注
+        </div>
+        <div className={styles.myTextInput} ref="myTextInput">
           <div
-            className={styles.selectBox}
-            style={{ 
-              left: direction.x + 100 > $(this.refs.AnnotationBox).outerWidth() ? ($(this.refs.AnnotationBox).outerWidth()-100 || 0) : direction.x, 
-              top: direction.y,
-              display: direction.visible
-            }}
+            ref="AnnotationBox"
+            className={styles.AnnotationBox}
+            onContextMenu={this.fnContextMenu}
+            onClick={this.fnClickDefult}
           >
-            {action.map(this.creatBox)}
+            <div
+              className={styles.selectBox}
+              style={{ 
+                left: direction.x + 100 > $(this.refs.AnnotationBox).outerWidth() ? ($(this.refs.AnnotationBox).outerWidth()-100 || 0) : direction.x, 
+                top: direction.y,
+                display: direction.visible
+              }}
+            >
+              {action.map(this.creatBox)}
+            </div>
+            <SignBox
+              direction={direction}
+              sureChange={this.sureChange}
+              close={this.hideSignBox}
+              signVisible={signVisible}
+              parentWidth={$(this.refs.AnnotationBox).outerWidth()}
+              signContent={signContent}
+              boxSize={$(this.refs.AnnotationBox).outerHeight()}
+            />
+            {commentContent.map((item,index) => 
+              <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
+            }
           </div>
-          <SignBox
-            direction={direction}
-            sureChange={this.sureChange}
-            close={this.hideSignBox}
-            signVisible={signVisible}
-            parentWidth={$(this.refs.AnnotationBox).outerWidth()}
-            signContent={signContent}
-            boxSize={$(this.refs.AnnotationBox).outerHeight()}
-          />
-          {commentContent.map((item,index) => 
-            <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
-          }
+          <div
+            className={styles.viewBox}
+            style={{display: viewStatus==='view' ? 'block' : 'none'}}
+          >
+          </div>
         </div>
-        <div
-          className={styles.viewBox}
-          style={{display: viewStatus==='view' ? 'block' : 'none'}}
-        >
-        </div>
-      </div> 
+      </div>
     );
   }
 }
