@@ -39,6 +39,10 @@ export default class TaskEdit extends PureComponent {
       type: 'task/fetchTask',
       payload: query,
     });
+    this.props.dispatch({
+      type: 'global/changeLayoutCollapsed',
+      payload: true,
+    });
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
