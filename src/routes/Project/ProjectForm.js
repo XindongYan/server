@@ -49,7 +49,7 @@ export default class ProjectForm extends PureComponent {
         approvers[`approvers${item}`] = nextProps.formData.approvers[index];
       })
       this.props.form.setFieldsValue({
-        title: nextProps.formData.title,
+        name: nextProps.formData.name,
         merchant_tag: nextProps.formData.merchant_tag,
         task_type: nextProps.formData.task_type,
         desc: nextProps.formData.desc,
@@ -131,7 +131,7 @@ export default class ProjectForm extends PureComponent {
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
-            {getFieldDecorator('title', {
+            {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入项目标题！' }],
             })(
               <Input />
