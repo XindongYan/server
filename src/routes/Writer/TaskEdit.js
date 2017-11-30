@@ -36,11 +36,11 @@ export default class ProjectForm extends PureComponent {
         <div className={styles.taskOuterBox} ref="taskOuterBox">
           <WeitaoForm operation="edit" style={{ width: 650 }} />
 
-          <div className={styles.taskComment} style={{height: $(this.refs.taskOuterBox).outerHeight()-40}}>
+          <div className={styles.taskComment} >
             <div className={styles.commentTitle}>
               批注
             </div>
-            <Annotation />
+            <Annotation style={{height: '100%'}} />
           </div>
         </div>
       </Card>

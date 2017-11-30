@@ -144,8 +144,9 @@ export default class Annotation extends PureComponent {
   render() {
     const { viewStatus, style } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
+
     return (
-      <div style={style} className={styles.myTextInput} ref="myTextInput">
+      <div className={styles.myTextInput} ref="myTextInput">
         <div
           ref="AnnotationBox"
           className={styles.AnnotationBox}
