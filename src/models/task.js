@@ -62,18 +62,18 @@ export default {
     *approve({ payload, callback }, { call, put }) {
       const result = yield call(approveTask, payload);
       if (callback) callback(result);
-      yield put({
-        type: 'saveTask',
-        payload: {},
-      });
+      // yield put({
+      //   type: 'saveTask',
+      //   payload: {},
+      // });
     },
     *reject({ payload, callback }, { call, put }) {
       const result = yield call(rejectTask, payload);
       if (callback) callback(result);
-      yield put({
-        type: 'saveTask',
-        payload: {},
-      });
+      // yield put({
+      //   type: 'saveTask',
+      //   payload: {},
+      // });
     },
     *fetchProjectTasks({ payload }, { call, put }) {
       yield put({

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Modal, message, Radio } from 'antd';
+import { Table, Card, Radio } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -20,18 +20,27 @@ const RadioGroup = Radio.Group;
 }))
 export default class TableList extends PureComponent {
   state = {
-    modalVisible: false,
     formValues: { approve_status: TASK_APPROVE_STATUS.waitingForApprove },
-  };
+  }
 
   componentDidMount() {
     const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'task/fetchTakerTasks',
-      payload: { ...this.state.formValues, user_id: currentUser._id },
-    });
+    if (currentUser._id) {
+      dispatch({
+        type: 'task/fetchTakerTasks',
+        payload: { ...this.state.formValues, user_id: currentUser._id },
+      });
+    }
   }
-
+  componentWillReceiveProps(nextProps) {
+    const { dispatch, currentUser } = nextProps;
+    if (currentUser._id !== this.props.currentUser._id) {
+      dispatch({
+        type: 'task/fetchTakerTasks',
+        payload: { ...this.state.formValues, user_id: currentUser._id },
+      });
+    }
+  }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, currentUser } = this.props;
     const { formValues } = this.state;
@@ -83,47 +92,6 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleRightsChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, rights: checkedValues },
-    });
-  }
-  handleApproveRolesChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, approve_role: checkedValues },
-    });
-  }
-  handleRolesChange = (checkedValues) => {
-    this.setState({
-      user: { ...this.state.user, role: checkedValues },
-    });
-  }
-
-  handleChangeUser = () => {
-    this.props.dispatch({
-      type: 'task/update',
-      payload: this.state.user,
-    });
-
-    message.success('修改成功');
-    this.setState({
-      modalVisible: false,
-    });
-  }
-
-  handleShowModal = (user) => {
-    this.setState({
-      modalVisible: true,
-      user,
-    });
-  }
-
-  handleModalVisible = (flag) => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  }
-
   changeApproveStatus = (e) => {
     const { dispatch, currentUser } = this.props;
     dispatch({
@@ -136,7 +104,7 @@ export default class TableList extends PureComponent {
   }
   render() {
     const { takerTask, loading } = this.props;
-    const { modalVisible, formValues } = this.state;
+    const { formValues } = this.state;
     const columns = [
       {
         title: '稿子ID',
@@ -170,80 +138,78 @@ export default class TableList extends PureComponent {
     const approveStatus = {
       title: '审核状态',
       dataIndex: 'approve_status',
-      render: val => (<TaskStatusColumn status={val}/>),
-    }
+      render: val => (<TaskStatusColumn status={val} />),
+    };
     const approver = {
       title: '审核人',
       dataIndex: 'approver_id',
       render: value => value ? value.name : '',
-    }
+    };
     const grade = {
       title: '审核分数',
       dataIndex: 'grade',
       render: value => value < 0 ? 0 : value,
-    }
+    };
     const approveTime = {
       title: '审核时间',
       dataIndex: 'approve_time',
       render: value => <span>{moment(value).format('YYYY-MM-DD HH:mm:ss')}</span>,
-    }
+    };
     const opera = {
       title: '操作',
       render: (record) => {
         if (record.approve_status === TASK_APPROVE_STATUS.taken) {
           return (
             <Link to={`/writer/task/create?_id=${record._id}`}>
-                <span>编辑</span>
+              <span>编辑</span>
             </Link>
-          )
+          );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
-              <Link to={`/writer/task/create?_id=${record._id}`}>
-                  <span>查看</span>
+              <Link to={`/writer/task/view?_id=${record._id}`}>
+                <span>查看</span>
               </Link>
             </div>
-          )
+          );
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <Link to={`/writer/task/view?_id=${record._id}`}>
-                <span>查看</span>
+              <span>查看</span>
             </Link>
-          )
+          );
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <Link to={`/writer/task/edit?_id=${record._id}`}>
-                <span>编辑</span>
+              <span>编辑</span>
             </Link>
-          )
+          );
         }
       }
-    }
-    if (formValues.approve_status === -1){
-      columns.push(opera)
+    };
+    if (formValues.approve_status === -1) {
+      columns.push(opera);
     } else if (formValues.approve_status === 0) {
-      columns.push( approveStatus, opera)
+      columns.push( approveStatus, opera);
     } else {
-      columns.push( approveStatus, approver, grade, approveTime, opera)
+      columns.push( approveStatus, approver, grade, approveTime, opera);
     }
     return (
       <PageHeaderLayout title="">
-        <div style={{ marginBottom:'10px' }}>
+        <div style={{ marginBottom: '10px' }}>
           <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}>
             <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
-          </RadioGroup> 
+          </RadioGroup>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              
             </div>
             <Table
               loading={loading}
-              rowKey={record => record.key}
               dataSource={takerTask.list}
               columns={columns}
               pagination={{
@@ -256,14 +222,6 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <Modal
-          title="配置用户"
-          visible={modalVisible}
-          onOk={this.handleChangeUser}
-          onCancel={() => this.handleModalVisible()}
-        >
-          
-        </Modal>
       </PageHeaderLayout>
     );
   }

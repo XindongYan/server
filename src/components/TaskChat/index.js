@@ -19,11 +19,14 @@ export default class TaskChat extends PureComponent {
     const { task } = this.props;
     const { visible } = this.state;
     return (
-      <div style={{ position: 'fixed' }}>
+      <div style={{ position: 'fixed', top: 80, right: 20 }}>
         <Popover
           content={
-            <iframe src={`${ORIGIN}/htmls/taskChat.html?task_id=${task._id}`}
-              style={{ width: 320, height: '500px' }}>
+            <iframe
+              title="taskChat"
+              src={`${ORIGIN}/wechat/taskChat?task_id=${task._id}`}
+              style={{ width: 320, height: '500px' }}
+            >
             </iframe>
           }
           title="聊天窗口"
@@ -32,7 +35,7 @@ export default class TaskChat extends PureComponent {
           visible={visible}
           onVisibleChange={this.handleVisibleChange}
         >
-          <Button type="default" shape="circle" icon="message" size="large"/>
+          <Button type="default" shape="circle" icon="message" size="large" />
         </Popover>
       </div>
     );

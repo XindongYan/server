@@ -28,8 +28,9 @@ export default {
         payload: false,
       });
     },
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent({ callback }, { call, put }) {
       const response = yield call(queryCurrent);
+      if (callback) callback(response);
       if (!response.error) {
         yield put({
           type: 'saveCurrentUser',
