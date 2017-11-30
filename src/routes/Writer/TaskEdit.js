@@ -40,28 +40,28 @@ export default class TaskEdit extends PureComponent {
   }
   handleSubmit = () => {
     console.log(this.state.task);
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'task/update',
-      payload: { ...this.state.task, _id: query._id },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/handin',
-            payload: { _id: query._id },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                message.success(result1.msg);
-              }
-            }
-          });
-        }
-      }
-    });
+    // const query = querystring.parse(this.props.location.search.substr(1));
+    // this.props.dispatch({
+    //   type: 'task/update',
+    //   payload: { ...this.state.task, _id: query._id },
+    //   callback: (result) => {
+    //     if (result.error) {
+    //       message.error(result.msg);
+    //     } else {
+    //       this.props.dispatch({
+    //         type: 'task/handin',
+    //         payload: { _id: query._id },
+    //         callback: (result1) => {
+    //           if (result1.error) {
+    //             message.error(result1.msg);
+    //           } else {
+    //             message.success(result1.msg);
+    //           }
+    //         }
+    //       });
+    //     }
+    //   }
+    // });
   }
   handleSave = () => {
     console.log(this.state.task);
@@ -84,6 +84,7 @@ export default class TaskEdit extends PureComponent {
   render() {
     const { formData } = this.props;
     const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    console.log(formData)
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
@@ -96,7 +97,6 @@ export default class TaskEdit extends PureComponent {
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
-        
       </Card>
     );
   }
