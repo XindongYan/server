@@ -89,13 +89,12 @@ export default class TaskEdit extends PureComponent {
         <div className={styles.taskOuterBox} ref="taskOuterBox">
           <WeitaoForm operation="edit" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange}/>
           <div className={styles.taskComment} style={{height: taskOuterBoxHeight - 40}}>
-            <div className={styles.commentTitle}>
-              批注
-            </div>
-            <Annotation style={{height: '100%'}} />
+            <Annotation viewStatus="view" value={[]} />
           </div>
-          <Button onClick={this.handleSubmit} style={{ position: 'fixed' }}>提交</Button>
-          <Button onClick={this.handleSave} style={{ position: 'fixed', left: 300 }}>保存</Button>
+          <div className={styles.submitBox}>
+            <Button onClick={this.handleSubmit} style={{ position: 'fixed' }}>提交</Button>
+            <Button onClick={this.handleSave} style={{ position: 'fixed', left: 300 }}>保存</Button>
+          </div>
         </div>
         
       </Card>
