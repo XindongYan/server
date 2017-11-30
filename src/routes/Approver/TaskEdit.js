@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import querystring from 'querystring';
 import { Card, Button, message, Popover, Slider, Popconfirm } from 'antd';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
+import { routerRedux } from 'dva/router';
 import Editor from '../../components/Editor';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
@@ -40,12 +41,17 @@ export default class TaskEdit extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps)
     this.setState({
       task: {
         title: nextProps.formData.title,
         task_desc: nextProps.formData.task_desc,
         cover_img: nextProps.formData.cover_img,
-      }
+      },
+      grade: nextProps.formData.grade,
+      grades: nextProps.formData.grades && nextProps.formData.grades.length ? nextProps.formData.grades : [...this.state.grades],
+      approve_status: nextProps.formData.approve_status,
+      approve_notes: nextProps.formData.approve_notes,
     });
   }
   changeGrades = (index, value) => {
@@ -70,10 +76,15 @@ export default class TaskEdit extends PureComponent {
     this.setState({ task: { ...this.state.task, ...task } });
   }
   handleSave = () => {
+    const { grade, grades, approve_status, approve_notes } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
       type: 'task/update',
-      payload: { ...this.state.task, _id: query._id },
+      payload: {
+        ...this.state.task,
+        _id: query._id,
+        approve_notes: approve_notes,
+      },
       callback: (result) => {
         if (result.error) {
           message.error(result.msg);
@@ -108,6 +119,7 @@ export default class TaskEdit extends PureComponent {
                 message.error(result1.msg);
               } else {
                 message.success(result1.msg);
+                this.props.dispatch(routerRedux.push('/list/approver-list'));
               }
             }
           });
@@ -119,8 +131,7 @@ export default class TaskEdit extends PureComponent {
   render() {
     const { formData } = this.props;
     const { grades, approve_notes } = this.state;
-    // const operation = formData.approve_step === 0 ? 'edit' : 'view';
-    const operation = 'edit';
+    const operation = formData.approve_step === 0 ? 'edit' : 'view';
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 
@@ -128,7 +139,7 @@ export default class TaskEdit extends PureComponent {
             <span style={{margin: '0 15px'}}>{item.name}</span>
             <Slider
               style={{width: '80%', display: 'inline-block', margin: 0}}
-              value={item.value}
+              value={Number(item.value)}
               max={10}
               step={0.1}
               onChange={(value) => this.changeGrades(index, value)}
@@ -151,15 +162,29 @@ export default class TaskEdit extends PureComponent {
             />
           </div>
           <div className={styles.submitBox}>
-            <Popconfirm placement="top" title="确认提交？" onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}>
-              <Popover content={content} title="评分" trigger="hover">
-                <Button>不通过</Button>
-              </Popover>
+            <Popconfirm
+              placement="top"
+              title="确认提交？"
+              onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}
+            >
+              { formData.approve_step === 0 ?
+                <Popover content={content} title="评分" trigger="hover">
+                  <Button>不通过</Button>
+                </Popover>
+                : <Button>不通过</Button>
+              }
             </Popconfirm>
-            <Popconfirm placement="top" title="确认提交？" onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}>  
-              <Popover content={content} title="评分" trigger="hover">
-                <Button>通过</Button>
-              </Popover>
+            <Popconfirm
+              placement="top"
+              title="确认提交？"
+              onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}
+            >
+              { formData.approve_step === 0 ?
+                <Popover content={content} title="评分" trigger="hover">
+                  <Button>通过</Button>
+                </Popover>
+                : <Button>通过</Button>
+              }
             </Popconfirm>
             <Button onClick={this.handleSave}>保存</Button>
           </div>

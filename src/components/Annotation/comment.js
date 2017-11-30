@@ -14,12 +14,13 @@ export default class Comment extends PureComponent {
   }
   render() {
     const { msg, editComment } = this.props;
+    console.log(msg)
     return (
       <div 
         className={styles.commentBox}
         style={{ 
-          left: msg.left,
-          top: msg.top,
+          left: Number(msg.left),
+          top: Number(msg.top),
           background: msg.background,
           maxWidth: msg.width,
         }}

@@ -26,7 +26,9 @@ export default class Annotation extends PureComponent {
   componentDidMount() {
   }
   componentWillReceiveProps(nextProps) {
-
+    this.setState({
+      commentContent: nextProps.value || [],
+    })
   }
   fnPrevent = (e) => {
     e.preventDefault();
