@@ -63,7 +63,6 @@ export default class TaskCreate extends PureComponent {
                 if (result1.error) {
                   message.error(result1.msg);
                 } else {
-                  message.success(result1.msg);
                   this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
                 }
               }

@@ -108,12 +108,12 @@ class BasicLayout extends React.PureComponent {
     }
   }
   getDefaultCollapsedSubMenus(props) {
-    const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
-    currentMenuSelectedKeys.splice(-1, 1);
-    if (currentMenuSelectedKeys.length === 0) {
-      return ['dashboard'];
-    }
-    return currentMenuSelectedKeys;
+    // const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
+    // currentMenuSelectedKeys.splice(-1, 1);
+    // if (currentMenuSelectedKeys.length === 0) {
+      return ['list', 'tool'];
+    // }
+    // return currentMenuSelectedKeys;
   }
   getCurrentMenuSelectedKeys(props) {
     const { location: { pathname } } = props || this.props;
@@ -213,7 +213,7 @@ class BasicLayout extends React.PureComponent {
   handleOpenChange = (openKeys) => {
     const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
     this.setState({
-      openKeys: latestOpenKey ? [latestOpenKey] : [],
+      openKeys,
     });
   }
   toggle = () => {
@@ -268,7 +268,7 @@ class BasicLayout extends React.PureComponent {
           collapsed={collapsed}
           breakpoint="md"
           onCollapse={this.onCollapse}
-          width={256}
+          width={200}
           className={styles.sider}
         >
           <div className={styles.logo}>

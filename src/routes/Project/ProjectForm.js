@@ -4,11 +4,8 @@ import querystring from 'querystring';
 import path from 'path';
 import moment from 'moment';
 import { routerRedux } from 'dva/router';
-import { Card, Form, Input, Select, Icon, Button, DatePicker, Menu, InputNumber, Upload, Modal, Table, message } from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import { Card, Form, Input, Select, Icon, Button, DatePicker, Upload } from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES } from '../../constants';
-
-import styles from './Project.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -44,10 +41,9 @@ export default class ProjectForm extends PureComponent {
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
       const approvers = {};
       const flow = APPROVE_FLOWS.find(item => item.value === nextProps.formData.approve_flow);
-      
       (flow ? flow.texts : []).forEach((item, index) => {
         approvers[`approvers${item}`] = nextProps.formData.approvers[index];
-      })
+      });
       this.props.form.setFieldsValue({
         name: nextProps.formData.name,
         merchant_tag: nextProps.formData.merchant_tag,
@@ -67,23 +63,21 @@ export default class ProjectForm extends PureComponent {
     }
   }
   handleSubmit = () => {
-    const { form: { getFieldDecorator, getFieldValue }, teamUser, formData } = this.props;
+    const { form: { getFieldValue }, teamUser, formData } = this.props;
     const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const approvers = (flow ? flow.texts : [] ).map(item => values[`approvers${item}`])
+        const approvers = (flow ? flow.texts : []).map(item => values[`approvers${item}`]);
         const payload = {
           team_id: teamUser.team_id,
           user_id: teamUser.user_id,
           ...values,
           attachments: values.attachments ? values.attachments.filter(item => !item.error).map(item => {
-            if (!item.error) {
-              return {
-                name: item.name,
-                url: item.url || `${QINIU_DOMAIN}/${item.response.key}`,
-                uid: item.uid,
-              };
-            }
+            return {
+              name: item.name,
+              url: item.url || `${QINIU_DOMAIN}/${item.response.key}`,
+              uid: item.uid,
+            };
           }) : [],
           approvers,
         };
@@ -104,7 +98,6 @@ export default class ProjectForm extends PureComponent {
         this.props.dispatch(routerRedux.push('/list/project-list'));
       }
     });
-    
   }
   normFile = (e) => {
     if (Array.isArray(e)) {
@@ -118,14 +111,14 @@ export default class ProjectForm extends PureComponent {
     return {
       token: qiniucloud.uptoken,
       key: `${file.uid}${extname}`,
-    }
+    };
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, qiniucloud, operation, teamUsers, formData } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData } = this.props;
     const flow = APPROVE_FLOWS.find(item => item.value === (formData.approve_flow || getFieldValue('approve_flow')));
     return (
       <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}活动`}>
-        <Form onSubmit={this.handleSubmit}>
+        <Form>
           <FormItem
             label="标题"
             labelCol={{ span: 4 }}
@@ -182,8 +175,11 @@ export default class ProjectForm extends PureComponent {
           >
             {getFieldDecorator('deadline', {
             })(
-              <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}
-              showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }} />
+              <DatePicker
+                format="YYYY-MM-DD HH:mm:ss"
+                style={{ width: '100%' }}
+                showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+              />
             )}
           </FormItem>
           <FormItem
@@ -213,7 +209,7 @@ export default class ProjectForm extends PureComponent {
                 required: true, message: '请输入项目奖励'
               }],
             })(
-              <Input type="number" addonAfter="元"/>
+              <Input type="number" addonAfter="元" />
             )}
           </FormItem>
           <FormItem
@@ -245,7 +241,7 @@ export default class ProjectForm extends PureComponent {
                 required: true, message: '请输入最多抢单数'
               }],
             })(
-              <Input type="number" addonAfter="单"/>
+              <Input type="number" addonAfter="单" />
             )}
           </FormItem>
           <FormItem
@@ -259,7 +255,7 @@ export default class ProjectForm extends PureComponent {
                 required: true, message: '请输入最多投稿数'
               }],
             })(
-              <Input type="number" addonAfter="篇"/>
+              <Input type="number" addonAfter="篇" />
             )}
           </FormItem>
           <FormItem
@@ -272,38 +268,40 @@ export default class ProjectForm extends PureComponent {
             })(
               <Select style={{ width: '100%' }}>
                 {APPROVE_FLOWS.map(item =>
-                  <Option value={item.value} key={item.value}>{item.texts.map(item => APPROVE_ROLES.find(item1 => item1.value === item).label).join(',')}</Option>)}
+                  <Option value={item.value} key={item.value}>{item.texts.map(item1 => APPROVE_ROLES.find(item2 => item2.value === item1).label).join(',')}</Option>)}
               </Select>
             )}
           </FormItem>
           {
-            (flow ? flow.texts : [] ).map((item) => {
+            (flow ? flow.texts : []).map((item) => {
               const label = APPROVE_ROLES.find(item1 => item1.value === item).label;
-              return (<FormItem
-                label={label}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 8 }}
-                key={item}
-              >
-                {getFieldDecorator(`approvers${item}`, {
-                  rules: [{ required: true, message: `请选择${label}人员` }],
-                })(
-                  <Select
-                    mode="tags"
-                    style={{ width: '100%' }}
-                    placeholder={`选择${label}人员`}
-                  >
-                    {teamUsers.filter(teamUser => teamUser.approve_roles.indexOf(item) >= 0)
-                      .map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.name}</Option>)}
-                  </Select>
-                )}
-              </FormItem>)
+              return (
+                <FormItem
+                  label={label}
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 8 }}
+                  key={item}
+                >
+                  {getFieldDecorator(`approvers${item}`, {
+                    rules: [{ required: true, message: `请选择${label}人员` }],
+                  })(
+                    <Select
+                      mode="tags"
+                      style={{ width: '100%' }}
+                      placeholder={`选择${label}人员`}
+                    >
+                      {teamUsers.filter(teamUser => teamUser.approve_roles.indexOf(item) >= 0)
+                        .map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.name}</Option>)}
+                    </Select>
+                  )}
+                </FormItem>
+              );
             })
           }
           <FormItem
             wrapperCol={{ span: 8, offset: 4 }}
           >
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" onClick={this.handleSubmit}>
               {operation === 'create' ? '创建' : '保存'}
             </Button>
           </FormItem>

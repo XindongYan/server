@@ -146,7 +146,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'id',
       },
       {
-        title: '内容标题',
+        title: '标题',
         dataIndex: 'title',
         width: 200,
         render: (record) => (

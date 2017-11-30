@@ -196,6 +196,7 @@ export default class TaskEdit extends PureComponent {
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
+        <TaskChat task={formData} />
       </Card>
     );
   }
