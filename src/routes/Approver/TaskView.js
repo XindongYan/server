@@ -6,6 +6,7 @@ import $ from 'jquery';
 import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
 
@@ -65,6 +66,7 @@ export default class TaskView extends PureComponent {
             <p>分数</p>
           </div>
         </div>
+        <TaskChat task={formData} />
       </Card>
     );
   }
