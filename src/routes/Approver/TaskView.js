@@ -59,6 +59,7 @@ export default class TaskView extends PureComponent {
   }
   render() {
     const { formData } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
     const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     const showAnnotation = formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected;
     return (
@@ -81,7 +82,7 @@ export default class TaskView extends PureComponent {
             </div>
           }
         </div>
-        <TaskChat task={formData} />
+        <TaskChat taskId={query._id} />
       </Card>
     );
   }
