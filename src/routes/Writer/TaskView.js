@@ -48,6 +48,12 @@ export default class TaskView extends PureComponent {
       grades: nextProps.formData.grades,
     });
   }
+  componentWillUnmount() {
+    this.props.dispatch({
+      type: 'global/changeLayoutCollapsed',
+      payload: false,
+    });
+  }
   handleChange = () => {
 
   }

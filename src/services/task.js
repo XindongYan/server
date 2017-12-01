@@ -18,6 +18,15 @@ export async function addTask(params) {
   });
 }
 
+export async function publishTask(params) {
+  return request('/api/task/publish', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function updateTask(params) {
   return request('/api/task/update', {
     method: 'PUT',

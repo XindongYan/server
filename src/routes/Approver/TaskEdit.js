@@ -58,6 +58,12 @@ export default class TaskEdit extends PureComponent {
       approve_notes: nextProps.formData.approve_notes || [],
     });
   }
+  componentWillUnmount() {
+    this.props.dispatch({
+      type: 'global/changeLayoutCollapsed',
+      payload: false,
+    });
+  }
   changeGrades = (index, value) => {
     const { grades } = this.state;
     const newGrades = [...this.state.grades];

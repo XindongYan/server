@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, Badge } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
-import TaskTitleColumn from '../../components/TaskTitleColumn';
+import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { Link } from 'dva/router';
 import moment from 'moment';
@@ -151,7 +151,7 @@ export default class TableList extends PureComponent {
         width: 200,
         render: (record) => (
           <Link to="http://120.27.215.205/">
-            <TaskTitleColumn text={record} length={10}/>
+            <TaskNameColumn text={record} length={10}/>
           </Link>
         )
       },

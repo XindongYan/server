@@ -4,7 +4,7 @@ import { Table, Card, Radio } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import TaskTitleColumn from '../../components/TaskTitleColumn';
+import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -115,7 +115,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'name',
         render: record => (
           <Link to="http://120.27.215.205/">
-            <TaskTitleColumn text={record} length={10} />
+            <TaskNameColumn text={record} length={10} />
           </Link>
         ),
       },

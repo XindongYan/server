@@ -49,6 +49,12 @@ export default class TaskEdit extends PureComponent {
       grades: nextProps.formData.grades,
     });
   }
+  componentWillUnmount() {
+    this.props.dispatch({
+      type: 'global/changeLayoutCollapsed',
+      payload: false,
+    });
+  }
   handleSubmit = () => {
     const { task } = this.state;
     if (!task.title || !task.title.replace(/\s+/g, '')) {

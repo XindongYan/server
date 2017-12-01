@@ -40,6 +40,12 @@ export default class TaskCreate extends PureComponent {
       }
     });
   }
+  componentWillUnmount() {
+    this.props.dispatch({
+      type: 'global/changeLayoutCollapsed',
+      payload: false,
+    });
+  }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });
   }
