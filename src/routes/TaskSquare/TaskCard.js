@@ -20,7 +20,8 @@ export default class TaskCard extends PureComponent {
             <h3><TaskTitleColumn text={task.name} length={23}/></h3>
           </div>
           <div className={styles.customCard}>
-            <p>商家标签:<TaskTitleColumn text={task.merchant_tag} length={16}/></p>
+            <p>任务ID:{task.id}</p>
+            <p className={styles.merchantTag}>商家标签:<TaskTitleColumn text={task.merchant_tag} length={16}/></p>
             <div className={styles.customBtn}>
               <Button size="small" type="primary"
               disabled={!(task.approve_status === TASK_APPROVE_STATUS.published)}

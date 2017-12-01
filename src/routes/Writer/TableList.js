@@ -111,8 +111,8 @@ export default class TableList extends PureComponent {
         dataIndex: 'id',
       },
       {
-        title: '内容标题',
-        dataIndex: 'title',
+        title: '任务名称',
+        dataIndex: 'name',
         render: record => (
           <Link to="http://120.27.215.205/">
             <TaskTitleColumn text={record} length={10} />
