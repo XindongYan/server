@@ -41,7 +41,7 @@ export default class TaskView extends PureComponent {
         title: nextProps.formData.title,
         task_desc: nextProps.formData.task_desc,
         cover_img: nextProps.formData.cover_img,
-        approve_notes: nextProps.formData.approve_notes,
+        approve_notes: nextProps.formData.approve_notes || [],
       }
     });
   }
