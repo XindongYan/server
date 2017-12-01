@@ -347,7 +347,7 @@ class BasicLayout extends React.PureComponent {
               ) : <Spin size="small" style={{ marginLeft: 8 }} />}
             </div>
           </Header>
-          <Content style={{ margin: '12px 12px 0', height: '100%' }}>
+          <Content style={{ margin: '15px 12px 0', height: '100%' }}>
             <Switch>
               {
                 getRouteData('BasicLayout').map(item =>

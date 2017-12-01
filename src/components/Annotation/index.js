@@ -190,11 +190,11 @@ export default class Annotation extends PureComponent {
               <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
             }
           </div>
-          <div
+          {/* <div
             className={styles.viewBox}
             style={{display: viewStatus==='view' ? 'block' : 'none'}}
           >
-          </div>
+          </div> */}
         </div>
       </div>
     );
