@@ -140,6 +140,7 @@ export default class TaskEdit extends PureComponent {
 
   render() {
     const { formData } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
     const { grades, approve_notes } = this.state;
     const operation = formData.approve_step === 0 ? 'edit' : 'view';
     const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
@@ -207,7 +208,7 @@ export default class TaskEdit extends PureComponent {
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
-        <TaskChat task={formData} />
+        <TaskChat taskId={query._id} />
       </Card>
     );
   }

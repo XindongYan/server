@@ -98,6 +98,7 @@ export default class TaskCreate extends PureComponent {
   }
   render() {
     // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
@@ -117,7 +118,7 @@ export default class TaskCreate extends PureComponent {
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
-        <TaskChat task={this.props.formData} />
+        <TaskChat taskId={query._id} />
       </Card>
     );
   }
