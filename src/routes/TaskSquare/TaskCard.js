@@ -12,6 +12,7 @@ export default class TaskCard extends PureComponent {
 
   render() {
     const { task, index } = this.props;
+    console.log(task);
     const colorArr = ['#6a6aff','#2894ff','#00caca','#4f9d9d','#ffa042','#ffd306','#ff8040','#7373b9','#c07ab8','#a6a6d2'];
     return (
       <Col span={4} key={index} style={{padding: "5px"}}>
