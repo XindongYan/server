@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Icon } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { routerRedux } from 'dva/router';
@@ -35,10 +35,13 @@ export default class ProjectCard extends PureComponent {
             <p title={project.merchant_tag}>{ project.merchant_tag ? project.merchant_tag : '无' }</p>
           </div>
           <div className={styles.cardColBottom}>
-            <p className={styles.cardMsgDesc}>项目描述：{ project.desc ? project.desc : '无' }</p>
+            <p className={styles.cardMsgDesc}>{ project.desc ? project.desc : '无' }</p>
             <div className={styles.cardMsgB}>
-              <span className={styles.cardMsgPrice}>报酬：{ project.price ? project.price : '无' }</span>
-              <span className={styles.cardMsgDeadline}>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD HH:mm:ss') : '无' }</span>
+              <span className={styles.cardMsgPrice}>
+                <Icon style={{ fontSize: 16 }} type="pay-circle" />
+                <span style={{ padding: '0 6px' }}>{ project.price ? project.price : '无' }</span>
+              </span>
+              <span className={styles.cardMsgDeadline}>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD') : '无' }</span>
             </div>
           </div>
         </Card>

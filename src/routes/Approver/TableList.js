@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm } from 'antd';
+import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, Badge } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
 import TaskTitleColumn from '../../components/TaskTitleColumn';
@@ -240,7 +240,7 @@ export default class TableList extends PureComponent {
     return (
       <PageHeaderLayout title="">
 	      <div style={{ marginBottom:'10px' }}>
-          <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}>
+          <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}> 
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
