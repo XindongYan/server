@@ -11,6 +11,7 @@ export default class SignBox extends PureComponent {
     this.setState({
       signValue: nextProps.signContent.message || '',
     })
+    // if (nextProps.signVisible ==)
   }
 
   fnPrevent = (e) => {

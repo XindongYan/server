@@ -18,7 +18,6 @@ export default class Annotation extends PureComponent {
       visible: 'none',
     },
     signVisible: false,
-    commentContent: [],
     editIndex: -1,
     signContent: '',
     status: '',
@@ -26,9 +25,7 @@ export default class Annotation extends PureComponent {
   componentDidMount() {
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      commentContent: nextProps.value || [],
-    })
+
   }
   fnPrevent = (e) => {
     e.preventDefault();
@@ -78,11 +75,11 @@ export default class Annotation extends PureComponent {
       })
     }
     if (value==='edit') {
-      const { commentContent, editIndex } = this.state;
+      const { editIndex } = this.state;
       this.setState({
         direction: {...this.state.direction, visible: 'none'},
         signVisible: true,
-        signContent: commentContent[editIndex]
+        signContent: this.props.value[editIndex]
       })
     }
     if (value==='delete') {
@@ -117,18 +114,15 @@ export default class Annotation extends PureComponent {
     })
   }
   sureChange = (commentMsg) => {
-    const { status, editIndex, commentContent } = this.state;
+    const { status, editIndex } = this.state;
     if(commentMsg.message){
       if(status === 'add'){
-        this.setState({
-          commentContent: [...this.state.commentContent, commentMsg],
-        },() => {
-          if (this.props.changeApproveNode) this.props.changeApproveNode(this.state.commentContent);
-        });
+        if (this.props.onChange) this.props.onChange([...this.props.value, commentMsg]);
       } else if(status === 'edit') {
-        const newComment = { ...commentContent[editIndex], message: commentMsg.message };
-        commentContent.splice(editIndex,1,newComment);
-        if (this.props.changeApproveNode) this.props.changeApproveNode(this.state.commentContent);
+        const newCommentList = [...this.props.value];
+        const newComment = { ...this.props.value[editIndex], message: commentMsg.message };
+        newCommentList.splice(editIndex,1,newComment);
+        if (this.props.onChange) this.props.onChange([...newCommentList]);
       }
     }
     this.setState({
@@ -152,49 +146,48 @@ export default class Annotation extends PureComponent {
     })
   }
   render() {
-    const { viewStatus, style, value, approve_step } = this.props;
+    const { viewStatus, value, approve_step } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     return (
-      <div>
+      <div style={{height: '100%', position: 'relative'}}>
         <div className={styles.commentTitle}>
           批注
         </div>
-        <div className={styles.myTextInput} style={style || {height: 600}} ref="myTextInput">
+        <div
+          ref="AnnotationBox"
+          className={styles.AnnotationBox}
+          onContextMenu={this.fnContextMenu}
+          onClick={this.fnClickDefult}
+        >
           <div
-            ref="AnnotationBox"
-            className={styles.AnnotationBox}
-            onContextMenu={this.fnContextMenu}
-            onClick={this.fnClickDefult}
+            className={styles.selectBox}
+            style={{ 
+              left: direction.x + 100 > $(this.refs.AnnotationBox).outerWidth() ? ($(this.refs.AnnotationBox).outerWidth()-100 || 0) : direction.x, 
+              top: direction.y,
+              display: direction.visible
+            }}
           >
-            <div
-              className={styles.selectBox}
-              style={{ 
-                left: direction.x + 100 > $(this.refs.AnnotationBox).outerWidth() ? ($(this.refs.AnnotationBox).outerWidth()-100 || 0) : direction.x, 
-                top: direction.y,
-                display: direction.visible
-              }}
-            >
-              {action.map(this.creatBox)}
-            </div>
-            <SignBox
-              direction={direction}
-              sureChange={this.sureChange}
-              close={this.hideSignBox}
-              signVisible={signVisible}
-              parentWidth={$(this.refs.AnnotationBox).outerWidth()}
-              signContent={signContent}
-              boxSize={$(this.refs.AnnotationBox).outerHeight()}
-              approve_step={approve_step}
-            />
-            {commentContent.map((item,index) => 
-              <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
-            }
+            {action.map(this.creatBox)}
           </div>
-          {/* <div
+          <SignBox
+            direction={direction}
+            sureChange={this.sureChange}
+            close={this.hideSignBox}
+            signVisible={signVisible}
+            parentWidth={$(this.refs.AnnotationBox).outerWidth()}
+            signContent={signContent}
+            boxSize={$(this.refs.AnnotationBox).outerHeight()}
+            approve_step={approve_step}
+          />
+          {value.map((item,index) => 
+            <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
+          }
+          <div
             className={styles.viewBox}
+            onContextMenu={this.fnPrevent}
             style={{display: viewStatus==='view' ? 'block' : 'none'}}
           >
-          </div> */}
+          </div>
         </div>
       </div>
     );

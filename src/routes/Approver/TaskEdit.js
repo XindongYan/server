@@ -55,7 +55,7 @@ export default class TaskEdit extends PureComponent {
       grade: nextProps.formData.grade,
       grades: nextProps.formData.grades && nextProps.formData.grades.length ? nextProps.formData.grades : [...this.state.grades],
       approve_status: nextProps.formData.approve_status,
-      approve_notes: nextProps.formData.approve_notes,
+      approve_notes: nextProps.formData.approve_notes || [],
     });
   }
   changeGrades = (index, value) => {
@@ -162,8 +162,7 @@ export default class TaskEdit extends PureComponent {
               approve_step={formData.approve_step}
               viewStatus="edit"
               value={approve_notes}
-              changeApproveNode={this.changeApproveNode}
-              style={{height: taskOuterBoxHeight}}
+              onChange={this.changeApproveNode}
             />
           </div>
           <div className={styles.submitBox}>

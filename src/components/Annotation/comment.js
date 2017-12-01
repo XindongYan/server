@@ -14,7 +14,6 @@ export default class Comment extends PureComponent {
   }
   render() {
     const { msg, editComment } = this.props;
-    console.log(msg)
     return (
       <div 
         className={styles.commentBox}
