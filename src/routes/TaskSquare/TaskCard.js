@@ -20,7 +20,7 @@ export default class TaskCard extends PureComponent {
             <h3><TaskNameColumn text={task.name} length={23}/></h3>
           </div>
           <div className={styles.customCard}>
-            <p><Tag color="blue">{task.id}</Tag></p>
+            <Tag color="blue">{task.id}</Tag>
             <p className={styles.merchantTag}><TaskNameColumn text={task.merchant_tag} length={16}/></p>
             <div className={styles.customBtn}>
               <Button size="small" type="primary"
