@@ -53,8 +53,6 @@ export default class Editor extends PureComponent {
           'justifyjustify', // 两端对齐
           'picture',
           // 'taobao',
-          'forecolor', // 字体颜色
-          'backcolor', // 背景色
           'drafts', // 从草稿箱加载
         ]
       ],

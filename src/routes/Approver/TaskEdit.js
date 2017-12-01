@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
+import $ from 'jquery';
 import { Card, Button, message, Popover, Slider, Popconfirm } from 'antd';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
 import { routerRedux } from 'dva/router';
@@ -131,7 +132,7 @@ export default class TaskEdit extends PureComponent {
     const { formData } = this.props;
     const { grades, approve_notes } = this.state;
     const operation = formData.approve_step === 0 ? 'edit' : 'view';
-    // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 
@@ -158,6 +159,7 @@ export default class TaskEdit extends PureComponent {
               viewStatus="edit"
               value={approve_notes}
               changeApproveNode={this.changeApproveNode}
+              style={{height: taskOuterBoxHeight}}
             />
           </div>
           <div className={styles.submitBox}>
