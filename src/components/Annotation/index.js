@@ -73,22 +73,20 @@ export default class Annotation extends PureComponent {
       },() => {
         this.setState({signVisible: true})
       })
-    }
-    if (value==='edit') {
+    } else if (value==='edit') {
       const { editIndex } = this.state;
       this.setState({
         direction: {...this.state.direction, visible: 'none'},
         signVisible: true,
         signContent: this.props.value[editIndex]
       })
-    }
-    if (value==='delete') {
-      const { commentContent, editIndex } = this.state;
-      commentContent.splice(editIndex,1);
+    } else if (value==='delete') {
+      const { editIndex } = this.state;
+      const newCommentList = [...this.props.value];
+      newCommentList.splice(editIndex,1);
+      if (this.props.onChange) this.props.onChange([...newCommentList]);
       this.setState({
         direction: {...this.state.direction, visible: 'none'},
-      },() => {
-        if (this.props.changeApproveNode) this.props.changeApproveNode(this.state.commentContent);
       })
     }
   }

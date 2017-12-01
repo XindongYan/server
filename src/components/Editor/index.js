@@ -39,6 +39,8 @@ export default class Editor extends PureComponent {
     this.state.ue.destroy();
   }
   showUeditor = () => {
+    const forecolor = this.props.role === 'approve' ? 'forecolor' : '';
+    const backcolor = this.props.role === 'approve' ? 'backcolor' : '';
     const ue = window.UE.getEditor('editor', {
       toolbars: [
         [
@@ -54,6 +56,8 @@ export default class Editor extends PureComponent {
           'picture',
           // 'taobao',
           'drafts', // 从草稿箱加载
+          forecolor,
+          backcolor,
         ]
       ],
       autoHeightEnabled: true,
