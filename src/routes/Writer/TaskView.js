@@ -66,7 +66,7 @@ export default class TaskView extends PureComponent {
         <div className={styles.taskOuterBox} ref="taskOuterBox">
           <WeitaoForm role="writer" operation="view" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange} />
           { showAnnotation &&
-            <div className={styles.taskComment} style={{ height: taskOuterBoxHeight - 40 }}>
+            <div className={styles.taskComment}>
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange} />
             </div>
           }
