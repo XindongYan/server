@@ -105,7 +105,7 @@ export default class TaskEdit extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
           <WeitaoForm operation="edit" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange} />
-          <div className={styles.taskComment} style={{ height: taskOuterBoxHeight - 40 }}>
+          <div className={styles.taskComment}>
             <Annotation viewStatus="view" value={this.state.task.approve_notes} />
           </div>
           <div className={styles.submitBox}>

@@ -155,7 +155,7 @@ export default class Annotation extends PureComponent {
     const { viewStatus, style, value, approve_step } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     return (
-      <div style={{height: style || 600}}>
+      <div style={{height: '100%'}}>
         <div className={styles.commentTitle}>
           批注
         </div>
@@ -190,11 +190,11 @@ export default class Annotation extends PureComponent {
               <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
             }
           </div>
-          <div
+          {/* <div
             className={styles.viewBox}
             style={{display: viewStatus==='view' ? 'block' : 'none'}}
           >
-          </div>
+          </div> */}
         </div>
       </div>
     );
