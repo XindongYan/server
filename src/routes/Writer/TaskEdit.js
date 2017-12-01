@@ -124,7 +124,7 @@ export default class TaskEdit extends PureComponent {
                 }
               </dl>
             }
-            <Popconfirm placement="left" title="确认已经写完并提交给审核人员?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
+            <Popconfirm placement="top" title="确认已经写完并提交给审核人员?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
               <Button>提交</Button>
             </Popconfirm>
             <Button onClick={this.handleSave}>保存</Button>
