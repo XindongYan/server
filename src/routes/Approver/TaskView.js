@@ -45,6 +45,12 @@ export default class TaskView extends PureComponent {
       }
     });
   }
+  componentWillUnmount() {
+    this.props.dispatch({
+      type: 'global/changeLayoutCollapsed',
+      payload: false,
+    });
+  }
   handleSubmit = () => {
   }
   handleChange = (task) => {
