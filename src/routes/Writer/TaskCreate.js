@@ -95,7 +95,7 @@ export default class TaskCreate extends PureComponent {
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
-          <WeitaoForm operation="edit" style={{ width: 720 }} formData={this.state.task} onChange={this.handleChange} />
+          <WeitaoForm role="writer" operation="edit" style={{ width: 720 }} formData={this.state.task} onChange={this.handleChange} />
           <div className={styles.taskComment} style={{ width: 200 }}>
             <p className={styles.titleDefult}>爆文写作参考</p>
             <ul className={styles.tPrompt}>

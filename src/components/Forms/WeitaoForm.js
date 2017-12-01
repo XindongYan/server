@@ -57,7 +57,7 @@ export default class WeitaoForm extends PureComponent {
           </div>
           <div className={styles.taskList}>
             <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
-            <Editor style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
+            <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
           </div>
           <div className={styles.taskList} style={{ marginTop: 20 }}>
             <p>封面图</p>

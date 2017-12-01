@@ -146,8 +146,8 @@ export default class TableList extends PureComponent {
         dataIndex: 'id',
       },
       {
-        title: '标题',
-        dataIndex: 'title',
+        title: '任务名称',
+        dataIndex: 'name',
         width: 200,
         render: (record) => (
           <Link to="http://120.27.215.205/">
