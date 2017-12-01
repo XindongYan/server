@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Card, Button, Col } from 'antd';
+import { Card, Button, Col, Tag } from 'antd';
 import moment from 'moment';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './index.less';
@@ -20,7 +20,7 @@ export default class TaskCard extends PureComponent {
             <h3><TaskNameColumn text={task.name} length={23}/></h3>
           </div>
           <div className={styles.customCard}>
-            <p><span style={{padding: '2px 6px', background: '#1890ff', borderRadius: 5, color: '#fff'}}>{task.id}</span></p>
+            <p><Tag color="blue">{task.id}</Tag></p>
             <p className={styles.merchantTag}><TaskNameColumn text={task.merchant_tag} length={16}/></p>
             <div className={styles.customBtn}>
               <Button size="small" type="primary"

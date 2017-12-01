@@ -146,6 +146,7 @@ export default class Annotation extends PureComponent {
   render() {
     const { viewStatus, value, approve_step } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
+    const boxSize = {width: $(this.refs.AnnotationBox).outerWidth(), height: $(this.refs.AnnotationBox).outerHeight()};
     return (
       <div style={{height: '100%', position: 'relative'}}>
         <div className={styles.commentTitle}>
@@ -178,7 +179,7 @@ export default class Annotation extends PureComponent {
             approve_step={approve_step}
           />
           {value.map((item,index) => 
-            <Comment editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
+            <Comment boxSize={boxSize} editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
           }
           <div
             className={styles.viewBox}

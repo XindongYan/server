@@ -13,7 +13,8 @@ export default class Comment extends PureComponent {
 
   }
   render() {
-    const { msg, editComment } = this.props;
+    const { msg, editComment, boxSize } = this.props;
+    console.log(boxSize);
     return (
       <div 
         className={styles.commentBox}
