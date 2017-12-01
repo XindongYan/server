@@ -3,7 +3,7 @@ import { Card, Button, Col } from 'antd';
 import moment from 'moment';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './index.less';
-import TaskTitleColumn from '../../components/TaskTitleColumn';
+import TaskNameColumn from '../../components/TaskNameColumn';
 
 export default class TaskCard extends PureComponent {
   state = {
@@ -17,10 +17,10 @@ export default class TaskCard extends PureComponent {
       <Col span={4} key={index} style={{padding: "5px"}}>
         <Card style={{ width: "100%" }} bodyStyle={{ padding: 0 }}>
           <div className={styles.customImage} style={{ background: colorArr[ task.id % 8 ] }}>
-            <h3><TaskTitleColumn text={task.name} length={23}/></h3>
+            <h3><TaskNameColumn text={task.name} length={23}/></h3>
           </div>
           <div className={styles.customCard}>
-            <p>商家标签:<TaskTitleColumn text={task.merchant_tag} length={16}/></p>
+            <p>商家标签:<TaskNameColumn text={task.merchant_tag} length={16}/></p>
             <div className={styles.customBtn}>
               <Button size="small" type="primary"
               disabled={!(task.approve_status === TASK_APPROVE_STATUS.published)}

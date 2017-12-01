@@ -248,7 +248,7 @@ export default class FlowList extends PureComponent {
           if (record.status === PROJECT_STATUS.created) {
             return (
               <p>
-                <Link to={`/project/task/list?project_id=${record._id}`}>添加任务</Link>
+                <Link to={`/project/task/list?project_id=${record._id}`}>任务</Link>
                 <span className={styles.splitLine} />
                 <a onClick={() => this.handleEdit(record)}>修改</a>
                 <span className={styles.splitLine} />
@@ -264,7 +264,7 @@ export default class FlowList extends PureComponent {
           } else if (record.status === PROJECT_STATUS.published) {
             return (
               <p>
-                <Link to={`/project/task/list?project_id=${record._id}`}>添加任务</Link>
+                <Link to={`/project/task/list?project_id=${record._id}`}>任务</Link>
                 <span className={styles.splitLine} />
                 <a onClick={() => this.handleEdit(record)}>修改</a>
                 <span className={styles.splitLine} />
@@ -276,7 +276,7 @@ export default class FlowList extends PureComponent {
           } else if (record.status === PROJECT_STATUS.offshelf) {
             return (
               <p>
-                <Link to={`/project/task/list?project_id=${record._id}`}>添加任务</Link>
+                <Link to={`/project/task/list?project_id=${record._id}`}>任务</Link>
                 <span className={styles.splitLine} />
                 <a onClick={() => this.handleEdit(record)}>修改</a>
                 <span className={styles.splitLine} />

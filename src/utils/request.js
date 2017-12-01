@@ -34,9 +34,9 @@ export default function request(url, options) {
     };
     newOptions.body = JSON.stringify(newOptions.body);
   }
-  const origin = 'http://test.nicai360.com';
+  // const origin = 'http://test.nicai360.com';
   // const origin = `http://www.nicai360.com`;
-  // const origin = `http://${location.hostname}:3000`;
+  const origin = `http://${location.hostname}:3000`;
   return fetch(/^http/.test(url) ? url : `${origin}${url}`, newOptions)
     .then(checkStatus)
     .then(response => response.json())

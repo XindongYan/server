@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tooltip } from 'antd';
 import { Link } from 'dva/router';
 
-export default class TaskTitleColumn extends PureComponent {
+export default class TaskNameColumn extends PureComponent {
   render() {
     const { length = 13, text } = this.props;
     if (text && text.length > length) {

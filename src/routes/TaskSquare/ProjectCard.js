@@ -4,7 +4,7 @@ import { Card, Col, Row } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { routerRedux } from 'dva/router';
-import TaskTitleColumn from '../../components/TaskTitleColumn';
+import TaskNameColumn from '../../components/TaskNameColumn';
 
 @connect(state => ({
 
