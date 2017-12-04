@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Menu, Icon, Avatar, Dropdown, Tag, message, Spin } from 'antd';
+import { Layout, Menu, Icon, Avatar, Dropdown, Tag, message, Spin, Modal } from 'antd';
 import DocumentTitle from 'react-document-title';
 import { connect } from 'dva';
 import { Link, routerRedux, Route, Redirect, Switch } from 'dva/router';
@@ -60,15 +60,15 @@ class BasicLayout extends React.PureComponent {
   constructor(props) {
     super(props);
     // 把一级 Layout 的 children 作为菜单项
-    this.menus = getNavData().reduce((arr, current) => arr.concat(current.children), []);
+    this.menus = getNavData(props.currentUser).reduce((arr, current) => arr.concat(current.children), []);
     this.state = {
       openKeys: this.getDefaultCollapsedSubMenus(props),
     };
   }
   getChildContext() {
-    const { location } = this.props;
+    const { location, currentUser } = this.props;
     const routeData = getRouteData('BasicLayout');
-    const menuData = getNavData().reduce((arr, current) => arr.concat(current.children), []);
+    const menuData = getNavData(currentUser).reduce((arr, current) => arr.concat(current.children), []);
     const breadcrumbNameMap = {};
     routeData.concat(menuData).forEach((item) => {
       breadcrumbNameMap[item.path] = item.name;
@@ -84,6 +84,8 @@ class BasicLayout extends React.PureComponent {
     if (nextProps.currentUser.error) {
       this.props.dispatch(routerRedux.push('/user/login'));
     }
+    const menuData = getNavData(nextProps.currentUser).reduce((arr, current) => arr.concat(current.children), []);
+    this.setState({ menus: menuData });
   }
   componentWillUnmount() {
     clearTimeout(this.resizeTimeout);
@@ -95,6 +97,7 @@ class BasicLayout extends React.PureComponent {
     });
   }
   onMenuClick = ({ key }) => {
+    const { dispatch, teamUser, team } = this.props;
     if (key === 'logout') {
       this.props.dispatch({
         type: 'login/logout',
@@ -104,6 +107,26 @@ class BasicLayout extends React.PureComponent {
         callback: () => {
           this.props.dispatch(routerRedux.push('/user/login'));
         },
+      });
+    } else if (key === 'leaveTeam') {
+      Modal.confirm({
+        title: '退出团队',
+        content: `确定退出当前所在团队 ${team.name}`,
+        onOk() {
+          dispatch({
+            type: 'team/remove',
+            payload: {
+              _id: record._id,
+              callback: () => {
+                message.success('退出成功');
+                dispatch({
+                  type: 'user/fetchCurrent',
+                });
+              },
+            },
+          });
+        },
+        onCancel() {},
       });
     }
   }
@@ -243,13 +266,14 @@ class BasicLayout extends React.PureComponent {
     }
   }
   render() {
-    const { currentUser, collapsed, fetchingNotices } = this.props;
+    const { currentUser, collapsed, fetchingNotices, teamUser } = this.props;
 
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         <Menu.Item disabled><Icon type="user" />个人中心</Menu.Item>
         <Menu.Item disabled><Icon type="setting" />设置</Menu.Item>
         <Menu.Divider />
+        {teamUser && <Menu.Item key="leaveTeam"><Icon type="user-delete" />退出团队</Menu.Item>}
         <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
       </Menu>
     );
@@ -306,8 +330,8 @@ class BasicLayout extends React.PureComponent {
                 onPressEnter={(value) => {
                   console.log('enter', value); // eslint-disable-line
                 }}
-              />*/ }
-              <NoticeIcon
+              /> */ }
+              { /* <NoticeIcon
                 className={styles.action}
                 count={currentUser.notifyCount}
                 onItemClick={(item, tabProps) => {
@@ -336,7 +360,7 @@ class BasicLayout extends React.PureComponent {
                   emptyText="你已完成所有待办"
                   emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
                 />
-              </NoticeIcon>
+              </NoticeIcon> */ }
               {currentUser.name ? (
                 <Dropdown overlay={menu}>
                   <span className={`${styles.action} ${styles.account}`}>
@@ -407,4 +431,6 @@ export default connect(state => ({
   collapsed: state.global.collapsed,
   fetchingNotices: state.global.fetchingNotices,
   notices: state.global.notices,
+  team: state.user.team,
+  teamUser: state.user.teamUser,
 }))(BasicLayout);

@@ -64,7 +64,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [taskSquare, writer, approver, team, project, invitation, album],
+    children: [taskSquare, writer, approver, team, invitation, project, album],
   }, {
     name: '工具',
     path: 'tool',
@@ -79,7 +79,35 @@ const data = [{
   }],
 }];
 
-export function getNavData() {
+const RIGHTS = {
+  writer: 1,
+  teamAdmin: 2,
+  projectAdmin: 3,
+  approver: 6,
+};
+
+export function getNavData(user) {
+  const menuItems = [];
+  if (user.rights) {
+    if (user.rights.indexOf(RIGHTS.writer) >= 0) {
+      menuItems.push(taskSquare, writer);
+    }
+    if (user.rights.indexOf(RIGHTS.approver) >= 0) {
+      menuItems.push(approver);
+    }
+    if (user.rights.indexOf(RIGHTS.teamAdmin) >= 0) {
+      menuItems.push(team, invitation);
+    }
+    if (user.rights.indexOf(RIGHTS.projectAdmin) >= 0) {
+      menuItems.push(project);
+    }
+    if (user.rights.indexOf(RIGHTS.writer) >= 0) {
+      menuItems.push(album);
+    }
+  } else {
+    menuItems.push(taskSquare, writer, album);
+  }
+  data[0].children[0].children = menuItems;
   return data;
 }
 

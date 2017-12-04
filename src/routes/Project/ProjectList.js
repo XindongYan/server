@@ -265,8 +265,6 @@ export default class FlowList extends PureComponent {
               <p>
                 <Link to={`/project/task/list?project_id=${record._id}`}>任务</Link>
                 <span className={styles.splitLine} />
-                <a onClick={() => this.handleEdit(record)}>修改</a>
-                <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认下架?`} onConfirm={() => this.handleOffshelf(record)} okText="确认" cancelText="取消">
                   <a>下架</a>
                 </Popconfirm>

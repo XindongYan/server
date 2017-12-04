@@ -73,22 +73,8 @@ export default {
       if (callback) callback(updateResult);
     },
     *remove({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      yield call(removeTeamUser, payload);
-      const response = yield call(queryTeamUsers, {team_id: payload.team_id});
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-
-      if (callback) callback();
+      const result = yield call(removeTeamUser, payload);
+      if (callback) callback(result);
     },
     *toggleTeamUsersModal({ payload }, { call, put }) {
       yield put({

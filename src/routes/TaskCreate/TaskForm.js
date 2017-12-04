@@ -31,6 +31,7 @@ export default class TaskForm extends PureComponent {
         channel_name: formData.channel_name,
         desc: formData.desc,
         attachments: formData.attachments,
+        price: formData.price,
       });
     }
     this.props.dispatch({
@@ -44,8 +45,14 @@ export default class TaskForm extends PureComponent {
         channel_name: nextProps.formData.channel_name,
         desc: nextProps.formData.desc,
         attachments: nextProps.formData.attachments,
+        price: nextProps.formData.price,
       });
     }
+  }
+  componentWillUnmount() {
+    this.props.dispatch({
+      type: 'task/clearFormData'
+    });
   }
   handleSubmit = () => {
     const { teamUser, formData } = this.props;
@@ -169,6 +176,17 @@ export default class TaskForm extends PureComponent {
                   <Icon type="upload" /> 点击上传
                 </Button>
               </Upload>
+            )}
+          </FormItem>
+          <FormItem
+            label="奖励"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('price', {
+              initialValue: 0,
+            })(
+              <Input type="number" addonAfter="元" />
             )}
           </FormItem>
           <FormItem
