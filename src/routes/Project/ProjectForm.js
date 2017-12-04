@@ -5,7 +5,7 @@ import path from 'path';
 import moment from 'moment';
 import { routerRedux } from 'dva/router';
 import { Card, Form, Input, Select, Icon, Button, DatePicker, Upload } from 'antd';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES, CHANNEL_NAMES } from '../../constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -41,12 +41,6 @@ export default class ProjectForm extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.teamUser.team_id) {
-      this.props.dispatch({
-        type: 'team/fetchTeamUsers',
-        payload: { team_id: nextProps.teamUser.team_id },
-      });
-    }
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
       const approvers = {};
       const flow = APPROVE_FLOWS.find(item => item.value === nextProps.formData.approve_flow);
@@ -55,6 +49,7 @@ export default class ProjectForm extends PureComponent {
       });
       const fieldsValue = {
         name: nextProps.formData.name,
+        channel_name: nextProps.formData.channel_name,
         merchant_tag: nextProps.formData.merchant_tag,
         task_type: nextProps.formData.task_type,
         desc: nextProps.formData.desc,
@@ -73,6 +68,12 @@ export default class ProjectForm extends PureComponent {
       setTimeout(() => {
         this.props.form.setFieldsValue(approvers);
       }, 200);
+      if (nextProps.teamUser.team_id) {
+        this.props.dispatch({
+          type: 'team/fetchTeamUsers',
+          payload: { team_id: nextProps.teamUser.team_id },
+        });
+      }
     }
   }
   handleSubmit = () => {
@@ -138,7 +139,7 @@ export default class ProjectForm extends PureComponent {
     const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData, type } = this.props;
     const flow = APPROVE_FLOWS.find(item => item.value === (formData.approve_flow || getFieldValue('approve_flow')));
     return (
-      <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}活动`}>
+      <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}${type === 1 ? '活动' : '投稿'}`}>
         <Form>
           <FormItem
             label="标题"
@@ -149,6 +150,21 @@ export default class ProjectForm extends PureComponent {
               rules: [{ required: true, message: '请输入项目标题！' }],
             })(
               <Input />
+            )}
+          </FormItem>
+          <FormItem
+            label="渠道"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('channel_name', {
+              rules: [{ required: true, message: '请选择渠道！' }],
+            })(
+              <Select
+                placeholder="选择渠道"
+              >
+                {CHANNEL_NAMES.map(item => <Option value={item} key={item}>{item}</Option>)}
+              </Select>
             )}
           </FormItem>
           <FormItem
