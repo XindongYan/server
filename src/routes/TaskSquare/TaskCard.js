@@ -12,7 +12,6 @@ export default class TaskCard extends PureComponent {
 
   render() {
     const { task, index } = this.props;
-    console.log(task);
     const menu = (
       <Menu style={{ width: 220 }}>
         { task.attachments.map((item,index) => 

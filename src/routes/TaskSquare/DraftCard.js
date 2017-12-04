@@ -31,7 +31,7 @@ export default class DraftCard extends PureComponent {
         </div>
         <div className={styles.cardColBottom}>
           <p className={styles.draftCardMsg}>{ project.desc}</p>
-          <div className={styles.cardMsgB}>
+          <div className={styles.draftMsgB}>
             { project.price ? 
               <span className={styles.cardMsgPrice}>
                   <Icon style={{ fontSize: 16 }} type="pay-circle" />
@@ -43,7 +43,7 @@ export default class DraftCard extends PureComponent {
               <span className={styles.cardMsgDeadline} style={{ marginLeft: 40, float: 'left' }}>截稿日期：{ moment(project.deadline).format('YYYY-MM-DD') }</span>
               : <span></span>
             }
-            <Button style={{ float: right }}>投稿</Button>
+            <Button style={{ float: 'right' }}>投稿</Button>
           </div>
         </div>
       </Card>
