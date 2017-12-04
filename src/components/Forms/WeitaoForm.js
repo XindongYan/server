@@ -80,7 +80,7 @@ export default class WeitaoForm extends PureComponent {
           <div className={styles.taskList} style={{margin: '20px 0'}}>
             <p style={{ fontSize: 18 }}>{formData.title}</p>
           </div>
-          <div className={styles.taskList}>
+          <div className={styles.taskList} style={{ minHeight: 500 }}>
             <div className={styles.descBox} dangerouslySetInnerHTML={{__html: formData.task_desc}}>
             </div>
           </div>
