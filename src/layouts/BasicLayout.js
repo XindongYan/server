@@ -78,9 +78,6 @@ class BasicLayout extends React.PureComponent {
     return { location, breadcrumbNameMap };
   }
   componentDidMount() {
-    this.props.dispatch({
-      type: 'user/fetchCurrent',
-    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentUser.error) {

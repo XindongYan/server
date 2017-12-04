@@ -77,6 +77,7 @@ export default class ProjectForm extends PureComponent {
   }
   handleSubmit = () => {
     const { form: { getFieldValue }, teamUser, formData, type } = this.props;
+    console.log(type);
     const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -111,7 +112,11 @@ export default class ProjectForm extends PureComponent {
             },
           });
         }
-        this.props.dispatch(routerRedux.push('/list/project-list'));
+        if (type === 1) {
+          this.props.dispatch(routerRedux.push('/list/activity-list'));
+        } else if (type === 2) {
+          this.props.dispatch(routerRedux.push('/list/deliver-list'));
+        }
       }
     });
   }

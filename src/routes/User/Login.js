@@ -18,9 +18,9 @@ export default class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.login.status === 'ok') {
-      this.props.dispatch(routerRedux.push('/'));
-    }
+    // if (nextProps.login.status === 'ok') {
+    //   this.props.dispatch(routerRedux.push('/'));
+    // }
   }
 
   componentWillUnmount() {
@@ -64,6 +64,16 @@ export default class Login extends Component {
           this.props.dispatch({
             type: `login/${type}Submit`,
             payload: values,
+            callback: (result) => {
+              if (!result.error) {
+                this.props.dispatch({
+                  type: 'user/fetchCurrent',
+                  callback: () => {
+                    this.props.dispatch(routerRedux.push('/'));
+                  },
+                });
+              }
+            },
           });
         }
       }
@@ -105,7 +115,7 @@ export default class Login extends Component {
                   <Input
                     size="large"
                     prefix={<Icon type="user" className={styles.prefixIcon} />}
-                    placeholder="admin"
+                    placeholder="账户"
                   />
                 )}
               </FormItem>
@@ -119,7 +129,7 @@ export default class Login extends Component {
                     size="large"
                     prefix={<Icon type="lock" className={styles.prefixIcon} />}
                     type="password"
-                    placeholder="888888"
+                    placeholder="密码"
                   />
                 )}
               </FormItem>

@@ -10,7 +10,7 @@ export default {
   },
 
   effects: {
-    *accountSubmit({ payload }, { call, put }) {
+    *accountSubmit({ payload, callback }, { call, put }) {
       yield put({
         type: 'changeSubmitting',
         payload: true,
@@ -30,8 +30,9 @@ export default {
         type: 'changeSubmitting',
         payload: false,
       });
+      if (!response.error) callback(response);
     },
-    *mobileSubmit({ payload }, { call, put }) {
+    *mobileSubmit({ payload, callback }, { call, put }) {
       yield put({
         type: 'changeSubmitting',
         payload: true,
@@ -51,6 +52,7 @@ export default {
         type: 'changeSubmitting',
         payload: false,
       });
+      if (!response.error) callback(response);
     },
     *logout({ payload, callback }, { call, put }) {
       yield call(accountLogout);
