@@ -215,10 +215,10 @@ export default class TableList extends PureComponent {
                 <Link to={`/approver/task/edit?_id=${record._id}`}>
                   <span>审核</span>
                 </Link>
-                <span className={styles.splitLine} />
-                <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                { record.approve_step === 0 && <span className={styles.splitLine} /> }
+                { record.approve_step === 0 && <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                   <a>退回</a>
-                </Popconfirm>
+                </Popconfirm> }
               </div>
             );
           } else {

@@ -127,14 +127,14 @@ export default class TableList extends PureComponent {
       type: 'team/remove',
       payload: {
         _id: record._id,
-        callback: () => {
-          dispatch({
-            type: 'team/fetch',
-            payload: {
-              team_id: teamUser.team_id,
-            },
-          });
-        },
+      },
+      callback: () => {
+        dispatch({
+          type: 'team/fetch',
+          payload: {
+            team_id: teamUser.team_id,
+          },
+        });
       },
     });
     message.success('删除成功');
