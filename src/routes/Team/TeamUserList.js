@@ -22,8 +22,9 @@ export default class TableList extends PureComponent {
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
-    value: '',
+    phone: '',
     user: {},
+    addTeamUserModalVisible: false,
   };
 
   componentDidMount() {
@@ -126,7 +127,14 @@ export default class TableList extends PureComponent {
       type: 'team/remove',
       payload: {
         _id: record._id,
-        team_id: teamUser.team_id,
+        callback: () => {
+          dispatch({
+            type: 'team/fetch',
+            payload: {
+              team_id: teamUser.team_id,
+            },
+          });
+        },
       },
     });
     message.success('删除成功');
@@ -168,7 +176,7 @@ export default class TableList extends PureComponent {
   }
   onSearch = (value) => {
     this.setState({
-      value,
+      phone: value,
     });
     if (value.length >= 10) {
       this.props.dispatch({
@@ -179,28 +187,41 @@ export default class TableList extends PureComponent {
       });
     }
   }
-  onSelect = (value) => {
+  handleAddTeamUser = () => {
     const { dispatch, teamUser } = this.props;
-    this.setState({ value });
-    dispatch({
-      type: 'team/add',
-      payload: {
-        user_id: value,
-        team_id: teamUser.team_id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success('添加成功');
-        }
-      },
-    });
+    if (!this.state.phone) {
+      message.warn('请先选择用户');
+    } else {
+      dispatch({
+        type: 'team/add',
+        payload: {
+          phone: this.state.phone,
+          team_id: teamUser.team_id,
+        },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            message.success('添加成功');
+            this.handleHideTeamUserModal();
+          }
+        },
+      });
+    }
     
+  }
+  handleSelect = (value) => {
+    this.setState({ phone: value });
+  }
+  handleShowAddTeamUserModal = () => {
+    this.setState({ addTeamUserModalVisible: true, phone: '' });
+  }
+  handleHideTeamUserModal = () => {
+    this.setState({ addTeamUserModalVisible: false });
   }
   render() {
     const { team: { loading, data: { list, pagination }, suggestionUsers }, currentUser } = this.props;
-    const { selectedRows, selectedRowKeys, modalVisible, user } = this.state;
+    const { selectedRows, selectedRowKeys, modalVisible, user, addTeamUserModalVisible } = this.state;
 
     const columns = [
       {
@@ -272,21 +293,7 @@ export default class TableList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Select
-                style={{ width: '40%' }}
-                mode="combobox"
-                optionLabelProp="children"
-                value={this.state.value}
-                placeholder="输入用户电话号码搜索添加"
-                notFoundContent=""
-                defaultActiveFirstOption={false}
-                showArrow={false}
-                filterOption={false}
-                onSelect={this.onSelect}
-                onSearch={this.onSearch}
-              >
-                {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.name}</Option>)}
-              </Select>
+              <Button onClick={this.handleShowAddTeamUserModal} type="primary" icon="plus">添加成员</Button>
             </div>
             <Table
               loading={loading}
@@ -317,6 +324,34 @@ export default class TableList extends PureComponent {
             label="审核角色"
           >
             <CheckboxGroup options={APPROVE_ROLES} value={user.approve_roles} onChange={this.handleApproveRolesChange} />
+          </FormItem>
+        </Modal>
+        <Modal
+          title="添加成员"
+          visible={addTeamUserModalVisible}
+          onOk={this.handleAddTeamUser}
+          onCancel={() => this.handleHideTeamUserModal()}
+        >
+          <FormItem
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+            label="用户电话"
+          >
+            <Select
+              style={{ width: '100%' }}
+              mode="combobox"
+              optionLabelProp="children"
+              value={this.state.phone}
+              placeholder="搜索用户添加至团队"
+              notFoundContent=""
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              filterOption={false}
+              onSearch={this.onSearch}
+              onSelect={this.handleSelect}
+            >
+              {suggestionUsers.map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+            </Select>
           </FormItem>
         </Modal>
       </PageHeaderLayout>

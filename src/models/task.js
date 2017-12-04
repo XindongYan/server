@@ -130,6 +130,12 @@ export default {
         payload: false,
       });
     },
+    *clearFormData(_, { call, put }) {
+      yield put({
+        type: 'saveTask',
+        payload: { },
+      });
+    },
   },
 
   reducers: {

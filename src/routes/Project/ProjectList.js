@@ -2,14 +2,13 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
-import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
+import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
 
 import styles from './Project.less';
 
-const FormItem = Form.Item;
 const { Option } = Select;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
@@ -17,8 +16,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   project: state.project,
   teamUser: state.user.teamUser,
 }))
-@Form.create()
-export default class FlowList extends PureComponent {
+export default class ProjectList extends PureComponent {
   state = {
     selectedRows: [],
     selectedRowKeys: [],
@@ -26,30 +24,32 @@ export default class FlowList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch, teamUser } = this.props;
+    const { dispatch, teamUser, type } = this.props;
     if (teamUser.team_id) {
       dispatch({
         type: 'project/fetch',
         payload: {
           team_id: teamUser.team_id,
+          type,
         },
       });
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, teamUser } = nextProps;
+    const { dispatch, teamUser, type } = nextProps;
     if (teamUser.team_id !== this.props.teamUser.team_id) {
       dispatch({
         type: 'project/fetch',
         payload: {
           team_id: teamUser.team_id,
+          type,
         },
       });
     }
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, teamUser } = this.props;
+    const { dispatch, teamUser, type } = this.props;
     const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -60,6 +60,7 @@ export default class FlowList extends PureComponent {
 
     const params = {
       team_id: teamUser.team_id,
+      type,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...formValues,
@@ -72,15 +73,6 @@ export default class FlowList extends PureComponent {
     dispatch({
       type: 'project/fetch',
       payload: params,
-    });
-  }
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    dispatch({
-      type: 'project/fetch',
-      payload: {},
     });
   }
 
@@ -139,10 +131,20 @@ export default class FlowList extends PureComponent {
     });
   }
   handleAdd = () => {
-    this.props.dispatch(routerRedux.push('/project/create'));
+    const { type } = this.props;
+    if (type === 1) {
+      this.props.dispatch(routerRedux.push('/activity/create'));
+    } else if (type === 2) {
+      this.props.dispatch(routerRedux.push('/deliver/create'));
+    }
   }
   handleEdit = (record) => {
-    this.props.dispatch(routerRedux.push(`/project/edit?_id=${record._id}`));
+    const { type } = this.props;
+    if (type === 1) {
+      this.props.dispatch(routerRedux.push(`/activity/edit?_id=${record._id}`));
+    } else if (type === 2) {
+      this.props.dispatch(routerRedux.push(`/deliver/edit?_id=${record._id}`));
+    }
   }
   handlePublish = (record) => {
     
@@ -265,8 +267,6 @@ export default class FlowList extends PureComponent {
               <p>
                 <Link to={`/project/task/list?project_id=${record._id}`}>任务</Link>
                 <span className={styles.splitLine} />
-                <a onClick={() => this.handleEdit(record)}>修改</a>
-                <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认下架?`} onConfirm={() => this.handleOffshelf(record)} okText="确认" cancelText="取消">
                   <a>下架</a>
                 </Popconfirm>
@@ -310,7 +310,7 @@ export default class FlowList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建活动</Button>
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button>
               {
                 selectedRows.length > 0 && (
                   <span>

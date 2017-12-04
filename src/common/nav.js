@@ -2,7 +2,8 @@ import BasicLayout from '../layouts/BasicLayout';
 import BlankLayout from '../layouts/BlankLayout';
 
 import Approver from '../routes/Approver/TableList';
-import Project from '../routes/Project/ProjectList';
+import Activity from '../routes/Project/ActivityList';
+import Deliver from '../routes/Project/DeliverList';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
 import TaskSquare from '../routes/TaskSquare/ProjectList';
@@ -36,10 +37,16 @@ const team = {
   component: TeamUser,
 };
 
-const project = {
+const activity = {
   name: '活动列表',
-  path: 'project-list',
-  component: Project,
+  path: 'activity-list',
+  component: Activity,
+};
+
+const deliver = {
+  name: '投稿列表',
+  path: 'deliver-list',
+  component: Deliver,
 };
 
 const invitation = {
@@ -64,7 +71,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [taskSquare, writer, approver, team, project, invitation, album],
+    children: [taskSquare, writer, album],
   }, {
     name: '工具',
     path: 'tool',
@@ -79,7 +86,35 @@ const data = [{
   }],
 }];
 
-export function getNavData() {
+const RIGHTS = {
+  writer: 1,
+  teamAdmin: 2,
+  projectAdmin: 3,
+  approver: 6,
+};
+
+export function getNavData(user) {
+  const menuItems = [];
+  if (user.rights) {
+    if (user.rights.indexOf(RIGHTS.writer) >= 0) {
+      menuItems.push(taskSquare, writer);
+    }
+    if (user.rights.indexOf(RIGHTS.approver) >= 0) {
+      menuItems.push(approver);
+    }
+    if (user.rights.indexOf(RIGHTS.teamAdmin) >= 0) {
+      menuItems.push(team, invitation);
+    }
+    if (user.rights.indexOf(RIGHTS.projectAdmin) >= 0) {
+      menuItems.push(activity, deliver);
+    }
+    if (user.rights.indexOf(RIGHTS.writer) >= 0) {
+      menuItems.push(album);
+    }
+  } else {
+    menuItems.push(taskSquare, writer, album);
+  }
+  data[0].children[0].children = menuItems;
   return data;
 }
 
