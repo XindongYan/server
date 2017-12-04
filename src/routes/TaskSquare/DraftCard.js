@@ -54,7 +54,7 @@ export default class DraftCard extends PureComponent {
                   <Icon style={{ fontSize: 16 }} type="pay-circle" />
                   <span style={{ padding: '0 6px' }}>{ project.price }</span>
               </span> :
-              <span>无</span>
+              <span style={{ float: 'left' }}>无</span>
             }
             { project.deadline ? 
               <span className={styles.cardMsgDeadline} style={{ marginLeft: 40, float: 'left' }}>截稿日期：{ moment(project.deadline).format('YYYY-MM-DD') }</span>
