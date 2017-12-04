@@ -81,6 +81,8 @@ export default class TaskList extends PureComponent {
   
   render() {
     const { project, tasks: { list }, loading } = this.props;
+    console.log(project)
+        console.log(this.props.tasks)
     return (
       <div>
         <ProjectDetail project={project} />

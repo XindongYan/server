@@ -54,7 +54,10 @@ export default class ProjectDetail extends PureComponent {
           </div>
         </div>  
         <ul className={styles.fileBox} style={{ display: fileBox ? 'block' : 'none' }}>
-          { project.attachments && project.attachments.length > 0 ? project.attachments.map((item,index) => <li key={index}><a href={item.url}>{item.name}</a></li>) : <li></li>}
+          { project.attachments && project.attachments.length > 0 ?
+            project.attachments.map((item,index) => <li key={index}><a href={item.url}>{item.name}</a></li>)
+            : <li></li>
+          }
         </ul>
       </Card>
     );

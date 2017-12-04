@@ -35,6 +35,12 @@ export default class TaskCard extends PureComponent {
               onClick={() => this.props.onTake(task)}
               >抢单</Button>
             </div>
+            <ul className={styles.filesBox}>
+              { task.attachments && task.attachments.length > 0 ?
+                task.attachments.map((item,index) => <li key={index}><a href={item.url}>{item.name}</a></li>)
+                : <li></li>
+              }
+            </ul>
           </div>
         </Card>
       </Col>
