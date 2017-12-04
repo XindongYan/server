@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Card, Form, Input, Select, Icon, Button, Upload, message } from 'antd';
 import path from 'path';
 import querystring from 'querystring';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, CHANNEL_NAMES } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS } from '../../constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -28,7 +28,6 @@ export default class TaskForm extends PureComponent {
       });
       this.props.form.setFieldsValue({
         name: formData.name,
-        channel_name: formData.channel_name,
         desc: formData.desc,
         attachments: formData.attachments,
         price: formData.price,
@@ -42,7 +41,6 @@ export default class TaskForm extends PureComponent {
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
       this.props.form.setFieldsValue({
         name: nextProps.formData.name,
-        channel_name: nextProps.formData.channel_name,
         desc: nextProps.formData.desc,
         attachments: nextProps.formData.attachments,
         price: nextProps.formData.price,
@@ -136,21 +134,6 @@ export default class TaskForm extends PureComponent {
               rules: [{ required: true, message: '请输入项目标题！' }],
             })(
               <Input />
-            )}
-          </FormItem>
-          <FormItem
-            label="渠道"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('channel_name', {
-              rules: [{ required: true, message: '请选择渠道！' }],
-            })(
-              <Select
-                placeholder="选择渠道"
-              >
-                {CHANNEL_NAMES.map(item => <Option value={item} key={item}>{item}</Option>)}
-              </Select>
             )}
           </FormItem>
           <FormItem
