@@ -4,7 +4,6 @@ import { Card, Col, Row, Icon } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { routerRedux } from 'dva/router';
-import TaskNameColumn from '../../components/TaskNameColumn';
 
 @connect(state => ({
 
@@ -28,8 +27,8 @@ export default class ProjectCard extends PureComponent {
   render() {
     const { project } = this.props;
     return (
-      <Col span={8} onClick={() => this.projectInto(project)}>
-        <Card className={styles.cardCol} bodyStyle={{ padding: 0 }}>
+      <Col span={8} style={{ padding: 5 }}>
+        <Card className={styles.cardCol} bodyStyle={{ padding: 0 }} onClick={() => this.projectInto(project)}>
           <div className={styles.cardColTop}>
             <h3 title={project.name}>{project.name}</h3>
             <p title={project.merchant_tag}>{ project.merchant_tag}</p>

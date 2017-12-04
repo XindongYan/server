@@ -17,7 +17,11 @@ import { ORIGIN } from '../../constants';
 
 export default class TaskList extends PureComponent {
   state = {
-   socket: null,
+    socket: null,
+    page: {
+      currentPage: 1,
+      pageSize: 9999,
+    }
   }
 
   componentDidMount() {
@@ -25,11 +29,11 @@ export default class TaskList extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'taskSquare/fetchProject',
-      payload: { _id: query.project_id }
+      payload: { ...this.state.page, _id: query.project_id }
     });
     dispatch({
       type: 'taskSquare/fetchProjectTasks',
-      payload: { project_id: query.project_id }
+      payload: { ...this.state.page, project_id: query.project_id }
     });
 
     if (!this.state.socket) {
