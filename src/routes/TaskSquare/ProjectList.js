@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Card, Row, Spin, Tabs } from 'antd';
 import styles from './index.less';
 import ProjectCard from './ProjectCard.js';
-import DraftCard from './DraftCard.js';
+import SubmissionCard from './SubmissionCard.js';
 
 const TabPane = Tabs.TabPane;
 @connect(state => ({
@@ -57,7 +57,7 @@ export default class FlowList extends PureComponent {
           </TabPane>
           <TabPane tab="投稿" key="2">
             {projects.list.map((item,index) => 
-              <DraftCard key={index} project={item} />)
+              <SubmissionCard key={index} project={item} />)
             }
           </TabPane>
         </Tabs>

@@ -9,7 +9,7 @@ import { routerRedux } from 'dva/router';
   currentUser: state.user.currentUser,
 }))
 
-export default class DraftCard extends PureComponent {
+export default class SubmissionCard extends PureComponent {
   state = {
    
   }

@@ -226,7 +226,9 @@ export default class AlbumModal extends PureComponent {
           </TabPane>
           <TabPane tab={<span><Icon type="upload" />上传</span>} key="upload">
             <div className="uploadBox">
-              <Upload name="file"
+              <Upload
+                name="file"
+                accept="image/*"
                 action={QINIU_UPLOAD_DOMAIN}
                 data={this.makeUploadData}
                 beforeUpload={(file) => beforeUpload(file,minSize)}

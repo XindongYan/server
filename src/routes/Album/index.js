@@ -152,7 +152,14 @@ export default class Album extends PureComponent {
     const { data, loading } = this.props;
     const { previewVisible, previewImage } = this.state;
     const extra = (
-      <Upload name="file" action={QINIU_UPLOAD_DOMAIN} showUploadList={false} data={this.makeUploadData} onChange={this.handleChange}>
+      <Upload
+        accept="image/*"
+        name="file"
+        action={QINIU_UPLOAD_DOMAIN}
+        showUploadList={false}
+        data={this.makeUploadData}
+        onChange={this.handleChange}
+      >
         <Button>
           <Icon type="upload" /> 点击上传
         </Button>
