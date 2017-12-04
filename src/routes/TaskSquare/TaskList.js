@@ -8,6 +8,7 @@ import io from 'socket.io-client';
 import { ORIGIN } from '../../constants';
 
 @connect(state => ({
+  projects: state.taskSquare.projects,
   tasks: state.taskSquare.tasks,
   loading: state.taskSquare.tasksLoading,
   currentUser: state.user.currentUser,
@@ -21,6 +22,10 @@ export default class TaskList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
+    dispatch({
+      type: 'taskSquare/fetchProjects',
+      payload: {}
+    });
     dispatch({
       type: 'taskSquare/fetchProjectTasks',
       payload: { project_id: query.project_id }
@@ -75,16 +80,28 @@ export default class TaskList extends PureComponent {
   
   render() {
     const { tasks: { list }, loading } = this.props;
+    console.log(this.props);
     return (
-      <Card bordered={false} bodyStyle={{ padding: "10px" }} className="myCard">
-        <Spin spinning={loading}>
-          <Row gutter={16}>
-            {list.map((item,index) => 
-              <TaskCard task={item} key={index} onTake={this.handleTake}/>)
-            }
-          </Row>
-        </Spin>
-      </Card>
+      <div>
+        <Card bordered={false} bodyStyle={{ padding: "10px" }} style={{ marginBottom: 10 }}>
+          <div>
+            <h3>标题</h3>
+          </div>
+          <div>
+            <div style={{ marginTop: 10, fontSize: 12 }}>描述</div>
+
+          </div>
+        </Card>
+        <Card bordered={false} bodyStyle={{ padding: "10px" }} className="myCard">
+          <Spin spinning={loading}>
+            <Row gutter={16}>
+              {list.map((item,index) => 
+                <TaskCard task={item} key={index} onTake={this.handleTake}/>)
+              }
+            </Row>
+          </Spin>
+        </Card>
+      </div>
     );
   }
 }
