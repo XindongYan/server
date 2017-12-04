@@ -210,7 +210,7 @@ export default class ProjectList extends PureComponent {
     this.setState({ selectedRowKeys });
   }
   render() {
-    const { project: { loading, data: { list, pagination }, approveRoles } } = this.props;
+    const { project: { loading, data: { list, pagination }, approveRoles }, type } = this.props;
     const { selectedRows, selectedRowKeys } = this.state;
 
     const menu = (
@@ -310,7 +310,7 @@ export default class ProjectList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button>
+              {type === 1 && <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button>}
               {
                 selectedRows.length > 0 && (
                   <span>
