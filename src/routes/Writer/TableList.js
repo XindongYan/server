@@ -196,7 +196,7 @@ export default class TableList extends PureComponent {
     }
     return (
       <PageHeaderLayout title="">
-        <div style={{ marginBottom: '10px' }}>
+        <div className={styles.searchBox}>
           <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}>
             <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
@@ -206,8 +206,6 @@ export default class TableList extends PureComponent {
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-            </div>
             <Table
               loading={loading}
               dataSource={takerTask.list}
