@@ -68,12 +68,12 @@ export default class ProjectForm extends PureComponent {
       setTimeout(() => {
         this.props.form.setFieldsValue(approvers);
       }, 200);
-      if (nextProps.teamUser.team_id) {
-        this.props.dispatch({
-          type: 'team/fetchTeamUsers',
-          payload: { team_id: nextProps.teamUser.team_id },
-        });
-      }
+    }
+    if (nextProps.teamUsers.length === 0 && nextProps.teamUser.team_id) {
+      this.props.dispatch({
+        type: 'team/fetchTeamUsers',
+        payload: { team_id: nextProps.teamUser.team_id },
+      });
     }
   }
   handleSubmit = () => {

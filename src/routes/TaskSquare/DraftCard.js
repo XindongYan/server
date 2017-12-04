@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Col, Row, Icon, Button } from 'antd';
+import { Card, Col, Row, Icon, Button, message } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { routerRedux } from 'dva/router';
 
 @connect(state => ({
-
+  currentUser: state.user.currentUser,
 }))
 
 export default class DraftCard extends PureComponent {
@@ -20,7 +20,24 @@ export default class DraftCard extends PureComponent {
   componentWillReceiveProps(nextProps) {
     
   }
-
+  handleDeliver = (project) => {
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'taskSquare/deliverTask',
+      payload: {
+        project_id: project._id,
+        creator_id: currentUser._id,
+        taker_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+        }
+      },
+    });
+  }
   render() {
     const { project } = this.props;
     return (
@@ -43,7 +60,7 @@ export default class DraftCard extends PureComponent {
               <span className={styles.cardMsgDeadline} style={{ marginLeft: 40, float: 'left' }}>截稿日期：{ moment(project.deadline).format('YYYY-MM-DD') }</span>
               : <span></span>
             }
-            <Button style={{ float: 'right' }}>投稿</Button>
+            <Button style={{ float: 'right' }} onClick={() => this.handleDeliver(project)}>投稿</Button>
           </div>
         </div>
       </Card>
