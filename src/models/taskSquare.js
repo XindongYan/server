@@ -1,5 +1,5 @@
 import { queryProjectTasks, queryTask, takeTask } from '../services/task';
-import { queryTaskSquareProjects } from '../services/project';
+import { queryTaskSquareProjects, queryProject } from '../services/project';
 export default {
   namespace: 'taskSquare',
 
@@ -35,6 +35,15 @@ export default {
         type: 'changeProjectsLoading',
         payload: false,
       });
+    },
+    *fetchProject({ payload }, { call, put }) {
+      const response = yield call(queryProject, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveProject',
+          payload: response.project,
+        });
+      }
     },
     *fetchProjectTasks({ payload }, { call, put }) {
       yield put({
@@ -98,6 +107,12 @@ export default {
       return {
         ...state,
         projectsLoading: action.payload,
+      };
+    },
+    saveProject(state, action) {
+      return {
+        ...state,
+        project: action.payload,
       };
     },
     saveTasks(state, action) {
