@@ -14,15 +14,22 @@ export default class TaskCard extends PureComponent {
     const { task, index } = this.props;
     const colorArr = ['#6a6aff','#2894ff','#00caca','#4f9d9d','#ffa042','#ffd306','#ff8040','#7373b9','#c07ab8','#a6a6d2'];
     return (
-      <Col span={4} key={index} style={{padding: "5px"}}>
+      <Col span={6} key={index} style={{padding: "5px"}}>
         <Card style={{ width: "100%" }} bodyStyle={{ padding: 0 }}>
           <div className={styles.customImage} style={{ background: colorArr[ task.id % 8 ] }}>
             <h3><TaskNameColumn text={task.name} length={23}/></h3>
           </div>
           <div className={styles.customCard}>
             <Tag color="blue">{task.id}</Tag>
-            <p className={styles.merchantTag}><TaskNameColumn text={task.merchant_tag} length={16}/></p>
-            <div className={styles.customBtn}>
+            <p className={styles.descBox}>{task.desc || '无描述'}</p>
+            <div className={styles.customBtn} style={{ margin: 0, padding: 5 }}>
+              { task.price ? 
+                <span className={styles.cardMsgPrice}>
+                    <Icon style={{ fontSize: 16 }} type="pay-circle" />
+                    <span style={{ padding: '0 6px' }}>{ task.price }</span>
+                </span> :
+                <span></span>
+              }
               <Button size="small" type="primary"
               disabled={!(task.approve_status === TASK_APPROVE_STATUS.published)}
               onClick={() => this.props.onTake(task)}
