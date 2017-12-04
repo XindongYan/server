@@ -32,16 +32,16 @@ export default class ProjectCard extends PureComponent {
         <Card className={styles.cardCol} bodyStyle={{ padding: 0 }}>
           <div className={styles.cardColTop}>
             <h3 title={project.name}>{project.name}</h3>
-            <p title={project.merchant_tag}>{ project.merchant_tag ? project.merchant_tag : '无' }</p>
+            <p title={project.merchant_tag}>{ project.merchant_tag}</p>
           </div>
           <div className={styles.cardColBottom}>
-            <p className={styles.cardMsgDesc}>{ project.desc ? project.desc : '无' }</p>
+            <p className={styles.cardMsgDesc}>{ project.desc}</p>
             <div className={styles.cardMsgB}>
               <span className={styles.cardMsgPrice}>
                 <Icon style={{ fontSize: 16 }} type="pay-circle" />
-                <span style={{ padding: '0 6px' }}>{ project.price ? project.price : '无' }</span>
+                <span style={{ padding: '0 6px' }}>{ project.price ? project.price : '' }</span>
               </span>
-              <span className={styles.cardMsgDeadline}>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD') : '无' }</span>
+              <span className={styles.cardMsgDeadline}>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD') : '' }</span>
             </div>
           </div>
         </Card>

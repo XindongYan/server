@@ -12,7 +12,7 @@ export default class TaskStatusColumn extends PureComponent {
     } else if (status === -1) {
       return (<Badge status="warning" text="已接单" />);
     } else if (status === 0) {
-      return (<Badge status="processing" text="审核中" />);
+      return (<Badge status="processing" text="待审核" />);
     } else if (status === 1) {
       return (<Badge status="success" text="已通过" />);
     } else if (status === 2) {

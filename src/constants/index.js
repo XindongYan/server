@@ -63,7 +63,7 @@ export const PROJECT_STATUS = {
 };
 
 export const PROJECT_STATUS_TEXT = {
-  '1': '创建',
+  '1': '已创建',
   '2': '已发布',
   '3': '已下架',
 };
