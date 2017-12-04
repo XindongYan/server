@@ -116,6 +116,7 @@ export default class TaskForm extends PureComponent {
   }
   render() {
     const { form: { getFieldDecorator }, operation } = this.props;
+    console.log(this.props.form)
     return (
       <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}任务`}>
         <Form>

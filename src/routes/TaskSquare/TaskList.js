@@ -4,11 +4,12 @@ import querystring from 'querystring';
 import { Card, message, Row, Spin } from 'antd';
 import styles from './index.less';
 import TaskCard from './TaskCard';
+import ProjectDetail from '../../components/ProjectDetail';
 import io from 'socket.io-client';
 import { ORIGIN } from '../../constants';
 
 @connect(state => ({
-  projects: state.taskSquare.projects,
+  project: state.taskSquare.project,
   tasks: state.taskSquare.tasks,
   loading: state.taskSquare.tasksLoading,
   currentUser: state.user.currentUser,
@@ -23,8 +24,8 @@ export default class TaskList extends PureComponent {
     const { dispatch } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
-      type: 'taskSquare/fetchProjects',
-      payload: {}
+      type: 'taskSquare/fetchProject',
+      payload: { _id: query.project_id }
     });
     dispatch({
       type: 'taskSquare/fetchProjectTasks',
@@ -79,19 +80,10 @@ export default class TaskList extends PureComponent {
 
   
   render() {
-    const { tasks: { list }, loading } = this.props;
-    console.log(this.props);
+    const { project, tasks: { list }, loading } = this.props;
     return (
       <div>
-        <Card bordered={false} bodyStyle={{ padding: "10px" }} style={{ marginBottom: 10 }}>
-          <div>
-            <h3>标题</h3>
-          </div>
-          <div>
-            <div style={{ marginTop: 10, fontSize: 12 }}>描述</div>
-
-          </div>
-        </Card>
+        <ProjectDetail project={project} />
         <Card bordered={false} bodyStyle={{ padding: "10px" }} className="myCard">
           <Spin spinning={loading}>
             <Row gutter={16}>

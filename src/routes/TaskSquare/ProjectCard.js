@@ -37,10 +37,13 @@ export default class ProjectCard extends PureComponent {
           <div className={styles.cardColBottom}>
             <p className={styles.cardMsgDesc}>{ project.desc}</p>
             <div className={styles.cardMsgB}>
-              <span className={styles.cardMsgPrice}>
-                <Icon style={{ fontSize: 16 }} type="pay-circle" />
-                <span style={{ padding: '0 6px' }}>{ project.price ? project.price : '' }</span>
-              </span>
+              { project.price ? 
+                <span className={styles.cardMsgPrice}>
+                    <Icon style={{ fontSize: 16 }} type="pay-circle" />
+                    <span style={{ padding: '0 6px' }}>{ project.price }</span>
+                </span> :
+                <span>无</span>
+              }
               <span className={styles.cardMsgDeadline}>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD') : '' }</span>
             </div>
           </div>
