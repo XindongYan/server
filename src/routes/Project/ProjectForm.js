@@ -22,29 +22,38 @@ export default class ProjectForm extends PureComponent {
 
   }
   componentDidMount() {
+    const { teamUser } = this.props;
     if (this.props.operation === 'edit') {
       const query = querystring.parse(this.props.location.search.substr(1));
       this.props.dispatch({
         type: 'project/fetchProject',
-        payload: query,
+        payload: { _id: query._id },
       });
     }
     this.props.dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
-    this.props.dispatch({
-      type: 'team/fetchTeamUsers',
-      payload: { team_id: this.props.teamUser.team_id },
-    });
+    if (teamUser.team_id) {
+      this.props.dispatch({
+        type: 'team/fetchTeamUsers',
+        payload: { team_id: teamUser.team_id },
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
+    if (nextProps.teamUser.team_id) {
+      this.props.dispatch({
+        type: 'team/fetchTeamUsers',
+        payload: { team_id: nextProps.teamUser.team_id },
+      });
+    }
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
       const approvers = {};
       const flow = APPROVE_FLOWS.find(item => item.value === nextProps.formData.approve_flow);
       (flow ? flow.texts : []).forEach((item, index) => {
         approvers[`approvers${item}`] = nextProps.formData.approvers[index];
       });
-      this.props.form.setFieldsValue({
+      const fieldsValue = {
         name: nextProps.formData.name,
         merchant_tag: nextProps.formData.merchant_tag,
         task_type: nextProps.formData.task_type,
@@ -53,17 +62,21 @@ export default class ProjectForm extends PureComponent {
         price: nextProps.formData.price,
         attachments: nextProps.formData.attachments,
         approve_flow: nextProps.formData.approve_flow,
-        max_take: nextProps.formData.max_take,
-        max_task: nextProps.formData.max_task,
         project_level: nextProps.formData.project_level,
-      });
+      };
+      if (nextProps.type === 1) {
+        fieldsValue.max_take = nextProps.formData.max_take;
+      } else if (nextProps.type === 2) {
+        fieldsValue.max_task = nextProps.formData.max_task;
+      }
+      this.props.form.setFieldsValue(fieldsValue);
       setTimeout(() => {
         this.props.form.setFieldsValue(approvers);
       }, 200);
     }
   }
   handleSubmit = () => {
-    const { form: { getFieldValue }, teamUser, formData } = this.props;
+    const { form: { getFieldValue }, teamUser, formData, type } = this.props;
     const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -92,7 +105,10 @@ export default class ProjectForm extends PureComponent {
         } else if (this.props.operation === 'create') {
           this.props.dispatch({
             type: 'project/add',
-            payload,
+            payload: {
+              ...payload,
+              type,
+            },
           });
         }
         this.props.dispatch(routerRedux.push('/list/project-list'));
@@ -114,7 +130,7 @@ export default class ProjectForm extends PureComponent {
     };
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData, type } = this.props;
     const flow = APPROVE_FLOWS.find(item => item.value === (formData.approve_flow || getFieldValue('approve_flow')));
     return (
       <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}活动`}>
@@ -230,34 +246,34 @@ export default class ProjectForm extends PureComponent {
               </Select>
             )}
           </FormItem>
-          <FormItem
+          {type === 1 && <FormItem
             label="最多接单数"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('max_take', {
-              initialValue: 0,
+              initialValue: 1,
               rules: [{
                 required: true, message: '请输入最多抢单数'
               }],
             })(
               <Input type="number" addonAfter="单" />
             )}
-          </FormItem>
-          <FormItem
+          </FormItem>}
+          {type === 2 && <FormItem
             label="最多投稿数"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('max_task', {
-              initialValue: 0,
+              initialValue: 1,
               rules: [{
                 required: true, message: '请输入最多投稿数'
               }],
             })(
               <Input type="number" addonAfter="篇" />
             )}
-          </FormItem>
+          </FormItem>}
           <FormItem
             label="审核流程"
             labelCol={{ span: 4 }}

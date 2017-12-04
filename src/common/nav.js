@@ -2,7 +2,8 @@ import BasicLayout from '../layouts/BasicLayout';
 import BlankLayout from '../layouts/BlankLayout';
 
 import Approver from '../routes/Approver/TableList';
-import Project from '../routes/Project/ProjectList';
+import Activity from '../routes/Project/ActivityList';
+import Deliver from '../routes/Project/DeliverList';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
 import TaskSquare from '../routes/TaskSquare/ProjectList';
@@ -36,10 +37,16 @@ const team = {
   component: TeamUser,
 };
 
-const project = {
+const activity = {
   name: '活动列表',
-  path: 'project-list',
-  component: Project,
+  path: 'activity-list',
+  component: Activity,
+};
+
+const deliver = {
+  name: '投稿列表',
+  path: 'deliver-list',
+  component: Deliver,
 };
 
 const invitation = {
@@ -64,7 +71,7 @@ const data = [{
     name: '创作',
     path: 'list',
     icon: 'table',
-    children: [taskSquare, writer, approver, team, invitation, project, album],
+    children: [taskSquare, writer, album],
   }, {
     name: '工具',
     path: 'tool',
@@ -99,7 +106,7 @@ export function getNavData(user) {
       menuItems.push(team, invitation);
     }
     if (user.rights.indexOf(RIGHTS.projectAdmin) >= 0) {
-      menuItems.push(project);
+      menuItems.push(activity, deliver);
     }
     if (user.rights.indexOf(RIGHTS.writer) >= 0) {
       menuItems.push(album);
