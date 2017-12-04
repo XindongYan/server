@@ -203,9 +203,6 @@ export default class TableList extends PureComponent {
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
           </RadioGroup>
-          <Card bodyStyle={{ padding: 0 }} style={{ float: 'right', height: 40 }}>
-            123
-          </Card>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.tableList}>

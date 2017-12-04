@@ -33,7 +33,6 @@ export default class TableList extends PureComponent {
     selectedRowKeys: [],
     formValues: { approve_status: TASK_APPROVE_STATUS.waitingForApprove },
     user: {},
-    search: '',
   };
 
   componentDidMount() {
@@ -258,16 +257,6 @@ export default class TableList extends PureComponent {
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
           </RadioGroup>
-          <div className={styles.searchCon}>
-            <span><RangePicker style={{ width: 260 }} onChange={onChange} /></span>
-            <span>
-              <Input
-                placeholder="标题／商家标签"
-                style={{ width: 200 }}
-              />
-            </span>
-            <span style={{ margin: 0 }}><Button>搜索</Button></span>
-          </div>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.tableList}>

@@ -44,7 +44,10 @@ export default class ProjectCard extends PureComponent {
                 </span> :
                 <span>无</span>
               }
-              <span className={styles.cardMsgDeadline}>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD') : '' }</span>
+              { project.deadline ? 
+                <span className={styles.cardMsgDeadline}>截稿日期：{ moment(project.deadline).format('YYYY-MM-DD') }</span>
+                : <span></span>
+              }
             </div>
           </div>
         </Card>

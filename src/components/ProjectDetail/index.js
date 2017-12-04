@@ -39,11 +39,11 @@ export default class ProjectDetail extends PureComponent {
         <div>
           <div className={styles.projectDescBox} style={{ marginTop: 10 }}>{ project.desc ? project.desc : '无' }</div>
           <div className={styles.projectTagBox}>
-            <span className={styles.projectTag}>活动酬劳:
+            <span className={styles.projectTag}>活动酬劳：
               <span>¥{ project.price ? project.price : '无' }</span>
             </span>
-            <span className={styles.projectTag}>截稿日期:
-              <span>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD') : '无' }</span>
+            <span className={styles.projectTag}>截稿日期：
+              <span>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD HH:mm:ss') : '无' }</span>
             </span>
             { project.attachments && project.attachments.length > 0 ?
               <span style={{ float: 'right' }} onClick={this.fileBoxVisible}>
