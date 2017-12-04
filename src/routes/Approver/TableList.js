@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, Badge } from 'antd';
+import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, Badge, DatePicker } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -9,13 +9,17 @@ import { Link } from 'dva/router';
 import moment from 'moment';
 import styles from './TableList.less';
 
+const Search = Input.Search;
+const { MonthPicker, RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-
+function onChange(date, dateString) {
+  console.log(date, dateString);
+}
 @connect(state => ({
   data: state.task.approverTask,
   loading: state.task.approverTaskLoading,
@@ -29,6 +33,7 @@ export default class TableList extends PureComponent {
     selectedRowKeys: [],
     formValues: { approve_status: TASK_APPROVE_STATUS.waitingForApprove },
     user: {},
+    search: '',
   };
 
   componentDidMount() {
@@ -247,20 +252,25 @@ export default class TableList extends PureComponent {
     }
     return (
       <PageHeaderLayout title="">
-	      <div style={{ marginBottom:'10px' }}>
+	      <div className={styles.searchBox}>
           <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}> 
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
-          </RadioGroup> 
+          </RadioGroup>
+          <div className={styles.searchCon}>
+            <span><RangePicker style={{ width: 260 }} onChange={onChange} /></span>
+            <span>
+              <Input
+                placeholder="标题／商家标签"
+                style={{ width: 200 }}
+              />
+            </span>
+            <span style={{ margin: 0 }}><Button>搜索</Button></span>
+          </div>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
-        
           <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              
-            </div>
-            
             <Table
               loading={loading}
               rowKey={record => record.key}
