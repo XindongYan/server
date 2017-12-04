@@ -198,7 +198,6 @@ export default class FlowList extends PureComponent {
         }
       },
     });
-    message.success('删除成功');
   }
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
 

@@ -138,7 +138,7 @@ export default class TableList extends PureComponent {
     });
   }
   render() {
-    const { data, loading, } = this.props;
+    const { data, loading, currentUser } = this.props;
     const { selectedRows, modalVisible, formValues, selectedRowKeys } = this.state;
     const columns = [
       {
@@ -206,29 +206,37 @@ export default class TableList extends PureComponent {
       title: '操作',
       render: (record) => {
         if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
-          return (
-            <div>
-              <Link to={`/approver/task/edit?_id=${record._id}`}>
+          if (!record.current_approvers || record.current_approvers.length === 0 || record.current_approvers.indexOf(currentUser._id) >= 0) {
+            return (
+              <div>
+                <Link to={`/approver/task/edit?_id=${record._id}`}>
                   <span>审核</span>
+                </Link>
+                <span className={styles.splitLine} />
+                <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                  <a>退回</a>
+                </Popconfirm>
+              </div>
+            );
+          } else {
+            return (
+              <Link to={`/approver/task/view?_id=${record._id}`}>
+                <span>详情</span>
               </Link>
-              <span className={styles.splitLine} />
-              <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <a>退回</a>
-              </Popconfirm>
-            </div>
-          )
+            );
+          }
         } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <Link to={`/approver/task/edit?_id=${record._id}`}>
-                <span>详情</span>
+              <span>详情</span>
             </Link>
-          )
+          );
         } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <Link to={`/approver/task/view?_id=${record._id}`}>
-                <span>详情</span>
+              <span>详情</span>
             </Link>
-          )
+          );
         }
       },
     }
