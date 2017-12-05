@@ -1,16 +1,16 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, Badge, DatePicker } from 'antd';
+import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, DatePicker } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { Link } from 'dva/router';
 import moment from 'moment';
 import styles from './TableList.less';
 
+const { RangePicker } = DatePicker;
 const Search = Input.Search;
-const { MonthPicker, RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
@@ -24,6 +24,7 @@ function onChange(date, dateString) {
   data: state.task.approverTask,
   loading: state.task.approverTaskLoading,
   currentUser: state.user.currentUser,
+  projects: state.taskSquare.projects,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -86,28 +87,24 @@ export default class TableList extends PureComponent {
 
     this.setState({ selectedRowKeys, selectedRows });
   }
-  handleSearch = (e) => {
-    e.preventDefault();
-
-    const { dispatch, form, currentUser } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        user_id: currentUser._id,
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'task/fetchApproverTasks',
-        payload: values,
-      });
+  handleSearch = (value, name) => {
+    const { dispatch, data: { pagination }, currentUser } = this.props;
+    const { formValues } = this.state;
+    const values = {
+      user_id: currentUser._id,
+      ...formValues,
+    };
+    values[name] = value;
+    this.setState({
+      formValues: values,
+    });
+    dispatch({
+      type: 'task/fetchApproverTasks',
+      payload: { 
+        currentPage: pagination.current,
+        pageSize: pagination.pageSize,
+        ...values, 
+      }
     });
   }
 
@@ -131,6 +128,12 @@ export default class TableList extends PureComponent {
     
   }
 
+  actionChange = (value) => {
+    this.props.dispatch({
+      type: 'task/fetchApproverTasks',
+      payload: { ...this.state.formValues, project_id: value }
+    });
+  }
   changeApproveStatus = (e) => {
     const { data: { pagination }, dispatch, currentUser } = this.props;
     dispatch({
@@ -142,7 +145,7 @@ export default class TableList extends PureComponent {
     });
   }
   render() {
-    const { data, loading, currentUser } = this.props;
+    const { data, loading, currentUser, projects: { list } } = this.props;
     const { selectedRows, modalVisible, formValues, selectedRowKeys } = this.state;
     const columns = [
       {
@@ -259,6 +262,37 @@ export default class TableList extends PureComponent {
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.tableList}>
+            <div className={styles.tableListOperator}>
+              <Select
+                showSearch
+                style={{ width: 160, marginRight: 8 }}
+                placeholder="活动"
+                optionFilterProp="children"
+                onChange={(value) => this.handleSearch(value,'project_id')}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                { list && list.length > 0 &&
+                  list.map(item => <Option key={item._id} value={item._id}>{item.name}</Option>)
+                }
+              </Select>
+              <Select
+                showSearch
+                style={{ width: 160, marginRight: 8 }}
+                placeholder="渠道"
+                onChange={(value) => this.handleSearch(value,'channel_name')}
+                optionFilterProp="children"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                { CHANNEL_NAMES.map(item => <Option key={item} value={item}>{item}</Option>) }
+              </Select>
+              <RangePicker style={{ width: 240 }} onChange={onChange} />
+              <Search
+                style={{ width: 260 }}
+                placeholder="任务名称／商家标签"
+                onSearch={value => console.log(value)}
+                enterButton
+              />
+            </div>
             <Table
               loading={loading}
               rowKey={record => record.key}

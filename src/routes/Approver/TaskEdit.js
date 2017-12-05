@@ -175,10 +175,10 @@ export default class TaskEdit extends PureComponent {
           <div className={styles.submitBox}>
             {this.state.grade > 0 && formData.approve_status !== 0 &&
               <dl className={styles.showGradeBox}>
-              <dt>分数</dt>
-              {grades.map((item) => 
-                <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
-              }
+                <dt>分数</dt>
+                {grades.map((item) => 
+                  <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
+                }
               </dl>
             }
             <Popconfirm
