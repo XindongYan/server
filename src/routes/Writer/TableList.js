@@ -20,7 +20,7 @@ const RadioGroup = Radio.Group;
 }))
 export default class TableList extends PureComponent {
   state = {
-    formValues: { approve_status: TASK_APPROVE_STATUS.waitingForApprove },
+    formValues: { approve_status: TASK_APPROVE_STATUS.taken },
   }
 
   componentDidMount() {

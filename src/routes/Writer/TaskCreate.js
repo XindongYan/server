@@ -34,7 +34,7 @@ export default class TaskCreate extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.formData.title !== nextProps.formData.title) {
+    if (!this.state.taskLoaded && nextProps.formData._id) {
       this.setState({
         task: {
           title: nextProps.formData.title,
@@ -57,6 +57,8 @@ export default class TaskCreate extends PureComponent {
     const { task } = this.state;
     if (!task.title || !task.title.replace(/\s+/g, '')) {
       message.warn('请填写标题');
+    } else if (task.title && task.title.length > 19) {
+      message.warn('标题字数不符合要求');
     } else if (!task.task_desc) {
       message.warn('请填写内容');
     } else if (!task.cover_img) {

@@ -188,7 +188,7 @@ export default class TableList extends PureComponent {
       },
       {
         title: '写手',
-        dataIndex: 'publisher_id',
+        dataIndex: 'taker_id',
         render: val => val ? val.name : '',
       },
       {

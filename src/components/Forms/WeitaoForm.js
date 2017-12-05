@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Input, Icon } from 'antd';
+import { Input, Icon, message } from 'antd';
 import styles from './WeitaoForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
@@ -51,9 +51,11 @@ export default class WeitaoForm extends PureComponent {
           <div className={styles.taskList}>
             <div className={styles.taskListInp}>
               <Input type="text" id="task-title" value={formData.title} onChange={this.handleTitleChange} placeholder="请在这里输入标题"/>
-              <span style={{ color: formData.title && formData.title.length && formData.title.length > 19 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/19</span>
+              <span style={{ color: formData.title && formData.title.length > 19 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/19</span>
             </div>
-            <span className={styles.promptRed}></span>
+            { formData.title && formData.title.length > 19 &&
+              <span className={styles.promptRed}>标题字数不能超过19个字</span>
+            }
           </div>
           <div className={styles.taskList}>
             <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>

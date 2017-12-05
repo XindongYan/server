@@ -46,7 +46,7 @@ export default class TaskEdit extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.formData.title !== nextProps.formData.title) {
+    if (!this.state.taskLoaded && nextProps.formData._id) {
       this.setState({
         task: {
           title: nextProps.formData.title,
