@@ -26,7 +26,7 @@ const square = {
   path: 'square',
   icon: 'home',
   children: [{
-    name: '任务',
+    name: '赏金任务',
     path: 'task',
     component: TaskSquare,
   }],
