@@ -228,7 +228,7 @@ export default class ProjectForm extends PureComponent {
               <DatePicker
                 format="YYYY-MM-DD HH:mm:ss"
                 style={{ width: '100%' }}
-                showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+                showTime={{ defaultValue: moment('23:59:59', 'HH:mm:ss') }}
               />
             )}
           </FormItem>
