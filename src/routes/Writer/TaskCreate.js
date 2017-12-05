@@ -34,13 +34,15 @@ export default class TaskCreate extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      task: {
-        title: nextProps.formData.title,
-        task_desc: nextProps.formData.task_desc,
-        cover_img: nextProps.formData.cover_img,
-      }
-    });
+    if (this.props.formData.title !== nextProps.formData.title) {
+      this.setState({
+        task: {
+          title: nextProps.formData.title,
+          task_desc: nextProps.formData.task_desc,
+          cover_img: nextProps.formData.cover_img,
+        }
+      });
+    }
   }
   componentWillUnmount() {
     this.props.dispatch({
