@@ -69,3 +69,10 @@ export const PROJECT_STATUS_TEXT = {
 };
 
 export const CHANNEL_NAMES = ['淘宝头条', '微淘'];
+
+export const RIGHT = {
+  writer: 1,
+  teamAdmin: 2,
+  projectAdmin: 3,
+  approver: 6,
+};

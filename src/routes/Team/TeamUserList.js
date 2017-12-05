@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, message } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { RIGHTS, APPROVE_ROLES } from '../../constants';
+import { RIGHTS, APPROVE_ROLES, RIGHT } from '../../constants';
 import styles from './TeamList.less';
 
 const FormItem = Form.Item;
@@ -323,7 +323,8 @@ export default class TableList extends PureComponent {
             wrapperCol={{ span: 20 }}
             label="审核角色"
           >
-            <CheckboxGroup options={APPROVE_ROLES} value={user.approve_roles} onChange={this.handleApproveRolesChange} />
+            <CheckboxGroup options={APPROVE_ROLES} value={user.approve_roles} onChange={this.handleApproveRolesChange}
+            disabled={!((user.rights || []).indexOf(RIGHT.approver) >= 0)} />
           </FormItem>
         </Modal>
         <Modal
