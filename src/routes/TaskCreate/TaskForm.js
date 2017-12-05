@@ -165,7 +165,7 @@ export default class TaskForm extends PureComponent {
               valuePropName: 'fileList',
               getValueFromEvent: this.normFile,
             })(
-              <Upload name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
+              <Upload accept="application/pdf" name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
                 <Button>
                   <Icon type="upload" /> 点击上传
                 </Button>
