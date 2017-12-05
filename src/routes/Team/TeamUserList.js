@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, message } from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS, APPROVE_ROLES, RIGHT } from '../../constants';
 import styles from './TeamList.less';
 
@@ -293,22 +292,20 @@ export default class TableList extends PureComponent {
       }),
     };
     return (
-      <PageHeaderLayout title="">
-        <Card bordered={false} bodyStyle={{ padding: 14 }}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Button onClick={this.handleShowAddTeamUserModal} type="primary" icon="plus">添加成员</Button>
-            </div>
-            <Table
-              loading={loading}
-              dataSource={list}
-              columns={columns}
-              pagination={paginationProps}
-              onChange={this.handleStandardTableChange}
-              rowKey="_id"
-            />
+      <Card bordered={false} bodyStyle={{ padding: 14 }}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Button onClick={this.handleShowAddTeamUserModal} type="primary" icon="plus">添加成员</Button>
           </div>
-        </Card>
+          <Table
+            loading={loading}
+            dataSource={list}
+            columns={columns}
+            pagination={paginationProps}
+            onChange={this.handleStandardTableChange}
+            rowKey="_id"
+          />
+        </div>
         <Modal
           title="用户权限"
           visible={modalVisible}
@@ -359,7 +356,7 @@ export default class TableList extends PureComponent {
             </Select>
           </FormItem>
         </Modal>
-      </PageHeaderLayout>
+      </Card>
     );
   }
 }

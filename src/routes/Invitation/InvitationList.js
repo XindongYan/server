@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Card, Icon, Table, Button, Badge, message } from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './InvitationList.less';
 
@@ -176,28 +175,26 @@ export default class TableList extends PureComponent {
       }),
     };
     return (
-      <PageHeaderLayout title="">
-        <Card bordered={false} bodyStyle={{ padding: 10 }}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAddInvitationCodes()}>生成5个邀请码</Button>
-            </div>
-            <Table
-              loading={loading}
-              rowSelection={rowSelection}
-              dataSource={list}
-              columns={columns}
-              pagination={paginationProps}
-              onChange={this.handleStandardTableChange}
-              rowKey="_id"
-              rowClassName={(record) => {
-                if (record.status === 2) return styles.used;
-                else return '';
-              }}
-            />
+      <Card bordered={false} bodyStyle={{ padding: 10 }}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Button icon="plus" type="primary" onClick={() => this.handleAddInvitationCodes()}>生成5个邀请码</Button>
           </div>
-        </Card>
-      </PageHeaderLayout>
+          <Table
+            loading={loading}
+            rowSelection={rowSelection}
+            dataSource={list}
+            columns={columns}
+            pagination={paginationProps}
+            onChange={this.handleStandardTableChange}
+            rowKey="_id"
+            rowClassName={(record) => {
+              if (record.status === 2) return styles.used;
+              else return '';
+            }}
+          />
+        </div>
+      </Card>
     );
   }
 }
