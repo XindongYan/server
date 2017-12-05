@@ -94,7 +94,12 @@ export default class TableList extends PureComponent {
       user_id: currentUser._id,
       ...formValues,
     };
-    values[name] = value;
+    if(name === 'time') {
+      values['handin_time_start'] = value[0] ? value[0].format() : '';
+      values['handin_time_end'] = value[1] ? value[1].format() : '';
+    } else {
+      values[name] = value;
+    }
     this.setState({
       formValues: values,
     });
@@ -124,15 +129,7 @@ export default class TableList extends PureComponent {
           });
         }
       },
-    });
-    
-  }
-
-  actionChange = (value) => {
-    this.props.dispatch({
-      type: 'task/fetchApproverTasks',
-      payload: { ...this.state.formValues, project_id: value }
-    });
+    }); 
   }
   changeApproveStatus = (e) => {
     const { data: { pagination }, dispatch, currentUser } = this.props;
@@ -285,11 +282,11 @@ export default class TableList extends PureComponent {
               >
                 { CHANNEL_NAMES.map(item => <Option key={item} value={item}>{item}</Option>) }
               </Select>
-              <RangePicker style={{ width: 240 }} onChange={onChange} />
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
               <Search
                 style={{ width: 260 }}
                 placeholder="任务名称／商家标签"
-                onSearch={value => console.log(value)}
+                onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />
             </div>
