@@ -35,7 +35,8 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      yield call(addProject, payload);
+      const result = yield call(addProject, payload);
+      if (callback) callback(result);
       const response = yield call(queryProjects, { team_id: payload.team_id });
       yield put({
         type: 'save',
@@ -45,15 +46,14 @@ export default {
         type: 'changeLoading',
         payload: false,
       });
-
-      if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
       yield put({
         type: 'changeLoading',
         payload: true,
       });
-      yield call(updateProject, payload);
+      const result = yield call(updateProject, payload);
+      if (callback) callback(result);
       const response = yield call(queryProjects, { team_id: payload.team_id });
       yield put({
         type: 'save',
@@ -63,8 +63,6 @@ export default {
         type: 'changeLoading',
         payload: false,
       });
-
-      if (callback) callback();
     },
     *publish({ payload, callback }, { call, put }) {
       yield put({

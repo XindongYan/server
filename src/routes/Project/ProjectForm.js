@@ -4,7 +4,7 @@ import querystring from 'querystring';
 import path from 'path';
 import moment from 'moment';
 import { routerRedux } from 'dva/router';
-import { Card, Form, Input, Select, Icon, Button, DatePicker, Upload } from 'antd';
+import { Card, Form, Input, Select, Icon, Button, DatePicker, Upload, message } from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES, CHANNEL_NAMES } from '../../constants';
 
 const FormItem = Form.Item;
@@ -78,7 +78,6 @@ export default class ProjectForm extends PureComponent {
   }
   handleSubmit = () => {
     const { form: { getFieldValue }, teamUser, formData, type } = this.props;
-    console.log(type);
     const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -103,6 +102,13 @@ export default class ProjectForm extends PureComponent {
               ...payload,
               _id: formData._id,
             },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                message.success(result.msg);
+              }
+            },
           });
         } else if (this.props.operation === 'create') {
           this.props.dispatch({
@@ -111,12 +117,19 @@ export default class ProjectForm extends PureComponent {
               ...payload,
               type,
             },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                message.success(result.msg);
+              }
+            },
           });
         }
         if (type === 1) {
-          this.props.dispatch(routerRedux.push('/list/activity-list'));
+          this.props.dispatch(routerRedux.push('/project/activity-list'));
         } else if (type === 2) {
-          this.props.dispatch(routerRedux.push('/list/deliver-list'));
+          this.props.dispatch(routerRedux.push('/project/deliver-list'));
         }
       }
     });
@@ -275,7 +288,7 @@ export default class ProjectForm extends PureComponent {
             {getFieldDecorator('max_take', {
               initialValue: 1,
               rules: [{
-                required: true, message: '请输入最多抢单数'
+                required: true, message: '请输入最多接单数'
               }],
             })(
               <Input type="number" addonAfter="单" />
