@@ -35,7 +35,7 @@ export default class ProjectCard extends PureComponent {
         <div className={styles.cardColBottom}>
           <p className={styles.cardMsgDesc}>{ project.desc}</p>
           <div className={styles.draftMsgB}>
-            { project.price &&
+            { project.price !== 0 &&
               <span className={styles.cardMsgPrice}>
                   <Icon style={{ fontSize: 16 }} type="pay-circle" />
                   <span style={{ padding: '0 6px' }}>{ project.price }</span>
