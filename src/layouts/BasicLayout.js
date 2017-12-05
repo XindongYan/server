@@ -119,7 +119,7 @@ class BasicLayout extends React.PureComponent {
           dispatch({
             type: 'team/remove',
             payload: {
-              _id: record._id,
+              _id: teamUser._id,
               callback: () => {
                 message.success('退出成功');
                 dispatch({
