@@ -276,7 +276,7 @@ class BasicLayout extends React.PureComponent {
         <Menu.Item disabled><Icon type="user" />个人中心</Menu.Item>
         <Menu.Item disabled><Icon type="setting" />设置</Menu.Item>
         <Menu.Divider />
-        {teamUser && <Menu.Item key="leaveTeam"><Icon type="user-delete" />退出团队</Menu.Item>}
+        { /* teamUser && <Menu.Item key="leaveTeam"><Icon type="user-delete" />退出团队</Menu.Item> */ }
         <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
       </Menu>
     );

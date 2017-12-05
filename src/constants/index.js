@@ -27,11 +27,11 @@ export const QINIU_UPLOAD_DOMAIN = 'http://up.qiniu.com';
 
 export const APPROVE_FLOWS = [
   { value: 1, texts: [1] },
-  { value: 1, texts: [1, 2] },
-  { value: 1, texts: [1, 3, 4] },
-  { value: 1, texts: [1, 2, 3, 4] },
-  { value: 1, texts: [1, 4] },
-  { value: 2, texts: [1, 2, 4] },
+  { value: 2, texts: [1, 2] },
+  { value: 3, texts: [1, 3, 4] },
+  { value: 4, texts: [1, 2, 3, 4] },
+  { value: 5, texts: [1, 4] },
+  { value: 6, texts: [1, 2, 4] },
 ];
 
 export const TASK_TYPES = [

@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import { Table, Card, Radio } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { TASK_APPROVE_STATUS } from '../../constants';
@@ -195,7 +194,7 @@ export default class TableList extends PureComponent {
       columns.push( approveStatus, approver, grade, approveTime, opera);
     }
     return (
-      <PageHeaderLayout title="">
+      <div>
         <div className={styles.searchBox}>
           <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}>
             <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
@@ -220,7 +219,7 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
-      </PageHeaderLayout>
+      </div>
     );
   }
 }

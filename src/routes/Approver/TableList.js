@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, DatePicker } from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -266,8 +265,8 @@ export default class TableList extends PureComponent {
       columns.push( approver, grade, approveTime, opera)
     }
     return (
-      <PageHeaderLayout title="">
-	      <div className={styles.searchBox}>
+      <div>
+        <div className={styles.searchBox}>
           <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}> 
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
@@ -324,7 +323,7 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
-      </PageHeaderLayout>
+      </div>
     );
   }
 }

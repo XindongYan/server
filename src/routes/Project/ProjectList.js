@@ -4,7 +4,6 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
 import { Link } from 'dva/router';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
 
 import styles from './Project.less';
@@ -306,36 +305,34 @@ export default class ProjectList extends PureComponent {
       }),
     };
     return (
-      <PageHeaderLayout title="">
-        <Card bordered={false} bodyStyle={{ padding: 14 }}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button>
-              {
-                selectedRows.length > 0 && (
-                  <span>
-                    <Button>批量操作</Button>
-                    <Dropdown overlay={menu}>
-                      <Button>
-                        更多操作 <Icon type="down" />
-                      </Button>
-                    </Dropdown>
-                  </span>
-                )
-              }
-            </div>
-            <Table
-              loading={loading}
-              rowSelection={rowSelection}
-              dataSource={list}
-              columns={columns}
-              pagination={paginationProps}
-              onChange={this.handleStandardTableChange}
-              rowKey="_id"
-            />
+      <Card bordered={false} bodyStyle={{ padding: 14 }}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button>
+            {
+              selectedRows.length > 0 && (
+                <span>
+                  <Button>批量操作</Button>
+                  <Dropdown overlay={menu}>
+                    <Button>
+                      更多操作 <Icon type="down" />
+                    </Button>
+                  </Dropdown>
+                </span>
+              )
+            }
           </div>
-        </Card>
-      </PageHeaderLayout>
+          <Table
+            loading={loading}
+            rowSelection={rowSelection}
+            dataSource={list}
+            columns={columns}
+            pagination={paginationProps}
+            onChange={this.handleStandardTableChange}
+            rowKey="_id"
+          />
+        </div>
+      </Card>
     );
   }
 }
