@@ -13,10 +13,10 @@ export default class TaskCard extends PureComponent {
   render() {
     const { task, index } = this.props;
     const menu = (
-      <Menu style={{ width: 220 }}>
+      <Menu>
         { task.attachments.map((item,index) => 
           <Menu.Item key={item.uid}>
-            <a target="_blank" style={{ overflow: 'hidden', textOverflow: 'ellipsis', wordSpacing: 'normal' }} href={item.url}>{item.name}</a>
+            <a target="_blank" href={item.url}>{item.name}</a>
           </Menu.Item>)
         }
       </Menu>

@@ -45,18 +45,16 @@ export default class ProjectDetail extends PureComponent {
             <span className={styles.projectTag}>截稿日期：
               <span>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD HH:mm:ss') : '无' }</span>
             </span>
-            { project.attachments && project.attachments.length > 0 ?
+            { project.attachments && project.attachments.length > 0 &&
               <span style={{ float: 'right' }} onClick={this.fileBoxVisible}>
                 <a href="javascript:;">{ fileBox ? '收起' : '查看附件' }<Icon type={ fileBox ? 'up' : 'down' } /></a>
               </span>
-              : ''
             }
           </div>
         </div>  
         <ul className={styles.fileBox} style={{ display: fileBox ? 'block' : 'none' }}>
-          { project.attachments && project.attachments.length > 0 ?
-            project.attachments.map((item,index) => <li key={index}><a href={item.url}>{item.name}</a></li>)
-            : <li></li>
+          { project.attachments && project.attachments.length > 0 &&
+            project.attachments.map((item,index) => <li key={index}><a target="_blank" href={item.url}>{item.name}</a></li>)
           }
         </ul>
       </Card>

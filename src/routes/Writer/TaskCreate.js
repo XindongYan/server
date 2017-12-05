@@ -59,27 +59,54 @@ export default class TaskCreate extends PureComponent {
       message.warn('请选择封面图');
     } else {
       const query = querystring.parse(this.props.location.search.substr(1));
-      this.props.dispatch({
-        type: 'task/update',
-        payload: { ...this.state.task, _id: query._id },
-        callback: (result) => {
-          if (result.error) {
-            message.error(result.msg);
-          } else {
-            this.props.dispatch({
-              type: 'task/handin',
-              payload: { _id: query._id },
-              callback: (result1) => {
-                if (result1.error) {
-                  message.error(result1.msg);
-                } else {
-                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+      if (query._id) {
+        this.props.dispatch({
+          type: 'task/update',
+          payload: { ...this.state.task, _id: query._id },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              this.props.dispatch({
+                type: 'task/handin',
+                payload: { _id: query._id },
+                callback: (result1) => {
+                  if (result1.error) {
+                    message.error(result1.msg);
+                  } else {
+                    this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                  }
                 }
-              }
-            });
+              });
+            }
           }
-        }
-      });
+        });
+      } else {
+        this.props.dispatch({
+          type: 'task/add',
+          payload: {
+            ...payload,
+            approve_status: TASK_APPROVE_STATUS.created,
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              this.props.dispatch({
+                type: 'task/handin',
+                payload: { _id: query._id },
+                callback: (result1) => {
+                  if (result1.error) {
+                    message.error(result1.msg);
+                  } else {
+                    this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                  }
+                }
+              });
+            }
+          },
+        });
+      }
     }
   }
   handleSave = () => {

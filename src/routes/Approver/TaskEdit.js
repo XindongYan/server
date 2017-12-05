@@ -173,7 +173,7 @@ export default class TaskEdit extends PureComponent {
             />
           </div>
           <div className={styles.submitBox}>
-            {this.state.grade > 0 && 
+            {this.state.grade > 0 && formData.approve_status !== 0 &&
               <dl className={styles.showGradeBox}>
               <dt>分数</dt>
               {grades.map((item) => 
