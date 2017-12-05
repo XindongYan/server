@@ -16,7 +16,7 @@ export default class TaskCard extends PureComponent {
       <Menu>
         { task.attachments.map((item,index) => 
           <Menu.Item key={item.uid}>
-            <a target="_blank" href={item.url}>{item.name}</a>
+            <a style={{ color: '#40a9ff' }} target="_blank" href={item.url}>{item.name}</a>
           </Menu.Item>)
         }
       </Menu>
@@ -49,12 +49,13 @@ export default class TaskCard extends PureComponent {
               onClick={() => this.props.onTake(task)}
               >抢单</Button>
             </div>
-            { task.attachments && task.attachments.length > 0 &&
+            { task.attachments && task.attachments.length > 0 ?
               <Dropdown overlay={menu} trigger={['click']}>
-                <a className="ant-dropdown-link" href="#">
+                <a style={{ display: 'block', height: 20 }} className="ant-dropdown-link" href="#">
                   查看附件<Icon type="down" />
                 </a>
-              </Dropdown>
+              </Dropdown> :
+              <p style={{ height: 20 }}></p>
             }
           </div>
         </Card>

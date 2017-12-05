@@ -148,7 +148,7 @@ export default class Annotation extends PureComponent {
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     const boxSize = {width: $(this.refs.AnnotationBox).outerWidth(), height: $(this.refs.AnnotationBox).outerHeight()};
     return (
-      <div style={{height: '100%', position: 'relative'}}>
+      <div style={{height: '100%'}}>
         <div className={styles.commentTitle}>
           批注
         </div>
@@ -160,7 +160,7 @@ export default class Annotation extends PureComponent {
         >
           <div
             className={styles.selectBox}
-            style={{ 
+            style={{
               left: direction.x + 100 > $(this.refs.AnnotationBox).outerWidth() ? ($(this.refs.AnnotationBox).outerWidth()-100 || 0) : direction.x, 
               top: direction.y,
               display: direction.visible
