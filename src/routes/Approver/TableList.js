@@ -262,6 +262,7 @@ export default class TableList extends PureComponent {
             <div className={styles.tableListOperator}>
               <Select
                 showSearch
+                allowClear
                 style={{ width: 160, marginRight: 8 }}
                 placeholder="活动"
                 optionFilterProp="children"
@@ -273,6 +274,7 @@ export default class TableList extends PureComponent {
                 }
               </Select>
               <Select
+                allowClear
                 showSearch
                 style={{ width: 160, marginRight: 8 }}
                 placeholder="渠道"
