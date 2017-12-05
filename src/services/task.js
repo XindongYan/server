@@ -45,15 +45,6 @@ export async function takeTask(params) {
   });
 }
 
-export async function deliverTask(params) {
-  return request('/api/task/deliver', {
-    method: 'POST',
-    body: {
-      ...params,
-    },
-  });
-}
-
 export async function handinTask(params) {
   return request('/api/task/handin', {
     method: 'PUT',

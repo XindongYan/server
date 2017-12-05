@@ -164,7 +164,7 @@ export default class TableList extends PureComponent {
       },
       {
         title: '提交时间',
-        dataIndex: 'last_update_time',
+        dataIndex: 'handin_time',
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },

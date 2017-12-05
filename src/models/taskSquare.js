@@ -1,4 +1,4 @@
-import { queryProjectTasks, queryTask, takeTask, deliverTask } from '../services/task';
+import { queryProjectTasks, queryTask, takeTask } from '../services/task';
 import { queryTaskSquareProjects, queryProject } from '../services/project';
 export default {
   namespace: 'taskSquare',
@@ -86,10 +86,6 @@ export default {
           payload: { _id: payload._id },
         });
       }
-      if (callback) callback(response);
-    },
-    *deliverTask({ payload, callback }, { call, put }) {
-      const response = yield call(deliverTask, payload);
       if (callback) callback(response);
     },
     *responseTasken({ payload }, { call, put }) {
