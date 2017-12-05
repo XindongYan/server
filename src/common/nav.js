@@ -64,7 +64,7 @@ const approve = {
   icon: 'solution',
   children: [{
     name: '审批任务',
-    path: 'activity-list',
+    path: 'approve-list',
     component: Approver,
   }],
 };
