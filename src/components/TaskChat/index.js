@@ -45,7 +45,7 @@ export default class TaskChat extends PureComponent {
     const { taskId } = this.props;
     const { visible, taskChatMsgNum } = this.state;
     return (
-      <div style={{ position: 'fixed', top: 80, right: 20 }}>
+      <div style={{ position: 'fixed', top: 80, right: 20, zIndex: 6 }}>
         <Popover
           content={
             <iframe
