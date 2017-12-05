@@ -1,5 +1,5 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
-queryApproverTasks, addTaskByWriter } from '../services/task';
+queryApproverTasks, addTaskByWriter, specifyTask } from '../services/task';
 
 export default {
   namespace: 'task',
@@ -60,10 +60,6 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const result = yield call(updateTask, payload);
       if (callback) callback(result);
-      // yield put({
-      //   type: 'saveTask',
-      //   payload: {},
-      // });
     },
     *handin({ payload, callback }, { call, put }) {
       const result = yield call(handinTask, payload);
@@ -72,18 +68,14 @@ export default {
     *approve({ payload, callback }, { call, put }) {
       const result = yield call(approveTask, payload);
       if (callback) callback(result);
-      // yield put({
-      //   type: 'saveTask',
-      //   payload: {},
-      // });
     },
     *reject({ payload, callback }, { call, put }) {
       const result = yield call(rejectTask, payload);
       if (callback) callback(result);
-      // yield put({
-      //   type: 'saveTask',
-      //   payload: {},
-      // });
+    },
+    *specify({ payload, callback }, { call, put }) {
+      const result = yield call(specifyTask, payload);
+      if (callback) callback(result);
     },
     *fetchProjectTasks({ payload }, { call, put }) {
       yield put({

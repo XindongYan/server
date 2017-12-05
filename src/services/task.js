@@ -81,6 +81,15 @@ export async function rejectTask(params) {
   });
 }
 
+export async function specifyTask(params) {
+  return request('/api/task/specify', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }

@@ -3,13 +3,15 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Menu, Checkbox, Popconfirm, message } from 'antd';
+import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, message } from 'antd';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
 
+const FormItem = Form.Item;
+const { Option } = Select;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
@@ -17,15 +19,16 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   loading: state.task.projectTaskLoading,
   formData: state.project.formData,
   currentUser: state.user.currentUser,
+  suggestionUsers: state.team.suggestionUsers,
 }))
-
+@Form.create()
 export default class TableList extends PureComponent {
   state = {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
-    user: {},
+    task: {},
   };
 
   componentDidMount() {
@@ -164,10 +167,51 @@ export default class TableList extends PureComponent {
       modalVisible: !!flag,
     });
   }
-
+  handleShowSpecifyModal = (record) => {
+    this.handleModalVisible(true);
+    this.setState({ task: record });
+  }
+  handleSpecify = () => {
+    const { dispatch, currentUser } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'task/specify',
+          payload: {
+            _id: this.state.task._id,
+            user_id: currentUser._id,
+            phone: values.phone,
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              message.success(result.msg);
+              this.handleModalVisible(false);
+              dispatch({
+                type: 'task/fetchProjectTasks',
+                payload: { project_id: query.project_id },
+              });
+            }
+          },
+        });
+      }
+    });
+  }
+  onSearch = (value) => {
+    if (value.length == 11) {
+      this.props.dispatch({
+        type: 'team/fetchUsersByPhone',
+        payload: {
+          phone: value
+        },
+      });
+    }
+  }
   render() {
-    const { projectTask, loading, formData } = this.props;
-    const { selectedRows, modalVisible, user, selectedRowKeys } = this.state;
+    const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers } = this.props;
+    const { selectedRows, modalVisible, selectedRowKeys } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="remove">删除</Menu.Item>
@@ -221,6 +265,8 @@ export default class TableList extends PureComponent {
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
                   <a>删除</a>
                 </Popconfirm>
+                <span className={styles.splitLine} />
+                <a onClick={() => this.handleShowSpecifyModal(record)}>指定</a>
               </p>
             );
           } else if (record.approve_status === TASK_APPROVE_STATUS.published) {
@@ -273,6 +319,37 @@ export default class TableList extends PureComponent {
               rowKey="_id"
             />
           </div>
+          <Modal
+            title="指定写手"
+            visible={modalVisible}
+            onOk={this.handleSpecify}
+            onCancel={() => this.handleModalVisible(false)}
+          >
+            <FormItem
+              label="写手"
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+            >
+              {getFieldDecorator('phone', {
+                initialValue: '',
+                rules: [{ required: true, message: '请选择写手！' }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  mode="combobox"
+                  optionLabelProp="children"
+                  placeholder="搜索电话指定写手"
+                  notFoundContent=""
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={false}
+                  onSearch={this.onSearch}
+                >
+                  {suggestionUsers.map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+          </Modal>
         </Card>
       </div>
     );
