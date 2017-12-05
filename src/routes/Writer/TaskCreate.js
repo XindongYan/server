@@ -34,10 +34,6 @@ export default class TaskCreate extends PureComponent {
                 task_desc: result.task.task_desc,
                 cover_img: result.task.cover_img,
               },
-              grade: result.task.grade,
-              grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
-              approve_status: result.task.approve_status,
-              approve_notes: result.task.approve_notes || [],
             });
           }
         }
