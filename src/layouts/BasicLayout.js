@@ -141,14 +141,14 @@ class BasicLayout extends React.PureComponent {
     // }
     // return currentMenuSelectedKeys;
   }
-  getCurrentMenuSelectedKeys(props) {
-    const { location: { pathname } } = props || this.props;
-    const keys = pathname.split('/').slice(1);
-    if (keys.length === 1 && keys[0] === '') {
-      return [this.state.menus[0].key];
-    }
-    return keys;
-  }
+  // getCurrentMenuSelectedKeys(props) {
+  //   const { location: { pathname } } = props || this.props;
+  //   const keys = pathname.split('/').slice(1);
+  //   if (keys.length === 1 && keys[0] === '') {
+  //     return [this.state.menus[0].key];
+  //   }
+  //   return keys;
+  // }
   getNavMenuItems(menusData, parentPath = '') {
     if (!menusData) {
       return [];
@@ -309,7 +309,6 @@ class BasicLayout extends React.PureComponent {
             mode="inline"
             {...menuProps}
             onOpenChange={this.handleOpenChange}
-            selectedKeys={this.getCurrentMenuSelectedKeys()}
             style={{ margin: '16px 0', width: '100%' }}
           >
             {this.getNavMenuItems(this.state.menus)}
