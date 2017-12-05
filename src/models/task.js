@@ -1,5 +1,5 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
-queryApproverTasks } from '../services/task';
+queryApproverTasks, addTaskByWriter } from '../services/task';
 
 export default {
   namespace: 'task',
@@ -47,6 +47,10 @@ export default {
     },
     *add({ payload, callback }, { call }) {
       const result = yield call(addTask, payload);
+      if (callback) callback(result);
+    },
+    *addByWriter({ payload, callback }, { call }) {
+      const result = yield call(addTaskByWriter, payload);
       if (callback) callback(result);
     },
     *publish({ payload, callback }, { call }) {

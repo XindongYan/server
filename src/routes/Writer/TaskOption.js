@@ -22,8 +22,8 @@ export default class TaskOption extends PureComponent {
   componentWillReceiveProps(nextProps) {
 
   }
-  handleDeliver = (project) => {
-    this.props.dispatch(routerRedux.push(`/writer/task/create?project_id=${project._id}&channel_name=${project.channel_name}`));
+  handleDeliver = (value) => {
+    this.props.dispatch(routerRedux.push(`/writer/task/create?channel_name=${value}`));
   }
   render() {
     return (
@@ -32,7 +32,7 @@ export default class TaskOption extends PureComponent {
           { CHANNEL_NAMES.map((item, index) => 
               <Col span={12} key={index}>
                 <Card bordered={false} style={{ textAlign: 'center'}}>
-                  <div className={styles.channelBox} onClick={this.handleDeliver}>
+                  <div className={styles.channelBox} onClick={() => this.handleDeliver(item)}>
                     <div className={styles.channelImgBox}>
                       <img src="http://oyufgm5i2.bkt.clouddn.com/rc-upload-1512457823676-4.png" />
                     </div>

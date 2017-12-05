@@ -5,11 +5,13 @@ import querystring from 'querystring';
 import { Card, Button, Popconfirm, message } from 'antd';
 // import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import { TASK_APPROVE_STATUS } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
 @connect(state => ({
   formData: state.task.formData,
+  currentUser: state.user.currentUser,
 }))
 
 export default class TaskCreate extends PureComponent {
@@ -54,7 +56,9 @@ export default class TaskCreate extends PureComponent {
     this.setState({ task: { ...this.state.task, ...task } });
   }
   handleSubmit = () => {
+    const { currentUser } = this.props;
     const { task } = this.state;
+    const query = querystring.parse(this.props.location.search.substr(1));
     if (!task.title || !task.title.replace(/\s+/g, '')) {
       message.warn('请填写标题');
     } else if (task.title && task.title.length > 19) {
@@ -64,7 +68,6 @@ export default class TaskCreate extends PureComponent {
     } else if (!task.cover_img) {
       message.warn('请选择封面图');
     } else {
-      const query = querystring.parse(this.props.location.search.substr(1));
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
@@ -89,10 +92,14 @@ export default class TaskCreate extends PureComponent {
         });
       } else {
         this.props.dispatch({
-          type: 'task/add',
+          type: 'task/addByWriter',
           payload: {
-            ...payload,
-            approve_status: TASK_APPROVE_STATUS.created,
+            ...this.state.task,
+            approve_status: TASK_APPROVE_STATUS.taken,
+            channel_name: query.channel_name,
+            publisher_id: currentUser._id, // 登录后用户的 user._id
+            taker_id: currentUser._id,
+            creator_id: currentUser._id,
           },
           callback: (result) => {
             if (result.error) {
@@ -100,12 +107,12 @@ export default class TaskCreate extends PureComponent {
             } else {
               this.props.dispatch({
                 type: 'task/handin',
-                payload: { _id: query._id },
+                payload: { _id: result.task._id },
                 callback: (result1) => {
                   if (result1.error) {
                     message.error(result1.msg);
                   } else {
-                    this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                    this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
                   }
                 }
               });
