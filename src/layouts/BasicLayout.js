@@ -62,8 +62,8 @@ class BasicLayout extends React.PureComponent {
   constructor(props) {
     super(props);
     // 把一级 Layout 的 children 作为菜单项
-    this.menus = getNavData(props.currentUser).reduce((arr, current) => arr.concat(current.children), []);
     this.state = {
+      menus: getNavData(props.currentUser).reduce((arr, current) => arr.concat(current.children), []),
       openKeys: this.getDefaultCollapsedSubMenus(props),
     };
   }
@@ -137,7 +137,7 @@ class BasicLayout extends React.PureComponent {
     // const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
     // currentMenuSelectedKeys.splice(-1, 1);
     // if (currentMenuSelectedKeys.length === 0) {
-      return ['list', 'tool'];
+      return ['square', 'tool'];
     // }
     // return currentMenuSelectedKeys;
   }
@@ -145,7 +145,7 @@ class BasicLayout extends React.PureComponent {
     const { location: { pathname } } = props || this.props;
     const keys = pathname.split('/').slice(1);
     if (keys.length === 1 && keys[0] === '') {
-      return [this.menus[0].key];
+      return [this.state.menus[0].key];
     }
     return keys;
   }
@@ -312,7 +312,7 @@ class BasicLayout extends React.PureComponent {
             selectedKeys={this.getCurrentMenuSelectedKeys()}
             style={{ margin: '16px 0', width: '100%' }}
           >
-            {this.getNavMenuItems(this.menus)}
+            {this.getNavMenuItems(this.state.menus)}
           </Menu>
         </Sider>
         <Layout>
@@ -402,7 +402,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/writer/task/handin/success" component={WriterTaskSuccess} />
               <Route path="/approver/task/edit" component={ApproverTaskEdit} />
               <Route path="/approver/task/view" component={ApproverTaskView} />
-              <Redirect to="/list/task-square" />
+              <Redirect to="/square/task" />
             </Switch>
             <GlobalFooter
               links={[{
