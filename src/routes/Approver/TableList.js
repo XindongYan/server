@@ -112,8 +112,8 @@ export default class TableList extends PureComponent {
       ...formValues,
     };
     if(name === 'time') {
-      values['handin_time_start'] = value[0] ? value[0].format() : '';
-      values['handin_time_end'] = value[1] ? value[1].format() : '';
+      values['handin_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
+      values['handin_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
     } else {
       values[name] = value;
     }

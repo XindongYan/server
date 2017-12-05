@@ -51,11 +51,11 @@ export default class FlowList extends PureComponent {
               <ProjectCard key={index} project={item} />)
             }
           </TabPane>
-          <TabPane tab="投稿" key="2">
+          { /* <TabPane tab="投稿" key="2">
             {projects.list.map((item,index) => 
               <SubmissionCard key={index} project={item} />)
             }
-          </TabPane>
+          </TabPane> */ }
         </Tabs>
       </Card>
     );
