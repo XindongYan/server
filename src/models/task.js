@@ -29,15 +29,17 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       const response = yield call(queryTask, payload);
+      if (callback) callback(response);
       yield put({
         type: 'saveTask',
         payload: response.task || {},
       });
     },
-    *fetchTask({ payload }, { call, put }) {
+    *fetchTask({ payload, callback }, { call, put }) {
       const response = yield call(queryTask, payload);
+      if (callback) callback(response);
       yield put({
         type: 'saveTask',
         payload: response.task || {},
