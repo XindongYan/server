@@ -38,11 +38,10 @@ export default class TaskEdit extends PureComponent {
               title: result.task.title,
               task_desc: result.task.task_desc,
               cover_img: result.task.cover_img,
+              approve_notes: result.task.approve_notes || [],
             },
             grade: result.task.grade,
             grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
-            approve_status: result.task.approve_status,
-            approve_notes: result.task.approve_notes || [],
           });
         }
       }
