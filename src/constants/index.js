@@ -14,7 +14,8 @@ export const RIGHTS = [
 export const APPROVE_ROLES = [
   { label: '一审', value: 1 },
   { label: '二审', value: 2 },
-  { label: '三审', value: 3 },
+  { label: '合作伙伴', value: 3 },
+  { label: '商家', value: 4 },
 ];
 
 export const ROLES = [
@@ -25,8 +26,12 @@ export const QINIU_DOMAIN = 'http://oyufgm5i2.bkt.clouddn.com';
 export const QINIU_UPLOAD_DOMAIN = 'http://up.qiniu.com';
 
 export const APPROVE_FLOWS = [
+  { value: 1, texts: [1] },
   { value: 1, texts: [1, 2] },
-  { value: 2, texts: [1, 2, 3] },
+  { value: 1, texts: [1, 3, 4] },
+  { value: 1, texts: [1, 2, 3, 4] },
+  { value: 1, texts: [1, 4] },
+  { value: 2, texts: [1, 2, 4] },
 ];
 
 export const TASK_TYPES = [
