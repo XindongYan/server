@@ -33,35 +33,34 @@ export default class TaskEdit extends PureComponent {
     ],
     approve_status: 0,
     approve_notes: [],
-    taskLoaded: false,
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
       type: 'task/fetchTask',
       payload: query,
-    }, () => {
-      this.setState({
-        task: {
-          title: nextProps.formData.title,
-          task_desc: nextProps.formData.task_desc,
-          cover_img: nextProps.formData.cover_img,
-        },
-        grade: nextProps.formData.grade,
-        grades: nextProps.formData.grades && nextProps.formData.grades.length ? nextProps.formData.grades : [...this.state.grades],
-        approve_status: nextProps.formData.approve_status,
-        approve_notes: nextProps.formData.approve_notes || [],
-        taskLoaded: true,
-      });
+      callback: (result) => {
+        if (!result.error) {
+          this.setState({
+            task: {
+              title: result.task.title,
+              task_desc: result.task.task_desc,
+              cover_img: result.task.cover_img,
+            },
+            grade: result.task.grade,
+            grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
+            approve_status: result.task.approve_status,
+            approve_notes: result.task.approve_notes || [],
+          });
+        }
+      }
     });
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: true,
     });
   }
-  componentWillReceiveProps(nextProps) {
 
-  }
   componentWillUnmount() {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',

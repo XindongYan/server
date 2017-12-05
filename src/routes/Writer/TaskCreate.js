@@ -26,23 +26,27 @@ export default class TaskCreate extends PureComponent {
       this.props.dispatch({
         type: 'task/fetchTask',
         payload: { _id: query._id },
+        callback: (result) => {
+          if (!result.error) {
+            this.setState({
+              task: {
+                title: result.task.title,
+                task_desc: result.task.task_desc,
+                cover_img: result.task.cover_img,
+              },
+              grade: result.task.grade,
+              grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
+              approve_status: result.task.approve_status,
+              approve_notes: result.task.approve_notes || [],
+            });
+          }
+        }
       });
     }
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: true,
     });
-  }
-  componentWillReceiveProps(nextProps) {
-    if (!this.state.taskLoaded && nextProps.formData._id) {
-      this.setState({
-        task: {
-          title: nextProps.formData.title,
-          task_desc: nextProps.formData.task_desc,
-          cover_img: nextProps.formData.cover_img,
-        }
-      });
-    }
   }
   componentWillUnmount() {
     this.props.dispatch({
