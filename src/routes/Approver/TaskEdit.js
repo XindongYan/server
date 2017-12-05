@@ -46,17 +46,19 @@ export default class TaskEdit extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      task: {
-        title: nextProps.formData.title,
-        task_desc: nextProps.formData.task_desc,
-        cover_img: nextProps.formData.cover_img,
-      },
-      grade: nextProps.formData.grade,
-      grades: nextProps.formData.grades && nextProps.formData.grades.length ? nextProps.formData.grades : [...this.state.grades],
-      approve_status: nextProps.formData.approve_status,
-      approve_notes: nextProps.formData.approve_notes || [],
-    });
+    if (this.props.formData.title !== nextProps.formData.title) {
+      this.setState({
+        task: {
+          title: nextProps.formData.title,
+          task_desc: nextProps.formData.task_desc,
+          cover_img: nextProps.formData.cover_img,
+        },
+        grade: nextProps.formData.grade,
+        grades: nextProps.formData.grades && nextProps.formData.grades.length ? nextProps.formData.grades : [...this.state.grades],
+        approve_status: nextProps.formData.approve_status,
+        approve_notes: nextProps.formData.approve_notes || [],
+      });
+    }
   }
   componentWillUnmount() {
     this.props.dispatch({
