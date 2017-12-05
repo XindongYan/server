@@ -14,18 +14,12 @@ import Album from '../routes/Album';
 import Success from '../routes/Result/Success';
 import Error from '../routes/Result/Error';
 
+import { RIGHT } from '../constants';
 // const deliver = {
 //   name: '投稿列表',
 //   path: 'deliver-list',
 //   component: Deliver,
 // };
-
-const RIGHTS = {
-  writer: 1,
-  teamAdmin: 2,
-  projectAdmin: 3,
-  approver: 6,
-};
 
 const square = {
   name: '广场',
@@ -126,19 +120,19 @@ const data = [{
 export function getNavData(user) {
   const menuItems = [];
   if (user.rights) {
-    if (user.rights.indexOf(RIGHTS.writer) >= 0) {
+    if (user.rights.indexOf(RIGHT.writer) >= 0) {
       menuItems.push(square, creation);
     }
-    if (user.rights.indexOf(RIGHTS.approver) >= 0) {
+    if (user.rights.indexOf(RIGHT.approver) >= 0) {
       menuItems.push(approve);
     }
-    if (user.rights.indexOf(RIGHTS.teamAdmin) >= 0) {
+    if (user.rights.indexOf(RIGHT.teamAdmin) >= 0) {
       menuItems.push(team);
     }
-    if (user.rights.indexOf(RIGHTS.projectAdmin) >= 0) {
+    if (user.rights.indexOf(RIGHT.projectAdmin) >= 0) {
       menuItems.push(project);
     }
-    if (user.rights.indexOf(RIGHTS.writer) >= 0) {
+    if (user.rights.indexOf(RIGHT.writer) >= 0) {
       menuItems.push(album);
     }
   } else {
