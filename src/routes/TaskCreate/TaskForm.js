@@ -12,6 +12,7 @@ const { Option } = Select;
   teamUser: state.user.teamUser,
   qiniucloud: state.qiniucloud,
   formData: state.task.formData,
+  suggestionUsers: state.team.suggestionUsers,
 }))
 @Form.create()
 export default class TaskForm extends PureComponent {
@@ -105,6 +106,16 @@ export default class TaskForm extends PureComponent {
       }
     });
   }
+  onSearch = (value) => {
+    if (value.length == 11) {
+      this.props.dispatch({
+        type: 'team/fetchUsersByPhone',
+        payload: {
+          phone: value
+        },
+      });
+    }
+  }
   normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
@@ -120,7 +131,7 @@ export default class TaskForm extends PureComponent {
     };
   }
   render() {
-    const { form: { getFieldDecorator }, operation } = this.props;
+    const { form: { getFieldDecorator }, operation, suggestionUsers } = this.props;
     return (
       <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}任务`}>
         <Form>
@@ -170,6 +181,29 @@ export default class TaskForm extends PureComponent {
               initialValue: 0,
             })(
               <Input type="number" addonAfter="元" />
+            )}
+          </FormItem>
+          <FormItem
+            label="写手"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('taker_id', {
+              initialValue: '',
+            })(
+              <Select
+                style={{ width: '100%' }}
+                mode="combobox"
+                optionLabelProp="children"
+                placeholder="搜索电话指定写手"
+                notFoundContent=""
+                defaultActiveFirstOption={false}
+                showArrow={false}
+                filterOption={false}
+                onSearch={this.onSearch}
+              >
+                {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.name}</Option>)}
+              </Select>
             )}
           </FormItem>
           <FormItem
