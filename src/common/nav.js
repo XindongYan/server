@@ -77,7 +77,7 @@ const data = [{
   children: [{
     name: '创作',
     path: 'list',
-    icon: 'table',
+    icon: 'edit',
     children: [taskSquare, writer, album],
   }, {
     name: '工具',
