@@ -246,6 +246,17 @@ export default class TableList extends PureComponent {
         dataIndex: 'merchant_tag',
       },
       {
+        title: '接单人',
+        dataIndex: 'taker_id',
+        render: (val) => val ? val.name : '',
+      },
+      {
+        title: '接单时间',
+        dataIndex: 'take_time',
+        sorter: true,
+        render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
+      },
+      {
         title: '状态',
         dataIndex: 'approve_status',
         render: val => (<TaskStatusColumn status={val}/>),
