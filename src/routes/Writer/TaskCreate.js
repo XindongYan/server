@@ -22,10 +22,12 @@ export default class TaskCreate extends PureComponent {
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'task/fetchTask',
-      payload: { _id: query._id },
-    });
+    if (query._id) {
+      this.props.dispatch({
+        type: 'task/fetchTask',
+        payload: { _id: query._id },
+      });
+    }
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: true,
