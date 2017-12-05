@@ -137,7 +137,7 @@ class BasicLayout extends React.PureComponent {
     // const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
     // currentMenuSelectedKeys.splice(-1, 1);
     // if (currentMenuSelectedKeys.length === 0) {
-      return ['square', 'tool'];
+      return ['square', 'creation', 'project', 'approve', 'team', 'album', 'tool'];
     // }
     // return currentMenuSelectedKeys;
   }
