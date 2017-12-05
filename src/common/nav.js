@@ -6,6 +6,7 @@ import Activity from '../routes/Project/ActivityList';
 import Deliver from '../routes/Project/DeliverList';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
+import TaskOption from '../routes/Writer/TaskOption';
 import TaskSquare from '../routes/TaskSquare/ProjectList';
 import Invitation from '../routes/Invitation/InvitationList';
 import Album from '../routes/Album';
@@ -23,6 +24,12 @@ const writer = {
   name: '我的任务',
   path: 'writer-list',
   component: Writer,
+};
+
+const taskOption = {
+  name: '新建作品',
+  path: 'writer-taskOption',
+  component: TaskOption,
 };
 
 const approver = {
@@ -97,7 +104,7 @@ export function getNavData(user) {
   const menuItems = [];
   if (user.rights) {
     if (user.rights.indexOf(RIGHTS.writer) >= 0) {
-      menuItems.push(taskSquare, writer);
+      menuItems.push(taskSquare, writer, taskOption);
     }
     if (user.rights.indexOf(RIGHTS.approver) >= 0) {
       menuItems.push(approver);
