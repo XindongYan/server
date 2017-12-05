@@ -24,7 +24,8 @@ function onChange(date, dateString) {
   data: state.task.approverTask,
   loading: state.task.approverTaskLoading,
   currentUser: state.user.currentUser,
-  projects: state.taskSquare.projects,
+  projects: state.project.data,
+  teamUser: state.user.teamUser,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -37,21 +38,37 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch, data: { pagination }, currentUser } = this.props;
+    const { dispatch, data: { pagination }, currentUser, teamUser } = this.props;
     if (currentUser._id) {
       dispatch({
         type: 'task/fetchApproverTasks',
         payload: { ...pagination, ...this.state.formValues, user_id: currentUser._id }
       });
     }
+    if (teamUser.team_id) {
+      dispatch({
+        type: 'project/fetch',
+        payload: {
+          team_id: teamUser.team_id,
+        },
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { dispatch, data: { pagination }, currentUser } = nextProps;
+    const { dispatch, data: { pagination }, currentUser, teamUser } = nextProps;
     if (currentUser._id !== this.props.currentUser._id) {
       dispatch({
         type: 'task/fetchApproverTasks',
         payload: { ...pagination, ...this.state.formValues, user_id: currentUser._id }
+      });
+    }
+    if (teamUser.team_id !== this.props.teamUser.team_id) {
+      dispatch({
+        type: 'project/fetch',
+        payload: {
+          team_id: teamUser.team_id,
+        },
       });
     }
   }
