@@ -51,7 +51,7 @@ export default class WeitaoForm extends PureComponent {
           <div className={styles.taskList}>
             <div className={styles.taskListInp}>
               <Input type="text" id="task-title" value={formData.title} onChange={this.handleTitleChange} placeholder="请在这里输入标题"/>
-              <span>0/19</span>
+              <span style={{ color: formData.title && formData.title.length && formData.title.length > 19 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/19</span>
             </div>
             <span className={styles.promptRed}></span>
           </div>
