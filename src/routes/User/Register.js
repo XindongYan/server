@@ -200,7 +200,7 @@ export default class Register extends Component {
                     pattern: /^1\d{10}$/, message: '手机号格式错误！',
                   }],
                 })(
-                  <Input placeholder="11位手机号" />
+                  <Input size="large" placeholder="11位手机号" />
                 )}
               </FormItem>
             </InputGroup>
