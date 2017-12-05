@@ -72,11 +72,13 @@
   padding: 10px;
 }
 .cardMsgDesc{
-  height: 60px;
+  height: 80px;
   line-height: 20px;
   word-wrap:break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
   overflow: hidden;
-  font-size: 12px;
 }
 
 .ant-card-head-title{
@@ -122,8 +124,14 @@
   font-size: 12px;
 }
 .descBox{
-  margin-top: 6px;
-  height: 60px;
+  margin: 6px 0 10px;
+  height: 56px;
+  line-height: 20px;
+  word-wrap:break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 .customBtn{
   padding: 10px;
@@ -171,4 +179,3 @@
   height: 32px;
   line-height: 32px;
 }
-
