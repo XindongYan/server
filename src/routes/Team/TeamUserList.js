@@ -140,8 +140,12 @@ export default class TableList extends PureComponent {
     message.success('删除成功');
   }
   handleRightsChange = (checkedValues) => {
+    const user = { ...this.state.user, rights: checkedValues };
+    if (this.state.user.rights.indexOf(RIGHT.approver) >= 0 && !(checkedValues.indexOf(RIGHT.approver) >= 0)) {
+      user.approve_roles = [];
+    }
     this.setState({
-      user: { ...this.state.user, rights: checkedValues}
+      user
     });
   }
   handleApproveRolesChange = (checkedValues) => {

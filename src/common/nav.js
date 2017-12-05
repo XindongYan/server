@@ -136,7 +136,7 @@ export function getNavData(user) {
       menuItems.push(album);
     }
   } else {
-    menuItems.push(square, creation, album);
+    menuItems.push(square, creation, approve, team, project, album);
   }
   data[0].children = menuItems;
   return data;
