@@ -161,7 +161,7 @@ export default class TableList extends PureComponent {
     const { selectedRows, modalVisible, formValues, selectedRowKeys } = this.state;
     const columns = [
       {
-        title: '稿子ID',
+        title: 'ID',
         dataIndex: 'id',
       },
       {

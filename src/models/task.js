@@ -1,5 +1,5 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
-queryApproverTasks, addTaskByWriter, specifyTask } from '../services/task';
+queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask } from '../services/task';
 
 export default {
   namespace: 'task',
@@ -80,6 +80,10 @@ export default {
     },
     *specify({ payload, callback }, { call, put }) {
       const result = yield call(specifyTask, payload);
+      if (callback) callback(result);
+    },
+    *withdraw({ payload, callback }, { call, put }) {
+      const result = yield call(withdrawTask, payload);
       if (callback) callback(result);
     },
     *fetchProjectTasks({ payload }, { call, put }) {

@@ -199,6 +199,27 @@ export default class TableList extends PureComponent {
       }
     });
   }
+  handleWithdraw = (record) => {
+    const { dispatch } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    dispatch({
+      type: 'task/withdraw',
+      payload: {
+        _id: record._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          dispatch({
+            type: 'task/fetchProjectTasks',
+            payload: { project_id: query.project_id },
+          });
+        }
+      },
+    });
+  }
   onSearch = (value) => {
     if (value.length == 11) {
       this.props.dispatch({
@@ -221,7 +242,7 @@ export default class TableList extends PureComponent {
 
     const columns = [
       {
-        title: '稿子ID',
+        title: 'ID',
         dataIndex: 'id',
       },
       {
@@ -284,6 +305,19 @@ export default class TableList extends PureComponent {
             return (
               <p>
                 <a onClick={() => this.handleEdit(record)}>修改</a>
+                <span className={styles.splitLine} />
+                <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
+                  <a>撤回</a>
+                </Popconfirm>
+              </p>
+            );
+          } else if (record.approve_status === TASK_APPROVE_STATUS.taken) {
+            return (
+              <p>
+              <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
+                  <a>撤回</a>
+                </Popconfirm>
+                
               </p>
             );
           } else {

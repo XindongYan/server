@@ -106,7 +106,7 @@ export default class TableList extends PureComponent {
     const { formValues } = this.state;
     const columns = [
       {
-        title: '稿子ID',
+        title: 'ID',
         dataIndex: 'id',
       },
       {
