@@ -107,6 +107,15 @@ export default class PassWord extends Component {
       callback('两次输入密码不一致！');
     }
   }
+  passConfirm = (rule, value, callback) => {
+    const form = this.props.form;
+    if (!value || (value && form.getFieldValue('password') === value)) {
+      form.validateFields(['confirm'], { force: true });
+      callback();
+    } else {
+      callback('两次输入密码不一致！');
+    }
+  }
   render() {
     const { type, count } = this.state;
     const { getFieldDecorator } = this.props.form;
@@ -175,7 +184,16 @@ export default class PassWord extends Component {
               )}
             </FormItem>
             <FormItem {...tailFormItemLayout}>
-              <Button type="primary" onClick={this.handleSubmit}>保存</Button>
+              <Row gutter={8}>
+                <Col span={16} style={{ textAlign: 'center' }}>
+                  <Button type="primary" onClick={this.handleSubmit}>保存</Button>
+                </Col>
+                <Col span={8} style={{ textAlign: 'center' }}>
+                  <Link to="/user/login">
+                    <span>忘记旧密码</span>
+                  </Link>
+                </Col>
+              </Row>
             </FormItem>
           </Form>
         }
@@ -225,11 +243,23 @@ export default class PassWord extends Component {
             </FormItem>
             <FormItem>
               {getFieldDecorator('password', {
-                rules: [{ required: true, message: '请输入密码' }],
+                rules: [{ required: true, message: '请输入密码!' }],
               })(
                 <Input
                   size="large"
-                  prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password"
+                  prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码"
+                />
+              )}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('conformPassword', {
+                rules: [{ required: true, message: '请确认密码!' },{
+                  validator: this.passConfirm,
+                }],
+              })(
+                <Input
+                  size="large"
+                  prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="重复密码"
                 />
               )}
             </FormItem>

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, DatePicker } from 'antd';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES } from '../../constants';
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { Link } from 'dva/router';
@@ -100,7 +100,6 @@ export default class TableList extends PureComponent {
   }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-
     this.setState({ selectedRowKeys, selectedRows });
   }
   handleSearch = (value, name) => {
@@ -169,10 +168,10 @@ export default class TableList extends PureComponent {
         title: '任务名称',
         dataIndex: 'name',
         width: 200,
-        render: (record) => (
-          <Link to="http://120.27.215.205/">
+        render: (record, task) => (
+          <a href={`${ORIGIN}/public/task/details?id=${task._id}`}>
             <TaskNameColumn text={record} length={10}/>
-          </Link>
+          </a>
         )
       },
       {
