@@ -134,7 +134,7 @@ export default class TaskEdit extends PureComponent {
                 message.error(result1.msg);
               } else {
                 message.success(result1.msg);
-                this.props.dispatch(routerRedux.push('/list/approver-list'));
+                this.props.dispatch(routerRedux.push('/approve/approve-list'));
               }
             }
           });

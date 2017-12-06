@@ -92,7 +92,6 @@ export default class TableList extends PureComponent {
   }
 
   changeApproveStatus = (e) => {
-    console.log(e)
     const { dispatch, currentUser } = this.props;
     dispatch({
       type: 'task/fetchTakerTasks',
