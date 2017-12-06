@@ -108,6 +108,7 @@ export default class TaskCreate extends PureComponent {
           taker_id: currentUser._id,
           creator_id: currentUser._id,
           current_approvers: [ approver_id ],
+          approvers: [[ approver_id ]],
         },
         callback: (result) => {
           if (result.error) {
