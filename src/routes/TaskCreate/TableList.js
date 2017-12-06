@@ -355,9 +355,9 @@ export default class TableList extends PureComponent {
             (flow ? flow.texts : []).map((item, index) => {
               const label = APPROVE_ROLES.find(item1 => item1.value === item).label;
               return (
-                <Row>
+                <Row key={index}>
                 <Col span={2}>{label}:</Col>
-                <Col span={22} style={{ testAlign: 'left' }}>
+                <Col span={22}>
                   {formData.approvers[index].map(item1 => {
                     const teamUser = teamUsers.find(item2 => item2.user_id._id === item1);
                     if (teamUser && teamUser.user_id) {
