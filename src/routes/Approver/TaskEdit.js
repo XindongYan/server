@@ -149,6 +149,7 @@ export default class TaskEdit extends PureComponent {
     const { grades, approve_notes } = this.state;
     const operation = formData.approve_step === 0 ? 'edit' : 'view';
     const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 
@@ -214,7 +215,7 @@ export default class TaskEdit extends PureComponent {
           </div>
         </div>
         <TaskChat taskId={query._id} />
-        { formData.approvers && formData.approvers[0].indexOf(currentUser._id) >= 0 && <ApproveLog approveData={approveData}/> }
+        { showApproveLog && <ApproveLog approveData={approveData}/> }
       </Card>
     );
   }
