@@ -65,7 +65,8 @@ export default {
       }
     },
     *getSmsCode({ payload, callback }, { call, put }) {
-      yield call(getSmsCode, payload);
+      const result = yield call(getSmsCode, payload);
+      if (callback) callback(result);
     },
   },
 

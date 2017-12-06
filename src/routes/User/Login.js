@@ -192,7 +192,7 @@ export default class Login extends Component {
             })(
               <Checkbox className={styles.autoLogin}>自动登录</Checkbox>
             )}
-            <a className={styles.forgot} href="">忘记密码</a>
+            <Link className={styles.forgot} to="/setting/password?type=phone">忘记密码</Link>
             <Button size="large" loading={login.submitting} className={styles.submit} type="primary" htmlType="submit">
               登录
             </Button>

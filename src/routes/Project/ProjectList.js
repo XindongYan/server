@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
+import TaskNameColumn from '../../components/TaskNameColumn';
 import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
 import { Link } from 'dva/router';
 import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
@@ -222,6 +223,7 @@ export default class ProjectList extends PureComponent {
       {
         title: '标题',
         dataIndex: 'name',
+        render: (record) => (<TaskNameColumn text={record} length={10}/>),
       },
       {
         title: '商家标签',
