@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Link } from 'dva/router';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
-import { TASK_APPROVE_STATUS } from '../../constants';
+import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
 import styles from './TableList.less';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
@@ -113,10 +113,10 @@ export default class TableList extends PureComponent {
       {
         title: '任务名称',
         dataIndex: 'name',
-        render: record => (
-          <Link to="http://120.27.215.205/">
+        render: (record, task) => (
+          <a href={`${ORIGIN}/public/task/details?id=${task._id}`}>
             <TaskNameColumn text={record} length={10} />
-          </Link>
+          </a>
         ),
       },
       {
