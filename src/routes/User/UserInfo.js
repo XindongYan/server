@@ -76,20 +76,24 @@ export default class UserInfo extends Component {
   handleSubmit = () => {
     const { dispatch } = this.props;
     const { currentUser } = this.state;
-    dispatch({
-      type: 'user/update',
-      payload: {
-        _id: currentUser._id,
-        name: currentUser.name,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-        }
-      },
-    });
+    if (!currentUser.name) {
+      message.warn('姓名不能为空');
+    } else {
+      dispatch({
+        type: 'user/update',
+        payload: {
+          _id: currentUser._id,
+          name: currentUser.name,
+        },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            message.success(result.msg);
+          }
+        },
+      });
+    }
   }
 
   render() {
