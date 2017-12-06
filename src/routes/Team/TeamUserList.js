@@ -211,7 +211,6 @@ export default class TableList extends PureComponent {
         },
       });
     }
-    
   }
   handleSelect = (value) => {
     this.setState({ phone: value });

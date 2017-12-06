@@ -27,7 +27,7 @@ export default class TaskOption extends PureComponent {
   }
   render() {
     return (
-      <Card bordered={false} style={{ background: '#fff',minHeight: 400, padding: 40 }} bodyStyle={{ padding: 0 }}>
+      <Card bordered={false} style={{ background: '#fff',minHeight: 400, padding: '100px 40px 0' }} bodyStyle={{ padding: 0 }}>
         <Row gutter={20} style={{ width: 600, margin: 'auto' }}>
           { CHANNEL_NAMES.map((item, index) => 
               <Col span={12} key={index}>
