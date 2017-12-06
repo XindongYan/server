@@ -32,7 +32,7 @@ export default class TableList extends PureComponent {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
-    formValues: { approve_status: TASK_APPROVE_STATUS.waitingForApprove },
+    formValues: { approve_status: 'waitingForApprove' },
     user: {},
   };
 
@@ -259,18 +259,19 @@ export default class TableList extends PureComponent {
         }
       },
     }
-    if (formValues.approve_status === 0){
+    if (formValues.approve_status === 'waitingForApprove' || formValues.approve_status === 'approving'){
       columns.push(opera)
     } else {
-      columns.push( approver, grade, approveTime, opera)
+      columns.push(approver, grade, approveTime, opera)
     }
     return (
       <div>
         <div className={styles.searchBox}>
           <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}> 
-            <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
+            <RadioButton value="waitingForApprove">待审核</RadioButton>
+            <RadioButton value="approving">审核中</RadioButton>
+            <RadioButton value="passed">已通过</RadioButton>
+            <RadioButton value="rejected">未通过</RadioButton>
           </RadioGroup>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
