@@ -21,3 +21,12 @@ export async function changePassword(params) {
     },
   });
 }
+
+export async function changePasswordBySms_code(params) {
+  return request('/api/user/change/pwd/by/sms_code', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}

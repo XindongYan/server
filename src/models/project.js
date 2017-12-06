@@ -101,21 +101,7 @@ export default {
       if (callback) callback(result);
     },
     *remove({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
       const result = yield call(removeProject, payload);
-      const response = yield call(queryProjects, { team_id: payload.team_id });
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-
       if (callback) callback(result);
     },
     *fetchProject({ payload }, { call, put }) {

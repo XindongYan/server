@@ -90,6 +90,15 @@ export async function specifyTask(params) {
   });
 }
 
+export async function withdrawTask(params) {
+  return request('/api/task/withdraw', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }

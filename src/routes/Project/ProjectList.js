@@ -185,7 +185,7 @@ export default class ProjectList extends PureComponent {
     });
   }
   handleRemove = (record) => {
-    const { dispatch, teamUser } = this.props;
+    const { dispatch, teamUser, type } = this.props;
     dispatch({
       type: 'project/remove',
       payload: {
@@ -197,6 +197,13 @@ export default class ProjectList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
+          dispatch({
+            type: 'project/fetch',
+            payload: {
+              team_id: teamUser.team_id,
+              type,
+            },
+          });
         }
       },
     });
@@ -221,9 +228,13 @@ export default class ProjectList extends PureComponent {
     );
     const columns = [
       {
+        title: 'ID',
+        dataIndex: 'id',
+      },
+      {
         title: '标题',
         dataIndex: 'name',
-        render: (record) => (<TaskNameColumn text={record} length={10}/>),
+        render: (val, record) => (<Link to={`/project/task/list?project_id=${record._id}`}><TaskNameColumn text={val} length={10}/></Link>),
       },
       {
         title: '商家标签',
