@@ -167,13 +167,13 @@ export default class TableList extends PureComponent {
       ...pagination,
     };
 
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.handleRowSelectChange,
-      getCheckboxProps: record => ({
-        disabled: record.disabled,
-      }),
-    };
+    // const rowSelection = {
+    //   selectedRowKeys,
+    //   onChange: this.handleRowSelectChange,
+    //   getCheckboxProps: record => ({
+    //     disabled: record.disabled,
+    //   }),
+    // };
     return (
       <Card bordered={false} bodyStyle={{ padding: 10 }}>
         <div className={styles.tableList}>
@@ -182,7 +182,6 @@ export default class TableList extends PureComponent {
           </div>
           <Table
             loading={loading}
-            rowSelection={rowSelection}
             dataSource={list}
             columns={columns}
             pagination={paginationProps}
