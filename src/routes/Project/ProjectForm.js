@@ -150,7 +150,7 @@ export default class ProjectForm extends PureComponent {
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData, type } = this.props;
-    const flow = APPROVE_FLOWS.find(item => item.value === (formData.approve_flow || getFieldValue('approve_flow')));
+    const flow = APPROVE_FLOWS.find(item => item.value === (getFieldValue('approve_flow') || formData.approve_flow));
     return (
       <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}${type === 1 ? '活动' : '投稿'}`}>
         <Form>
