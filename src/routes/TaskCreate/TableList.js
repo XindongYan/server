@@ -3,8 +3,8 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, message } from 'antd';
-import { TASK_APPROVE_STATUS } from '../../constants';
+import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, message } from 'antd';
+import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -20,6 +20,8 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   formData: state.project.formData,
   currentUser: state.user.currentUser,
   suggestionUsers: state.team.suggestionUsers,
+  teamUsers: state.team.teamUsers,
+  teamUser: state.user.teamUser,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -32,7 +34,7 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, teamUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/fetchProjectTasks',
@@ -42,8 +44,21 @@ export default class TableList extends PureComponent {
       type: 'project/fetchProject',
       payload: { _id: query.project_id },
     });
+    if (teamUser.team_id) {
+      this.props.dispatch({
+        type: 'team/fetchTeamUsers',
+        payload: { team_id: teamUser.team_id },
+      });
+    }
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.teamUsers.length === 0 && nextProps.teamUser.team_id) {
+      this.props.dispatch({
+        type: 'team/fetchTeamUsers',
+        payload: { team_id: nextProps.teamUser.team_id },
+      });
+    }
+  }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
@@ -231,8 +246,9 @@ export default class TableList extends PureComponent {
     }
   }
   render() {
-    const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers } = this.props;
+    const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys } = this.state;
+    const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="remove">删除</Menu.Item>
@@ -242,7 +258,7 @@ export default class TableList extends PureComponent {
 
     const columns = [
       {
-        title: 'ID',
+        title: '任务ID',
         dataIndex: 'id',
       },
       {
@@ -334,6 +350,28 @@ export default class TableList extends PureComponent {
     return (
       <div>
         <ProjectDetail project={formData} />
+        <Card style={{ marginBottom: 14 }}>
+          {
+            (flow ? flow.texts : []).map((item, index) => {
+              const label = APPROVE_ROLES.find(item1 => item1.value === item).label;
+              return (
+                <Row>
+                <Col span={2}>{label}:</Col>
+                <Col span={22} style={{ testAlign: 'left' }}>
+                  {formData.approvers[index].map(item1 => {
+                    const teamUser = teamUsers.find(item2 => item2.user_id._id === item1);
+                    if (teamUser && teamUser.user_id) {
+                      return teamUser.user_id.name;
+                    } else {
+                      return '';
+                    }
+                  }).join(',')}
+                </Col>
+                </Row>
+              );
+            })
+          }
+        </Card>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>

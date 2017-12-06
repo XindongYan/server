@@ -228,7 +228,7 @@ export default class ProjectList extends PureComponent {
     );
     const columns = [
       {
-        title: 'ID',
+        title: '活动ID',
         dataIndex: 'id',
       },
       {
