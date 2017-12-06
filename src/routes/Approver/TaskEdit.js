@@ -7,6 +7,7 @@ import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constan
 import { routerRedux } from 'dva/router';
 import Editor from '../../components/Editor';
 import TaskChat from '../../components/TaskChat';
+import ApproveLog from '../../components/ApproveLog';
 import styles from './TableList.less';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import Annotation from '../../components/Annotation';
@@ -15,6 +16,7 @@ import Annotation from '../../components/Annotation';
 
 @connect(state => ({
   formData: state.task.formData,
+  approveData: state.task.approveData,
   currentUser: state.user.currentUser,
 }))
 
@@ -142,7 +144,7 @@ export default class TaskEdit extends PureComponent {
   }
 
   render() {
-    const { formData } = this.props;
+    const { formData, approveData } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     const { grades, approve_notes } = this.state;
     const operation = formData.approve_step === 0 ? 'edit' : 'view';
@@ -212,6 +214,7 @@ export default class TaskEdit extends PureComponent {
           </div>
         </div>
         <TaskChat taskId={query._id} />
+        <ApproveLog approveData={approveData}/>
       </Card>
     );
   }

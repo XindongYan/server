@@ -73,7 +73,6 @@ export default class TaskView extends PureComponent {
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange}/>
             </div>
           }
-          <ApproveLog approveData={approveData}/>
           {this.state.grade > 0 &&
             <div className={styles.submitBox}>
               <dl className={styles.showGradeBox}>
@@ -86,6 +85,7 @@ export default class TaskView extends PureComponent {
           }
         </div>
         <TaskChat taskId={query._id} />
+        <ApproveLog approveData={approveData}/>
       </Card>
     );
   }
