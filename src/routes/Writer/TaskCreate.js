@@ -2,18 +2,21 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
-import { Card, Button, Popconfirm, message } from 'antd';
+import { Card, Button, Popconfirm, message, Modal, Form, Select } from 'antd';
 // import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
+const FormItem = Form.Item;
+const Option = Select.Option;
 @connect(state => ({
+  suggestionUsers: state.team.suggestionUsers,
   formData: state.task.formData,
   currentUser: state.user.currentUser,
 }))
-
+@Form.create()
 export default class TaskCreate extends PureComponent {
   state = {
     task: {
@@ -21,6 +24,9 @@ export default class TaskCreate extends PureComponent {
       task_desc: '',
       cover_img: '',
     },
+    modalVisible: false,
+    phone: '',
+    approver_id: '',
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -52,12 +58,52 @@ export default class TaskCreate extends PureComponent {
       payload: false,
     });
   }
+  handleShowAddTeamUserModal = () => {
+    this.setState({ modalVisible: true, });
+  }
+  handleSpecify = () => {
+    const { dispatch } = this.props;
+    const { approver_id } = this.state;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        if (approver_id) {
+          this.setState({ modalVisible: false });
+          this.handleSubmit();
+        } else {
+          message.warn('请根据手机号选择审核人员！');
+        }
+      }
+    });
+  }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });
   }
+  handleModalVisible = (flag) => {
+    this.setState({
+      modalVisible: !!flag,
+    });
+  }
+  onSearch = (value) => {
+    this.setState({
+      approver_id: '',
+    })
+    if (value.length == 11) {
+      this.props.dispatch({
+        type: 'team/fetchUsersByPhone',
+        payload: {
+          phone: value
+        },
+      });
+    }
+  }
+  onSelect = (value) => {
+    this.setState({
+      approver_id: value,
+    })
+  }
   handleSubmit = () => {
     const { currentUser } = this.props;
-    const { task } = this.state;
+    const { task, approver_id } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (!task.title || !task.title.replace(/\s+/g, '')) {
       message.warn('请填写标题');
@@ -68,58 +114,36 @@ export default class TaskCreate extends PureComponent {
     } else if (!task.cover_img) {
       message.warn('请选择封面图');
     } else {
-      if (query._id) {
-        this.props.dispatch({
-          type: 'task/update',
-          payload: { ...this.state.task, _id: query._id },
-          callback: (result) => {
-            if (result.error) {
-              message.error(result.msg);
-            } else {
-              this.props.dispatch({
-                type: 'task/handin',
-                payload: { _id: query._id },
-                callback: (result1) => {
-                  if (result1.error) {
-                    message.error(result1.msg);
-                  } else {
-                    this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
-                  }
+      this.props.dispatch({
+        type: 'task/addByWriter',
+        payload: {
+          ...this.state.task,
+          name: this.state.task.title,
+          approve_status: TASK_APPROVE_STATUS.taken,
+          channel_name: query.channel_name,
+          publisher_id: currentUser._id, // 登录后用户的 user._id
+          taker_id: currentUser._id,
+          creator_id: currentUser._id,
+          current_approvers: [ approver_id ],
+        },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/handin',
+              payload: { _id: result.task._id },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
                 }
-              });
-            }
+              }
+            });
           }
-        });
-      } else {
-        this.props.dispatch({
-          type: 'task/addByWriter',
-          payload: {
-            ...this.state.task,
-            approve_status: TASK_APPROVE_STATUS.taken,
-            channel_name: query.channel_name,
-            publisher_id: currentUser._id, // 登录后用户的 user._id
-            taker_id: currentUser._id,
-            creator_id: currentUser._id,
-          },
-          callback: (result) => {
-            if (result.error) {
-              message.error(result.msg);
-            } else {
-              this.props.dispatch({
-                type: 'task/handin',
-                payload: { _id: result.task._id },
-                callback: (result1) => {
-                  if (result1.error) {
-                    message.error(result1.msg);
-                  } else {
-                    this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
-                  }
-                }
-              });
-            }
-          },
-        });
-      }
+        },
+      });
     }
   }
   handleSave = () => {
@@ -137,6 +161,8 @@ export default class TaskCreate extends PureComponent {
     });
   }
   render() {
+    const { suggestionUsers, form: { getFieldDecorator } } = this.props;
+    const { modalVisible } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
@@ -151,13 +177,49 @@ export default class TaskCreate extends PureComponent {
             </ul>
           </div>
           <div className={styles.submitBox}>
-            <Popconfirm placement="top" title="确认已经写完并提交给审核人员?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
-              <Button>提交</Button>
-            </Popconfirm>
-            <Button onClick={this.handleSave}>保存</Button>
+            {/*
+              <Popconfirm placement="top" title="确认已经写完并提交给审核人员?" okText="确认" cancelText="取消">
+              </Popconfirm>
+            */}
+            <Button onClick={this.handleShowAddTeamUserModal}>提交</Button>
+            {/*
+              <Button onClick={this.handleSave}>保存</Button>
+            */}
           </div>
         </div>
         <TaskChat taskId={query._id} />
+        <Modal
+          title="选择审核人员"
+          visible={modalVisible}
+          onOk={this.handleSpecify}
+          onCancel={() => this.handleModalVisible(false)}
+        >
+          <FormItem
+              label="审核人员"
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+            >
+              {getFieldDecorator('phone', {
+                initialValue: '',
+                rules: [{ required: true, message: '请选择审核人员！' }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  mode="combobox"
+                  optionLabelProp="children"
+                  placeholder="搜索电话指定审核人员"
+                  notFoundContent=""
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={false}
+                  onSearch={this.onSearch}
+                  onSelect={this.onSelect}
+                >
+                  {suggestionUsers.map(item => <Option value={item._id} key={item.phone}>{item.name}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+        </Modal>
       </Card>
     );
   }

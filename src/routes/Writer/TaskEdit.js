@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import { Card, Button, Popconfirm, message } from 'antd';
+import { TASK_APPROVE_STATUS } from '../../constants';
 import $ from 'jquery';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
@@ -111,15 +112,27 @@ export default class TaskEdit extends PureComponent {
     this.setState({ task: { ...this.state.task, ...task } });
   }
   render() {
-    const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} ref="taskOuterBox">
+        <div className={styles.taskOuterBox} style={{ width: this.props.formData.approve_status === TASK_APPROVE_STATUS.rejected ? 1000 : 872 }} ref="taskOuterBox">
           <WeitaoForm role="writer" operation="edit" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange} />
-          <div className={styles.taskComment}>
-            <Annotation viewStatus="view" value={this.state.task.approve_notes} />
-          </div>
+          { this.props.formData.approve_status === TASK_APPROVE_STATUS.rejected &&
+            <div className={styles.taskComment}>
+              <Annotation viewStatus="view" value={this.state.task.approve_notes} />
+            </div>
+          }
+          { this.props.formData.approve_status === TASK_APPROVE_STATUS.taken &&
+            <div className={styles.taskComment} style={{ width: 200 }}>
+              <p className={styles.titleDefult}>爆文写作参考</p>
+              <ul className={styles.tPrompt}>
+                <li>1. 从小知识小技巧着手. 淘宝头条讲了个概念叫”随手有用书”,即生活中有很多一般人不注意的小知识小技巧. 比如大部分人都晾错内衣, 尤其是第二种方式这条,结合着推内衣这个点很不错.</li>
+                <li>2. 从风格化, 场景化着手入手, 即内容针对目标人群.想一想目标针对用户有什么样的特点? 会对什么样的内容感兴趣?要去倒推.</li>
+                <li>3. 从时下热点,八卦,新闻等角度着手.反正总之就是一句话:要用户产生觉得“有用”“感兴趣”等特别的感觉.</li>
+              </ul>
+            </div>
+          }
           <div className={styles.submitBox}>
             {this.state.grade > 0 &&
               <dl className={styles.showGradeBox}>

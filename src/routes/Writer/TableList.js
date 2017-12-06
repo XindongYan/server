@@ -157,9 +157,9 @@ export default class TableList extends PureComponent {
     const opera = {
       title: '操作',
       render: (record) => {
-        if (record.approve_status === TASK_APPROVE_STATUS.taken) {
+        if (record.approve_status === TASK_APPROVE_STATUS.taken || record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
-            <Link to={`/writer/task/create?_id=${record._id}`}>
+            <Link to={`/writer/task/edit?_id=${record._id}`}>
               <span>编辑</span>
             </Link>
           );
@@ -175,12 +175,6 @@ export default class TableList extends PureComponent {
           return (
             <Link to={`/writer/task/view?_id=${record._id}`}>
               <span>查看</span>
-            </Link>
-          );
-        } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
-          return (
-            <Link to={`/writer/task/edit?_id=${record._id}`}>
-              <span>编辑</span>
             </Link>
           );
         }

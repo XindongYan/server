@@ -275,8 +275,7 @@ class BasicLayout extends React.PureComponent {
 
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-        <Menu.Item disabled><Icon type="user" />个人中心</Menu.Item>
-        <Menu.Item key="setting"><Icon type="setting" />设置</Menu.Item>
+        <Menu.Item key="setting"><Icon type="user" />个人中心</Menu.Item>
         <Menu.Divider />
         { /* teamUser && <Menu.Item key="leaveTeam"><Icon type="user-delete" />退出团队</Menu.Item> */ }
         <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
