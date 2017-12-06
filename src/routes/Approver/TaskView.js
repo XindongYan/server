@@ -5,6 +5,7 @@ import { Card } from 'antd';
 import $ from 'jquery';
 import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
+import ApproveLog from '../../components/ApproveLog';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
@@ -13,6 +14,7 @@ import styles from './TableList.less';
 
 @connect(state => ({
   formData: state.task.formData,
+  approveData: state.task.approveData,
 }))
 
 export default class TaskView extends PureComponent {
@@ -58,7 +60,7 @@ export default class TaskView extends PureComponent {
     });
   }
   render() {
-    const { formData } = this.props;
+    const { formData, approveData } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     const showAnnotation = formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected;
@@ -71,6 +73,7 @@ export default class TaskView extends PureComponent {
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange}/>
             </div>
           }
+          <ApproveLog approveData={approveData}/>
           {this.state.grade > 0 &&
             <div className={styles.submitBox}>
               <dl className={styles.showGradeBox}>

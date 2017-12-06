@@ -11,6 +11,7 @@ export default {
     },
     loading: true,
     formData: {},
+    approveData: [],
     projectTask: {
       list: [],
       pagination: {},
@@ -43,6 +44,10 @@ export default {
       yield put({
         type: 'saveTask',
         payload: response.task || {},
+      });
+      yield put({
+        type: 'saveApproveData',
+        payload: response.approveData || [],
       });
     },
     *add({ payload, callback }, { call }) {
@@ -153,6 +158,12 @@ export default {
       return {
         ...state,
         formData: action.payload,
+      };
+    },
+    saveApproveData(state, action) {
+      return {
+        ...state,
+        approveData: action.payload,
       };
     },
     saveProjectTasks(state, action) {
