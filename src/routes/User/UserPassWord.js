@@ -64,6 +64,7 @@ export default class PassWord extends Component {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
+                this.props.form.resetFields();
                 // this.props.dispatch(routerRedux.push('/setting/userInfo'));
               }
             },
@@ -78,17 +79,18 @@ export default class PassWord extends Component {
       (err) => {
         if (!err) {
           this.props.dispatch({
-            type: 'user/changePassword',
+            type: 'user/changePasswordBySms_code',
             payload: {
               phone: this.props.form.getFieldValue('phone'),
               sms_code: this.props.form.getFieldValue('sms_code'),
-              password: this.props.form.getFieldValue('password'),
+              pwd: this.props.form.getFieldValue('password'),
             },
             callback: (result) => {
               if (result.error) {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
+                this.props.form.resetFields();
               }
             },
           });
@@ -182,7 +184,7 @@ export default class PassWord extends Component {
             <FormItem>
               {getFieldDecorator('phone', {
                 rules: [{
-                  required: type === 'mobile', message: '请输入手机号！',
+                  required: true, message: '请输入手机号！',
                 }, {
                   pattern: /^1\d{10}$/, message: '手机号格式错误！',
                 }],
@@ -199,7 +201,7 @@ export default class PassWord extends Component {
                 <Col span={16}>
                   {getFieldDecorator('sms_code', {
                     rules: [{
-                      required: type === 'mobile', message: '请输入验证码！',
+                      required: true, message: '请输入验证码！',
                     }],
                   })(
                     <Input
@@ -223,7 +225,7 @@ export default class PassWord extends Component {
             </FormItem>
             <FormItem>
               {getFieldDecorator('password', {
-                rules: [{ required: true, message: 'Please input your Password!' }],
+                rules: [{ required: true, message: '请输入密码' }],
               })(
                 <Input
                   size="large"
