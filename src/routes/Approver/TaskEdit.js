@@ -144,7 +144,7 @@ export default class TaskEdit extends PureComponent {
   }
 
   render() {
-    const { formData, approveData } = this.props;
+    const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     const { grades, approve_notes } = this.state;
     const operation = formData.approve_step === 0 ? 'edit' : 'view';
@@ -214,7 +214,7 @@ export default class TaskEdit extends PureComponent {
           </div>
         </div>
         <TaskChat taskId={query._id} />
-        <ApproveLog approveData={approveData}/>
+        { formData.approvers && formData.approvers[0].indexOf(currentUser._id) >= 0 && <ApproveLog approveData={approveData}/> }
       </Card>
     );
   }

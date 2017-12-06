@@ -15,6 +15,7 @@ import styles from './TableList.less';
 @connect(state => ({
   formData: state.task.formData,
   approveData: state.task.approveData,
+  currentUser: state.user.currentUser,
 }))
 
 export default class TaskView extends PureComponent {
@@ -60,7 +61,7 @@ export default class TaskView extends PureComponent {
     });
   }
   render() {
-    const { formData, approveData } = this.props;
+    const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     const showAnnotation = formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected;
@@ -85,7 +86,7 @@ export default class TaskView extends PureComponent {
           }
         </div>
         <TaskChat taskId={query._id} />
-        <ApproveLog approveData={approveData}/>
+        { formData.approvers && formData.approvers[0].indexOf(currentUser._id) >= 0 && <ApproveLog approveData={approveData}/> }
       </Card>
     );
   }
