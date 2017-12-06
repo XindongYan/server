@@ -7,6 +7,7 @@ import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
 import ApproveLog from '../../components/ApproveLog';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import ZhiboForm from '../../components/Forms/ZhiboForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -63,12 +64,30 @@ export default class TaskView extends PureComponent {
   render() {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    const operation = formData.approve_step === 0 ? 'edit' : 'view';
     const showAnnotation = formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
           <WeitaoForm role="approve" operation="view" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange}/>
+          { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
+            <WeitaoForm
+              role="approve"
+              operation={operation}
+              style={{ width: 650 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
+          { formData.channel_name === '直播脚本' &&
+            <ZhiboForm
+              role="writer"
+              operation="edit"
+              style={{ width: 650 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
           { showAnnotation &&
             <div className={styles.taskComment}>
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange}/>

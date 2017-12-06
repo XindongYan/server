@@ -10,6 +10,7 @@ import TaskChat from '../../components/TaskChat';
 import ApproveLog from '../../components/ApproveLog';
 import styles from './TableList.less';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import ZhiboForm from '../../components/Forms/ZhiboForm';
 import Annotation from '../../components/Annotation';
 
 // import styles from './Project.less';
@@ -148,7 +149,7 @@ export default class TaskEdit extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { grades, approve_notes } = this.state;
     const operation = formData.approve_step === 0 ? 'edit' : 'view';
-    const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    console.log(formData.channel_name);
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 
@@ -168,7 +169,24 @@ export default class TaskEdit extends PureComponent {
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
-          <WeitaoForm role="approve" operation={operation} style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange}/>
+          { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
+            <WeitaoForm
+              role="approve"
+              operation={operation}
+              style={{ width: 650 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
+          { formData.channel_name === '直播脚本' &&
+            <ZhiboForm
+              role="writer"
+              operation="edit"
+              style={{ width: 650 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
           <div className={styles.taskComment}>
             <Annotation
               approve_step={formData.approve_step}
