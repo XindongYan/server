@@ -7,6 +7,7 @@ import { TASK_APPROVE_STATUS } from '../../constants';
 import $ from 'jquery';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import ZhiboForm from '../../components/Forms/ZhiboForm';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
@@ -113,11 +114,29 @@ export default class TaskEdit extends PureComponent {
   }
   render() {
     // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
+    const { formData } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: this.props.formData.approve_status === TASK_APPROVE_STATUS.rejected ? 1000 : 872 }} ref="taskOuterBox">
-          <WeitaoForm role="writer" operation="edit" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange} />
+          { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
+            <WeitaoForm
+              role="writer"
+              operation="edit"
+              style={{ width: 650 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
+          { formData.channel_name === '直播脚本' &&
+            <ZhiboForm
+              role="writer"
+              operation="edit"
+              style={{ width: 650 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
           { this.props.formData.approve_status === TASK_APPROVE_STATUS.rejected &&
             <div className={styles.taskComment}>
               <Annotation viewStatus="view" value={this.state.task.approve_notes} />

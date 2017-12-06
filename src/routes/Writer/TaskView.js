@@ -5,6 +5,7 @@ import { Card } from 'antd';
 import $ from 'jquery';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import ZhiboForm from '../../components/Forms/ZhiboForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -65,7 +66,24 @@ export default class TaskView extends PureComponent {
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
-          <WeitaoForm role="writer" operation="view" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange} />
+          { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
+            <WeitaoForm
+              role="writer"
+              operation="view"
+              style={{ width: 650 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
+          { formData.channel_name === '直播脚本' &&
+            <ZhiboForm
+              role="writer"
+              operation="view"
+              style={{ width: 650 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
           { showAnnotation &&
             <div className={styles.taskComment}>
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange} />

@@ -64,12 +64,12 @@ export default class TaskView extends PureComponent {
   render() {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const operation = formData.approve_step === 0 ? 'edit' : 'view';
+    const operation = 'view';
+    const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const showAnnotation = formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
-          <WeitaoForm role="approve" operation="view" style={{ width: 650 }} formData={this.state.task} onChange={this.handleChange}/>
           { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
             <WeitaoForm
               role="approve"
@@ -81,8 +81,8 @@ export default class TaskView extends PureComponent {
           }
           { formData.channel_name === '直播脚本' &&
             <ZhiboForm
-              role="writer"
-              operation="edit"
+              role="approve"
+              operation={operation}
               style={{ width: 650 }}
               formData={this.state.task}
               onChange={this.handleChange}
@@ -105,7 +105,7 @@ export default class TaskView extends PureComponent {
           }
         </div>
         <TaskChat taskId={query._id} />
-        { formData.approvers && formData.approvers[0].indexOf(currentUser._id) >= 0 && <ApproveLog approveData={approveData}/> }
+        { showApproveLog && <ApproveLog approveData={approveData}/> }
       </Card>
     );
   }
