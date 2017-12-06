@@ -5,6 +5,7 @@ import querystring from 'querystring';
 import { Card, Button, Popconfirm, message, Modal, Form, Select } from 'antd';
 // import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
+import ZhiboForm from '../../components/Forms/ZhiboForm';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
@@ -29,24 +30,6 @@ export default class TaskCreate extends PureComponent {
     approver_id: '',
   }
   componentDidMount() {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    if (query._id) {
-      this.props.dispatch({
-        type: 'task/fetchTask',
-        payload: { _id: query._id },
-        callback: (result) => {
-          if (!result.error) {
-            this.setState({
-              task: {
-                title: result.task.title,
-                task_desc: result.task.task_desc,
-                cover_img: result.task.cover_img,
-              },
-            });
-          }
-        }
-      });
-    }
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: true,
@@ -111,7 +94,7 @@ export default class TaskCreate extends PureComponent {
       message.warn('标题字数不符合要求');
     } else if (!task.task_desc) {
       message.warn('请填写内容');
-    } else if (!task.cover_img) {
+    } else if (!task.cover_img && query.channel_name !== '直播脚本') {
       message.warn('请选择封面图');
     } else {
       this.props.dispatch({
@@ -167,7 +150,24 @@ export default class TaskCreate extends PureComponent {
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
-          <WeitaoForm role="writer" operation="edit" style={{ width: 720 }} formData={this.state.task} onChange={this.handleChange} />
+          { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&
+            <WeitaoForm
+              role="writer"
+              operation="edit"
+              style={{ width: 720 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
+          { query.channel_name === '直播脚本' &&
+            <ZhiboForm
+              role="writer"
+              operation="edit"
+              style={{ width: 720 }}
+              formData={this.state.task}
+              onChange={this.handleChange}
+            />
+          }
           <div className={styles.taskComment} style={{ width: 200 }}>
             <p className={styles.titleDefult}>爆文写作参考</p>
             <ul className={styles.tPrompt}>
@@ -187,7 +187,6 @@ export default class TaskCreate extends PureComponent {
             */}
           </div>
         </div>
-        <TaskChat taskId={query._id} />
         <Modal
           title="选择审核人员"
           visible={modalVisible}
