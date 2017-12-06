@@ -5,6 +5,7 @@ import { Card } from 'antd';
 import $ from 'jquery';
 import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
+import ApproveLog from '../../components/ApproveLog';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
@@ -13,6 +14,8 @@ import styles from './TableList.less';
 
 @connect(state => ({
   formData: state.task.formData,
+  approveData: state.task.approveData,
+  currentUser: state.user.currentUser,
 }))
 
 export default class TaskView extends PureComponent {
@@ -58,7 +61,7 @@ export default class TaskView extends PureComponent {
     });
   }
   render() {
-    const { formData } = this.props;
+    const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     const showAnnotation = formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected;
@@ -83,6 +86,7 @@ export default class TaskView extends PureComponent {
           }
         </div>
         <TaskChat taskId={query._id} />
+        { formData.approvers && formData.approvers[0].indexOf(currentUser._id) >= 0 && <ApproveLog approveData={approveData}/> }
       </Card>
     );
   }
