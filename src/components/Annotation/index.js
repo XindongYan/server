@@ -148,7 +148,7 @@ export default class Annotation extends PureComponent {
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     const boxSize = {width: $(this.refs.AnnotationBox).outerWidth(), height: $(this.refs.AnnotationBox).outerHeight()};
     return (
-      <div style={{height: '100%'}}>
+      <div style={{height: '100%', position: 'relative'}}>
         <div className={styles.commentTitle}>
           批注
         </div>
