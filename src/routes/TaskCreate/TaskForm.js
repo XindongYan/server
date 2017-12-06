@@ -132,7 +132,7 @@ export default class TaskForm extends PureComponent {
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入项目标题！' }],
             })(
-              <Input />
+              <Input placeholder="最多20字" maxLength={20} />
             )}
           </FormItem>
           <FormItem

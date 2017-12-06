@@ -302,7 +302,8 @@ class BasicLayout extends React.PureComponent {
           <div className={styles.logo}>
             <Link to="/list/task-square">
               { /* <img src="" alt="logo" /> */ }
-              <h1>尼采创作平台</h1>
+              <h1 style={{ height: 32, lineHeight: '32px', display: 'block', marginTop: 10 }}>尼采创作平台</h1>
+              <h4 style={{ height: 20, lineHeight: '20px', fontSize: 12, marginLeft: 12, color: '#999' }}>让天下没有埋没的文采</h4>
             </Link>
           </div>
           <Menu

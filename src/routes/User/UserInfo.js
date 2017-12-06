@@ -133,7 +133,12 @@ export default class UserInfo extends Component {
               <span>用户名：</span>
             </Col>
             <Col span={14}>
-              <Input value={currentUser.name} onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value } })} />
+              <Input
+                placeholder="最多10字"
+                maxLength={10}
+                value={currentUser.name}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value } })}
+              />
             </Col>
             <Col span={4} style={{ textAlign: 'right'}}>
               <Button type="primary" onClick={() => this.handleSubmit('name')}>保存</Button>
