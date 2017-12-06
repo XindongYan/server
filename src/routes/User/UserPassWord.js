@@ -106,9 +106,8 @@ export default class PassWord extends Component {
     }
   }
   passConfirm = (rule, value, callback) => {
-    console.log(value)
     const form = this.props.form;
-    if (value && form.getFieldValue('password') === value) {
+    if (!value || (value && form.getFieldValue('password') === value)) {
       form.validateFields(['confirm'], { force: true });
       callback();
     } else {
