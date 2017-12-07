@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, DatePicker,
+import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radio, Popconfirm, DatePicker,
 Tooltip } from 'antd';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -11,7 +11,6 @@ import styles from './TableList.less';
 
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
-const FormItem = Form.Item;
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
@@ -27,7 +26,6 @@ function onChange(date, dateString) {
   projects: state.project.data,
   teamUser: state.user.teamUser,
 }))
-@Form.create()
 export default class TableList extends PureComponent {
   state = {
     modalVisible: false,
@@ -182,7 +180,8 @@ export default class TableList extends PureComponent {
           val ?
           <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
             {moment(val).fromNow()}
-          </Tooltip> : ''),
+          </Tooltip> : ''
+        ),
       },
       {
         title: '修改',
@@ -222,7 +221,11 @@ export default class TableList extends PureComponent {
     const approveTime = {
       title: '审核时间',
       dataIndex: 'approve_time',
-      render: value => <span>{moment(value).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      render: val => (
+        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+          {moment(val).format('MM/DD')}
+        </Tooltip>
+      ),
     }
     const opera = {
       title: '操作',

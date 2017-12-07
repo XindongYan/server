@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Radio, Input, DatePicker } from 'antd';
+import { Table, Card, Radio, Input, DatePicker, Tooltip } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -127,7 +127,11 @@ export default class TableList extends PureComponent {
         title: '接单时间',
         dataIndex: 'take_time',
         sorter: true,
-        render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
+        render: val => (
+          <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+            {moment(val).format('MM/DD')}
+          </Tooltip>
+        ),
       },
       {
         title: '发布渠道',
@@ -157,7 +161,12 @@ export default class TableList extends PureComponent {
     const approveTime = {
       title: '审核时间',
       dataIndex: 'approve_time',
-      render: value => <span>{moment(value).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      render: val => ( 
+        val ?
+        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+          {moment(val).fromNow()}
+        </Tooltip> : ''
+      ),
     };
     const opera = {
       title: '操作',
