@@ -5,7 +5,7 @@ export const ORIGIN = 'http://test.nicai360.com';
 export const RIGHTS = [
   { label: '写手', value: 1 },
   { label: '团队管理', value: 2 },
-  { label: '项目管理', value: 3 },
+  { label: '活动管理', value: 3 },
   { label: '审稿', value: 6 },
   { label: '财务', value: 7 },
   { label: '管理员', value: 8 },

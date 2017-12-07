@@ -280,7 +280,7 @@ export default class TableList extends PureComponent {
             <RadioButton value="rejected">未通过</RadioButton>
           </RadioGroup>
         </div>
-        <Card bordered={false} bodyStyle={{ padding: 0 }}>
+        <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <Select

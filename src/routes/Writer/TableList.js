@@ -211,7 +211,7 @@ export default class TableList extends PureComponent {
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
           </RadioGroup>
         </div>
-        <Card bordered={false} bodyStyle={{ padding: 0 }}>
+        <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />

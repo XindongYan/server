@@ -163,8 +163,12 @@ export default class UserInfo extends Component {
               </Link>
             </Col>
           </Row>
+          <div style={{ textAlign: 'center', paddingTop: 20 }}>
+            <Link to="/">
+              <Button style={{ width: 100 }}>返回</Button>
+            </Link>
+          </div>
         </div>
-
       </div>
     );
   }
