@@ -246,6 +246,11 @@ export default class ProjectList extends PureComponent {
         render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
       },
       {
+        title: '创建者',
+        dataIndex: 'creator_id',
+        render: val => val ? val.name : '',
+      },
+      {
         title: '创建时间',
         dataIndex: 'create_time',
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
