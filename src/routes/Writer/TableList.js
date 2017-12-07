@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Radio, Input, DatePicker, Tooltip } from 'antd';
+import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -165,13 +165,23 @@ export default class TableList extends PureComponent {
       render: (record) => {
         if (record.approve_status === TASK_APPROVE_STATUS.taken || record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
-            <Link to={`/writer/task/edit?_id=${record._id}`}>
-              <span>编辑</span>
-            </Link>
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <Link to={`/writer/task/edit?_id=${record._id}`}>
+                <span>编辑</span>
+              </Link>
+            </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
               <Link to={`/writer/task/view?_id=${record._id}`}>
                 <span>查看</span>
               </Link>
@@ -179,9 +189,15 @@ export default class TableList extends PureComponent {
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
-            <Link to={`/writer/task/view?_id=${record._id}`}>
-              <span>查看</span>
-            </Link>
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <Link to={`/writer/task/view?_id=${record._id}`}>
+                <span>查看</span>
+              </Link>
+            </div>
           );
         }
       }

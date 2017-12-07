@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radio, Popconfirm, DatePicker,
-Tooltip } from 'antd';
+Tooltip, Divider } from 'antd';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -159,9 +159,9 @@ export default class TableList extends PureComponent {
         dataIndex: 'name',
         width: 200,
         render: (record, task) => (
-          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${task._id}`}>
-            <TaskNameColumn text={record} length={10}/>
-          </a>
+          <Link to={`/project/task/view?_id=${task._id}`}>
+            <TaskNameColumn text={record} length={10} />
+          </Link>
         )
       },
       {
@@ -225,6 +225,10 @@ export default class TableList extends PureComponent {
           if (!record.current_approvers || record.current_approvers.length === 0 || record.current_approvers.indexOf(currentUser._id) >= 0) {
             return (
               <div>
+                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                  外链
+                </a>
+                <Divider type="vertical" />
                 <Link to={`/approver/task/edit?_id=${record._id}`}>
                   <span>审核</span>
                 </Link>
@@ -236,22 +240,40 @@ export default class TableList extends PureComponent {
             );
           } else {
             return (
-              <Link to={`/approver/task/view?_id=${record._id}`}>
-                <span>详情</span>
-              </Link>
+              <div>
+                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                  外链
+                </a>
+                <Divider type="vertical" />
+                <Link to={`/approver/task/view?_id=${record._id}`}>
+                  <span>详情</span>
+                </Link>
+              </div>
             );
           }
         } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
-            <Link to={`/approver/task/edit?_id=${record._id}`}>
-              <span>详情</span>
-            </Link>
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <Link to={`/approver/task/edit?_id=${record._id}`}>
+                <span>详情</span>
+              </Link>
+            </div>
           );
         } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
-            <Link to={`/approver/task/view?_id=${record._id}`}>
-              <span>详情</span>
-            </Link>
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <Link to={`/approver/task/view?_id=${record._id}`}>
+                <span>详情</span>
+              </Link>
+            </div>
           );
         }
       },
