@@ -3,11 +3,22 @@ import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
 import path from 'path';
 import querystring from 'querystring';
-import { Form, Input, Tabs, Button, Icon, Checkbox, Row, Col, Alert, message, Upload } from 'antd';
+import { Form, Input, Tabs, Button, Icon, Checkbox, Row, Col, Alert, message, Upload, Popover, Progress } from 'antd';
 import styles from './UserPassWord.less';
 
 const FormItem = Form.Item;
 const { TabPane } = Tabs;
+const passwordStatusMap = {
+  ok: <p className={styles.success}>强度：强</p>,
+  pass: <p className={styles.warning}>强度：中</p>,
+  pool: <p className={styles.error}>强度：太短</p>,
+};
+const passwordProgressMap = {
+  ok: 'success',
+  pass: 'normal',
+  pool: 'exception',
+};
+
 @Form.create()
 @connect(state => ({
   currentUser: state.user.currentUser,
@@ -16,6 +27,7 @@ export default class PassWord extends Component {
   state = {
     count: 0,
     type: '',
+    visible: false,
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -100,12 +112,77 @@ export default class PassWord extends Component {
   }
   checkConfirm = (rule, value, callback) => {
     const form = this.props.form;
-    if (value && form.getFieldValue('newPsd') === value) {
+    if (!value){
+      callback('请确认密码！');
+    } else if (value && form.getFieldValue('newPsd') === value) {
       form.validateFields(['confirm'], { force: true });
       callback();
     } else {
       callback('两次输入密码不一致！');
     }
+  }
+  checkPassword = (rule, value, callback) => {
+    if (!value) {
+      this.setState({
+        help: '请输入密码！',
+        visible: !!value,
+      });
+      callback('');
+    } else {
+      this.setState({
+        help: '',
+      });
+      if (!this.state.visible) {
+        this.setState({
+          visible: !!value,
+        });
+      }
+      if (value.length < 6) {
+        callback('');
+      } else {
+        const { form } = this.props;
+        if (value && this.state.confirmDirty) {
+          form.validateFields(['confirm'], { force: true });
+        }
+        callback();
+      }
+    }
+  }
+  renderPasswordProgress = () => {
+    const { form } = this.props;
+    const value = form.getFieldValue('newPsd');
+    const passwordStatus = this.getPasswordStatus();
+    return value && value.length ?
+      <div className={styles[`progress-${passwordStatus}`]}>
+        <Progress
+          status={passwordProgressMap[passwordStatus]}
+          className={styles.progress}
+          strokeWidth={6}
+          percent={value.length * 10 > 100 ? 100 : value.length * 10}
+          showInfo={false}
+        />
+      </div> : null;
+  }
+  getPasswordStatus = () => {
+    const { form } = this.props;
+    const value = form.getFieldValue('newPsd');
+    if (value && value.length > 9) {
+      return 'ok';
+    }
+    if (value && value.length > 5) {
+      return 'pass';
+    }
+    return 'pool';
+  }
+  renderMessage = (message) => {
+    return (
+      <Alert
+        style={{ marginBottom: 24 }}
+        message={message}
+        type="error"
+        showIcon
+      />
+    );
   }
   passConfirm = (rule, value, callback) => {
     const form = this.props.form;
@@ -160,13 +237,26 @@ export default class PassWord extends Component {
               label="新密码"
               style={{ padding: '0 20px' }}
             >
+              <Popover
+                content={
+                  <div style={{ padding: '4px 0' }}>
+                    {passwordStatusMap[this.getPasswordStatus()]}
+                    {this.renderPasswordProgress()}
+                    <p style={{ marginTop: 10 }}>请至少输入 6 个字符。请不要使用容易被猜到的密码。</p>
+                  </div>
+                }
+                overlayStyle={{ width: 240 }}
+                placement="right"
+                visible={this.state.visible}
+              >
               {getFieldDecorator('newPsd', {
                 rules: [{
-                  required: true, message: '请输入新密码!',
+                  validator: this.checkPassword,
                 }],
               })(
                 <Input type="password" />
               )}
+              </Popover>
             </FormItem>
             <FormItem
               {...formItemLayout}
@@ -175,8 +265,6 @@ export default class PassWord extends Component {
             >
               {getFieldDecorator('againPsd', {
                 rules: [{
-                  required: true, message: '请确认新密码!',
-                }, {
                   validator: this.checkConfirm,
                 }],
               })(
@@ -189,7 +277,7 @@ export default class PassWord extends Component {
                   <Button type="primary" onClick={this.handleSubmit}>保存</Button>
                 </Col>
                 <Col span={8} style={{ textAlign: 'center' }}>
-                  <Link to="/user/login">
+                  <Link to="/setting/password?type=phone" onClick={() => this.setState({ type: 'phone' })}>
                     <span>忘记旧密码</span>
                   </Link>
                 </Col>

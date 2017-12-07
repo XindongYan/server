@@ -200,7 +200,7 @@ export default class TableList extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
-        render: val => val ? val : '',
+        render: val => val ? <TaskNameColumn text={val} length={10}/> : '',
       },
       {
         title: '审核状态',

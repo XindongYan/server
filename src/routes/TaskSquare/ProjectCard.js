@@ -26,18 +26,25 @@ export default class ProjectCard extends PureComponent {
   }
   render() {
     const { project } = this.props;
-    const color = project.channel_name === '淘宝头条' ? 'orange' : 'blue';
-    const borderColor = project.channel_name === '淘宝头条' ? 'rgba(255,200,70,0.5)' : 'rgba(70,180,255,0.5)';
+    let color = 'orange';
+    let borderColor = '#fd7';
+    if (project.channel_name === '淘宝头条') {
+      color = 'orange';
+      borderColor = '#fd7';
+    } else {
+      color = 'blue';
+      borderColor = '#7df';
+    }
     const cardStyle = {
       marginBottom: 10,
       border: `1px solid ${borderColor}`,
       borderLeft: `5px solid ${borderColor}`,
-      borderRight: `5px solid ${borderColor}`,
-      borderRadius: '10px 10px 10px 10px'
+      // borderRight: `5px solid ${borderColor}`,
+      borderRadius: '0px 10px 10px 0px'
     };
     return (
       <Card className={styles.cardCol} style={cardStyle} bodyStyle={{ padding: 0 }}>
-        <div className={styles.cardColTop} style={{ background: borderColor, color: '#000' }}>
+        <div className={styles.cardColTop}>
           <h3 title={project.name}>
             {project.name}
             <Tag color={color} style={{ marginLeft: 10 }}>{project.channel_name ? project.channel_name : '图文'}</Tag>
@@ -56,7 +63,7 @@ export default class ProjectCard extends PureComponent {
             { project.deadline &&
               <span className={styles.cardMsgDeadline}>截稿日期：{ moment(project.deadline).format('YYYY-MM-DD') }</span>
             }
-            <Button style={{ float: 'right' }} onClick={() => this.projectInto(project)}>详情</Button>
+            <Button type="primary" ghost style={{ float: 'right' }} onClick={() => this.projectInto(project)}>详情</Button>
           </div>
         </div>
       </Card>

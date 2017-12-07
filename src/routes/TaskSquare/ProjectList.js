@@ -44,7 +44,7 @@ export default class FlowList extends PureComponent {
   render() {
     const { projects, loading } = this.props;
     return (
-      <Card bordered={false} bodyStyle={{ padding: "0 10px" }}>
+      <Card bordered={false} bodyStyle={{ padding: "0 10px" }} style={{ background: '#fff' }}>
         <Tabs defaultActiveKey="1" onChange={this.tabChange}>
           <TabPane tab="活动" key="1">
             {projects.list.map((item,index) => 
