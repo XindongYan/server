@@ -199,7 +199,7 @@ export default class Register extends Component {
                 type: 'string', message: '姓名不能他为空！',
               }],
             })(
-              <Input placeholder="最多10字" maxLength={10} size="large" placeholder="姓名" />
+              <Input placeholder="最多10字" maxLength="10" size="large" placeholder="姓名" />
             )}
           </FormItem>
           <FormItem>

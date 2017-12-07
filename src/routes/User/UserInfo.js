@@ -135,7 +135,7 @@ export default class UserInfo extends Component {
               <Input
                 className={styles.userInput}
                 placeholder="最多10字"
-                maxLength={10}
+                maxLength="10"
                 value={currentUser.name}
                 onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value } })}
               />

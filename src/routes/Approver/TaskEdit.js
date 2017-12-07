@@ -198,41 +198,43 @@ export default class TaskEdit extends PureComponent {
               onChange={this.changeApproveNode}
             />
           </div>
-          <div className={styles.submitBox}>
-            {this.state.grade > 0 && formData.approve_status !== 0 &&
-              <dl className={styles.showGradeBox}>
-                <dt>分数</dt>
-                {grades.map((item) => 
-                  <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
+          { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) &&
+            <div className={styles.submitBox}>
+              {this.state.grade > 0 && formData.approve_status !== 0 &&
+                <dl className={styles.showGradeBox}>
+                  <dt>分数</dt>
+                  {grades.map((item) => 
+                    <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
+                  }
+                </dl>
+              }
+              <Popconfirm
+                placement="top"
+                title="确认提交？"
+                onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}
+              >
+                { showApproveLog ?
+                  <Popover content={content} title="评分" trigger="hover">
+                    <Button>不通过</Button>
+                  </Popover>
+                  : <Button>不通过</Button>
                 }
-              </dl>
-            }
-            <Popconfirm
-              placement="top"
-              title="确认提交？"
-              onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}
-            >
-              { formData.approve_step === 0 || formData.approve_status === 1 ?
-                <Popover content={content} title="评分" trigger="hover">
-                  <Button>不通过</Button>
-                </Popover>
-                : <Button>不通过</Button>
-              }
-            </Popconfirm>
-            <Popconfirm
-              placement="top"
-              title="确认提交？"
-              onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}
-            >
-              { formData.approve_step === 0 || formData.approve_status === 1 ?
-                <Popover content={content} title="评分" trigger="hover">
-                  <Button>通过</Button>
-                </Popover>
-                : <Button>通过</Button>
-              }
-            </Popconfirm>
-            <Button onClick={this.handleSave}>保存</Button>
-          </div>
+              </Popconfirm>
+              <Popconfirm
+                placement="top"
+                title="确认提交？"
+                onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}
+              >
+                { showApproveLog ?
+                  <Popover content={content} title="评分" trigger="hover">
+                    <Button>通过</Button>
+                  </Popover>
+                  : <Button>通过</Button>
+                }
+              </Popconfirm>
+              <Button onClick={this.handleSave}>保存</Button>
+            </div>
+          }
         </div>
         <TaskChat taskId={query._id} />
         { showApproveLog && <ApproveLog approveData={approveData}/> }

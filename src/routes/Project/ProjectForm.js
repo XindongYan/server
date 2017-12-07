@@ -162,7 +162,7 @@ export default class ProjectForm extends PureComponent {
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入项目标题！' }],
             })(
-              <Input placeholder="最多20字" maxLength={20} />
+              <Input placeholder="最多20字" maxLength="20" />
             )}
           </FormItem>
           <FormItem
