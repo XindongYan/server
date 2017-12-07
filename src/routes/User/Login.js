@@ -6,6 +6,8 @@ import styles from './Login.less';
 
 const FormItem = Form.Item;
 const { TabPane } = Tabs;
+const userAgent = navigator.userAgent;
+console.log(userAgent)
 
 @connect(state => ({
   login: state.login,

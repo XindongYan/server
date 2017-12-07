@@ -45,7 +45,7 @@ export default class ProjectCard extends PureComponent {
       borderRadius: 4,
     };
     return (
-      <Card className={styles.cardCol} style={cardStyle} bodyStyle={{ padding: 0 }}>
+      <Card className={styles.cardCol} style={cardStyle} bodyStyle={{ padding: '0 30px 5px 10px' }}>
         <div className={styles.cardColTop}>
           <h3 title={project.name}>
             {project.name}

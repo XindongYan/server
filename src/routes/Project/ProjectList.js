@@ -239,6 +239,9 @@ export default class ProjectList extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
+        render: (record) => (
+          <TaskNameColumn text={record} length={10} />
+        )
       },
       {
         title: '截止时间',
