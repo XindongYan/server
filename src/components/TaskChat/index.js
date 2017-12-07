@@ -21,7 +21,7 @@ export default class TaskChat extends PureComponent {
         socket.emit('join', { roomId: this.props.taskId });
       });
       socket.on('message', (data) => {
-        if (data.from_user_id._id !== this.props.currentUser._id) {
+        if (data.from_user_id._id !== this.props.currentUser._id && !this.state.visible) {
           this.setState({ taskChatMsgNum: this.state.taskChatMsgNum + 1 });
         }
       });
