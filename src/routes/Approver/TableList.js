@@ -309,7 +309,7 @@ export default class TableList extends PureComponent {
               </Select>
               <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
               <Search
-                style={{ width: 260 }}
+                style={{ width: 260, float: 'right'}}
                 placeholder="任务名称／商家标签"
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton

@@ -87,7 +87,7 @@ export default class TableList extends PureComponent {
       formValues: values,
     });
     dispatch({
-      type: 'task/fetchApproverTasks',
+      type: 'task/fetchTakerTasks',
       payload: {
         currentPage: 1,
         pageSize: pagination.pageSize,
@@ -216,7 +216,7 @@ export default class TableList extends PureComponent {
             <div className={styles.tableListOperator}>
               <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
               <Search
-                style={{ width: 260 }}
+                style={{ width: 260, float: 'right' }}
                 placeholder="任务名称／商家标签"
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
