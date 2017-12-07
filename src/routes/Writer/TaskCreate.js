@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
-import { Card, Button, Popconfirm, message, Modal, Form, Select } from 'antd';
+import { Card, Button, Popconfirm, message, Modal, Form, Select, Input } from 'antd';
 // import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
@@ -24,6 +24,7 @@ export default class TaskCreate extends PureComponent {
       title: '',
       task_desc: '',
       cover_img: '',
+      merchant_tag: '',
     },
     modalVisible: false,
     phone: '',
@@ -147,29 +148,40 @@ export default class TaskCreate extends PureComponent {
   }
   render() {
     const { suggestionUsers, form: { getFieldDecorator } } = this.props;
-    const { modalVisible } = this.state;
+    const { modalVisible, task } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
-          { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&
-            <WeitaoForm
-              role="writer"
-              operation="edit"
-              style={{ width: 720 }}
-              formData={this.state.task}
-              onChange={this.handleChange}
-            />
-          }
-          { query.channel_name === '直播脚本' &&
-            <ZhiboForm
-              role="writer"
-              operation="edit"
-              style={{ width: 720 }}
-              formData={this.state.task}
-              onChange={this.handleChange}
-            />
-          }
+          <div style={{ width: 720, background: '#fff' }}>
+            <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
+              内容创作
+            </div>
+            <div className={styles.taskList} style={{ padding: 10, marginTop: 10 }}>
+              <Input
+                type="text"
+                value={task.merchant_tag}
+                onChange={(e) => this.setState({ task: { ...task, merchant_tag: e.target.value }})}
+                placeholder="请在这里输入商家标签"
+              />
+            </div>
+            { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&
+              <WeitaoForm
+                role="writer"
+                operation="create"
+                formData={task}
+                onChange={this.handleChange}
+              />
+            }
+            { query.channel_name === '直播脚本' &&
+              <ZhiboForm
+                role="writer"
+                operation="create"
+                formData={task}
+                onChange={this.handleChange}
+              />
+            }
+          </div>
           <div className={styles.taskComment} style={{ width: 200 }}>
             <p className={styles.titleDefult}>爆文写作参考</p>
             <ul className={styles.tPrompt}>
