@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import dva from 'dva';
 import 'moment/locale/zh-cn';
 import models from './models';
