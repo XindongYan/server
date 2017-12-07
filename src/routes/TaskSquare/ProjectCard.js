@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Col, Row, Icon, Button } from 'antd';
+import { Card, Col, Row, Icon, Button, Tag } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { routerRedux } from 'dva/router';
@@ -26,10 +26,15 @@ export default class ProjectCard extends PureComponent {
   }
   render() {
     const { project } = this.props;
+    const color = project.channel_name === '淘宝头条' ? 'orange' : 'blue';
+    const borderColor = project.channel_name === '淘宝头条' ? 'orange' : '#7df';
     return (
-      <Card className={styles.cardCol} style={{ marginBottom: 10 }} bodyStyle={{ padding: 0 }}>
+      <Card className={styles.cardCol} style={{ marginBottom: 10, border: `1px solid ${borderColor}` }} bodyStyle={{ padding: 0 }}>
         <div className={styles.cardColTop}>
-          <h3 title={project.name}>{project.name}</h3>
+          <h3 title={project.name}>
+            {project.name}
+            <Tag color={color} style={{ marginLeft: 10 }}>{project.channel_name ? project.channel_name : '图文'}</Tag>
+          </h3>
           <p title={project.merchant_tag}>{ project.merchant_tag}</p>
         </div>
         <div className={styles.cardColBottom}>

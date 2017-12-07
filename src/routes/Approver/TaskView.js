@@ -70,24 +70,29 @@ export default class TaskView extends PureComponent {
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
-          { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
-            <WeitaoForm
-              role="approve"
-              operation={operation}
-              style={{ width: 650 }}
-              formData={this.state.task}
-              onChange={this.handleChange}
-            />
-          }
-          { formData.channel_name === '直播脚本' &&
-            <ZhiboForm
-              role="approve"
-              operation={operation}
-              style={{ width: 650 }}
-              formData={this.state.task}
-              onChange={this.handleChange}
-            />
-          }
+          <div style={{ width: 650, background: '#fff' }}>
+            <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
+              内容创作
+            </div>
+            { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
+              <WeitaoForm
+                role="approve"
+                operation={operation}
+                style={{ width: 650 }}
+                formData={this.state.task}
+                onChange={this.handleChange}
+              />
+            }
+            { formData.channel_name === '直播脚本' &&
+              <ZhiboForm
+                role="approve"
+                operation={operation}
+                style={{ width: 650 }}
+                formData={this.state.task}
+                onChange={this.handleChange}
+              />
+            }
+          </div>  
           { showAnnotation &&
             <div className={styles.taskComment}>
               <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange}/>
