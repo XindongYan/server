@@ -103,7 +103,8 @@ export default class TaskCreate extends PureComponent {
           ...this.state.task,
           name: this.state.task.title,
           approve_status: TASK_APPROVE_STATUS.taken,
-          channel_name: query.channel_name,
+          channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+          task_type: query.task_type ? Number(query.task_type) : 1,
           publisher_id: currentUser._id, // 登录后用户的 user._id
           taker_id: currentUser._id,
           creator_id: currentUser._id,

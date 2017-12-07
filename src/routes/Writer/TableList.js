@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Radio } from 'antd';
+import { Table, Card, Radio, Input, DatePicker } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -11,8 +11,11 @@ import styles from './TableList.less';
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const { RangePicker } = DatePicker;
+const Search = Input.Search;
 
 @connect(state => ({
+  data: state.task.approverTask,
   takerTask: state.task.takerTask,
   loading: state.task.takerTaskLoading,
   currentUser: state.user.currentUser,
@@ -67,27 +70,29 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleSearch = (e) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'task/fetchTakerTasks',
-        payload: values,
-      });
+  handleSearch = (value, name) => {
+    const { dispatch, data: { pagination }, currentUser } = this.props;
+    const { formValues } = this.state;
+    const values = {
+      user_id: currentUser._id,
+      ...formValues,
+    };
+    if(name === 'time') {
+      values['take_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
+      values['take_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+    } else {
+      values[name] = value;
+    }
+    this.setState({
+      formValues: values,
+    });
+    dispatch({
+      type: 'task/fetchApproverTasks',
+      payload: {
+        currentPage: 1,
+        pageSize: pagination.pageSize,
+        ...values, 
+      }
     });
   }
 
@@ -199,6 +204,15 @@ export default class TableList extends PureComponent {
         </div>
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.tableList}>
+            <div className={styles.tableListOperator}>
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <Search
+                style={{ width: 260 }}
+                placeholder="任务名称／商家标签"
+                onSearch={(value) => this.handleSearch(value, 'search')}
+                enterButton
+              />
+            </div>
             <Table
               loading={loading}
               dataSource={takerTask.list}
