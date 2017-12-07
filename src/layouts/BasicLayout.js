@@ -19,6 +19,7 @@ import DeliverEdit from '../routes/Project/DeliverEdit';
 import TaskCreateList from '../routes/TaskCreate/TableList';
 import TaskCreate from '../routes/TaskCreate/TaskCreate';
 import TaskEdit from '../routes/TaskCreate/TaskEdit';
+import TaskView from '../routes/TaskCreate/TaskView';
 import TaskSquareTaskList from '../routes/TaskSquare/TaskList';
 import WriterTaskEdit from '../routes/Writer/TaskEdit';
 import WriterTaskView from '../routes/Writer/TaskView';
@@ -397,6 +398,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/deliver/edit" component={DeliverEdit} />
               <Route path="/project/task/list" component={TaskCreateList} />
               <Route path="/project/task/create" component={TaskCreate} />
+              <Route path="/project/task/view" component={TaskView} />
               <Route path="/project/task/edit" component={TaskEdit} />
               <Route path="/taskSquare/task/list" component={TaskSquareTaskList} />
               <Route path="/writer/task/edit" component={WriterTaskEdit} />

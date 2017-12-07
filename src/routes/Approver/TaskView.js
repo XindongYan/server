@@ -66,7 +66,7 @@ export default class TaskView extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     const operation = 'view';
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
-    const showAnnotation = formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected;
+    const showAnnotation = showApproveLog;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
