@@ -30,6 +30,28 @@ export default class Register extends Component {
     confirmDirty: false,
     visible: false,
     help: '',
+    avatars: [
+      'http://oyufgm5i2.bkt.clouddn.com/avator_1.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_2.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_3.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_4.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_5.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_6.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_7.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_8.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_9.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_10.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_11.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_12.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_13.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_14.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_15.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_16.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_17.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_18.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_19.png',
+      'http://oyufgm5i2.bkt.clouddn.com/avator_20.png',
+    ]
   }
 
   componentWillReceiveProps(nextProps) {
@@ -75,15 +97,15 @@ export default class Register extends Component {
     }
     return 'pool';
   }
-
   handleSubmit = (e) => {
+    const num = parseInt(Math.random() * 20);
     e.preventDefault();
     this.props.form.validateFields({ force: true },
       (err, values) => {
         if (!err) {
           this.props.dispatch({
             type: 'register/submit',
-            payload: values,
+            payload: { ...values, avatar: this.state.avatars[num] },
           });
         }
       }

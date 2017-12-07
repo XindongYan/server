@@ -27,10 +27,17 @@ export default class ProjectCard extends PureComponent {
   render() {
     const { project } = this.props;
     const color = project.channel_name === '淘宝头条' ? 'orange' : 'blue';
-    const borderColor = project.channel_name === '淘宝头条' ? '#fd7' : '#7df';
+    const borderColor = project.channel_name === '淘宝头条' ? 'rgba(255,200,70,0.5)' : 'rgba(70,180,255,0.5)';
+    const cardStyle = {
+      marginBottom: 10,
+      border: `1px solid ${borderColor}`,
+      borderLeft: `5px solid ${borderColor}`,
+      borderRight: `5px solid ${borderColor}`,
+      borderRadius: '10px 10px 10px 10px'
+    };
     return (
-      <Card className={styles.cardCol} style={{ marginBottom: 10, border: `1px solid ${borderColor}` }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.cardColTop}>
+      <Card className={styles.cardCol} style={cardStyle} bodyStyle={{ padding: 0 }}>
+        <div className={styles.cardColTop} style={{ background: borderColor, color: '#000' }}>
           <h3 title={project.name}>
             {project.name}
             <Tag color={color} style={{ marginLeft: 10 }}>{project.channel_name ? project.channel_name : '图文'}</Tag>
