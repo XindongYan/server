@@ -95,16 +95,26 @@ const album = {
   }],
 };
 
-const tools = {
+const tool = {
   name: '工具',
   path: 'tool',
   icon: 'tool',
   children: [{
-    name: '查询店铺池子',
-    path: `${location.origin}/task/list?ruu`,
+    name: '在线抠图',
+    path: 'http://xiuxiu.web.meitu.com/decorate/',
+    target: '_blank',
+  }, {
+    name: '选品池',
+    path: 'https://kxuan.taobao.com/index.htm',
+    target: '_blank',
+  }, {
+    name: '淘宝热点',
+    path: 'https://aidea.taobao.com/',
+    target: '_blank',
   }, {
     name: '查询新七条',
     path: `${location.origin}/task/list`,
+    target: '_blank',
   }],
 };
 
@@ -138,6 +148,7 @@ export function getNavData(user) {
   } else {
     menuItems.push(square, creation, approve, team, project, album);
   }
+  menuItems.push(tool);
   data[0].children = menuItems;
   return data;
 }

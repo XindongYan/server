@@ -306,7 +306,7 @@ export default class TableList extends PureComponent {
           />
         </div>
         <Modal
-          title="用户权限"
+          title="权限设置"
           visible={modalVisible}
           onOk={this.handleModalOk}
           onCancel={() => this.handleModalVisible()}
