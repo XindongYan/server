@@ -48,7 +48,7 @@ export default class ProjectDetail extends PureComponent {
           <h3>{ project.name ? project.name : '无' }</h3>
         </div>
         <div>
-          <Tag color="gold">{ project.id}</Tag>
+          <Tag color="green">{ project.id}</Tag>
           { project.channel_name &&
             <Tag color={color}>{ project.channel_name }</Tag>
           }

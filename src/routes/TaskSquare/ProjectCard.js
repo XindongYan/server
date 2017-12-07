@@ -42,7 +42,7 @@ export default class ProjectCard extends PureComponent {
       marginBottom: 15,
       border: `none`,
       borderLeft: `5px solid ${borderColor}`,
-      borderRadius: '2px 6px 6px 2px'
+      borderRadius: 4,
     };
     return (
       <Card className={styles.cardCol} style={cardStyle} bodyStyle={{ padding: 0 }}>
@@ -51,7 +51,7 @@ export default class ProjectCard extends PureComponent {
             {project.name}
           </h3>
           <div style={{ marginTop: 8 }}>
-            <Tag color="gold">{ project.id}</Tag>
+            <Tag color="green">{ project.id}</Tag>
             { project.channel_name &&
               <Tag color={color}>{ project.channel_name }</Tag>
             }

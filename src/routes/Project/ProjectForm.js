@@ -188,7 +188,7 @@ export default class ProjectForm extends PureComponent {
             {getFieldDecorator('merchant_tag', {
               rules: [{ required: true, message: '请输入项目标题！' }],
             })(
-              <Input />
+              <Input maxLength="30" placeholder="最多输入30个字" />
             )}
           </FormItem>
           <FormItem
