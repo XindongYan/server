@@ -39,7 +39,7 @@ export default class ProjectCard extends PureComponent {
       borderColor = '#6AF';
     }
     const cardStyle = {
-      marginBottom: 10,
+      marginBottom: 15,
       border: `none`,
       borderLeft: `5px solid ${borderColor}`,
       borderRadius: '2px 6px 6px 2px'
@@ -50,7 +50,7 @@ export default class ProjectCard extends PureComponent {
           <h3 title={project.name}>
             {project.name}
           </h3>
-          <div title={project.merchant_tag}>
+          <div style={{ marginTop: 8 }}>
             <Tag color="gold">{ project.id}</Tag>
             { project.channel_name &&
               <Tag color={color}>{ project.channel_name }</Tag>

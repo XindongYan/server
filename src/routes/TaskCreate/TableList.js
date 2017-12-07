@@ -3,7 +3,8 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, message } from 'antd';
+import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, message, } from 'antd';
+import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -264,8 +265,10 @@ export default class TableList extends PureComponent {
       {
         title: '内容标题',
         dataIndex: 'name',
-        render: (record) => (
-          <TaskNameColumn text={record} length={10}/>
+        render: (record, task) => (
+          <Link to={`/project/task/view?_id=${task._id}`}>
+            <TaskNameColumn text={record} length={10} />
+          </Link>
         )
       },
       {

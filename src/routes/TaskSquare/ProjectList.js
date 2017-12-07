@@ -44,19 +44,22 @@ export default class FlowList extends PureComponent {
   render() {
     const { projects, loading } = this.props;
     return (
-      <Card bordered={false} bodyStyle={{ padding: "0 10px" }} style={{ background: '#fff' }}>
-        <Tabs defaultActiveKey="1" onChange={this.tabChange}>
-          <TabPane tab="活动" key="1">
-            {projects.list.map((item,index) => 
-              <ProjectCard key={index} project={item} />)
-            }
-          </TabPane>
-          { /* <TabPane tab="投稿" key="2">
-            {projects.list.map((item,index) => 
-              <SubmissionCard key={index} project={item} />)
-            }
-          </TabPane> */ }
-        </Tabs>
+      <Card bordered={false} bodyStyle={{ padding: '0 10px' }} style={{ background: 'none' }}>
+        {projects.list.map((item,index) => 
+          <ProjectCard key={index} project={item} />)
+        }
+        { /*
+          <Tabs defaultActiveKey="1" onChange={this.tabChange}>
+            <TabPane tab="活动" key="1">
+              
+            </TabPane>
+             <TabPane tab="投稿" key="2">
+              {projects.list.map((item,index) => 
+                <SubmissionCard key={index} project={item} />)
+              }
+            </TabPane>
+          </Tabs>
+        */ }
       </Card>
     );
   }

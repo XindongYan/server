@@ -78,7 +78,7 @@ export default class TaskView extends PureComponent {
                 onChange={this.handleChange}
               />
             }
-            { formData.task_type === 3 &&
+            { !formData.channel_name && formData.task_type === 3 &&
               <ZhiboForm
                 role="writer"
                 operation="view"
