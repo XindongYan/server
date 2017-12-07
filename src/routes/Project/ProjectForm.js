@@ -229,6 +229,11 @@ export default class ProjectForm extends PureComponent {
                 format="YYYY-MM-DD HH:mm:ss"
                 style={{ width: '100%' }}
                 showTime={{ defaultValue: moment('23:59:59', 'HH:mm:ss') }}
+                disabledDate={(current) => {
+                  const date = new Date();
+                  date.setHours(0, 0, 0, 0);
+                  return current && current.valueOf() <= Date.parse(date);
+                }}
               />
             )}
           </FormItem>
