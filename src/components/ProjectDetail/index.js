@@ -30,11 +30,29 @@ export default class ProjectDetail extends PureComponent {
   render() {
     const { project } = this.props;
     const { fileBox } = this.state;
+    let color = 'volcano';
+    let borderColor = '#FF6A00';
+    if (project.channel_name === '淘宝头条') {
+      color = 'volcano';
+      borderColor = '#FF6A00';
+    } else if (project.channel_name === '微淘') {
+      color = 'orange';
+      borderColor = '#ffe58f';
+    } else {
+      color = 'blue';
+      borderColor = '#6AF';
+    }
     return (
       <Card bordered={false} bodyStyle={{paddingBottom: 10 }} style={{ marginBottom: 10 }}>
         <div>
-          <h3>{ project.name ? project.name : '无' }
-          <Tag style={{ marginLeft: 10 }} color="cyan">{ project.merchant_tag ? project.merchant_tag : '无' }</Tag></h3>
+          <h3>{ project.name ? project.name : '无' }</h3>
+        </div>
+        <div>
+          <Tag color="gold">{ project.id}</Tag>
+          { project.channel_name &&
+            <Tag color={color}>{ project.channel_name }</Tag>
+          }
+          <Tag color="cyan">{ project.merchant_tag}</Tag>
         </div>
         <div>
           <div className={styles.projectDescBox} style={{ marginTop: 10 }}>

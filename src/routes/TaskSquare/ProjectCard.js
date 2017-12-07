@@ -26,40 +26,45 @@ export default class ProjectCard extends PureComponent {
   }
   render() {
     const { project } = this.props;
-    let color = 'orange';
+    let color = 'volcano';
     let borderColor = '#FF6A00';
     if (project.channel_name === '淘宝头条') {
-      color = 'orange';
+      color = 'volcano';
       borderColor = '#FF6A00';
+    } else if (project.channel_name === '微淘') {
+      color = 'orange';
+      borderColor = '#ffe58f';
     } else {
       color = 'blue';
       borderColor = '#6AF';
     }
     const cardStyle = {
       marginBottom: 10,
-      border: `1px solid ${borderColor}`,
+      border: `none`,
       borderLeft: `5px solid ${borderColor}`,
-      // borderRight: `5px solid ${borderColor}`,
-      borderRadius: '0px 10px 10px 0px'
+      borderRadius: '2px 6px 6px 2px'
     };
     return (
       <Card className={styles.cardCol} style={cardStyle} bodyStyle={{ padding: 0 }}>
         <div className={styles.cardColTop}>
           <h3 title={project.name}>
             {project.name}
-            <Tag color={color} style={{ marginLeft: 10 }}>{project.channel_name ? project.channel_name : '图文'}</Tag>
           </h3>
-          <p title={project.merchant_tag}>{ project.merchant_tag}</p>
+          <div title={project.merchant_tag}>
+            <Tag color="gold">{ project.id}</Tag>
+            { project.channel_name &&
+              <Tag color={color}>{ project.channel_name }</Tag>
+            }
+            <Tag color="cyan">{ project.merchant_tag}</Tag>
+          </div>
         </div>
         <div className={styles.cardColBottom}>
           <p className={styles.cardMsgDesc}>{ project.desc}</p>
           <div className={styles.draftMsgB}>
-            { project.price !== 0 &&
-              <span className={styles.cardMsgPrice}>
-                  <Icon style={{ fontSize: 16 }} type="pay-circle" />
-                  <span style={{ padding: '0 6px' }}>{ project.price }</span>
-              </span>
-            }
+            <span className={styles.cardMsgPrice}>
+                <Icon style={{ fontSize: 16 }} type="pay-circle" />
+                <span style={{ padding: '0 6px' }}>{ project.price }</span>
+            </span>
             { project.deadline &&
               <span className={styles.cardMsgDeadline}>截稿日期：{ moment(project.deadline).format('YYYY-MM-DD') }</span>
             }

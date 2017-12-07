@@ -37,13 +37,11 @@ export default class TaskCard extends PureComponent {
               </a>
             </p>
             <div className={styles.customBtn} style={{ margin: 0, padding: 5 }}>
-              { task.price ? 
-                <span className={styles.cardMsgPrice}>
+              <span className={styles.cardMsgPrice}>
                     <Icon style={{ fontSize: 16 }} type="pay-circle" />
                     <span style={{ padding: '0 6px' }}>{ task.price }</span>
-                </span> :
+                </span>
                 <span></span>
-              }
               <Button size="small" type="primary"
               disabled={!(task.approve_status === TASK_APPROVE_STATUS.published)}
               onClick={() => this.props.onTake(task)}
