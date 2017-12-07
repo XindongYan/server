@@ -131,7 +131,7 @@ export default class TaskEdit extends PureComponent {
                 onChange={this.handleChange}
               />
             }
-            { formData.channel_name === '直播脚本' &&
+            { formData.task_type === 3 &&
               <ZhiboForm
                 role="writer"
                 operation="edit"
