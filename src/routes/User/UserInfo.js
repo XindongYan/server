@@ -130,7 +130,7 @@ export default class UserInfo extends Component {
 
           <Row className={styles.rowBox}>
             <Col className={styles.labelSpan} span={6}>
-              <span>用户名：</span>
+              <span>姓名：</span>
             </Col>
             <Col span={14}>
               <Input
