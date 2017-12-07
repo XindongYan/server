@@ -1,5 +1,6 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
 queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask } from '../services/task';
+import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
   namespace: 'task',
@@ -20,11 +21,13 @@ export default {
     takerTask: {
       list: [],
       pagination: {},
+      approve_status: TASK_APPROVE_STATUS.taken,
     },
     takerTaskLoading: true,
     approverTask: {
       list: [],
       pagination: {},
+      approve_status: 'waitingForApprove',
     },
     approverTaskLoading: true,
   },
@@ -112,7 +115,7 @@ export default {
       if (!response.error) {
         yield put({
           type: 'saveTakerTasks',
-          payload: response,
+          payload: {...response, approve_status: payload.approve_status},
         });
       }
       yield put({
@@ -129,7 +132,7 @@ export default {
       if (!response.error) {
         yield put({
           type: 'saveApproverTasks',
-          payload: response,
+          payload: {...response, approve_status: payload.approve_status},
         });
       }
       yield put({

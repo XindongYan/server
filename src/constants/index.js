@@ -37,6 +37,7 @@ export const APPROVE_FLOWS = [
 export const TASK_TYPES = [
   { value: 1, text: '图文' },
   { value: 2, text: '视频' },
+  // { value: 3, text: '直播脚本' },
 ];
 
 export const PROJECT_LEVELS = [
