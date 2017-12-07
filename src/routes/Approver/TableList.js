@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, DatePicker } from 'antd';
+import { Table, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, Checkbox, Modal, message, Radio, Popconfirm, DatePicker,
+Tooltip } from 'antd';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -177,8 +178,11 @@ export default class TableList extends PureComponent {
       {
         title: '提交时间',
         dataIndex: 'handin_time',
-        sorter: true,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        render: val => ( 
+          val ?
+          <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+            {moment(val).fromNow()}
+          </Tooltip> : ''),
       },
       {
         title: '修改',
