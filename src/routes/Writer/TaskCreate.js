@@ -89,7 +89,9 @@ export default class TaskCreate extends PureComponent {
     const { currentUser } = this.props;
     const { task, approver_id } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-    if (!task.title || !task.title.replace(/\s+/g, '')) {
+    if (!task.merchant_tag) {
+      message.warn('请填写商家标签');
+    } else if (!task.title || !task.title.replace(/\s+/g, '')) {
       message.warn('请填写标题');
     } else if (task.title && task.title.length > 19) {
       message.warn('标题字数不符合要求');
@@ -161,8 +163,9 @@ export default class TaskCreate extends PureComponent {
               <Input
                 type="text"
                 value={task.merchant_tag}
+                maxLength="30"
                 onChange={(e) => this.setState({ task: { ...task, merchant_tag: e.target.value }})}
-                placeholder="请在这里输入商家标签"
+                placeholder="请在这里输入商家标签,最多30个字"
               />
             </div>
             { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&

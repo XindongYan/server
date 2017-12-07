@@ -20,6 +20,7 @@ import TaskCreateList from '../routes/TaskCreate/TableList';
 import TaskCreate from '../routes/TaskCreate/TaskCreate';
 import TaskEdit from '../routes/TaskCreate/TaskEdit';
 import TaskView from '../routes/TaskCreate/TaskView';
+import ShopPool from '../routes/Tool/ShopPool';
 import TaskSquareTaskList from '../routes/TaskSquare/TaskList';
 import WriterTaskEdit from '../routes/Writer/TaskEdit';
 import WriterTaskView from '../routes/Writer/TaskView';
@@ -407,6 +408,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/writer/task/handin/success" component={WriterTaskSuccess} />
               <Route path="/approver/task/edit" component={ApproverTaskEdit} />
               <Route path="/approver/task/view" component={ApproverTaskView} />
+              <Route path="/tool/pools" component={ShopPool} />
               <Redirect to="/square/task" />
             </Switch>
             <GlobalFooter
