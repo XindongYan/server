@@ -29,8 +29,12 @@ export default class ApproveLog extends PureComponent {
                 return (
                   <Timeline.Item color={color} key={index}>
                     <p>{moment(item.approve_time).format('YYYY-MM-DD HH:mm')} {item.approver_id ? item.approver_id.name : ''}</p>
-                    {item.grade > 0 && <p>{this.renderGrades(item.grades)}</p>}
-                    {item.grade > 0 && <p>得分： {item.grade}分</p> }
+                    {item.grade > 0 &&
+                      <p>{this.renderGrades(item.grades)}
+                      <Row key={4}>
+                        <Col span={8}>得分:</Col><Col span={16}>{item.grade} 分</Col>
+                      </Row>
+                      </p>}
                   </Timeline.Item>
                 );
               })}

@@ -15,37 +15,35 @@ const { RangePicker } = DatePicker;
 const Search = Input.Search;
 
 @connect(state => ({
-  data: state.task.approverTask,
-  takerTask: state.task.takerTask,
+  data: state.task.takerTask,
   loading: state.task.takerTaskLoading,
   currentUser: state.user.currentUser,
 }))
 export default class TableList extends PureComponent {
   state = {
-    formValues: { approve_status: TASK_APPROVE_STATUS.taken },
+
   }
 
   componentDidMount() {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
     if (currentUser._id) {
       dispatch({
         type: 'task/fetchTakerTasks',
-        payload: { ...this.state.formValues, user_id: currentUser._id },
+        payload: { ...pagination, approve_status, user_id: currentUser._id },
       });
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, currentUser } = nextProps;
+    const { dispatch, currentUser, data: { pagination, approve_status } } = nextProps;
     if (currentUser._id !== this.props.currentUser._id) {
       dispatch({
         type: 'task/fetchTakerTasks',
-        payload: { ...this.state.formValues, user_id: currentUser._id },
+        payload: { ...pagination, approve_status, user_id: currentUser._id },
       });
     }
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, currentUser } = this.props;
-    const { formValues } = this.state;
+    const { dispatch, currentUser, data: { approve_status } } = this.props;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -57,7 +55,7 @@ export default class TableList extends PureComponent {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       user_id: currentUser._id,
-      ...formValues,
+      approve_status,
       ...filters,
     };
     if (sorter.field) {
@@ -71,11 +69,10 @@ export default class TableList extends PureComponent {
   }
 
   handleSearch = (value, name) => {
-    const { dispatch, data: { pagination }, currentUser } = this.props;
-    const { formValues } = this.state;
+    const { dispatch, data: { pagination, approve_status }, currentUser } = this.props;
     const values = {
       user_id: currentUser._id,
-      ...formValues,
+      approve_status,
     };
     if(name === 'time') {
       values['take_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
@@ -83,9 +80,6 @@ export default class TableList extends PureComponent {
     } else {
       values[name] = value;
     }
-    this.setState({
-      formValues: values,
-    });
     dispatch({
       type: 'task/fetchTakerTasks',
       payload: {
@@ -97,18 +91,14 @@ export default class TableList extends PureComponent {
   }
 
   changeApproveStatus = (e) => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, data: { pagination } } = this.props;
     dispatch({
       type: 'task/fetchTakerTasks',
-      payload: { user_id: currentUser._id, approve_status: e.target.value, }
-    });
-    this.setState({
-      formValues: { ...this.state.formValues, user_id: currentUser._id, approve_status: e.target.value, }
+      payload: { ...pagination, user_id: currentUser._id, approve_status: e.target.value, }
     });
   }
   render() {
-    const { takerTask, loading } = this.props;
-    const { formValues } = this.state;
+    const { data, loading } = this.props;
     const columns = [
       {
         title: '任务ID',
@@ -126,7 +116,6 @@ export default class TableList extends PureComponent {
       {
         title: '接单时间',
         dataIndex: 'take_time',
-        sorter: true,
         render: val => (
           <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
             {moment(val).format('MM/DD')}
@@ -194,9 +183,9 @@ export default class TableList extends PureComponent {
         }
       }
     };
-    if (formValues.approve_status === -1) {
+    if (data.approve_status === -1) {
       columns.push(opera);
-    } else if (formValues.approve_status === 0) {
+    } else if (data.approve_status === 0) {
       columns.push( approveStatus, opera);
     } else {
       columns.push( approveStatus, approver, grade, approveTime, opera);
@@ -204,7 +193,7 @@ export default class TableList extends PureComponent {
     return (
       <div>
         <div className={styles.searchBox}>
-          <RadioGroup value={formValues.approve_status} onChange={this.changeApproveStatus}>
+          <RadioGroup value={data.approve_status} onChange={this.changeApproveStatus}>
             <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
@@ -224,12 +213,12 @@ export default class TableList extends PureComponent {
             </div>
             <Table
               loading={loading}
-              dataSource={takerTask.list}
+              dataSource={data.list}
               columns={columns}
               pagination={{
                 showSizeChanger: true,
                 showQuickJumper: true,
-                ...takerTask.pagination,
+                ...data.pagination,
               }}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
