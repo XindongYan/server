@@ -148,8 +148,9 @@ export default class TaskEdit extends PureComponent {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     const { grades, approve_notes } = this.state;
-    const operation = formData.approve_step === 0 ? 'edit' : 'view';
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
+    const operation = showApproveLog ? 'edit' : 'view';
+    console.log(operation)
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 
@@ -193,7 +194,7 @@ export default class TaskEdit extends PureComponent {
           <div className={styles.taskComment}>
             <Annotation
               approve_step={formData.approve_step}
-              viewStatus="edit"
+              viewStatus={operation}
               value={approve_notes}
               onChange={this.changeApproveNode}
             />
