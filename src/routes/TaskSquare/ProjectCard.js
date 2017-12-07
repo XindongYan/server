@@ -27,13 +27,13 @@ export default class ProjectCard extends PureComponent {
   render() {
     const { project } = this.props;
     let color = 'orange';
-    let borderColor = '#fd7';
+    let borderColor = '#FF6A00';
     if (project.channel_name === '淘宝头条') {
       color = 'orange';
-      borderColor = '#fd7';
+      borderColor = '#FF6A00';
     } else {
       color = 'blue';
-      borderColor = '#7df';
+      borderColor = '#6AF';
     }
     const cardStyle = {
       marginBottom: 10,
