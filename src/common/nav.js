@@ -66,6 +66,10 @@ const approve = {
     name: '审批任务',
     path: 'approve-list',
     component: Approver,
+  }, {
+    name: '旧版审核',
+    path: `${location.origin}/task/list`,
+    target: '_blank',
   }],
 };
 
