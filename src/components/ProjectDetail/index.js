@@ -47,7 +47,7 @@ export default class ProjectDetail extends PureComponent {
         <div>
           <h3>{ project.name ? project.name : '无' }</h3>
         </div>
-        <div>
+        <div style={{ marginTop: 8}}>
           <Tag color="green">{ project.id}</Tag>
           { project.channel_name &&
             <Tag color={color}>{ project.channel_name }</Tag>
