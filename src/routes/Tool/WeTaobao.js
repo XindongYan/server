@@ -34,7 +34,6 @@ export default class WeTaobao extends PureComponent {
           url: value
         },
         success:(result) => {
-          console.log(result)
           if(!result.error){
             this.setState({
               sevenVisible: result.success,
