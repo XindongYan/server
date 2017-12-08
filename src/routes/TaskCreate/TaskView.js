@@ -14,7 +14,6 @@ export default class TaskForm extends PureComponent {
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
-    console.log(query);
     this.props.dispatch({
       type: 'task/fetchTask',
       payload: { _id: query._id },
@@ -24,7 +23,6 @@ export default class TaskForm extends PureComponent {
     
   }
   render() {
-    console.log(this.props);
     const { formData } = this.props;
     return (
       <Card bordered={false} title="任务详情" style={{ padding: '0 0 40px' }}>

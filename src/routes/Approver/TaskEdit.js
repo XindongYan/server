@@ -150,7 +150,6 @@ export default class TaskEdit extends PureComponent {
     const { grades, approve_notes } = this.state;
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const operation = showApproveLog ? 'edit' : 'view';
-    console.log(operation)
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 

@@ -103,7 +103,7 @@ export default class ShopPool extends PureComponent {
           <div className="searchBox">
             <Search
               placeholder=""
-              enterButton="Search"
+              enterButton="搜索"
               size="large"
               onSearch={this.getShops}
               onChange={(e) => this.setState({ searchValue: e.target.value })}

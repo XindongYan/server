@@ -11,6 +11,7 @@ import TaskOption from '../routes/Writer/TaskOption';
 import TaskSquare from '../routes/TaskSquare/ProjectList';
 import Invitation from '../routes/Invitation/InvitationList';
 import Album from '../routes/Album';
+import * as Tool from '../routes/Tool/index';
 
 import Success from '../routes/Result/Success';
 import Error from '../routes/Result/Error';
@@ -118,16 +119,16 @@ const tool = {
     target: '_blank',
   }, {
     name: '查询店铺池子',
-    path: `${location.origin}/task/list?key=1`,
-    target: '_blank',
+    path: 'pools',
+    component: Tool.ShopPool,
   }, {
     name: '查询新七条',
-    path: `${location.origin}/task/list?key=2`,
-    target: '_blank',
+    path: '/new7',
+    component: Tool.WeTaobao,
   }, {
     name: '天猫品牌库',
-    path: `${location.origin}/task/list?key=3`,
-    target: '_blank',
+    path: `/clothes`,
+    component: Tool.Clothes,
   }],
 };
 
