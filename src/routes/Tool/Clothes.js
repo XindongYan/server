@@ -53,12 +53,6 @@ export default class Clothes extends PureComponent {
       key: 3,
       tab: '服饰配件',
     }];
-    const contentListNoTitle = {
-      0: <p>article content</p>,
-      1: <p>app content</p>,
-      2: <p>project content</p>,
-      3: <p> content</p>,
-    };
     return (
       <Card
         bordered={false}
