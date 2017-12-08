@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Form, Input, Select, Icon, Button, Upload, message } from 'antd';
+import { Card, Form, Input, Select, Icon, Button, Upload, message, Tooltip } from 'antd';
 import path from 'path';
 import querystring from 'querystring';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS } from '../../constants';
@@ -146,7 +146,11 @@ export default class TaskForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="附件"
+            label={
+              <Tooltip placement="topLeft" title="建议上传pdf格式文件">
+                附件 <Icon type="question-circle-o" />
+              </Tooltip>
+            }
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -154,7 +158,7 @@ export default class TaskForm extends PureComponent {
               valuePropName: 'fileList',
               getValueFromEvent: this.normFile,
             })(
-              <Upload accept="application/pdf" name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
+              <Upload name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
                 <Button>
                   <Icon type="upload" /> 点击上传
                 </Button>

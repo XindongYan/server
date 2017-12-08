@@ -4,7 +4,7 @@ import querystring from 'querystring';
 import path from 'path';
 import moment from 'moment';
 import { routerRedux } from 'dva/router';
-import { Card, Form, Input, Select, Icon, Button, DatePicker, Upload, message } from 'antd';
+import { Card, Form, Input, Select, Icon, Button, DatePicker, Upload, message, Tooltip } from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES, CHANNEL_NAMES } from '../../constants';
 
 const FormItem = Form.Item;
@@ -238,7 +238,11 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="附件"
+            label={
+              <Tooltip placement="topLeft" title="建议上传pdf格式文件">
+                附件 <Icon type="question-circle-o" />
+              </Tooltip>
+            }
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -246,7 +250,7 @@ export default class ProjectForm extends PureComponent {
               valuePropName: 'fileList',
               getValueFromEvent: this.normFile,
             })(
-              <Upload accept="application/pdf" name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
+              <Upload name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
                 <Button>
                   <Icon type="upload" /> 点击上传
                 </Button>

@@ -109,7 +109,7 @@ export default class TaskView extends PureComponent {
             </div>
           }
         </div>
-        <TaskChat taskId={query._id} />
+        { showApproveLog && <TaskChat taskId={query._id} /> }
         { showApproveLog && <ApproveLog approveData={approveData}/> }
       </Card>
     );
