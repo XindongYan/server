@@ -274,7 +274,6 @@ export default class TableList extends PureComponent {
       {
         title: '创建时间',
         dataIndex: 'create_time',
-        sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
       },
       {
@@ -296,7 +295,6 @@ export default class TableList extends PureComponent {
       {
         title: '接单时间',
         dataIndex: 'take_time',
-        sorter: true,
         render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
       },
       {

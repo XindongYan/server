@@ -51,7 +51,7 @@ export default class TableList extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
+    const { dispatch, teamUser } = this.props;
     const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -61,6 +61,7 @@ export default class TableList extends PureComponent {
     }, {});
 
     const params = {
+      team_id: teamUser.team_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...formValues,
@@ -252,10 +253,6 @@ export default class TableList extends PureComponent {
       {
         title: '电话',
         dataIndex: 'user_id.phone',
-      },
-      {
-        title: '邀请码',
-        dataIndex: 'invitation_code',
       },
       {
         title: '创建时间',
