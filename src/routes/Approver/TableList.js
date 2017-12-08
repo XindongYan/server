@@ -31,7 +31,6 @@ export default class TableList extends PureComponent {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
-    user: {},
   };
 
   componentDidMount() {
@@ -103,7 +102,7 @@ export default class TableList extends PureComponent {
     const { dispatch, data: { pagination, approve_status }, currentUser } = this.props;
     const values = {
       user_id: currentUser._id,
-      approve_statuss,
+      approve_status,
     };
     if(name === 'time') {
       values['handin_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
