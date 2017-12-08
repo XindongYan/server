@@ -209,7 +209,7 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="项目描述"
+            label="描述"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
