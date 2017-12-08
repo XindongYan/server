@@ -329,7 +329,7 @@ export default class ProjectList extends PureComponent {
       <Card bordered={false} bodyStyle={{ padding: 14 }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button>
+            {/* <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button> */}
             {
               selectedRows.length > 0 && (
                 <span>

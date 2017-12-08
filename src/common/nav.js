@@ -3,6 +3,7 @@ import BlankLayout from '../layouts/BlankLayout';
 
 import Approver from '../routes/Approver/TableList';
 import Activity from '../routes/Project/ActivityList';
+import ActivityCreate from '../routes/Project/ActivityCreate';
 import Deliver from '../routes/Project/DeliverList';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
@@ -44,6 +45,14 @@ const creation = {
     name: '新建作品',
     path: 'writer-create',
     component: TaskOption,
+  }, {
+    name: '选品池',
+    path: 'https://kxuan.taobao.com/index.htm',
+    target: '_blank',
+  }, {
+    name: '淘宝热点',
+    path: 'https://aidea.taobao.com/',
+    target: '_blank',
   }],
 };
 
@@ -55,6 +64,10 @@ const project = {
     name: '活动列表',
     path: 'activity-list',
     component: Activity,
+  }, {
+    name: '新建活动',
+    path: 'activity-lcreate',
+    component: ActivityCreate,
   }],
 };
 
@@ -66,10 +79,6 @@ const approve = {
     name: '审批任务',
     path: 'approve-list',
     component: Approver,
-  }, {
-    name: '旧版审核',
-    path: `${location.origin}/task/list`,
-    target: '_blank',
   }],
 };
 
@@ -108,16 +117,16 @@ const tool = {
     path: 'http://xiuxiu.web.meitu.com/decorate/',
     target: '_blank',
   }, {
-    name: '选品池',
-    path: 'https://kxuan.taobao.com/index.htm',
-    target: '_blank',
-  }, {
-    name: '淘宝热点',
-    path: 'https://aidea.taobao.com/',
+    name: '查询店铺池子',
+    path: `${location.origin}/task/list?key=1`,
     target: '_blank',
   }, {
     name: '查询新七条',
-    path: `${location.origin}/task/list`,
+    path: `${location.origin}/task/list?key=2`,
+    target: '_blank',
+  }, {
+    name: '天猫品牌库',
+    path: `${location.origin}/task/list?key=3`,
     target: '_blank',
   }],
 };

@@ -12,7 +12,6 @@ import styles from './BasicLayout.less';
 import HeaderSearch from '../components/HeaderSearch';
 import NoticeIcon from '../components/NoticeIcon';
 import GlobalFooter from '../components/GlobalFooter';
-import ActivityCreate from '../routes/Project/ActivityCreate';
 import ActivityEdit from '../routes/Project/ActivityEdit';
 import DeliverCreate from '../routes/Project/DeliverCreate';
 import DeliverEdit from '../routes/Project/DeliverEdit';
@@ -393,7 +392,6 @@ class BasicLayout extends React.PureComponent {
                   )
                 )
               }
-              <Route path="/activity/create" component={ActivityCreate} />
               <Route path="/activity/edit" component={ActivityEdit} />
               <Route path="/deliver/create" component={DeliverCreate} />
               <Route path="/deliver/edit" component={DeliverEdit} />
