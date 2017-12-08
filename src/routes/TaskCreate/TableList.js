@@ -3,13 +3,14 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, message, } from 'antd';
+import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, message, } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
+import TaskOperationRecord from './TaskOperationRecord';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -216,12 +217,13 @@ export default class TableList extends PureComponent {
     });
   }
   handleWithdraw = (record) => {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/withdraw',
       payload: {
         _id: record._id,
+        user_id: currentUser._id,
       },
       callback: (result) => {
         if (result.error) {
@@ -319,6 +321,10 @@ export default class TableList extends PureComponent {
                 </Popconfirm>
                 <span className={styles.splitLine} />
                 <a onClick={() => this.handleShowSpecifyModal(record)}>指定</a>
+                <span className={styles.splitLine} />
+                <TaskOperationRecord _id={record._id}>
+                  <a>动态</a>
+                </TaskOperationRecord>
               </p>
             );
           } else if (record.approve_status === TASK_APPROVE_STATUS.published) {
@@ -329,19 +335,30 @@ export default class TableList extends PureComponent {
                 <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
                   <a>撤回</a>
                 </Popconfirm>
+                <span className={styles.splitLine} />
+                <TaskOperationRecord _id={record._id}>
+                  <a>动态</a>
+                </TaskOperationRecord>
               </p>
             );
           } else if (record.approve_status === TASK_APPROVE_STATUS.taken) {
             return (
               <p>
-              <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
+                <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
                   <a>撤回</a>
                 </Popconfirm>
-                
+                <span className={styles.splitLine} />
+                <TaskOperationRecord _id={record._id}>
+                  <a>动态</a>
+                </TaskOperationRecord>
               </p>
             );
           } else {
-            return '';
+            return (
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
+            );
           }
         },
       },

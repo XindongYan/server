@@ -13,6 +13,7 @@ export default {
     loading: true,
     formData: {},
     approveData: [],
+    operationRecords: [],
     projectTask: {
       list: [],
       pagination: {},
@@ -51,6 +52,10 @@ export default {
       yield put({
         type: 'saveApproveData',
         payload: response.approveData || [],
+      });
+      yield put({
+        type: 'saveOperationRecords',
+        payload: response.operationRecords || [],
       });
     },
     *add({ payload, callback }, { call }) {
@@ -171,6 +176,12 @@ export default {
       return {
         ...state,
         approveData: action.payload,
+      };
+    },
+    saveOperationRecords(state, action) {
+      return {
+        ...state,
+        operationRecords: action.payload,
       };
     },
     saveProjectTasks(state, action) {
