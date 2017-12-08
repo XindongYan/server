@@ -43,7 +43,21 @@ export default class TaskCreate extends PureComponent {
     });
   }
   handleShowAddTeamUserModal = () => {
-    this.setState({ modalVisible: true, });
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const { task } = this.state;
+    if (!task.merchant_tag) {
+      message.warn('请填写商家标签');
+    } else if (!task.title || !task.title.replace(/\s+/g, '')) {
+      message.warn('请填写标题');
+    } else if (task.title && task.title.length > 19) {
+      message.warn('标题字数不符合要求');
+    } else if (!task.task_desc) {
+      message.warn('请填写内容');
+    } else if (!task.cover_img && query.channel_name !== '直播脚本') {
+      message.warn('请选择封面图');
+    } else {
+      this.setState({ modalVisible: true, });
+    }
   }
   handleSpecify = () => {
     const { dispatch } = this.props;
@@ -89,50 +103,38 @@ export default class TaskCreate extends PureComponent {
     const { currentUser } = this.props;
     const { task, approver_id } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-    if (!task.merchant_tag) {
-      message.warn('请填写商家标签');
-    } else if (!task.title || !task.title.replace(/\s+/g, '')) {
-      message.warn('请填写标题');
-    } else if (task.title && task.title.length > 19) {
-      message.warn('标题字数不符合要求');
-    } else if (!task.task_desc) {
-      message.warn('请填写内容');
-    } else if (!task.cover_img && query.channel_name !== '直播脚本') {
-      message.warn('请选择封面图');
-    } else {
-      this.props.dispatch({
-        type: 'task/addByWriter',
-        payload: {
-          ...this.state.task,
-          name: this.state.task.title,
-          approve_status: TASK_APPROVE_STATUS.taken,
-          channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
-          task_type: query.task_type ? Number(query.task_type) : 1,
-          publisher_id: currentUser._id, // 登录后用户的 user._id
-          taker_id: currentUser._id,
-          creator_id: currentUser._id,
-          current_approvers: [ approver_id ],
-          approvers: [[ approver_id ]],
-        },
-        callback: (result) => {
-          if (result.error) {
-            message.error(result.msg);
-          } else {
-            this.props.dispatch({
-              type: 'task/handin',
-              payload: { _id: result.task._id },
-              callback: (result1) => {
-                if (result1.error) {
-                  message.error(result1.msg);
-                } else {
-                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
-                }
+    this.props.dispatch({
+      type: 'task/addByWriter',
+      payload: {
+        ...this.state.task,
+        name: this.state.task.title,
+        approve_status: TASK_APPROVE_STATUS.taken,
+        channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+        task_type: query.task_type ? Number(query.task_type) : 1,
+        publisher_id: currentUser._id, // 登录后用户的 user._id
+        taker_id: currentUser._id,
+        creator_id: currentUser._id,
+        current_approvers: [ approver_id ],
+        approvers: [[ approver_id ]],
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          this.props.dispatch({
+            type: 'task/handin',
+            payload: { _id: result.task._id },
+            callback: (result1) => {
+              if (result1.error) {
+                message.error(result1.msg);
+              } else {
+                this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
               }
-            });
-          }
-        },
-      });
-    }
+            }
+          });
+        }
+      },
+    });
   }
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
