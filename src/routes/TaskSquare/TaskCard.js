@@ -13,6 +13,7 @@ export default class TaskCard extends PureComponent {
 
   render() {
     const { task, index } = this.props;
+    const colorArr = ['#6a6aff','#2894ff','#00caca','#4f9d9d','#ffa042','#ffd306','#ff8040','#7373b9','#c07ab8','#a6a6d2'];
     const menu = (
       <Menu>
         { task.attachments.map((item,index) => 
@@ -25,7 +26,7 @@ export default class TaskCard extends PureComponent {
     return (
       <Col span={6} key={index} style={{padding: "5px"}}>
         <Card style={{ width: "100%" }} bodyStyle={{ padding: 0 }} ref="taskCard">
-          <div className={styles.customImage} style={{ background: "#d95940" }}>
+          <div className={styles.customImage} style={{ background: colorArr[ task.id % 8 ] }}>
             <Link to={`/project/task/view?_id=${task._id}`}>
               <h3><TaskNameColumn text={task.name} length={23}/></h3>
             </Link>
@@ -34,11 +35,10 @@ export default class TaskCard extends PureComponent {
              <Tooltip title="任务ID">
               <Tag color="blue">{task.id}</Tag>
             </Tooltip>
-            <p className={styles.descBox}>{task.desc || '无描述'}</p>
-            <p>
-              <a href="javascript:;" onClick={() => {this.setState({ fileVisible: true })}}>
-                
-              </a>
+            <p className={styles.descBox}>
+              <Link to={`/project/task/view?_id=${task._id}`} style={{ color: '#444' }}>
+                {task.desc || '无描述'}
+              </Link>
             </p>
             <div className={styles.customBtn} style={{ margin: 0, padding: 5 }}>
               <span className={styles.cardMsgPrice}>
