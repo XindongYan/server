@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import $ from 'jquery';
-import { Card, Table, Input, message } from 'antd';
+import { Icon, Card, Table, Input, message } from 'antd';
 import { ORIGIN } from '../../constants';
 import styles from './ShopPool.less';
 
@@ -77,6 +77,12 @@ export default class ShopPool extends PureComponent {
       });
     }
   }
+  clearInpVal = () => {
+    this.setState({
+      searchValue: '',
+      tableMsg: [],
+    })
+  }
   render (){
     const { tableMsg, searchValue } = this.state;
     const columns = [
@@ -100,7 +106,7 @@ export default class ShopPool extends PureComponent {
       <Card bordered={false}>
         <div className="dpcz">
           <p className={styles.tbSearchTit}>查询店铺商品入选的池子</p>
-          <div className="searchBox">
+          <div className={styles.searchBox} style={{ position: 'relative' }}>
             <Search
               placeholder=""
               enterButton="搜索"
@@ -109,6 +115,7 @@ export default class ShopPool extends PureComponent {
               onChange={(e) => this.setState({ searchValue: e.target.value })}
               value={searchValue}
             />
+            <Icon type="close-circle" className={styles.clearInpIcon} onClick={this.clearInpVal} />
           </div>
           <div className={styles.dataList}>
             <Table

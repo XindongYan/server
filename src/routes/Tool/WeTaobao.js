@@ -79,6 +79,18 @@ export default class WeTaobao extends PureComponent {
       message.warn('请输入要查询的链接');
     }
   }
+  clearInpValDown = () => {
+    this.setState({
+      qualitValue: '',
+      qualitList: [],
+    })
+  }
+  clearInpValUp = () => {
+    this.setState({
+      sevenValue: '',
+      sevenVisible: -1,
+    })
+  }
   render (){
     const { sevenValue, sevenVisible, qualitValue, qualitList } = this.state;
     const columns = [
@@ -97,7 +109,7 @@ export default class WeTaobao extends PureComponent {
       <Card bordered={false}>
         <div>
           <p className={styles.tbSearchTit}>查询淘宝商品是否符合新七条</p>
-          <div className="searchBox">
+          <div className={styles.searchBox} style={{ position: 'relative' }}>
             <Search
               placeholder=""
               enterButton="搜索"
@@ -106,6 +118,7 @@ export default class WeTaobao extends PureComponent {
               onChange={(e) => this.setState({ sevenValue: e.target.value })}
               value={sevenValue}
             />
+            <Icon type="close-circle" className={styles.clearInpIcon} onClick={this.clearInpValUp} />
           </div>
           <div className={styles.dataList}>
             { sevenVisible === 1 &&
@@ -124,7 +137,7 @@ export default class WeTaobao extends PureComponent {
         </div>
         <div style={{ marginTop: 40 }}>
           <p className={styles.tbSearchTit}>查询淘宝商品品质等级</p>
-          <div className="searchBox">
+          <div className={styles.searchBox} style={{ position: 'relative' }}>
             <Search
               placeholder=""
               enterButton="搜索"
@@ -133,6 +146,7 @@ export default class WeTaobao extends PureComponent {
               onChange={(e) => this.setState({ qualitValue: e.target.value })}
               value={qualitValue}
             />
+            <Icon type="close-circle" className={styles.clearInpIcon} onClick={this.clearInpValDown} />
           </div>
           <div className={styles.dataList}>
             <Table
