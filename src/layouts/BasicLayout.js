@@ -240,9 +240,15 @@ class BasicLayout extends React.PureComponent {
     return groupBy(newNotices, 'type');
   }
   handleOpenChange = (openKeys) => {
-    const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
+    // const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
     this.setState({
       openKeys,
+    });
+  }
+  handleSelect = (e) => {
+    this.props.dispatch({
+      type: 'global/changeSelectedKeys',
+      payload: [e.key],
     });
   }
   toggle = () => {
@@ -272,7 +278,7 @@ class BasicLayout extends React.PureComponent {
     }
   }
   render() {
-    const { currentUser, collapsed, fetchingNotices, teamUser } = this.props;
+    const { currentUser, collapsed, fetchingNotices, teamUser, selectedKeys } = this.props;
 
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
@@ -287,8 +293,8 @@ class BasicLayout extends React.PureComponent {
     // Don't show popup menu when it is been collapsed
     const menuProps = collapsed ? {} : {
       openKeys: this.state.openKeys,
+      selectedKeys: [...selectedKeys],
     };
-
     const layout = (
       <Layout>
         <Sider
@@ -314,6 +320,7 @@ class BasicLayout extends React.PureComponent {
             mode="inline"
             {...menuProps}
             onOpenChange={this.handleOpenChange}
+            onClick={this.handleSelect}
             style={{ margin: '16px 0', width: '100%' }}
           >
             {this.getNavMenuItems(this.state.menus)}
@@ -443,4 +450,5 @@ export default connect(state => ({
   notices: state.global.notices,
   team: state.user.team,
   teamUser: state.user.teamUser,
+  selectedKeys: state.global.selectedKeys,
 }))(BasicLayout);
