@@ -7,6 +7,7 @@ export default {
     collapsed: false,
     notices: [],
     fetchingNotices: false,
+    selectedKeys: ['task'],
   },
 
   effects: {
@@ -40,6 +41,12 @@ export default {
       return {
         ...state,
         collapsed: payload,
+      };
+    },
+    changeSelectedKeys(state, { payload }) {
+      return {
+        ...state,
+        selectedKeys: payload,
       };
     },
     saveNotices(state, { payload }) {
