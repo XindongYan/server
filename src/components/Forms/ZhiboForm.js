@@ -54,10 +54,10 @@ export default class ZhiboForm extends PureComponent {
         }
         { operation === 'view' &&
           <div className={styles.taskContentBox} style={{ display: operation==='view' ? 'block' : 'none' }}>
-            <div className={styles.taskList} style={{margin: '20px 0'}}>
+            <div className={styles.taskList} style={{padding: '30px 0'}}>
               <p style={{ fontSize: 18 }}>{formData.title}</p>
             </div>
-            <div className={styles.taskList} style={{ minHeight: 500 }}>
+            <div className={styles.taskList} style={{ minHeight: 558 }}>
               <div className={styles.descBox} dangerouslySetInnerHTML={{__html: formData.task_desc}}>
               </div>
             </div>

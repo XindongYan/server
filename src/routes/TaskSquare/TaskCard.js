@@ -26,18 +26,20 @@ export default class TaskCard extends PureComponent {
     return (
       <Col span={6} key={index} style={{padding: "5px"}}>
         <Card style={{ width: "100%" }} bodyStyle={{ padding: 0 }} ref="taskCard">
-          <div className={styles.customImage} style={{ background: colorArr[ task.id % 8 ] }}>
-            <Link to={`/project/task/view?_id=${task._id}`}>
-              <h3><TaskNameColumn text={task.name} length={23}/></h3>
-            </Link>
-          </div>
+          <Link to={`/project/task/view?_id=${task._id}`}>
+            <div className={styles.customImage} style={{ background: colorArr[ task.id % 8 ] }}>
+              <Tooltip title="任务标题">
+                <h3><TaskNameColumn text={task.name} length={23}/></h3>
+              </Tooltip>
+            </div>
+          </Link>
           <div className={styles.customCard}>
-             <Tooltip title="任务ID">
+            <Tooltip title="任务ID">
               <Tag color="blue">{task.id}</Tag>
             </Tooltip>
             <p className={styles.descBox}>
               <Link to={`/project/task/view?_id=${task._id}`} style={{ color: '#444' }}>
-                {task.desc || '无描述'}
+                <Tooltip title="任务描述">{task.desc || '无描述'}</Tooltip>
               </Link>
             </p>
             <div className={styles.customBtn} style={{ margin: 0, padding: 5 }}>

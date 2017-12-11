@@ -157,11 +157,11 @@ export default class TaskCreate extends PureComponent {
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
-          <div style={{ width: 720, background: '#fff' }}>
+          <div style={{ width: 720 }}>
             <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
               内容创作
             </div>
-            <div className={styles.taskList} style={{ padding: 10, marginTop: 10 }}>
+            <div className={styles.taskList}>
               <Input
                 type="text"
                 value={task.merchant_tag}

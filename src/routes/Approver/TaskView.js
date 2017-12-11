@@ -70,7 +70,7 @@ export default class TaskView extends PureComponent {
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
-          <div style={{ width: 650, background: '#fff' }}>
+          <div style={{ width: 650 }}>
             <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
               内容创作
             </div>

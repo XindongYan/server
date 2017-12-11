@@ -59,7 +59,7 @@ export default class WeitaoForm extends PureComponent {
               <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
-            <div className={styles.taskList} style={{ marginTop: 20 }}>
+            <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
               <p>封面图</p>
               <div className={styles.coverPicBox}>
                 <div className={styles.upCover} onClick={this.uploadCoverImg} style={{display: formData.cover_img ? 'none' : 'block'}}>
@@ -79,16 +79,18 @@ export default class WeitaoForm extends PureComponent {
         }
         { operation==='view' &&
           <div className={styles.taskContentBox}>
-            <div className={styles.taskList} style={{margin: '20px 0'}}>
+            <div className={styles.taskList} style={{padding: '30px 0'}}>
               <p style={{ fontSize: 18 }}>{formData.title}</p>
             </div>
-            <div className={styles.taskList} style={{ minHeight: 500 }}>
+            <div className={styles.taskList} style={{ minHeight: 558 }}>
               <div className={styles.descBox} dangerouslySetInnerHTML={{__html: formData.task_desc}}>
               </div>
             </div>
-            <div className={styles.taskList}>
-              <div style={{ width: 375, height:'211px', textAlign: 'center', lineHeight: '211px' }}>
-                <img src={formData.cover_img} />
+            <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
+              <div style={{ width: 340, height:'176px', textAlign: 'center', lineHeight: '176px' }}>
+                { formData.cover_img &&
+                  <img src={formData.cover_img} />
+                }
               </div>
             </div>
           </div>
