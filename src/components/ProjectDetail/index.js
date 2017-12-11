@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Modal, message, Icon, Button, Tag, Collapse } from 'antd';
+import { Card, Modal, message, Icon, Button, Tag, Collapse, Tooltip } from 'antd';
 import moment from 'moment';
 import path from 'path';
 import styles from './index.less';
@@ -48,11 +48,17 @@ export default class ProjectDetail extends PureComponent {
           <h3>{ project.name ? project.name : '无' }</h3>
         </div>
         <div style={{ marginTop: 8}}>
-          <Tag color="green">{ project.id}</Tag>
-          { project.channel_name &&
-            <Tag color={color}>{ project.channel_name }</Tag>
-          }
-          <Tag color="cyan">{ project.merchant_tag}</Tag>
+          <Tooltip title="活动ID">
+            <Tag color="green">{ project.id}</Tag>
+          </Tooltip>
+          <Tooltip title="发布渠道">
+            { project.channel_name &&
+              <Tag color={color}>{ project.channel_name }</Tag>
+            }
+          </Tooltip>
+          <Tooltip title="商家标签">
+            <Tag color="cyan">{ project.merchant_tag}</Tag>
+          </Tooltip>
         </div>
         <div>
           <div className={styles.projectDescBox} style={{ marginTop: 10 }}>

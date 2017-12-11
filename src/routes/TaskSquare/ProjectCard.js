@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Col, Row, Icon, Button, Tag } from 'antd';
+import { Card, Col, Row, Icon, Button, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { routerRedux } from 'dva/router';
@@ -51,11 +51,17 @@ export default class ProjectCard extends PureComponent {
             {project.name}
           </h3>
           <div style={{ marginTop: 8 }}>
-            <Tag color="green">{ project.id}</Tag>
-            { project.channel_name &&
-              <Tag color={color}>{ project.channel_name }</Tag>
-            }
-            <Tag color="cyan">{ project.merchant_tag}</Tag>
+            <Tooltip title="活动ID">
+              <Tag color="green">{ project.id}</Tag>
+            </Tooltip>
+            <Tooltip title="发布渠道">
+              { project.channel_name &&
+                <Tag color={color}>{ project.channel_name }</Tag>
+              }
+            </Tooltip>
+            <Tooltip title="商家标签">
+              <Tag color="cyan">{ project.merchant_tag}</Tag>
+            </Tooltip>
           </div>
         </div>
         <div className={styles.cardColBottom}>

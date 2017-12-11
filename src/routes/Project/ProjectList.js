@@ -3,13 +3,17 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import TaskNameColumn from '../../components/TaskNameColumn';
-import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message } from 'antd';
+import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message, Radio, DatePicker } from 'antd';
 import { Link } from 'dva/router';
 import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
 
 import styles from './Project.less';
 
+const { RangePicker } = DatePicker;
+const Search = Input.Search;
 const { Option } = Select;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
@@ -21,15 +25,18 @@ export default class ProjectList extends PureComponent {
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
+    tabValue: 1,
   };
 
   componentDidMount() {
     const { dispatch, teamUser, type } = this.props;
+    const { tabValue } = this.state;
     if (teamUser.team_id) {
       dispatch({
         type: 'project/fetch',
         payload: {
           team_id: teamUser.team_id,
+          status: tabValue,
           type,
         },
       });
@@ -37,11 +44,13 @@ export default class ProjectList extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, teamUser, type } = nextProps;
+    const { tabValue } = this.state;
     if (teamUser.team_id !== this.props.teamUser.team_id) {
       dispatch({
         type: 'project/fetch',
         payload: {
           team_id: teamUser.team_id,
+          status: tabValue,
           type,
         },
       });
@@ -106,30 +115,6 @@ export default class ProjectList extends PureComponent {
       selectedRows: rows,
     });
   }
-
-  handleSearch = (e) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'project/fetch',
-        payload: values,
-      });
-    });
-  }
   handleAdd = () => {
     const { type } = this.props;
     if (type === 1) {
@@ -147,7 +132,6 @@ export default class ProjectList extends PureComponent {
     }
   }
   handlePublish = (record) => {
-    
     const { dispatch, teamUser } = this.props;
     dispatch({
       type: 'project/publish',
@@ -208,17 +192,49 @@ export default class ProjectList extends PureComponent {
       },
     });
   }
+  handleSearch = (value, name) => {
+    const { dispatch, teamUser, type } = this.props;
+    const { tabValue } = this.state;
+    const values = {
+      team_id: teamUser.team_id,
+      status: tabValue,
+      type,
+    };
+    if(name === 'time') {
+      values['create_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
+      values['create_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+    } else {
+      values[name] = value;
+    }
+    dispatch({
+      type: 'project/fetch',
+      payload: values,
+    });
+  }
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-
     if (this.props.onSelectRow) {
       this.props.onSelectRow(selectedRows);
     }
-
     this.setState({ selectedRowKeys });
+  }
+
+  changeTab = (e) => {
+    const { dispatch, teamUser, type } = this.props;
+    this.setState({
+      tabValue: e.target.value,
+    })
+    dispatch({
+      type: 'project/fetch',
+      payload: {
+        team_id: teamUser.team_id,
+        status: e.target.value,
+        type,
+      },
+    });
   }
   render() {
     const { project: { loading, data: { list, pagination }, approveRoles } } = this.props;
-    const { selectedRows, selectedRowKeys } = this.state;
+    const { selectedRows, selectedRowKeys, tabValue } = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -326,33 +342,37 @@ export default class ProjectList extends PureComponent {
     //   }),
     // };
     return (
-      <Card bordered={false} bodyStyle={{ padding: 14 }}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListOperator}>
-            {/* <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button> */}
-            {
-              selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )
-            }
-          </div>
-          <Table
-            loading={loading}
-            dataSource={list}
-            columns={columns}
-            pagination={paginationProps}
-            onChange={this.handleStandardTableChange}
-            rowKey="_id"
-          />
+      <div>
+        <div className={styles.searchBox}>
+          <RadioGroup value={tabValue} onChange={this.changeTab}> 
+            <RadioButton value={1}>已创建</RadioButton>
+            <RadioButton value={2}>已发布</RadioButton>
+            <RadioButton value={3}>已下架</RadioButton>
+          </RadioGroup>
         </div>
-      </Card>
+        <Card bordered={false} bodyStyle={{ padding: 14 }}>
+          <div className={styles.tableList}>
+            <div className={styles.tableListOperator}>
+              {/* <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button> */}
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <Search
+                style={{ width: 260, float: 'right'}}
+                placeholder="任务名称／商家标签"
+                onSearch={(value) => this.handleSearch(value, 'search')}
+                enterButton
+              />
+            </div>
+            <Table
+              loading={loading}
+              dataSource={list}
+              columns={columns}
+              pagination={paginationProps}
+              onChange={this.handleStandardTableChange}
+              rowKey="_id"
+            />
+          </div>
+        </Card>
+      </div>
     );
   }
 }

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Card, Button, Col, Tag, Menu, Dropdown, Icon } from 'antd';
+import { Card, Button, Col, Tag, Menu, Dropdown, Icon, Tooltip } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS } from '../../constants';
@@ -22,17 +22,18 @@ export default class TaskCard extends PureComponent {
         }
       </Menu>
     );
-    const colorArr = ['#6a6aff','#2894ff','#00caca','#4f9d9d','#ffa042','#ffd306','#ff8040','#7373b9','#c07ab8','#a6a6d2'];
     return (
       <Col span={6} key={index} style={{padding: "5px"}}>
         <Card style={{ width: "100%" }} bodyStyle={{ padding: 0 }} ref="taskCard">
-          <div className={styles.customImage} style={{ background: colorArr[ task.id % 8 ] }}>
+          <div className={styles.customImage} style={{ background: "#d95940" }}>
             <Link to={`/project/task/view?_id=${task._id}`}>
               <h3><TaskNameColumn text={task.name} length={23}/></h3>
             </Link>
           </div>
           <div className={styles.customCard}>
-            <Tag color="blue">{task.id}</Tag>
+             <Tooltip title="任务ID">
+              <Tag color="blue">{task.id}</Tag>
+            </Tooltip>
             <p className={styles.descBox}>{task.desc || '无描述'}</p>
             <p>
               <a href="javascript:;" onClick={() => {this.setState({ fileVisible: true })}}>
