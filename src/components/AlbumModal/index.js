@@ -45,6 +45,8 @@ export default class AlbumModal extends PureComponent {
       current: 1,
     },
     fileList: [],
+    previewImage: '',
+    previewVisible: false,
   }
   componentDidMount() {
     const { dispatch, currentUser } = this.props;
@@ -199,9 +201,22 @@ export default class AlbumModal extends PureComponent {
       }
     });
   }
+  handlePreview = (file) => {
+    console.log(file)
+    this.setState({
+      previewImage: file.url || file.thumbUrl || '',
+      previewVisible: true,
+    });
+  }
+  handleImgCancel = () => {
+    this.setState({
+      previewImage: '',
+      previewVisible: false,
+    });
+  }
   render() {
     const { data, loading, visible, k, currentKey, minSize } = this.props;
-    const { choosen, pagination, fileList } = this.state;
+    const { choosen, pagination, fileList, previewVisible, previewImage } = this.state;
     return (
       <Modal
         title="素材"
@@ -235,12 +250,20 @@ export default class AlbumModal extends PureComponent {
                 onChange={this.handleChange}
                 listType="picture-card"
                 fileList={fileList}
+                onPreview={this.handlePreview}
               >
                 <div style={{height: '120px', 'paddingTop': '40px'}}>
                   <Icon type="plus" />
                   <div className="ant-upload-text">Upload</div>
                 </div>
               </Upload>
+              <Modal visible={previewVisible} footer={null} onCancel={this.handleImgCancel}>
+                <div style={{ minHeight: 200 }}>
+                  { previewImage &&
+                    <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                  }
+                </div>
+              </Modal>
             </div>
           </TabPane>
         </Tabs>

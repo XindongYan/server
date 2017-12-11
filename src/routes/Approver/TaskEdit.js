@@ -193,7 +193,7 @@ export default class TaskEdit extends PureComponent {
           <div className={styles.taskComment}>
             <Annotation
               approve_step={formData.approve_step}
-              viewStatus={operation}
+              viewStatus="edit"
               value={approve_notes}
               onChange={this.changeApproveNode}
             />
