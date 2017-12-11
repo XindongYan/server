@@ -69,7 +69,7 @@ export default class Success extends PureComponent {
           <Button type="primary">返回列表</Button>
         </Link>
         <Link to={`/writer/task/view?_id=${formData._id}`}>
-          <Button style={{ marginLeft: 30 }}>查看任务</Button>
+          <Button style={{ marginLeft: 30 }}>查看详情</Button>
         </Link>
       </div>
     );
