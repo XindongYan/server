@@ -109,7 +109,9 @@ export default class UserInfo extends Component {
               <span>头像：</span>
             </Col>
             <Col span={14}>
-              <img className={styles.imgBox} src={currentUser.avatar} />
+              { currentUser.avatar &&
+                <img className={styles.imgBox} src={currentUser.avatar} />
+              }
             </Col>
             <Col span={4} style={{ textAlign: 'right'}}>
               <div type="primary" style={{ height: 80, lineHeight: '80px' }}>

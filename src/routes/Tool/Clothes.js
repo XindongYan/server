@@ -33,12 +33,18 @@ export default class Clothes extends PureComponent {
   }
   render (){
     const gridStyle = {
-      width: '20%',
+      width: '20%',      
+      padding: 10,
+      minHeight: 56,
+      verticalAlign: 'middle',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    };
+    const gridItemStyle = {
       textAlign: 'center',
       fontSize: 12,
-      padding: 10,
-      border: 'none',
-    };
+    }
     const { clothList, key, showClothes } = this.state;
     const tabListNoTitle = [{
       key: 0,
@@ -60,7 +66,10 @@ export default class Clothes extends PureComponent {
         onTabChange={(key) => { this.onTabChange(key); }}
       >
         { showClothes && showClothes.length > 0 &&
-          showClothes.map((item,index) => <Card.Grid key={index} style={gridStyle}>{item.name}</Card.Grid>)
+          showClothes.map((item,index) => 
+            <Card.Grid key={index} style={gridStyle}>
+              <div style={gridItemStyle}>{item.name}</div>
+            </Card.Grid>)
         }
       </Card>
     );
