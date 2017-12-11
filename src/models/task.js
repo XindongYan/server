@@ -4,7 +4,6 @@ import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
   namespace: 'task',
-
   state: {
     data: {
       list: [],

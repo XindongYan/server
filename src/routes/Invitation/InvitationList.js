@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Icon, Table, Button, Badge, message } from 'antd';
-
+import { Card, Icon, Table, Button, Badge, message, Radio } from 'antd';
+import { INVITATION_ROLE } from '../../constants';
 import styles from './InvitationList.less';
 
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
@@ -18,15 +20,17 @@ export default class TableList extends PureComponent {
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
+    tabValue: INVITATION_ROLE.writer,
   };
 
   componentDidMount() {
     const { dispatch, teamUser } = this.props;
     if (teamUser.team_id) {
       dispatch({
-        type: 'invitation/fetch',
+        type: 'invitation/fetchInvitation',
         payload: {
           team_id: teamUser.team_id,
+          role: INVITATION_ROLE.writer,
         },
       });
     }
@@ -36,9 +40,10 @@ export default class TableList extends PureComponent {
     const { dispatch, teamUser } = nextProps;
     if (teamUser.team_id !== this.props.teamUser.team_id) {
       dispatch({
-        type: 'invitation/fetch',
+        type: 'invitation/fetchInvitation',
         payload: {
           team_id: teamUser.team_id,
+          role: INVITATION_ROLE.writer,
         },
       });
     }
@@ -46,7 +51,7 @@ export default class TableList extends PureComponent {
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, teamUser } = this.props;
-    const { formValues } = this.state;
+    const { formValues, tabValue } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -58,15 +63,15 @@ export default class TableList extends PureComponent {
       team_id: teamUser.team_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
+      role: tabValue,
       ...formValues,
       ...filters,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
-
     dispatch({
-      type: 'invitation/fetch',
+      type: 'invitation/fetchInvitation',
       payload: params,
     });
   }
@@ -95,7 +100,7 @@ export default class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'invitation/fetch',
+        type: 'invitation/fetchInvitation',
         payload: values,
       });
     });
@@ -112,19 +117,34 @@ export default class TableList extends PureComponent {
   }
   handleAddInvitationCodes = () => {
     const { dispatch, teamUser } = this.props;
+    const { tabValue } = this.state;
     dispatch({
       type: 'invitation/add',
       payload: {
         team_id: teamUser.team_id,
         user_id: teamUser.user_id,
         num: 5,
+        role: tabValue,
       },
     });
   }
+  changeTab = (e) => {
+    const { dispatch, teamUser } = this.props;
+    this.setState({
+      tabValue: e.target.value,
+    },() => {
+      dispatch({
+        type: 'invitation/fetchInvitation',
+        payload: {
+          team_id: teamUser.team_id,
+          role: e.target.value,
+        },
+      });
+    })
+  }
   render() {
-    const { invitation: { loading, data: { list, pagination } } } = this.props;
-    const { selectedRows, selectedRowKeys } = this.state;
-
+    const { invitation: { loading, Invitations: { list, pagination } } } = this.props;
+    const { selectedRows, selectedRowKeys, tabValue } = this.state;
     const columns = [
       {
         title: '邀请码',
@@ -175,25 +195,34 @@ export default class TableList extends PureComponent {
     //   }),
     // };
     return (
-      <Card bordered={false} bodyStyle={{ padding: 10 }}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.handleAddInvitationCodes()}>生成5个邀请码</Button>
-          </div>
-          <Table
-            loading={loading}
-            dataSource={list}
-            columns={columns}
-            pagination={paginationProps}
-            onChange={this.handleStandardTableChange}
-            rowKey="_id"
-            rowClassName={(record) => {
-              if (record.status === 2) return styles.used;
-              else return '';
-            }}
-          />
+      <div>
+        <div className={styles.searchBox}>
+          <RadioGroup value={tabValue} onChange={(e) => this.changeTab(e)}>
+            <RadioButton value={INVITATION_ROLE.writer}>写手</RadioButton>
+            <RadioButton value={INVITATION_ROLE.cooperative}>合作伙伴</RadioButton>
+            <RadioButton value={INVITATION_ROLE.business}>商家</RadioButton>
+          </RadioGroup>
         </div>
-      </Card>
+        <Card bordered={false} bodyStyle={{ padding: 10 }}>
+          <div className={styles.tableList}>
+            <div className={styles.tableListOperator}>
+              <Button icon="plus" type="primary" onClick={() => this.handleAddInvitationCodes()}>生成5个邀请码</Button>
+            </div>
+            <Table
+              loading={loading}
+              dataSource={list}
+              columns={columns}
+              pagination={paginationProps}
+              onChange={this.handleStandardTableChange}
+              rowKey="_id"
+              rowClassName={(record) => {
+                if (record.status === 2) return styles.used;
+                else return '';
+              }}
+            />
+          </div>
+        </Card>
+      </div>
     );
   }
 }

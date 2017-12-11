@@ -82,3 +82,9 @@ export const RIGHT = {
   projectAdmin: 3,
   approver: 6,
 };
+
+export const INVITATION_ROLE = {
+  writer: 1,
+  cooperative: 2,
+  business: 3,
+};
