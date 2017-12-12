@@ -143,7 +143,21 @@ export default class TaskEdit extends PureComponent {
       }
     });
   }
-
+  handleReject = () => {
+    const { dispatch, formData, currentUser } = this.props;
+    dispatch({
+      type: 'task/reject',
+      payload: { _id: formData._id, approver_id: currentUser._id },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          this.props.dispatch(routerRedux.push(`/approve/approve-list`));
+        }
+      },
+    }); 
+  }
   render() {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -213,30 +227,38 @@ export default class TaskEdit extends PureComponent {
                   }
                 </dl>
               }
-              <Popconfirm
-                placement="top"
-                title="确认提交？"
-                onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}
-              >
-                { showApproveLog ?
-                  <Popover content={content} title="评分" trigger="hover">
-                    <Button>不通过</Button>
-                  </Popover>
-                  : <Button>不通过</Button>
-                }
-              </Popconfirm>
-              <Popconfirm
-                placement="top"
-                title="确认提交？"
-                onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}
-              >
-                { showApproveLog ?
-                  <Popover content={content} title="评分" trigger="hover">
-                    <Button>通过</Button>
-                  </Popover>
-                  : <Button>通过</Button>
-                }
-              </Popconfirm>
+              { formData.approve_status !== 1 ?
+                <div>
+                  <Popconfirm
+                    placement="top"
+                    title="确认提交？"
+                    onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}
+                  >
+                    { showApproveLog ?
+                      <Popover content={content} title="评分" trigger="hover">
+                        <Button>不通过</Button>
+                      </Popover>
+                      : <Button>不通过</Button>
+                    }
+                  </Popconfirm>
+                  <Popconfirm
+                    placement="top"
+                    title="确认提交？"
+                    onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}
+                  >
+                    { showApproveLog ?
+                      <Popover content={content} title="评分" trigger="hover">
+                        <Button>通过</Button>
+                      </Popover>
+                      : <Button>通过</Button>
+                    }
+                  </Popconfirm>
+                </div>
+                :
+                <Popconfirm placement="top" title={`确认退回?`} onConfirm={() => this.handleReject()} okText="确认" cancelText="取消">
+                  <Button>退回</Button>
+                </Popconfirm>
+              }
               <Button onClick={this.handleSave}>保存</Button>
             </div>
           }
