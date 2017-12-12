@@ -105,6 +105,17 @@ export default class TaskForm extends PureComponent {
       }
     });
   }
+  beforeUpload = (file) => {
+    const promise = new Promise(function(resolve, reject) {
+      const isLt100M = file.size / 1024 / 1024 <= 100;
+      if (!isLt100M) {
+        message.error('上传文件最大100M');
+        reject(isLt100M);
+      }
+      resolve(isLt100M);
+    });
+    return promise;
+  }
   normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
@@ -158,7 +169,7 @@ export default class TaskForm extends PureComponent {
               valuePropName: 'fileList',
               getValueFromEvent: this.normFile,
             })(
-              <Upload name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData}>
+              <Upload name="file" action={QINIU_UPLOAD_DOMAIN} listType="text" data={this.makeUploadData} beforeUpload={this.beforeUpload}>
                 <Button>
                   <Icon type="upload" /> 点击上传
                 </Button>
