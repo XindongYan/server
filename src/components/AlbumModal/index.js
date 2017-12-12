@@ -7,8 +7,12 @@ import styles from './index.less';
 const TabPane = Tabs.TabPane;
 
 function beforeUpload(file, minSize){
-  if (minSize) {
-    const promise = new Promise(function(resolve, reject) {
+  const promise = new Promise(function(resolve, reject) {
+    const isLt3M = file.size / 1024 / 1024 <= 3;
+    if (!isLt3M) {
+      message.error('上传图片最大3M');
+      reject(isLt3M);
+    } else if (minSize) {
       const image = new Image();
       image.onload = function () {
         if(image.width < minSize.width || image.height < minSize.height) {
@@ -23,9 +27,11 @@ function beforeUpload(file, minSize){
           image.src = fr.result;
       };
       fr.readAsDataURL(file);
-    });
-    return promise;
-  }
+    } else {
+      resolve(isLt3M);
+    }
+  });
+  return promise;
 }
 @connect(state => ({
   currentUser: state.user.currentUser,
@@ -157,6 +163,7 @@ export default class AlbumModal extends PureComponent {
       })
     }
   }
+
   renderPhoto = (photo, index) => {
     const { minSize } = this.props;
     const isChoosen = this.state.choosen.find(item => item._id === photo._id);

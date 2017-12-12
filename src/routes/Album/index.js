@@ -168,8 +168,16 @@ export default class Album extends PureComponent {
       }
     });
   }
-  handleProCancel = () => {
-
+  beforeUpload = (file) => {
+    const promise = new Promise(function(resolve, reject) {
+      const isLt3M = file.size / 1024 / 1024 <= 3;
+      if (!isLt3M) {
+        message.error('上传图片最大3M');
+        reject(isLt3M);
+      }
+      resolve(isLt3M);
+    });
+    return promise;
   }
   render() {
     const { data, loading } = this.props;
@@ -182,6 +190,7 @@ export default class Album extends PureComponent {
         showUploadList={false}
         data={this.makeUploadData}
         onChange={this.handleChange}
+        beforeUpload={this.beforeUpload}
       >
         <Button onClick={() => {this.setState({ ProgressPercent: 10 })}}>
           <Icon type="upload" /> 点击上传
