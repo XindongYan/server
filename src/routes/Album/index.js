@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import fetch from 'dva/fetch';
 import path from 'path';
-import { Card, Button, Upload, Icon, message, Modal, Pagination, Spin} from 'antd';
+import { Card, Button, Upload, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
 import styles from './index.less';
 
@@ -17,6 +17,8 @@ export default class Album extends PureComponent {
   state = {
     previewVisible: false,
     previewImage: '',
+    ProgressVisible: false,
+    ProgressPercent: 10,
   }
   componentDidMount() {
     const { dispatch, currentUser, data } = this.props;
@@ -47,13 +49,23 @@ export default class Album extends PureComponent {
       });
     }
   }
-  handleChange = async ({file}) => {
+  handleChange = async ({file,event}) => {
     const { dispatch, currentUser } = this.props;
     const payload = {
       user_id: currentUser._id,
       originalname: file.name,
       album_name: '相册一',
     };
+    if (file.status === "uploading") {
+      this.setState({
+        ProgressVisible: true,
+        ProgressPercent: parseInt(event.percent) - 1,
+      })
+    } else {
+      this.setState({
+        ProgressVisible: false,
+      })
+    }
     if (file.response && !file.error) {
       const url = `${QINIU_DOMAIN}/${file.response.key}`;
       payload.href = url;
@@ -148,9 +160,12 @@ export default class Album extends PureComponent {
       }
     });
   }
+  handleProCancel = () => {
+
+  }
   render() {
     const { data, loading } = this.props;
-    const { previewVisible, previewImage } = this.state;
+    const { previewVisible, previewImage, ProgressVisible, ProgressPercent } = this.state;
     const extra = (
       <Upload
         accept="image/*"
@@ -160,7 +175,7 @@ export default class Album extends PureComponent {
         data={this.makeUploadData}
         onChange={this.handleChange}
       >
-        <Button>
+        <Button onClick={() => {this.setState({ ProgressPercent: 10 })}}>
           <Icon type="upload" /> 点击上传
         </Button>
       </Upload>
@@ -183,6 +198,9 @@ export default class Album extends PureComponent {
         />
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
+        </Modal>
+        <Modal closable={false} footer={null} visible={ProgressVisible} onCancel={this.handleProCancel}>
+          <Progress percent={ProgressPercent} status="active" />
         </Modal>
       </div>
     );

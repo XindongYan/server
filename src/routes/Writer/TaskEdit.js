@@ -68,7 +68,7 @@ export default class TaskEdit extends PureComponent {
       message.warn('标题字数不符合要求');
     } else if (!task.task_desc) {
       message.warn('请填写内容');
-    } else if (!task.cover_img) {
+    } else if (!task.cover_img && this.props.formData.task_type !== 3) {
       message.warn('请选择封面图');
     } else {
       const query = querystring.parse(this.props.location.search.substr(1));

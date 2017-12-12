@@ -11,7 +11,6 @@ export default class SignBox extends PureComponent {
     this.setState({
       signValue: nextProps.signContent.message || '',
     })
-    // if (nextProps.signVisible ==)
   }
 
   fnPrevent = (e) => {
@@ -21,7 +20,10 @@ export default class SignBox extends PureComponent {
   creatComment = () => {
     const { direction, parentWidth } = this.props;
     const bgColors = ['#1abc9c','#f39c12','#3498db','#e74c3c'];
-    const n = this.props.approve_step;
+    let n = this.props.approve_step;
+    if ( this.props.approve_status === 1 ) {
+      n = 0;
+    }
     let nWidth = '';
     if( direction.x > parentWidth/2 ){
       nWidth = `${parentWidth - direction.x}px`;

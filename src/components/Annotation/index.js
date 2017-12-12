@@ -144,7 +144,7 @@ export default class Annotation extends PureComponent {
     })
   }
   render() {
-    const { viewStatus, value, approve_step } = this.props;
+    const { viewStatus, value, approve_step, approve_status } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     const boxSize = {width: $(this.refs.AnnotationBox).outerWidth(), height: $(this.refs.AnnotationBox).outerHeight()};
     return (
@@ -177,6 +177,7 @@ export default class Annotation extends PureComponent {
             signContent={signContent}
             boxSize={$(this.refs.AnnotationBox).outerHeight()}
             approve_step={approve_step}
+            approve_status={approve_status}
           />
           {value.map((item,index) => 
             <Comment boxSize={boxSize} editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)

@@ -66,7 +66,7 @@ export default class ProjectDetail extends PureComponent {
           </div>
           <div className={styles.projectTagBox}>
             { project.price !== 0 &&
-              <span className={styles.projectTag}>活动酬劳：
+              <span className={styles.projectTag}>活动酬劳：¥
                 <span>{ project.price }</span>
               </span>
             }
