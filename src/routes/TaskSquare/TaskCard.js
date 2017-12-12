@@ -39,7 +39,7 @@ export default class TaskCard extends PureComponent {
             </Tooltip>
             <p className={styles.descBox}>
               <Link to={`/project/task/view?_id=${task._id}`} style={{ color: '#444' }}>
-                <Tooltip title="任务描述">{task.desc || '无描述'}</Tooltip>
+                <Tooltip title="任务描述">{task.desc || ''}</Tooltip>
               </Link>
             </p>
             <div className={styles.customBtn} style={{ margin: 0, padding: 5 }}>

@@ -8,7 +8,7 @@ const TabPane = Tabs.TabPane;
 
 function beforeUpload(file, minSize){
   if (minSize) {
-    var promise = new Promise(function(resolve, reject) {
+    const promise = new Promise(function(resolve, reject) {
       const image = new Image();
       image.onload = function () {
         if(image.width < minSize.width || image.height < minSize.height) {
