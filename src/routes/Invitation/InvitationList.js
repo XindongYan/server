@@ -115,6 +115,7 @@ export default class TableList extends PureComponent {
         type: 'invitation/fetchInvitation',
         payload: {
           team_id: teamUser.team_id,
+          user_id: teamUser.user_id,
           role: e.target.value,
         },
       });
