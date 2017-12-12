@@ -30,6 +30,7 @@ export default class TableList extends PureComponent {
         type: 'invitation/fetchInvitation',
         payload: {
           team_id: teamUser.team_id,
+          user_id: teamUser.user_id,
           role: INVITATION_ROLE.writer,
         },
       });
@@ -43,6 +44,7 @@ export default class TableList extends PureComponent {
         type: 'invitation/fetchInvitation',
         payload: {
           team_id: teamUser.team_id,
+          user_id: teamUser.user_id,
           role: INVITATION_ROLE.writer,
         },
       });
@@ -61,6 +63,7 @@ export default class TableList extends PureComponent {
 
     const params = {
       team_id: teamUser.team_id,
+      user_id: teamUser.user_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       role: tabValue,
@@ -81,31 +84,6 @@ export default class TableList extends PureComponent {
       selectedRows: rows,
     });
   }
-
-  handleSearch = (e) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'invitation/fetchInvitation',
-        payload: values,
-      });
-    });
-  }
-
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
 
