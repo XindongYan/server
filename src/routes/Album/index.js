@@ -110,7 +110,15 @@ export default class Album extends PureComponent {
       },
     });
   }
-  handleCancel = () => this.setState({ previewVisible: false })
+  handleCancel = () => {
+    this.setState({
+      previewVisible: false,
+    },() => {
+      this.setState({
+        previewImage: '',
+      })
+    })
+  }
 
   handlePreview = (photo) => {
     this.setState({
@@ -130,13 +138,13 @@ export default class Album extends PureComponent {
     return (
       <Card style={{ width: 160, display: 'inline-block', margin: 10 }} bodyStyle={{ padding: 0 }} key={photo._id} >
         <div className={styles.customImageBox}>
-          <img className={styles.customImage} alt="example" width="100%" src={`${photo.href}?imageView2/2/w/300/h/300/q/100`} />
+          <img className={styles.customImage} src={`${photo.href}?imageView2/2/w/300/h/300/q/100`} />
           <div className={styles.customModals}>
             <Icon type="eye" className={styles.customIcon} onClick={() => this.handlePreview(photo)}/>
             <Icon type="delete" className={styles.customIcon} onClick={() => this.handleRemove(photo)} />
           </div>
         </div>
-        <div className="custom-card">
+        <div className={styles.customCard}>
           <p className={styles.customNodes}>{photo.width} * {photo.height}</p>
           <p className={styles.customNodes}>{photo.originalname}</p>
         </div>
@@ -183,7 +191,7 @@ export default class Album extends PureComponent {
     return (
       <div>
         <Card
-          title="素材"
+          title="图片"
           bodyStyle={{ padding: 15 }}
           extra={extra}
         >
@@ -196,8 +204,10 @@ export default class Album extends PureComponent {
           onChange={this.changeAlbumPage}
           style={{float: 'right', margin: '10px 20px'}}
         />
-        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-          <img alt="图片上传成功" style={{ width: '100%' }} src={previewImage} />
+        <Modal visible={previewVisible} footer={null} width={620} onCancel={this.handleCancel}>
+          <div style={{ padding: 20, height: 480, lineHeight: '420px', textAlign: 'center' }}>
+            <img style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} src={previewImage} />
+          </div>
         </Modal>
         <Modal closable={false} footer={null} visible={ProgressVisible} onCancel={this.handleProCancel}>
           <Progress percent={ProgressPercent} status="active" />
