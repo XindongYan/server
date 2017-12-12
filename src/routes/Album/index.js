@@ -197,7 +197,7 @@ export default class Album extends PureComponent {
           style={{float: 'right', margin: '10px 20px'}}
         />
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-          <img alt="example" style={{ width: '100%' }} src={previewImage} />
+          <img alt="图片上传成功" style={{ width: '100%' }} src={previewImage} />
         </Modal>
         <Modal closable={false} footer={null} visible={ProgressVisible} onCancel={this.handleProCancel}>
           <Progress percent={ProgressPercent} status="active" />

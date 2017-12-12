@@ -255,6 +255,14 @@ export default class TableList extends PureComponent {
         dataIndex: 'user_id.phone',
       },
       {
+        title: '邀请人',
+        dataIndex: 'inviter_id',
+        render: val => val ?
+          <Tooltip title={val.phone}>
+            <span>{val.name}</span>
+          </Tooltip> : '',
+      },
+      {
         title: '创建时间',
         dataIndex: 'create_time',
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
