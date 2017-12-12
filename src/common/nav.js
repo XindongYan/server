@@ -67,7 +67,7 @@ const project = {
     component: Activity,
   }, {
     name: '新建活动',
-    path: 'activity-lcreate',
+    path: 'activity-create',
     component: ActivityCreate,
   }],
 };

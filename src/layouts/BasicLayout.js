@@ -83,6 +83,11 @@ class BasicLayout extends React.PureComponent {
       type: 'user/fetchCurrent',
       callback: () => { },
     });
+    const key = this.props.location.pathname.split('/') ? this.props.location.pathname.split('/')[2] : '';
+    this.props.dispatch({
+      type: 'global/changeSelectedKeys',
+      payload: [key],
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentUser.error) {
