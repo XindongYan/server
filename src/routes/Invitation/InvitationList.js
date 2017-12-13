@@ -179,6 +179,7 @@ export default class TableList extends PureComponent {
             <RadioButton value={INVITATION_ROLE.writer}>写手</RadioButton>
             <RadioButton value={INVITATION_ROLE.cooperative}>合作伙伴</RadioButton>
             <RadioButton value={INVITATION_ROLE.business}>商家</RadioButton>
+            <RadioButton value={INVITATION_ROLE.daren}>达人</RadioButton>
           </RadioGroup>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 10 }}>

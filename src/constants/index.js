@@ -87,4 +87,5 @@ export const INVITATION_ROLE = {
   writer: 1,
   cooperative: 2,
   business: 3,
+  daren: 4,
 };
