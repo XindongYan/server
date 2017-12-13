@@ -1,4 +1,5 @@
-import { queryProjects, addProject, updateProject, removeProject, queryProject, publishProject, offshelfProject } from '../services/project';
+import { queryProjects, addProject, updateProject, removeProject, queryProject, publishProject, offshelfProject,
+publishTasks } from '../services/project';
 
 export default {
   namespace: 'project',
@@ -98,6 +99,10 @@ export default {
         payload: false,
       });
 
+      if (callback) callback(result);
+    },
+    *publishTasks({ payload, callback }, { call, put }) {
+      const result = yield call(publishTasks, payload);
       if (callback) callback(result);
     },
     *remove({ payload, callback }, { call, put }) {

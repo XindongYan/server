@@ -50,6 +50,15 @@ export async function removeProject(params) {
   });
 }
 
+export async function publishTasks(params) {
+  return request('/api/task/project/publish/tasks', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProject(params) {
   return request(`/api/task/project?${stringify(params)}`);
 }

@@ -153,6 +153,28 @@ export default class TableList extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch(routerRedux.push(`/project/task/create?project_id=${query.project_id}`));
   }
+  publishTasks = () => {
+    const { dispatch, currentUser } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    dispatch({
+      type: 'project/publishTasks',
+      payload: {
+        _id: query.project_id,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          dispatch({
+            type: 'task/fetchProjectTasks',
+            payload: { project_id: query.project_id },
+          });
+        }
+      },
+    });
+  }
   handleEdit = (record) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch(routerRedux.push(`/project/task/edit?project_id=${query.project_id}&_id=${record._id}`));
@@ -397,6 +419,9 @@ export default class TableList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
+              <Popconfirm placement="top" title={`将发布所有未发布任务?`} onConfirm={() => this.publishTasks()} okText="确认" cancelText="取消">
+                <Button icon="flag" type="default">全部发布</Button>
+              </Popconfirm>
               {
                 selectedRows.length > 0 && (
                   <span>
