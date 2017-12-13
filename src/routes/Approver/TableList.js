@@ -316,11 +316,72 @@ export default class TableList extends PureComponent {
         }
       },
     }
-    if (data.approve_status === 'waitingForApprove' || data.approve_status === 'approving'){
-      columns.push(opera)
-    } else {
-      columns.push(approver, grade, approveTime, opera)
+    const operaAdmin = {
+      title: '操作',
+      render: (record) => {
+        if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
+          if (!record.current_approvers || record.current_approvers.length === 0 || record.current_approvers.indexOf(currentUser._id) >= 0) {
+            return (
+              <div>
+                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                  外链
+                </a>
+              </div>
+            );
+          } else {
+            return (
+              <div>
+                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                  外链
+                </a>
+                <Divider type="vertical" />
+                <Link to={`/approver/task/view?_id=${record._id}`}>
+                  <span>详情</span>
+                </Link>
+              </div>
+            );
+          }
+        } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
+          return (
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <Link to={`/approver/task/view?_id=${record._id}`}>
+                <span>详情</span>
+              </Link>
+            </div>
+          );
+        } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
+          return (
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <Link to={`/approver/task/view?_id=${record._id}`}>
+                <span>详情</span>
+              </Link>
+            </div>
+          );
+        }
+      },
     }
+    if (!this.state.user_id) {
+      if (data.approve_status === 'waitingForApprove' || data.approve_status === 'approving'){
+        columns.push(opera)
+      } else {
+        columns.push(approver, grade, approveTime, opera)
+      }
+    } else {
+      if (data.approve_status === 'waitingForApprove' || data.approve_status === 'approving'){
+        columns.push(operaAdmin)
+      } else {
+        columns.push(approver, grade, approveTime, operaAdmin)
+      }
+    }
+    
     return (
       <div>
         <div className={styles.searchBox}>
