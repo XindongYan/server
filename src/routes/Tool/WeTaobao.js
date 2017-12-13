@@ -106,7 +106,7 @@ export default class WeTaobao extends PureComponent {
     
     const columns = [
       {
-        title: '商品名称',
+        title: '商品',
         dataIndex: 'raw_title',
         render: (value, row) => <a target="_blank" href={row.detail_url} dangerouslySetInnerHTML={{__html: value}}></a>
       },
