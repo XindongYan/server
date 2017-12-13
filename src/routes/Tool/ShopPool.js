@@ -30,6 +30,10 @@ export default class ShopPool extends PureComponent {
       num: 0,
     })
     const { shopArr, searchValue, tableMsg } = this.state;
+    if (!searchValue) {
+      message.warn('请输入店铺名称');
+      return;
+    }
     let numLine = 0;
     for (var i = 0; i < shopArr.length; i ++) {
       const value = shopArr[i];
@@ -92,7 +96,7 @@ export default class ShopPool extends PureComponent {
         dataIndex: 'numLine',
       },
       {
-        title: '店铺名称',
+        title: '选品池',
         dataIndex: 'shopName',
       },
       {
