@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, message, } from 'antd';
+import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import styles from './TableList.less';
@@ -159,7 +159,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'project/publishTasks',
       payload: {
-        _id: query.project_id,
+        task_ids: this.state.selectedRowKeys,
         user_id: currentUser._id,
       },
       callback: (result) => {
@@ -171,6 +171,7 @@ export default class TableList extends PureComponent {
             type: 'task/fetchProjectTasks',
             payload: { project_id: query.project_id },
           });
+          this.handleRowSelectChange([], []);
         }
       },
     });
@@ -390,6 +391,13 @@ export default class TableList extends PureComponent {
       margin: '5px',
       padding: '10px',
     };
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.handleRowSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.disabled,
+      }),
+    };
     return (
       <div>
         <ProjectDetail project={formData} />
@@ -419,13 +427,10 @@ export default class TableList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
-              <Popconfirm placement="top" title={`将发布所有未发布任务?`} onConfirm={() => this.publishTasks()} okText="确认" cancelText="取消">
-                <Button icon="flag" type="default">全部发布</Button>
-              </Popconfirm>
               {
                 selectedRows.length > 0 && (
                   <span>
-                    <Button>批量操作</Button>
+                    <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量发布</Button>
                     <Dropdown overlay={menu}>
                       <Button>
                         更多操作 <Icon type="down" />
@@ -444,6 +449,7 @@ export default class TableList extends PureComponent {
                 showQuickJumper: true,
                 ...projectTask.pagination,
               }}
+              rowSelection={rowSelection}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
             />
