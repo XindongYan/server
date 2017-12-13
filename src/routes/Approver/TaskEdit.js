@@ -163,11 +163,7 @@ export default class TaskEdit extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { grades, approve_notes } = this.state;
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
-    const operation = showApproveLog ? 'edit' : 'view';
-    let annotationStatus = 'edit';
-    if (formData.approve_status === 1 && !showApproveLog) {
-      annotationStatus = 'view';
-    }
+    const operation = 'edit';
     const content = (
       <div style={{width: 360}}>
         {grades.map((item, index) => 
@@ -212,7 +208,7 @@ export default class TaskEdit extends PureComponent {
             <Annotation
               approve_step={formData.approve_step}
               approve_status={formData.approve_status}
-              viewStatus={annotationStatus}
+              viewStatus={operation}
               value={approve_notes}
               onChange={this.changeApproveNode}
             />

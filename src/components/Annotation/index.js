@@ -182,12 +182,13 @@ export default class Annotation extends PureComponent {
           {value.map((item,index) => 
             <Comment boxSize={boxSize} editComment={(e) => this.editComment(e, index)} msg={item} key={index} />)
           }
-          <div
-            className={styles.viewBox}
-            onContextMenu={this.fnPrevent}
-            style={{display: viewStatus==='view' ? 'block' : 'none'}}
-          >
-          </div>
+          { viewStatus==='view' &&
+            <div
+              className={styles.viewBox}
+              onContextMenu={this.fnPrevent}
+            >
+            </div>
+          }
         </div>
       </div>
     );
