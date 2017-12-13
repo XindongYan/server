@@ -22,34 +22,34 @@ export default class WeTaobao extends PureComponent {
     
   }
 
-  onSearchSeven = (value) => {
-    this.setState({
-      sevenVisible: -1,
-    })
-    if (value) {
-      $.ajax({
-        type:"GET",
-        url:`${ORIGIN}/api/spider/data.detail.taobao`,
-        data:{
-          url: value
-        },
-        success:(result) => {
-          if(!result.error){
-            this.setState({
-              sevenVisible: result.success,
-            })
-          } else {
-            message.warn(result.msg,)
-          }
-        },
-        error:function(){
-          message.error('出错了');
-        }
-      });
-    } else {
-      message.warn('请输入搜索内容');
-    }
-  }
+  // onSearchSeven = (value) => {
+  //   this.setState({
+  //     sevenVisible: -1,
+  //   })
+  //   if (value) {
+  //     $.ajax({
+  //       type:"GET",
+  //       url:`${ORIGIN}/api/spider/data.detail.taobao`,
+  //       data:{
+  //         url: value
+  //       },
+  //       success:(result) => {
+  //         if(!result.error){
+  //           this.setState({
+  //             sevenVisible: result.success,
+  //           })
+  //         } else {
+  //           message.warn(result.msg,)
+  //         }
+  //       },
+  //       error:function(){
+  //         message.error('出错了');
+  //       }
+  //     });
+  //   } else {
+  //     message.warn('请输入搜索内容');
+  //   }
+  // }
   onSearchqualit = (value) => {
     this.setState({
       qualitList: [],
@@ -68,15 +68,15 @@ export default class WeTaobao extends PureComponent {
               qualitList: result.data,
             })
           } else {
-            message.warn('无数据');
+            message.warn('没有找到该商品！');
           }
         },
         error: () => {
-          message.warn('无数据');
+          message.warn('没有找到该商品！');
         }
       })
     } else {
-      message.warn('请输入要查询的链接');
+      message.warn('请输入要查询的宝贝');
     }
   }
   clearInpValDown = () => {
@@ -95,12 +95,12 @@ export default class WeTaobao extends PureComponent {
     const { sevenValue, sevenVisible, qualitValue, qualitList } = this.state;
     const columns = [
       {
-        title: '店铺名称',
+        title: '商品名称',
         dataIndex: 'raw_title',
         render: (value, row) => <a target="_blank" href={row.detail_url} dangerouslySetInnerHTML={{__html: value}}></a>
       },
       {
-        title: '品质等级',
+        title: '品质档',
         width: 150,
         dataIndex: 'q_score',
       },
