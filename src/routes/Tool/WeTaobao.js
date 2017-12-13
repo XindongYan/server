@@ -68,11 +68,21 @@ export default class WeTaobao extends PureComponent {
               qualitList: result.data,
             })
           } else {
-            message.warn('没有找到该商品！');
+            this.setState({
+              qualitList: [
+                {
+                  raw_title: '商品',
+                  detail_url: value,
+                  icon: [],
+                  nid: 0,
+                }
+              ],
+            })
+            // message.warn('没有找到该商品！');
           }
         },
         error: () => {
-          message.warn('没有找到该商品！');
+          message.warn('查询失败！');
         }
       })
     } else {
@@ -93,16 +103,12 @@ export default class WeTaobao extends PureComponent {
   }
   render (){
     const { sevenValue, sevenVisible, qualitValue, qualitList } = this.state;
+    
     const columns = [
       {
         title: '商品名称',
         dataIndex: 'raw_title',
         render: (value, row) => <a target="_blank" href={row.detail_url} dangerouslySetInnerHTML={{__html: value}}></a>
-      },
-      {
-        title: '品质档',
-        width: 150,
-        dataIndex: 'q_score',
       },
       {
         title: '新七条',
@@ -114,6 +120,14 @@ export default class WeTaobao extends PureComponent {
         }
       },
     ]
+    const score = {
+      title: '品质档',
+      width: 150,
+      dataIndex: 'q_score',
+    }
+    if (qualitList[0] && qualitList[0].q_score) {
+      columns.push(score);
+    }
     return (
       <Card bordered={false}>
         {/*
