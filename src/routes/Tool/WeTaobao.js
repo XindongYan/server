@@ -104,42 +104,53 @@ export default class WeTaobao extends PureComponent {
         width: 150,
         dataIndex: 'q_score',
       },
+      {
+        title: '新七条',
+        width: 150,
+        dataIndex: 'icon',
+        render: (value) => {
+          const str = value.find(item => /新7条/.test(item.innerText));
+          return str ? str.innerText : '不符合';
+        }
+      },
     ]
     return (
       <Card bordered={false}>
+        {/*
+          <div>
+            <p className={styles.tbSearchTit}>查询淘宝商品是否符合新七条</p>
+            <div className={styles.searchBox} style={{ position: 'relative' }}>
+              <Search
+                placeholder=""
+                enterButton="搜索"
+                size="large"
+                onSearch={this.onSearchSeven}
+                onChange={(e) => this.setState({ sevenValue: e.target.value })}
+                value={sevenValue}
+              />
+              <Icon type="close-circle" className={styles.clearInpIcon} onClick={this.clearInpValUp} />
+            </div>
+            <div className={styles.dataList}>
+              { sevenVisible === 1 &&
+                <div className={styles.sevenBox}>
+                  <Icon style={{ color: '#009688', fontSize: 40, display: 'block' }} type="check-circle" />
+                  该商品符合新七条
+                </div>
+              }
+              { sevenVisible === 0 &&
+                <div className={styles.sevenBox}>
+                  <Icon style={{ color: '#c21', fontSize: 40, display: 'block' }} type="close-circle" />
+                  该商品不符合新七条
+                </div>
+              }
+            </div>
+          </div>
+        */}
         <div>
-          <p className={styles.tbSearchTit}>查询淘宝商品是否符合新七条</p>
+          <p className={styles.tbSearchTit}>查询淘宝商品品质等级及是否符合新七条</p>
           <div className={styles.searchBox} style={{ position: 'relative' }}>
             <Search
-              placeholder=""
-              enterButton="搜索"
-              size="large"
-              onSearch={this.onSearchSeven}
-              onChange={(e) => this.setState({ sevenValue: e.target.value })}
-              value={sevenValue}
-            />
-            <Icon type="close-circle" className={styles.clearInpIcon} onClick={this.clearInpValUp} />
-          </div>
-          <div className={styles.dataList}>
-            { sevenVisible === 1 &&
-              <div className={styles.sevenBox}>
-                <Icon style={{ color: '#009688', fontSize: 40, display: 'block' }} type="check-circle" />
-                该商品符合新七条
-              </div>
-            }
-            { sevenVisible === 0 &&
-              <div className={styles.sevenBox}>
-                <Icon style={{ color: '#c21', fontSize: 40, display: 'block' }} type="close-circle" />
-                该商品不符合新七条
-              </div>
-            }
-          </div>
-        </div>
-        <div style={{ marginTop: 40 }}>
-          <p className={styles.tbSearchTit}>查询淘宝商品品质等级</p>
-          <div className={styles.searchBox} style={{ position: 'relative' }}>
-            <Search
-              placeholder=""
+              placeholder="输入标题模糊查找／宝贝链接精确查找"
               enterButton="搜索"
               size="large"
               onSearch={this.onSearchqualit}
@@ -154,7 +165,7 @@ export default class WeTaobao extends PureComponent {
               dataSource={qualitList}
               size="small"
               columns={columns}
-              rowKey="numLine"
+              rowKey="nid"
             />
           </div>
         </div>
