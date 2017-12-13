@@ -108,7 +108,7 @@ export default class ShopPool extends PureComponent {
           <p className={styles.tbSearchTit}>查询店铺商品入选的池子</p>
           <div className={styles.searchBox} style={{ position: 'relative' }}>
             <Search
-              placeholder=""
+              placeholder="请输入店铺名"
               enterButton="搜索"
               size="large"
               onSearch={this.getShops}
