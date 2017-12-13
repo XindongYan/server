@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, message } from 'antd';
+import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, Tooltip, message } from 'antd';
 import { RIGHTS, APPROVE_ROLES, RIGHT } from '../../constants';
 import styles from './TeamList.less';
 
