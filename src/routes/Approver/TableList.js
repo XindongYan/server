@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radio, Popconfirm, DatePicker,
 Tooltip, Divider } from 'antd';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN } from '../../constants';
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN, RIGHT } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { Link } from 'dva/router';
@@ -25,12 +25,14 @@ function onChange(date, dateString) {
   currentUser: state.user.currentUser,
   projects: state.project.data,
   teamUser: state.user.teamUser,
+  teamUsers: state.team.data.list,
 }))
 export default class TableList extends PureComponent {
   state = {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
+    user_id: '',
   };
 
   componentDidMount() {
@@ -48,6 +50,16 @@ export default class TableList extends PureComponent {
           team_id: teamUser.team_id,
         },
       });
+      if (currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) {
+        dispatch({
+          type: 'team/fetch',
+          payload: {
+            team_id: teamUser.team_id,
+            currentPage: 1,
+            pageSize: 99999999,
+          },
+        });
+      }
     }
   }
 
@@ -66,6 +78,16 @@ export default class TableList extends PureComponent {
           team_id: teamUser.team_id,
         },
       });
+      if (currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) {
+        dispatch({
+          type: 'team/fetch',
+          payload: {
+            team_id: teamUser.team_id,
+            currentPage: 1,
+            pageSize: 99999999,
+          },
+        });
+      }
     }
   }
 
@@ -81,7 +103,7 @@ export default class TableList extends PureComponent {
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
-      user_id: currentUser._id,
+      user_id: this.state.user_id || currentUser._id,
       approve_status,
       ...filters,
     };
@@ -94,14 +116,31 @@ export default class TableList extends PureComponent {
       payload: params,
     });
   }
-
+  handleSelectTeamUser = (value) => {
+    this.setState({ user_id: value });
+    const { data: { pagination, approve_status }, dispatch } = this.props;
+    dispatch({
+      type: 'task/fetchApproverTasks',
+      payload: { ...pagination, user_id: value, approve_status }
+    });
+  }
+  handleChangeTeamUser = (value) => {
+    if (!value) {
+      this.setState({ user_id: '' });
+      const { data: { pagination, approve_status }, dispatch, currentUser } = this.props;
+      dispatch({
+        type: 'task/fetchApproverTasks',
+        payload: { ...pagination, user_id: currentUser._id, approve_status }
+      });
+    }
+  }
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     this.setState({ selectedRowKeys, selectedRows });
   }
   handleSearch = (value, name) => {
     const { dispatch, data: { pagination, approve_status }, currentUser } = this.props;
     const values = {
-      user_id: currentUser._id,
+      user_id: this.state.user_id || currentUser._id,
       approve_status,
     };
     if(name === 'time') {
@@ -132,7 +171,7 @@ export default class TableList extends PureComponent {
           message.success(result.msg);
           dispatch({
             type: 'task/fetchApproverTasks',
-            payload: { ...pagination, approve_status, user_id: currentUser._id }
+            payload: { ...pagination, approve_status, user_id: this.state.user_id || currentUser._id }
           });
         }
       },
@@ -142,11 +181,11 @@ export default class TableList extends PureComponent {
     const { data: { pagination }, dispatch, currentUser } = this.props;
     dispatch({
       type: 'task/fetchApproverTasks',
-      payload: { ...pagination, user_id: currentUser._id, approve_status: e.target.value, }
+      payload: { ...pagination, user_id: this.state.user_id || currentUser._id, approve_status: e.target.value, }
     });
   }
   render() {
-    const { data, loading, currentUser, projects: { list } } = this.props;
+    const { data, loading, currentUser, projects: { list }, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys } = this.state;
     const columns = [
       {
@@ -291,6 +330,24 @@ export default class TableList extends PureComponent {
             <RadioButton value="passed">已通过</RadioButton>
             <RadioButton value="rejected">未通过</RadioButton>
           </RadioGroup>
+          {currentUser.rights && currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0 &&
+            <Select
+              style={{ width: '30%', marginLeft: 20 }}
+              mode="combobox"
+              optionLabelProp="children"
+              placeholder="搜索电话指定审核人员"
+              notFoundContent=""
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              allowClear
+              onChange={this.handleChangeTeamUser}
+              onSelect={this.handleSelectTeamUser}
+            >
+              {teamUsers.filter(item => item.user_id.rights.indexOf(RIGHT.approver) >= 0)
+                .map(item => <Option value={item.user_id._id} key={item.user_id._id}>{item.user_id.name}</Option>)}
+            </Select>
+          }
         </div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
