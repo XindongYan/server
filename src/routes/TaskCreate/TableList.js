@@ -431,11 +431,11 @@ export default class TableList extends PureComponent {
                 selectedRows.length > 0 && (
                   <span>
                     <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量发布</Button>
-                    <Dropdown overlay={menu}>
+                    {/*<Dropdown overlay={menu}>
                       <Button>
                         更多操作 <Icon type="down" />
                       </Button>
-                    </Dropdown>
+                    </Dropdown> */}
                   </span>
                 )
               }
