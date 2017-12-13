@@ -110,7 +110,7 @@ export default class WeTaobao extends PureComponent {
         dataIndex: 'icon',
         render: (value) => {
           const str = value.find(item => /新7条/.test(item.innerText));
-          return str ? str.innerText : '不符合';
+          return str ? '符合' : '不符合';
         }
       },
     ]
