@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, message, } from 'antd';
+import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import styles from './TableList.less';
@@ -152,6 +152,29 @@ export default class TableList extends PureComponent {
   handleAdd = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch(routerRedux.push(`/project/task/create?project_id=${query.project_id}`));
+  }
+  publishTasks = () => {
+    const { dispatch, currentUser } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    dispatch({
+      type: 'project/publishTasks',
+      payload: {
+        task_ids: this.state.selectedRowKeys,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          dispatch({
+            type: 'task/fetchProjectTasks',
+            payload: { project_id: query.project_id },
+          });
+          this.handleRowSelectChange([], []);
+        }
+      },
+    });
   }
   handleEdit = (record) => {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -368,6 +391,13 @@ export default class TableList extends PureComponent {
       margin: '5px',
       padding: '10px',
     };
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.handleRowSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.disabled,
+      }),
+    };
     return (
       <div>
         <ProjectDetail project={formData} />
@@ -400,12 +430,12 @@ export default class TableList extends PureComponent {
               {
                 selectedRows.length > 0 && (
                   <span>
-                    <Button>批量操作</Button>
-                    <Dropdown overlay={menu}>
+                    <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量发布</Button>
+                    {/*<Dropdown overlay={menu}>
                       <Button>
                         更多操作 <Icon type="down" />
                       </Button>
-                    </Dropdown>
+                    </Dropdown> */}
                   </span>
                 )
               }
@@ -419,6 +449,7 @@ export default class TableList extends PureComponent {
                 showQuickJumper: true,
                 ...projectTask.pagination,
               }}
+              rowSelection={rowSelection}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
             />
