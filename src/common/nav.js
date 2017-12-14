@@ -133,9 +133,12 @@ const tool = {
     name: '天猫品牌库',
     path: `/clothes`,
     component: Tool.Clothes,
+  }, {
+    name: '每日好店',
+    path: 'https://we.taobao.com/shop/shopList.htm',
+    target: '_blank',
   }],
 };
-
 
 const data = [{
   component: BasicLayout,
