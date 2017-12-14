@@ -12,10 +12,7 @@ import styles from './BasicLayout.less';
 import HeaderSearch from '../components/HeaderSearch';
 import NoticeIcon from '../components/NoticeIcon';
 import GlobalFooter from '../components/GlobalFooter';
-import ActivityCreate from '../routes/Project/ActivityCreate';
-import ActivityEdit from '../routes/Project/ActivityEdit';
-import DeliverCreate from '../routes/Project/DeliverCreate';
-import DeliverEdit from '../routes/Project/DeliverEdit';
+import ProjectEdit from '../routes/Project/ProjectEdit';
 import TaskCreateList from '../routes/TaskCreate/TableList';
 import TaskCreate from '../routes/TaskCreate/TaskCreate';
 import TaskEdit from '../routes/TaskCreate/TaskEdit';
@@ -404,10 +401,7 @@ class BasicLayout extends React.PureComponent {
                   )
                 )
               }
-              <Route path="/activity/create" component={ActivityCreate} />
-              <Route path="/activity/edit" component={ActivityEdit} />
-              <Route path="/deliver/create" component={DeliverCreate} />
-              <Route path="/deliver/edit" component={DeliverEdit} />
+              <Route path="/project/edit" component={ProjectEdit} />
               <Route path="/project/task/list" component={TaskCreateList} />
               <Route path="/project/task/create" component={TaskCreate} />
               <Route path="/project/task/view" component={TaskView} />

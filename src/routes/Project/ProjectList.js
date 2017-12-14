@@ -17,40 +17,39 @@ const RadioGroup = Radio.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  project: state.project,
+  data: state.project.data,
+  loading: state.project.loading,
   teamUser: state.user.teamUser,
 }))
 export default class ProjectList extends PureComponent {
   state = {
     selectedRows: [],
     selectedRowKeys: [],
-    formValues: {},
-    tabValue: 1,
   };
 
   componentDidMount() {
-    const { dispatch, teamUser, type } = this.props;
-    const { tabValue } = this.state;
+    const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
     if (teamUser.team_id) {
       dispatch({
         type: 'project/fetch',
         payload: {
+          ...pagination,
           team_id: teamUser.team_id,
-          status: tabValue,
+          status,
           type,
         },
       });
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, teamUser, type } = nextProps;
-    const { tabValue } = this.state;
+    const { dispatch, teamUser, data: { pagination, status, type } } = nextProps;
     if (teamUser.team_id !== this.props.teamUser.team_id) {
       dispatch({
         type: 'project/fetch',
         payload: {
+          ...pagination,
           team_id: teamUser.team_id,
-          status: tabValue,
+          status,
           type,
         },
       });
@@ -58,8 +57,7 @@ export default class ProjectList extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, teamUser, type } = this.props;
-    const { formValues } = this.state;
+    const { dispatch, teamUser, data: { status, type } } = this.props;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -69,10 +67,10 @@ export default class ProjectList extends PureComponent {
 
     const params = {
       team_id: teamUser.team_id,
-      type,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
-      ...formValues,
+      status,
+      type,
       ...filters,
     };
     if (sorter.field) {
@@ -116,20 +114,10 @@ export default class ProjectList extends PureComponent {
     });
   }
   handleAdd = () => {
-    const { type } = this.props;
-    if (type === 1) {
-      this.props.dispatch(routerRedux.push('/activity/create'));
-    } else if (type === 2) {
-      this.props.dispatch(routerRedux.push('/deliver/create'));
-    }
+    this.props.dispatch(routerRedux.push('/project/create'));
   }
   handleEdit = (record) => {
-    const { type } = this.props;
-    if (type === 1) {
-      this.props.dispatch(routerRedux.push(`/activity/edit?_id=${record._id}`));
-    } else if (type === 2) {
-      this.props.dispatch(routerRedux.push(`/deliver/edit?_id=${record._id}`));
-    }
+    this.props.dispatch(routerRedux.push(`/project/edit?_id=${record._id}`));
   }
   handlePublish = (record) => {
     const { dispatch, teamUser } = this.props;
@@ -138,7 +126,6 @@ export default class ProjectList extends PureComponent {
       payload: {
         _id: record._id,
         user_id: teamUser.user_id,
-        team_id: teamUser.team_id,
       },
       callback: (result) => {
         if (result.error) {
@@ -151,30 +138,12 @@ export default class ProjectList extends PureComponent {
     });
   }
   handleOffshelf = (record) => {
-    const { dispatch, teamUser } = this.props;
+    const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
     dispatch({
       type: 'project/offshelf',
       payload: {
         _id: record._id,
         user_id: teamUser.user_id,
-        team_id: teamUser.team_id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-        }
-      },
-    });
-  }
-  handleRemove = (record) => {
-    const { dispatch, teamUser, type } = this.props;
-    dispatch({
-      type: 'project/remove',
-      payload: {
-        _id: record._id,
-        team_id: teamUser.team_id,
       },
       callback: (result) => {
         if (result.error) {
@@ -184,7 +153,34 @@ export default class ProjectList extends PureComponent {
           dispatch({
             type: 'project/fetch',
             payload: {
+              ...pagination,
               team_id: teamUser.team_id,
+              status,
+              type,
+            },
+          });
+        }
+      },
+    });
+  }
+  handleRemove = (record) => {
+    const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
+    dispatch({
+      type: 'project/remove',
+      payload: {
+        _id: record._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          dispatch({
+            type: 'project/fetch',
+            payload: {
+              ...pagination,
+              team_id: teamUser.team_id,
+              status,
               type,
             },
           });
@@ -193,11 +189,11 @@ export default class ProjectList extends PureComponent {
     });
   }
   handleSearch = (value, name) => {
-    const { dispatch, teamUser, type } = this.props;
-    const { tabValue } = this.state;
+    const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
     const values = {
+      ...pagination,
       team_id: teamUser.team_id,
-      status: tabValue,
+      status,
       type,
     };
     if(name === 'time') {
@@ -218,23 +214,33 @@ export default class ProjectList extends PureComponent {
     this.setState({ selectedRowKeys });
   }
 
-  changeTab = (e) => {
-    const { dispatch, teamUser, type } = this.props;
-    this.setState({
-      tabValue: e.target.value,
-    })
+  changeStatus = (e) => {
+    const { dispatch, teamUser, data: { pagination, type } } = this.props;
     dispatch({
       type: 'project/fetch',
       payload: {
+        ...pagination,
         team_id: teamUser.team_id,
         status: e.target.value,
         type,
       },
     });
   }
+  changeType = (e) => {
+    const { dispatch, teamUser, data: { pagination, status } } = this.props;
+    dispatch({
+      type: 'project/fetch',
+      payload: {
+        ...pagination,
+        team_id: teamUser.team_id,
+        status,
+        type: e.target.value,
+      },
+    });
+  }
   render() {
-    const { project: { loading, data: { list, pagination }, approveRoles } } = this.props;
-    const { selectedRows, selectedRowKeys, tabValue } = this.state;
+    const { loading, data: { list, pagination, status, type } } = this.props;
+    const { selectedRows, selectedRowKeys } = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -344,10 +350,14 @@ export default class ProjectList extends PureComponent {
     return (
       <div>
         <div className={styles.searchBox}>
-          <RadioGroup value={tabValue} onChange={this.changeTab}> 
+          <RadioGroup value={status} onChange={this.changeStatus}> 
             <RadioButton value={1}>已创建</RadioButton>
             <RadioButton value={2}>已发布</RadioButton>
             <RadioButton value={3}>已下架</RadioButton>
+          </RadioGroup>
+          <RadioGroup value={type} onChange={this.changeType} style={{ marginLeft: 20 }}> 
+            <RadioButton value={1}>接单活动</RadioButton>
+            <RadioButton value={2}>投稿活动</RadioButton>
           </RadioGroup>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>

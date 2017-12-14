@@ -48,6 +48,7 @@ export default class ProjectForm extends PureComponent {
         approvers[`approvers${item}`] = nextProps.formData.approvers[index];
       });
       const fieldsValue = {
+        type: nextProps.formData.type,
         name: nextProps.formData.name,
         channel_name: nextProps.formData.channel_name,
         merchant_tag: nextProps.formData.merchant_tag,
@@ -59,7 +60,7 @@ export default class ProjectForm extends PureComponent {
         approve_flow: nextProps.formData.approve_flow,
         project_level: nextProps.formData.project_level,
       };
-      if (nextProps.type === 1) {
+      if (nextProps.formData.type === 1) {
         fieldsValue.max_take = nextProps.formData.max_take;
       }
       this.props.form.setFieldsValue(fieldsValue);
@@ -131,12 +132,7 @@ export default class ProjectForm extends PureComponent {
     });
   }
   handleJump = () => {
-    const { type } = this.props;
-    if (type === 1) {
-      this.props.dispatch(routerRedux.push('/project/activity-list'));
-    } else if (type === 2) {
-      this.props.dispatch(routerRedux.push('/project/deliver-list'));
-    }
+    this.props.dispatch(routerRedux.push('/project/list'));
   }
   beforeUpload = (file) => {
     const promise = new Promise(function(resolve, reject) {
@@ -164,11 +160,29 @@ export default class ProjectForm extends PureComponent {
     };
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData, type } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData } = this.props;
+    const type = getFieldValue('type') || formData.type;
     const flow = APPROVE_FLOWS.find(item => item.value === (getFieldValue('approve_flow') || formData.approve_flow));
     return (
-      <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}${type === 1 ? '活动' : '投稿'}`}>
+      <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}活动`}>
         <Form>
+          <FormItem
+            label="活动类型"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('type', {
+              initialValue: 1,
+              rules: [{ required: true, message: '请选择活动类型！' }],
+            })(
+              <Select
+                placeholder="请选活动类型"
+              >
+                <Option value={1} key={1}>接单活动</Option>
+                <Option value={2} key={2}>投稿活动</Option>
+              </Select>
+            )}
+          </FormItem>
           <FormItem
             label="标题"
             labelCol={{ span: 4 }}

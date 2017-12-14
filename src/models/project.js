@@ -8,6 +8,8 @@ export default {
     data: {
       list: [],
       pagination: {},
+      status: 1,
+      type: 1,
     },
     loading: true,
     formData: {},
@@ -23,7 +25,7 @@ export default {
       if (!response.error) {
         yield put({
           type: 'save',
-          payload: response,
+          payload: { ...response, status: payload.status, type: payload.type },
         });
       }
       yield put({
@@ -36,56 +38,15 @@ export default {
       if (callback) callback(result);
     },
     *update({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
       const result = yield call(updateProject, payload);
       if (callback) callback(result);
-      const response = yield call(queryProjects, { team_id: payload.team_id });
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
     },
     *publish({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
       const result = yield call(publishProject, payload);
-      const response = yield call(queryProjects, { team_id: payload.team_id });
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-
       if (callback) callback(result);
     },
     *offshelf({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
       const result = yield call(offshelfProject, payload);
-      const response = yield call(queryProjects, { team_id: payload.team_id });
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      yield put({
-        type: 'changeLoading',
-        payload: false,
-      });
-
       if (callback) callback(result);
     },
     *publishTasks({ payload, callback }, { call, put }) {

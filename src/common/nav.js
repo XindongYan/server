@@ -2,10 +2,8 @@ import BasicLayout from '../layouts/BasicLayout';
 import BlankLayout from '../layouts/BlankLayout';
 
 import Approver from '../routes/Approver/TableList';
-import Activity from '../routes/Project/ActivityList';
-import ActivityCreate from '../routes/Project/ActivityCreate';
-import Deliver from '../routes/Project/DeliverList';
-import DeliverCreate from '../routes/Project/DeliverCreate';
+import Project from '../routes/Project/ProjectList';
+import ProjectCreate from '../routes/Project/ProjectCreate';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
@@ -59,20 +57,12 @@ const project = {
   icon: 'file',
   children: [{
     name: '活动列表',
-    path: 'activity-list',
-    component: Activity,
+    path: 'list',
+    component: Project,
   }, {
     name: '新建活动',
-    path: 'activity-create',
-    component: ActivityCreate,
-  }, {
-    name: '投稿列表',
-    path: 'deliver-list',
-    component: Deliver,
-  }, {
-    name: '新建投稿',
-    path: 'deliver-create',
-    component: DeliverCreate,
+    path: 'create',
+    component: ProjectCreate,
   }],
 };
 
