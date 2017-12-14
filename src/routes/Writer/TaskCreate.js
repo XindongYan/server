@@ -60,8 +60,47 @@ export default class TaskCreate extends PureComponent {
     } else if (!task.cover_img && query.channel_name !== '直播脚本') {
       message.warn('请选择封面图');
     } else {
-      this.setState({ modalVisible: true, });
+      if (query.project_id) {
+        this.handleSubmitTask();
+      } else {
+        this.setState({ modalVisible: true, });
+      }
     }
+  }
+  handleSubmitTask = () => {
+    const { currentUser, teamUser } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const payload = {
+      name: this.state.task.title,
+      project_id: query.project_id,
+      creator_id: currentUser._id,
+    };
+    this.props.dispatch({
+      type: 'task/add',
+      payload: {
+        ...payload,
+        approve_status: TASK_APPROVE_STATUS.created,
+      },
+      callback: (result) => {
+          console.log(result)
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          // this.props.dispatch({
+          //   type: 'task/handin',
+          //   payload: { _id: query._id },
+          //   callback: (result1) => {
+          //     if (result1.error) {
+          //       message.error(result1.msg);
+          //     } else {
+          //       this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+          //     }
+          //   }
+          // });
+        }
+      },
+    });
   }
   handleSpecify = () => {
     const { dispatch } = this.props;
@@ -145,7 +184,7 @@ export default class TaskCreate extends PureComponent {
       type: 'task/addByWriter',
       payload: {
         ...this.state.task,
-        name: this.state.task.title,
+        name: task.title,
         approve_status: TASK_APPROVE_STATUS.taken,
         channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
         task_type: query.task_type ? Number(query.task_type) : 1,
