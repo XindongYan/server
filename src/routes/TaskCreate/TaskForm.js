@@ -66,7 +66,6 @@ export default class TaskForm extends PureComponent {
               uid: item.uid,
             };
           }) : [],
-          team_id: teamUser.team_id,
           project_id: query.project_id,
           creator_id: teamUser.user_id,
         };

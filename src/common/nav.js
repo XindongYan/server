@@ -8,6 +8,7 @@ import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
 import TaskSquare from '../routes/TaskSquare/ProjectList';
+import SubmissionList from '../routes/TaskSquare/SubmissionList';
 import Invitation from '../routes/Invitation/InvitationList';
 import Album from '../routes/Album';
 import * as Tool from '../routes/Tool/index';
@@ -25,6 +26,10 @@ const square = {
     name: '赏金任务',
     path: 'task',
     component: TaskSquare,
+  }, {
+    name: '投稿',
+    path: 'submission',
+    component: SubmissionList,
   }],
 };
 
