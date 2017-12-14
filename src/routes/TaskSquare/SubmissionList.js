@@ -13,7 +13,7 @@ const TabPane = Tabs.TabPane;
 
 export default class SubmissionList extends PureComponent {
   state = {
-    type: 1,
+    type: 2,
     page: {
       currentPage: 1,
       pageSize: 9999,

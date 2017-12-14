@@ -79,30 +79,34 @@ export default class TaskCreate extends PureComponent {
       type: 'task/add',
       payload: {
         ...payload,
-        approve_status: TASK_APPROVE_STATUS.created,
+        approve_status: TASK_APPROVE_STATUS.taken,
       },
       callback: (result) => {
-        console.log(result);
         if (result.error) {
           message.error(result.msg);
         } else {
-          message.success(result.msg);
-          return;
           this.props.dispatch({
             type: 'task/update',
-            payload: { ...this.state.task, _id: result._id },
-            callback: (result) => {
-              if (result.error) {
-                message.error(result.msg);
+            payload: {
+              ...this.state.task,
+              _id: result.task._id,
+              approve_status: TASK_APPROVE_STATUS.taken,
+              publisher_id: currentUser._id,
+              taker_id: currentUser._id,
+            },
+            callback: (result1) => {
+              if (result1.error) {
+                message.error(result1.msg);
               } else {
                 this.props.dispatch({
                   type: 'task/handin',
-                  payload: { _id: query._id },
-                  callback: (result1) => {
-                    if (result1.error) {
-                      message.error(result1.msg);
+                  payload: { _id: result.task._id },
+                  callback: (result2) => {
+                    if (result2.error) {
+                      message.error(result2.msg);
                     } else {
-                      this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                      message.success(result2.msg);
+                      this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
                     }
                   }
                 });
@@ -150,13 +154,11 @@ export default class TaskCreate extends PureComponent {
           phone: value
         },
         callback: (res) => {
-          console.log(res);
           this.setState({
             suggestionUsers: res.users || [],
           })
         }
       });
-      // console.log(this.props.suggestionUsers)
     }
   }
   onSearch2 = (value) => {
@@ -285,11 +287,14 @@ export default class TaskCreate extends PureComponent {
             </ul>
           </div>
           <div className={styles.submitBox}>
-            {/*
-              <Popconfirm placement="top" title="确认已经写完并提交给审核人员?" okText="确认" cancelText="取消">
+            { query.project_id ?
+              <Popconfirm placement="top" title="确认已经写完并提交给审核人员?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
+                <Button>提交</Button>
               </Popconfirm>
-            */}
-            <Button onClick={this.handleShowAddTeamUserModal}>提交</Button>
+              :
+              <Button onClick={this.handleShowAddTeamUserModal}>提交</Button>
+            }
+            
             {/*
               <Button onClick={this.handleSave}>保存</Button>
             */}
