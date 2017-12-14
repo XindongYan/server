@@ -82,22 +82,33 @@ export default class TaskCreate extends PureComponent {
         approve_status: TASK_APPROVE_STATUS.created,
       },
       callback: (result) => {
-          console.log(result)
+        console.log(result);
         if (result.error) {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          // this.props.dispatch({
-          //   type: 'task/handin',
-          //   payload: { _id: query._id },
-          //   callback: (result1) => {
-          //     if (result1.error) {
-          //       message.error(result1.msg);
-          //     } else {
-          //       this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
-          //     }
-          //   }
-          // });
+          return;
+          this.props.dispatch({
+            type: 'task/update',
+            payload: { ...this.state.task, _id: result._id },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                this.props.dispatch({
+                  type: 'task/handin',
+                  payload: { _id: query._id },
+                  callback: (result1) => {
+                    if (result1.error) {
+                      message.error(result1.msg);
+                    } else {
+                      this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                    }
+                  }
+                });
+              }
+            }
+          });
         }
       },
     });
