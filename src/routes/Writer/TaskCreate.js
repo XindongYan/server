@@ -29,6 +29,9 @@ export default class TaskCreate extends PureComponent {
     modalVisible: false,
     phone: '',
     approver_id: '',
+    approver_id2: '',
+    suggestionUsers: [],
+    suggestionUsers2: [],
   }
   componentDidMount() {
     this.props.dispatch({
@@ -61,12 +64,16 @@ export default class TaskCreate extends PureComponent {
   }
   handleSpecify = () => {
     const { dispatch } = this.props;
-    const { approver_id } = this.state;
+    const { approver_id, approver_id2 } = this.state;
+    const approvers = [ approver_id ];
+    if(approver_id2){
+      approvers.push(approver_id2);
+    }
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if (approver_id) {
           this.setState({ modalVisible: false });
-          this.handleSubmit();
+          this.handleSubmit(approvers);
         } else {
           message.warn('请根据手机号选择审核人员！');
         }
@@ -91,6 +98,31 @@ export default class TaskCreate extends PureComponent {
         payload: {
           phone: value
         },
+        callback: (res) => {
+          console.log(res);
+          this.setState({
+            suggestionUsers: res.users || [],
+          })
+        }
+      });
+      // console.log(this.props.suggestionUsers)
+    }
+  }
+  onSearch2 = (value) => {
+    this.setState({
+      approver_id2: '',
+    })
+    if (value.length == 11) {
+      this.props.dispatch({
+        type: 'team/fetchUsersByPhone',
+        payload: {
+          phone: value
+        },
+        callback: (res) => {
+          this.setState({
+            suggestionUsers2: res.users || [],
+          })
+        }
       });
     }
   }
@@ -99,7 +131,12 @@ export default class TaskCreate extends PureComponent {
       approver_id: value,
     })
   }
-  handleSubmit = () => {
+  onSelect2 = (value) => {
+    this.setState({
+      approver_id2: value,
+    })
+  }
+  handleSubmit = (approvers) => {
     const { currentUser } = this.props;
     const { task, approver_id } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -115,7 +152,7 @@ export default class TaskCreate extends PureComponent {
         taker_id: currentUser._id,
         creator_id: currentUser._id,
         current_approvers: [ approver_id ],
-        approvers: [[ approver_id ]],
+        approvers: [ ...approvers ],
       },
       callback: (result) => {
         if (result.error) {
@@ -151,8 +188,8 @@ export default class TaskCreate extends PureComponent {
     });
   }
   render() {
-    const { suggestionUsers, form: { getFieldDecorator } } = this.props;
-    const { modalVisible, task } = this.state;
+    const { form: { getFieldDecorator } } = this.props;
+    const { modalVisible, task, suggestionUsers, suggestionUsers2 } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
@@ -213,11 +250,11 @@ export default class TaskCreate extends PureComponent {
           onCancel={() => this.handleModalVisible(false)}
         >
           <FormItem
-              label="审核人员"
+              label="一审"
               labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }}
             >
-              {getFieldDecorator('phone', {
+              {getFieldDecorator('approver', {
                 initialValue: '',
                 rules: [{ required: true, message: '请选择审核人员！' }],
               })(
@@ -234,6 +271,31 @@ export default class TaskCreate extends PureComponent {
                   onSelect={this.onSelect}
                 >
                   {suggestionUsers.map(item => <Option value={item._id} key={item.phone}>{item.name}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+            <FormItem
+              label="二审"
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+            >
+              {getFieldDecorator('approver2', {
+                initialValue: '',
+                rules: [{ required: false, message: '请选择审核人员！' }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  mode="combobox"
+                  optionLabelProp="children"
+                  placeholder="搜索电话指定审核人员"
+                  notFoundContent=""
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={false}
+                  onSearch={this.onSearch2}
+                  onSelect={this.onSelect2}
+                >
+                  {suggestionUsers2.map(item => <Option value={item._id} key={item.phone}>{item.name}</Option>)}
                 </Select>
               )}
             </FormItem>

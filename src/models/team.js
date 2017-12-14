@@ -53,7 +53,6 @@ export default {
       if (callback) callback(addResult);
     },
     *update({ payload, callback }, { call, put }) {
-      
       const updateResult = yield call(updateUser, payload);
       if (!updateResult.error) {
         yield put({
@@ -82,12 +81,13 @@ export default {
         payload,
       });
     },
-    *fetchUsersByPhone({ payload }, { call, put }) {
+    *fetchUsersByPhone({ payload, callback }, { call, put }) {
       const response = yield call(queryTeamUsersByPhone, payload);
       yield put({
         type: 'saveSuggestionUsers',
         payload: response.users,
       });
+      if (callback) callback(response);
     },
     *fetchTeamUsers({ payload }, { call, put }) {
       const response = yield call(queryTeamUsersByRole, payload);
