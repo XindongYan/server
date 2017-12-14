@@ -65,7 +65,7 @@ export default class Success extends PureComponent {
     );
     const actions = (
       <div>
-        <Link to="/list/writer-list">
+        <Link to="/creation/writer-list">
           <Button type="primary">返回列表</Button>
         </Link>
         <Link to={`/writer/task/view?_id=${formData._id}`}>
