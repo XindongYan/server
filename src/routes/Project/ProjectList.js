@@ -350,15 +350,19 @@ export default class ProjectList extends PureComponent {
     return (
       <div>
         <div className={styles.searchBox}>
-          <RadioGroup value={status} onChange={this.changeStatus}> 
-            <RadioButton value={1}>已创建</RadioButton>
-            <RadioButton value={2}>已发布</RadioButton>
-            <RadioButton value={3}>已下架</RadioButton>
-          </RadioGroup>
-          <RadioGroup value={type} onChange={this.changeType} style={{ marginLeft: 20 }}> 
-            <RadioButton value={1}>接单活动</RadioButton>
-            <RadioButton value={2}>投稿活动</RadioButton>
-          </RadioGroup>
+          <div>
+            <RadioGroup value={type} onChange={this.changeType}> 
+              <RadioButton value={1}>接单活动</RadioButton>
+              <RadioButton value={2}>投稿活动</RadioButton>
+            </RadioGroup>
+          </div>
+          <div>
+            <RadioGroup value={status} onChange={this.changeStatus}> 
+              <RadioButton value={1}>已创建</RadioButton>
+              <RadioButton value={2}>已发布</RadioButton>
+              <RadioButton value={3}>已下架</RadioButton>
+            </RadioGroup>
+          </div>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>

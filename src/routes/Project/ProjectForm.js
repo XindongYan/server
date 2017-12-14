@@ -76,7 +76,7 @@ export default class ProjectForm extends PureComponent {
     }
   }
   handleSubmit = () => {
-    const { form: { getFieldValue }, teamUser, formData, type } = this.props;
+    const { form: { getFieldValue }, teamUser, formData } = this.props;
     const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -115,7 +115,6 @@ export default class ProjectForm extends PureComponent {
             type: 'project/add',
             payload: {
               ...payload,
-              type,
             },
             callback: (result) => {
               if (result.error) {
