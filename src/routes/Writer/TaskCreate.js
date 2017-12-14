@@ -16,6 +16,7 @@ const Option = Select.Option;
   suggestionUsers: state.team.suggestionUsers,
   formData: state.task.formData,
   currentUser: state.user.currentUser,
+  teamUser: state.user.teamUser,
 }))
 @Form.create()
 export default class TaskCreate extends PureComponent {
@@ -137,7 +138,7 @@ export default class TaskCreate extends PureComponent {
     })
   }
   handleSubmit = (approvers) => {
-    const { currentUser } = this.props;
+    const { currentUser, teamUser } = this.props;
     const { task, approver_id } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
@@ -148,7 +149,8 @@ export default class TaskCreate extends PureComponent {
         approve_status: TASK_APPROVE_STATUS.taken,
         channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
         task_type: query.task_type ? Number(query.task_type) : 1,
-        publisher_id: currentUser._id, // 登录后用户的 user._id
+        team_id: teamUser ? teamUser.team_id : null,
+        publisher_id: currentUser._id,
         taker_id: currentUser._id,
         creator_id: currentUser._id,
         current_approvers: [ approver_id ],

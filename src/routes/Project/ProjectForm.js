@@ -61,8 +61,6 @@ export default class ProjectForm extends PureComponent {
       };
       if (nextProps.type === 1) {
         fieldsValue.max_take = nextProps.formData.max_take;
-      } else if (nextProps.type === 2) {
-        fieldsValue.max_task = nextProps.formData.max_task;
       }
       this.props.form.setFieldsValue(fieldsValue);
       setTimeout(() => {
@@ -107,6 +105,7 @@ export default class ProjectForm extends PureComponent {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
+                this.handleJump();
               }
             },
           });
@@ -122,17 +121,22 @@ export default class ProjectForm extends PureComponent {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
+                this.handleJump();
               }
             },
           });
         }
-        if (type === 1) {
-          this.props.dispatch(routerRedux.push('/project/activity-list'));
-        } else if (type === 2) {
-          this.props.dispatch(routerRedux.push('/project/deliver-list'));
-        }
+        
       }
     });
+  }
+  handleJump = () => {
+    const { type } = this.props;
+    if (type === 1) {
+      this.props.dispatch(routerRedux.push('/project/activity-list'));
+    } else if (type === 2) {
+      this.props.dispatch(routerRedux.push('/project/deliver-list'));
+    }
   }
   beforeUpload = (file) => {
     const promise = new Promise(function(resolve, reject) {
@@ -312,20 +316,6 @@ export default class ProjectForm extends PureComponent {
               }],
             })(
               <Input type="number" addonAfter="单" />
-            )}
-          </FormItem>}
-          {type === 2 && <FormItem
-            label="最多投稿数"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('max_task', {
-              initialValue: 1,
-              rules: [{
-                required: true, message: '请输入最多投稿数'
-              }],
-            })(
-              <Input type="number" addonAfter="篇" />
             )}
           </FormItem>}
           <FormItem

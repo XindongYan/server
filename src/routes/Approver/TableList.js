@@ -396,7 +396,7 @@ export default class TableList extends PureComponent {
               style={{ width: '30%', marginLeft: 20 }}
               mode="combobox"
               optionLabelProp="children"
-              placeholder="搜索电话指定审核人员"
+              placeholder="搜索审核人员"
               notFoundContent=""
               defaultActiveFirstOption={false}
               showArrow={false}

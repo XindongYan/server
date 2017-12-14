@@ -5,6 +5,7 @@ import Approver from '../routes/Approver/TableList';
 import Activity from '../routes/Project/ActivityList';
 import ActivityCreate from '../routes/Project/ActivityCreate';
 import Deliver from '../routes/Project/DeliverList';
+import DeliverCreate from '../routes/Project/DeliverCreate';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
@@ -17,11 +18,6 @@ import Success from '../routes/Result/Success';
 import Error from '../routes/Result/Error';
 
 import { RIGHT } from '../constants';
-// const deliver = {
-//   name: '投稿列表',
-//   path: 'deliver-list',
-//   component: Deliver,
-// };
 
 const square = {
   name: '广场',
@@ -69,6 +65,14 @@ const project = {
     name: '新建活动',
     path: 'activity-create',
     component: ActivityCreate,
+  }, {
+    name: '投稿列表',
+    path: 'deliver-list',
+    component: Deliver,
+  }, {
+    name: '新建投稿',
+    path: 'deliver-create',
+    component: DeliverCreate,
   }],
 };
 
