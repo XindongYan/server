@@ -87,7 +87,7 @@ export default class WeitaoForm extends PureComponent {
               </div>
             </div>
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
-              <div style={{ width: 340, height:'176px', textAlign: 'center', lineHeight: '176px' }}>
+              <div style={{ width: 340, height:'176px', textAlign: 'center', lineHeight: '172px' }}>
                 { formData.cover_img &&
                   <img src={formData.cover_img} />
                 }

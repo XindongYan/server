@@ -27,8 +27,11 @@ export default class ProjectDetail extends PureComponent {
       fileBox: !(this.state.fileBox)
     })
   }
+  createTaskInto = () => {
+    if (this.props.createTaskInto) this.props.createTaskInto();
+  }
   render() {
-    const { project } = this.props;
+    const { project, type } = this.props;
     const { fileBox } = this.state;
     let color = 'volcano';
     let borderColor = '#FF6A00';
@@ -45,7 +48,15 @@ export default class ProjectDetail extends PureComponent {
     return (
       <Card bordered={false} bodyStyle={{paddingBottom: 10 }} style={{ marginBottom: 10 }}>
         <div>
-          <h3>{ project.name ? project.name : '无' }</h3>
+          <h3 className={styles.clearFix}>
+            { project.name ? project.name : '无' }
+            { type && type === 2 &&
+              <Button type="primary" style={{ float: 'right' }} onClick={this.createTaskInto}>投稿</Button>
+            }
+          </h3>
+          <div>
+              
+          </div>
         </div>
         <div style={{ marginTop: 8}}>
           <Tooltip title="活动ID">
@@ -70,9 +81,11 @@ export default class ProjectDetail extends PureComponent {
                 <span>{ project.price }</span>
               </span>
             }
-            <span className={styles.projectTag}>截稿日期：
-              <span>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD HH:mm:ss') : '无' }</span>
-            </span>
+            { project.deadline &&
+              <span className={styles.projectTag}>截稿日期：
+                <span>{ project.deadline ? moment(project.deadline).format('YYYY-MM-DD HH:mm:ss') : '' }</span>
+              </span>
+            }
             { project.attachments && project.attachments.length > 0 &&
               <span style={{ float: 'right' }} onClick={this.fileBoxVisible}>
                 <a href="javascript:;">{ fileBox ? '收起' : '查看附件' }<Icon type={ fileBox ? 'up' : 'down' } /></a>

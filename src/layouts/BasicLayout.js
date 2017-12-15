@@ -18,6 +18,7 @@ import TaskCreate from '../routes/TaskCreate/TaskCreate';
 import TaskEdit from '../routes/TaskCreate/TaskEdit';
 import TaskView from '../routes/TaskCreate/TaskView';
 import TaskSquareTaskList from '../routes/TaskSquare/TaskList';
+import SubmissionDetails from '../routes/TaskSquare/SubmissionDetails';
 import WriterTaskEdit from '../routes/Writer/TaskEdit';
 import WriterTaskView from '../routes/Writer/TaskView';
 import WriterTaskCreate from '../routes/Writer/TaskCreate';
@@ -407,6 +408,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/project/task/view" component={TaskView} />
               <Route path="/project/task/edit" component={TaskEdit} />
               <Route path="/taskSquare/task/list" component={TaskSquareTaskList} />
+              <Route path="/taskSquare/submission/details" component={SubmissionDetails} />
               <Route path="/writer/task/edit" component={WriterTaskEdit} />
               <Route path="/writer/task/view" component={WriterTaskView} />
               <Route path="/writer/task/create" component={WriterTaskCreate} />
