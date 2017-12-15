@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
+import querystring from 'querystring';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message, Radio, DatePicker } from 'antd';
 import { Link } from 'dva/router';
@@ -29,6 +30,7 @@ export default class ProjectList extends PureComponent {
 
   componentDidMount() {
     const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
     if (teamUser.team_id) {
       dispatch({
         type: 'project/fetch',
@@ -36,13 +38,14 @@ export default class ProjectList extends PureComponent {
           ...pagination,
           team_id: teamUser.team_id,
           status,
-          type,
+          type: Number(query.type || type),
         },
       });
     }
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, teamUser, data: { pagination, status, type } } = nextProps;
+    const query = querystring.parse(this.props.location.search.substr(1));
     if (teamUser.team_id !== this.props.teamUser.team_id) {
       dispatch({
         type: 'project/fetch',
@@ -50,7 +53,7 @@ export default class ProjectList extends PureComponent {
           ...pagination,
           team_id: teamUser.team_id,
           status,
-          type,
+          type: Number(query.type || type),
         },
       });
     }
