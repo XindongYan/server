@@ -171,7 +171,6 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('type', {
-              initialValue: 1,
               rules: [{ required: true, message: '请选择活动类型！' }],
             })(
               <Select
