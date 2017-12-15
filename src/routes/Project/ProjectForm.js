@@ -106,7 +106,7 @@ export default class ProjectForm extends PureComponent {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
-                this.handleJump();
+                this.handleJump(values);
               }
             },
           });
@@ -121,7 +121,7 @@ export default class ProjectForm extends PureComponent {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
-                this.handleJump();
+                this.handleJump(values);
               }
             },
           });
@@ -130,8 +130,8 @@ export default class ProjectForm extends PureComponent {
       }
     });
   }
-  handleJump = () => {
-    this.props.dispatch(routerRedux.push('/project/list'));
+  handleJump = (project) => {
+    this.props.dispatch(routerRedux.push(`/project/list?type=${project.type}`));
   }
   beforeUpload = (file) => {
     const promise = new Promise(function(resolve, reject) {
@@ -171,7 +171,6 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('type', {
-              initialValue: 1,
               rules: [{ required: true, message: '请选择活动类型！' }],
             })(
               <Select
