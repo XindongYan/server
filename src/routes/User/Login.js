@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
 import { Form, Input, Tabs, Button, Icon, Checkbox, Row, Col, Alert, message } from 'antd';
 import styles from './Login.less';
+import { ORIGIN } from '../../constants';
 
 const FormItem = Form.Item;
 const { TabPane } = Tabs;
@@ -202,7 +203,9 @@ export default class Login extends Component {
           其他登录方式
           {/* 需要加到 Icon 中 */}
           <span className={styles.iconAlipay} />
-          <span className={styles.iconTaobao} />
+          <a href={`https://oauth.taobao.com/authorize?client_id=23670142&response_type=code&redirect_uri=${ORIGIN}/api/taobao/auth&state=login&view=web`}>
+            <span className={styles.iconTaobao} />
+          </a>
           <span className={styles.iconWeibo} />
           <Link className={styles.register} to="/user/register">注册账户</Link>
         </div>
