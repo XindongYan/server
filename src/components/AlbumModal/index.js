@@ -35,8 +35,6 @@ function beforeUpload(file, minSize){
 }
 @connect(state => ({
   currentUser: state.user.currentUser,
-  data: state.album.data,
-  loading: state.album.loading,
   visible: state.album.visible,
   qiniucloud: state.qiniucloud,
   currentKey: state.album.currentKey,
@@ -46,32 +44,42 @@ function beforeUpload(file, minSize){
 export default class AlbumModal extends PureComponent {
   state = {
     choosen: [],
-    pagination: {
-      pageSize: 12,
-      current: 1,
-    },
     fileList: [],
     previewImage: '',
     previewVisible: false,
+
+    port: null,
+    itemList: [],
+    pagination: {
+      pageSize: 12,
+      current: 1,
+      total: 0,
+    },
+    loading: true,
   }
   componentDidMount() {
-    const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'qiniucloud/fetchUptoken'
+    const { pagination } = this.state;
+    const port = chrome.runtime.connect('kfcjndkonfgfjijadngeabdhhmilaihk', {
+      name: 'album',
     });
+    port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
+    port.onMessage.addListener((res) => {
+      this.setState({
+        itemList: res.itemList || [],
+        pagination: {
+          pageSize: res.pageSize,
+          current: res.current,
+          total: res.total,
+        },
+        loading: false,
+      });
+    });
+    if (!this.state.port) {
+      this.setState({ port });
+    }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, currentUser, data: { pagination } } = nextProps;
-    if (!this.props.visible && nextProps.visible) {
-      dispatch({
-        type: 'album/fetch',
-        payload: {
-          user_id: currentUser._id,
-          ...this.state.pagination,
-          currentPage: this.state.pagination.current,
-        },
-      });
-    }
+
   }
   handleOk = () => {
     if (this.state.choosen.length) {
@@ -166,23 +174,23 @@ export default class AlbumModal extends PureComponent {
 
   renderPhoto = (photo, index) => {
     const { minSize } = this.props;
-    const isChoosen = this.state.choosen.find(item => item._id === photo._id);
+    const isChoosen = this.state.choosen.find(item => item.id === photo.id);
     return (
-      <Card style={{ width: 140, display: 'inline-block', margin: 5 }} bodyStyle={{ padding: 0 }} key={photo._id}>
+      <Card style={{ width: 140, display: 'inline-block', margin: 5 }} bodyStyle={{ padding: 0 }} key={photo.id}>
         <div className={styles.customImageBox} onClick={() => this.handleChoose(photo)}>
           <img
             className={styles.customImage}
             alt="example" width="100%"
-            src={`${photo.href}?imageView2/2/w/300/h/300/q/100`}
+            src={photo.url}
           />
-          <div style={{display: this.state.choosen.find(item => item._id === photo._id) ? 'block' : 'none'}} className={styles.chooseModal}>
+          <div style={{display: this.state.choosen.find(item => item.id === photo.id) ? 'block' : 'none'}} className={styles.chooseModal}>
             <Icon type="check" />
           </div>          
         </div>
-        <div style={{display: minSize && (photo.width < minSize.width || photo.height < minSize.height) ? 'block' : 'none'}} className={styles.diabledModal}>尺寸不符</div>
+        <div style={{display: minSize && (photo.picWidth < minSize.width || photo.picHeight < minSize.height) ? 'block' : 'none'}} className={styles.diabledModal}>尺寸不符</div>
         <div className="custom-card">
-          <p className={styles.customNodes}>{photo.width} * {photo.height}</p>
-          <p className={styles.customNodes}>{photo.originalname}</p>
+          <p className={styles.customNodes}>{photo.picWidth} * {photo.picHeight}</p>
+          <p className={styles.customNodes}>{photo.title}</p>
         </div>
       </Card>
     );
@@ -192,21 +200,14 @@ export default class AlbumModal extends PureComponent {
     this.setState({ choosen: [] });
   }
   changeAlbumPage = (current, pageSize) => {
-    const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'album/fetch',
-      payload: {
-        user_id: currentUser._id,
+    if (this.state.port) {
+      this.setState({ loading: true });
+      this.state.port.postMessage({
+        name: 'album',
         pageSize,
         currentPage: current,
-      }
-    });
-    this.setState({
-      pagination: {
-        pageSize,
-        current,
-      }
-    });
+      });
+    }
   }
   handlePreview = (file) => {
     console.log(file)
@@ -222,8 +223,8 @@ export default class AlbumModal extends PureComponent {
     });
   }
   render() {
-    const { data, loading, visible, k, currentKey, minSize } = this.props;
-    const { choosen, pagination, fileList, previewVisible, previewImage } = this.state;
+    const { visible, k, currentKey, minSize } = this.props;
+    const { choosen, fileList, previewVisible, previewImage, itemList, pagination, loading } = this.state;
     return (
       <Modal
         title="素材"
@@ -236,12 +237,10 @@ export default class AlbumModal extends PureComponent {
         <Tabs defaultActiveKey="album" onChange={this.changeTab}>
           <TabPane tab={<span><Icon type="picture" />素材库</span>} key="album">
             <div>
-              {data.list.map(this.renderPhoto)}
+              {itemList.map(this.renderPhoto)}
             </div>
             <Pagination
-              current={this.props.data.pagination.current}
-              pageSize={pagination.pageSize}
-              total={data.pagination.total} 
+              {...pagination}
               onChange={this.changeAlbumPage}
               style={{float: 'right', margin: '10px 20px'}}
             />
