@@ -1,17 +1,6 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'dva';
-import fetch from 'dva/fetch';
-import path from 'path';
-import { Card, Button, Upload, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
+import { Card, Button, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
 import styles from './index.less';
-
-@connect(state => ({
-  currentUser: state.user.currentUser,
-  data: state.album.data,
-  loading: state.album.loading,
-  qiniucloud: state.qiniucloud,
-}))
 
 export default class Album extends PureComponent {
   state = {
@@ -26,6 +15,7 @@ export default class Album extends PureComponent {
       current: 1,
       total: 0,
     },
+    loading: true,
   }
   componentDidMount() {
     const { pagination } = this.state;
@@ -41,6 +31,7 @@ export default class Album extends PureComponent {
           current: res.current,
           total: res.total,
         },
+        loading: false,
       });
     });
     if (!this.state.port) {
@@ -48,60 +39,7 @@ export default class Album extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, currentUser, data } = nextProps;
-    if (currentUser._id !== this.props.currentUser._id) {
-      dispatch({
-        type: 'album/fetch',
-        payload: {
-          user_id: currentUser._id,
-          ...data.pagination,
-          currentPage: data.pagination.current,
-        }
-      });
-    }
-  }
-  handleChange = async ({file,event}) => {
-    const { dispatch, currentUser } = this.props;
-    const payload = {
-      user_id: currentUser._id,
-      originalname: file.name,
-      album_name: '相册一',
-    };
-    if (file.status === "uploading") {
-      this.setState({
-        ProgressVisible: true,
-        ProgressPercent: parseInt(event.percent) - 1,
-      })
-    } else {
-      this.setState({
-        ProgressVisible: false,
-      })
-    }
-    if (file.response && !file.error) {
-      const url = `${QINIU_DOMAIN}/${file.response.key}`;
-      payload.href = url;
-      const result = await fetch(`${url}?imageInfo`, {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8',
-      }).then(response => response.json());
-      payload.width = result.width;
-      payload.height = result.height;
-      dispatch({
-        type: 'album/add',
-        payload,
-        callback: (result1) => {
-          if (result1.error) {
-            message.error(result1.msg);
-          } else {
-            message.success(result1.msg);
-            dispatch({
-              type: 'album/fetch',
-              payload: { user_id: currentUser._id }
-            });
-          }
-        },
-      });
-    }
+    
   }
   handleCancel = () => {
     this.setState({
@@ -118,14 +56,6 @@ export default class Album extends PureComponent {
       previewImage: photo.url,
       previewVisible: true,
     });
-  }
-  makeUploadData = (file) => {
-    const { qiniucloud } = this.props;
-    const extname = path.extname(file.name);
-    return {
-      token: qiniucloud.uptoken,
-      key: `${file.uid}${extname}`,
-    }
   }
   renderPhoto = (photo) => {
     return (
@@ -144,14 +74,9 @@ export default class Album extends PureComponent {
       </Card>
     );
   }
-  showAlbumModal = () => {
-    const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'album/show',
-    });
-  }
   changeAlbumPage = (current, pageSize) => {
     if (this.state.port) {
+      this.setState({ loading: true });
       this.state.port.postMessage({
         name: 'album',
         pageSize,
@@ -159,34 +84,12 @@ export default class Album extends PureComponent {
       });
     }
   }
-  beforeUpload = (file) => {
-    const promise = new Promise(function(resolve, reject) {
-      const isLt3M = file.size / 1024 / 1024 <= 3;
-      if (!isLt3M) {
-        message.error('上传图片最大3M');
-        reject(isLt3M);
-      }
-      resolve(isLt3M);
-    });
-    return promise;
-  }
   render() {
-    const { loading } = this.props;
-    const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination } = this.state;
+    const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
     const extra = (
-      <Upload
-        accept="image/*"
-        name="file"
-        action={QINIU_UPLOAD_DOMAIN}
-        showUploadList={false}
-        data={this.makeUploadData}
-        onChange={this.handleChange}
-        beforeUpload={this.beforeUpload}
-      >
-        <Button onClick={() => {this.setState({ ProgressPercent: 10 })}}>
+        <Button onClick={() => console.log(upload)}>
           <Icon type="upload" /> 点击上传
         </Button>
-      </Upload>
     );
     return (
       <div>
