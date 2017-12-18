@@ -20,28 +20,28 @@ export default class Album extends PureComponent {
     ProgressVisible: false,
     ProgressPercent: 10,
     port: null,
+    itemList: [],
+    pagination: {
+      pageSize: 20,
+      current: 1,
+      total: 0,
+    },
   }
   componentDidMount() {
-    const { dispatch, currentUser, data } = this.props;
-    if (currentUser._id) {
-      dispatch({
-        type: 'album/fetch',
-        payload: {
-          user_id: currentUser._id,
-          ...data.pagination,
-          currentPage: data.pagination.current,
-        }
-      });
-    }
-    dispatch({
-      type: 'qiniucloud/fetchUptoken'
-    });
+    const { pagination } = this.state;
     const port = chrome.runtime.connect('fbogljkfccipgbpghamgcnhaooehbkcg', {
       name: 'album',
     });
-    port.postMessage({ name: 'album' });
+    port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
     port.onMessage.addListener((res) => {
-      console.log(res);
+      this.setState({
+        itemList: res.itemList,
+        pagination: {
+          pageSize: res.pageSize,
+          current: res.current,
+          total: res.total,
+        },
+      });
     });
     if (!this.state.port) {
       this.setState({ port });
@@ -103,24 +103,6 @@ export default class Album extends PureComponent {
       });
     }
   }
-  handleRemove = (photo) => {
-    const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'album/remove',
-      payload: { _id: photo._id },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-          dispatch({
-            type: 'album/fetch',
-            payload: { user_id: currentUser._id }
-          });
-        }
-      },
-    });
-  }
   handleCancel = () => {
     this.setState({
       previewVisible: false,
@@ -133,7 +115,7 @@ export default class Album extends PureComponent {
 
   handlePreview = (photo) => {
     this.setState({
-      previewImage: photo.href,
+      previewImage: photo.url,
       previewVisible: true,
     });
   }
@@ -149,15 +131,15 @@ export default class Album extends PureComponent {
     return (
       <Card style={{ width: 160, display: 'inline-block', margin: 10 }} bodyStyle={{ padding: 0 }} key={photo._id} >
         <div className={styles.customImageBox}>
-          <img className={styles.customImage} src={`${photo.href}?imageView2/2/w/300/h/300/q/100`} />
+          <img className={styles.customImage} src={photo.url} />
           <div className={styles.customModals}>
             <Icon type="eye" className={styles.customIcon} onClick={() => this.handlePreview(photo)}/>
-            <Icon type="delete" className={styles.customIcon} onClick={() => this.handleRemove(photo)} />
+            <Icon type="delete" className={styles.customIcon} onClick={() => console.log('remove')} />
           </div>
         </div>
         <div className={styles.customCard}>
-          <p className={styles.customNodes}>{photo.width} * {photo.height}</p>
-          <p className={styles.customNodes}>{photo.originalname}</p>
+          <p className={styles.customNodes}>{photo.picWidth} * {photo.picHeight}</p>
+          <p className={styles.customNodes}>{photo.title}</p>
         </div>
       </Card>
     );
@@ -169,15 +151,6 @@ export default class Album extends PureComponent {
     });
   }
   changeAlbumPage = (current, pageSize) => {
-    const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'album/fetch',
-      payload: {
-        user_id: currentUser._id,
-        pageSize,
-        currentPage: current,
-      }
-    });
     if (this.state.port) {
       this.state.port.postMessage({
         name: 'album',
@@ -198,8 +171,8 @@ export default class Album extends PureComponent {
     return promise;
   }
   render() {
-    const { data, loading } = this.props;
-    const { previewVisible, previewImage, ProgressVisible, ProgressPercent } = this.state;
+    const { loading } = this.props;
+    const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination } = this.state;
     const extra = (
       <Upload
         accept="image/*"
@@ -223,11 +196,11 @@ export default class Album extends PureComponent {
           extra={extra}
         >
           <Spin spinning={loading}>
-            {data.list.map(this.renderPhoto)}
+            {itemList.map(this.renderPhoto)}
           </Spin>
         </Card>
         <Pagination
-          {...data.pagination}
+          {...pagination}
           onChange={this.changeAlbumPage}
           style={{float: 'right', margin: '10px 20px'}}
         />
