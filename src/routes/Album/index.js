@@ -35,7 +35,7 @@ export default class Album extends PureComponent {
     port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
     port.onMessage.addListener((res) => {
       this.setState({
-        itemList: res.itemList,
+        itemList: res.itemList || [],
         pagination: {
           pageSize: res.pageSize,
           current: res.current,
