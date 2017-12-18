@@ -36,7 +36,7 @@ export default class Album extends PureComponent {
       type: 'qiniucloud/fetchUptoken'
     });
     // chrome.runtime.connect('nicai360');
-    const port = chrome.runtime.connect('fbogljkfccipgbpghamgcnhaooehbkcg', {
+    const port = chrome.runtime.connect('kfcjndkonfgfjijadngeabdhhmilaihk', {
       name: 'album',
     });
     port.onMessage.addListener((res) => {
