@@ -99,12 +99,12 @@ export default class AlbumModal extends PureComponent {
   }
   handleChoose = (photo) => {
     const { mode } = this.props;
-    const index = this.state.choosen.findIndex(item => item._id === photo._id);
+    const index = this.state.choosen.findIndex(item => item.id === photo.id);
     if( mode==='single' ) {
       this.setState({ choosen: [ photo ] });
     } else {
       if (index === -1) {
-        this.setState({ choosen: [ ...this.state.choosen, { ...photo, uid: photo._id } ] });
+        this.setState({ choosen: [ ...this.state.choosen, { ...photo, uid: photo.id } ] });
       } else {
         const choosed = [...this.state.choosen];
         choosed.splice(index,1);
