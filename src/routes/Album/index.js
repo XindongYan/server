@@ -35,6 +35,16 @@ export default class Album extends PureComponent {
     dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
+    // chrome.runtime.connect('nicai360');
+    chrome.runtime.sendMessage('fbogljkfccipgbpghamgcnhaooehbkcg', {
+      type: 'album',
+      data: {
+        ...data.pagination,
+        currentPage: data.pagination.current,
+      }
+    }, (result) => {
+      console.log(result);
+    });
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, data } = nextProps;
