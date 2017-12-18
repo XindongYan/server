@@ -87,7 +87,7 @@ export default class Album extends PureComponent {
   render() {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
     const extra = (
-        <Button onClick={() => console.log(upload)}>
+        <Button onClick={() => console.log('upload')}>
           <Icon type="upload" /> 点击上传
         </Button>
     );
