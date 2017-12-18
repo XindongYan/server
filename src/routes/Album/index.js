@@ -29,7 +29,7 @@ export default class Album extends PureComponent {
   }
   componentDidMount() {
     const { pagination } = this.state;
-    const port = chrome.runtime.connect('fbogljkfccipgbpghamgcnhaooehbkcg', {
+    const port = chrome.runtime.connect('kfcjndkonfgfjijadngeabdhhmilaihk', {
       name: 'album',
     });
     port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
@@ -129,7 +129,7 @@ export default class Album extends PureComponent {
   }
   renderPhoto = (photo) => {
     return (
-      <Card style={{ width: 160, display: 'inline-block', margin: 10 }} bodyStyle={{ padding: 0 }} key={photo._id} >
+      <Card style={{ width: 160, display: 'inline-block', margin: 10 }} bodyStyle={{ padding: 0 }} key={photo.id} >
         <div className={styles.customImageBox}>
           <img className={styles.customImage} src={photo.url} />
           <div className={styles.customModals}>
