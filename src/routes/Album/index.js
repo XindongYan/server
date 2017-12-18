@@ -19,6 +19,7 @@ export default class Album extends PureComponent {
     previewImage: '',
     ProgressVisible: false,
     ProgressPercent: 10,
+    port: null,
   }
   componentDidMount() {
     const { dispatch, currentUser, data } = this.props;
@@ -35,13 +36,16 @@ export default class Album extends PureComponent {
     dispatch({
       type: 'qiniucloud/fetchUptoken'
     });
-    // chrome.runtime.connect('nicai360');
     const port = chrome.runtime.connect('fbogljkfccipgbpghamgcnhaooehbkcg', {
       name: 'album',
     });
+    port.postMessage({ name: 'album' });
     port.onMessage.addListener((res) => {
       console.log(res);
     });
+    if (!this.state.port) {
+      this.setState({ port });
+    }
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, data } = nextProps;
@@ -174,6 +178,13 @@ export default class Album extends PureComponent {
         currentPage: current,
       }
     });
+    if (this.state.port) {
+      this.state.port.postMessage({
+        name: 'album',
+        pageSize,
+        currentPage: current,
+      });
+    }
   }
   beforeUpload = (file) => {
     const promise = new Promise(function(resolve, reject) {
