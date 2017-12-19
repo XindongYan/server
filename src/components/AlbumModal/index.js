@@ -54,9 +54,10 @@ export default class AlbumModal extends PureComponent {
       total: 0,
     },
     loading: true,
+    previewImgList: [],
   }
   componentDidMount() {
-    const { pagination } = this.state;
+    const { pagination, previewImgList } = this.state;
     const port = chrome.runtime.connect('kfcjndkonfgfjijadngeabdhhmilaihk', {
       name: 'album',
     });
@@ -73,6 +74,22 @@ export default class AlbumModal extends PureComponent {
           },
           loading: false,
         });
+      } else if (res.name === 'uploadResule') {
+        const uploadResule = res.result;
+        console.log(uploadResule.data[0]);
+        if (!uploadResule.errorCode) {
+          this.setState({
+            previewImgList: [ { id: '111', url: '//img.alicdn.com/imgextra/i3/2597324045/TB2fNrpi_nI8KJjSszgXXc8ApXa_!!2597324045-2-daren.png'} ]
+          },() => {
+            this.forceUpdate();
+          });
+          // this.state.previewImgList.push(uploadResule.data[0]);
+          message.success('上传成功');
+          port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
+
+        } else {
+          message.error(uploadResule.message);
+        }
       }
     });
     if (!this.state.port) {
@@ -181,7 +198,7 @@ export default class AlbumModal extends PureComponent {
         <div className={styles.customImageBox} onClick={() => this.handleChoose(photo)}>
           <img
             className={styles.customImage}
-            alt="example" width="100%"
+            width="100%"
             src={photo.url}
           />
           <div style={{display: this.state.choosen.find(item => item.id === photo.id) ? 'block' : 'none'}} className={styles.chooseModal}>
@@ -226,7 +243,8 @@ export default class AlbumModal extends PureComponent {
   }
   render() {
     const { visible, k, currentKey, minSize } = this.props;
-    const { choosen, fileList, previewImage, itemList, pagination, loading } = this.state;
+    const { choosen, fileList, previewImage, itemList, pagination, loading, previewImgList } = this.state;
+    console.log(previewImgList)
     return (
       <Modal
         title="素材"
@@ -257,6 +275,14 @@ export default class AlbumModal extends PureComponent {
                 <input className={styles.fileInp} type="file" onChange={this.handleUpload} />
               </div>
               <p style={{ fontSize: 12 }}>请选择大小不超过 3 MB 的文件</p>
+              <div className={styles.previewBox}>
+                {
+                  previewImgList.map(item =>
+                  <div key={item.id}>
+                    <img src={item.url} />
+                  </div>)
+                }
+              </div>
             </div>
           </TabPane>
         </Tabs>

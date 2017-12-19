@@ -24,18 +24,26 @@ export default class Album extends PureComponent {
     });
     port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
     port.onMessage.addListener((res) => {
-      console.log(res);
       if (res.name === 'album'){
         const data = res.data;
         this.setState({
-          itemList: res.itemList || [],
+          itemList: data.itemList || [],
           pagination: {
-            pageSize: res.pageSize,
-            current: res.current,
-            total: res.total,
+            pageSize: data.pageSize,
+            current: data.current,
+            total: data.total,
           },
           loading: false,
         });
+      } else if (res.name === 'uploadResule') {
+        const data = res.result;
+        console.log(data);
+        if (!data.errorCode) {
+          message.success('上传成功');
+          port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
+        } else {
+          message.error(data.message);
+        }
       }
     });
     if (!this.state.port) {
