@@ -84,7 +84,7 @@ export default class Editor extends PureComponent {
   handleAddImg = (imgs) => {
     imgs.forEach((item) => {
       this.state.ue.execCommand('insertimage', {
-        src: item.href,
+        src: item.url,
         maxWidth: '60%',
         height: 'auto',
       });

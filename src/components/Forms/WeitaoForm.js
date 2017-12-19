@@ -29,7 +29,7 @@ export default class WeitaoForm extends PureComponent {
     if (this.props.onChange) this.props.onChange({ title: e.target.value });
   }
   handleAddImg = (imgs) => {
-    if (this.props.onChange) this.props.onChange({ cover_img: imgs[0] ? imgs[0].href : '' });
+    if (this.props.onChange) this.props.onChange({ cover_img: imgs[0] ? imgs[0].url : '' });
   }
   uploadCoverImg = () => {
     this.props.dispatch({
