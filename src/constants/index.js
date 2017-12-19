@@ -60,6 +60,10 @@ export const TASK_APPROVE_STATUS = {
   waitingForApprove: 0,
   passed: 1,
   rejected: 2,
+  waitingToTaobao: 3,
+  publishedToTaobao: 4,
+  taobaoAccepted: 5,
+  taobaoRejected: 6,
 };
 
 export const PROJECT_STATUS = {

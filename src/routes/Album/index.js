@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Card, Button, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
+import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
 import styles from './index.less';
 
 export default class Album extends PureComponent {
@@ -84,12 +84,33 @@ export default class Album extends PureComponent {
       });
     }
   }
+  beforeUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();   
+    reader.readAsDataURL(file);   
+    reader.onload = function(e){   
+      console.log(e.target.result); //就是base64  
+      if (this.state.port) {
+        this.state.port.postMessage({
+          name: 'image',
+          data: e.target.result,
+        });
+      }
+    }   
+    // const promise = new Promise(function(resolve, reject) {
+    //   const isLt3M = file.size / 1024 / 1024 <= 3;
+    //   if (!isLt3M) {
+    //     message.error('上传图片最大3M');
+    //     reject(isLt3M);
+    //   }
+    //     resolve(isLt3M);
+    // });
+    // return promise;
+  }
   render() {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
     const extra = (
-        <Button onClick={() => console.log('upload')}>
-          <Icon type="upload" /> 点击上传
-        </Button>
+      <Input type="file" onChange={this.beforeUpload}/>
     );
     return (
       <div>
