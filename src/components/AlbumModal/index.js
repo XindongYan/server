@@ -6,45 +6,18 @@ import path from 'path';
 import styles from './index.less';
 const TabPane = Tabs.TabPane;
 
-function beforeUpload(file, minSize){
-  const promise = new Promise(function(resolve, reject) {
-    const isLt3M = file.size / 1024 / 1024 <= 3;
-    if (!isLt3M) {
-      message.error('上传图片最大3M');
-      reject(isLt3M);
-    } else if (minSize) {
-      const image = new Image();
-      image.onload = function () {
-        if(image.width < minSize.width || image.height < minSize.height) {
-          message.error('图片大小不符合要求');
-          reject(false);
-        } else {
-          resolve(true);
-        }
-      };
-      const fr = new FileReader();
-      fr.onload = function() {
-          image.src = fr.result;
-      };
-      fr.readAsDataURL(file);
-    } else {
-      resolve(isLt3M);
-    }
-  });
-  return promise;
-}
 @connect(state => ({
   currentUser: state.user.currentUser,
   visible: state.album.visible,
   qiniucloud: state.qiniucloud,
   currentKey: state.album.currentKey,
+  previewImgList: state.album.previewImgList,
 }))
 
   
 export default class AlbumModal extends PureComponent {
   state = {
     choosen: [],
-    fileList: [],
     previewImage: '',
     port: null,
     itemList: [],
@@ -54,11 +27,10 @@ export default class AlbumModal extends PureComponent {
       total: 0,
     },
     loading: true,
-    previewImgList: [],
   }
   componentDidMount() {
-    const { pagination, previewImgList } = this.state;
-    const port = chrome.runtime.connect('kfcjndkonfgfjijadngeabdhhmilaihk', {
+    const { pagination } = this.state;
+    const port = chrome.runtime.connect('bendghlleccgejkhgieaadgambphgemo', {
       name: 'album',
     });
     port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
@@ -76,17 +48,15 @@ export default class AlbumModal extends PureComponent {
         });
       } else if (res.name === 'uploadResule') {
         const uploadResule = res.result;
-        console.log(uploadResule.data[0]);
         if (!uploadResule.errorCode) {
-          this.setState({
-            previewImgList: [ { id: '111', url: '//img.alicdn.com/imgextra/i3/2597324045/TB2fNrpi_nI8KJjSszgXXc8ApXa_!!2597324045-2-daren.png'} ]
-          },() => {
-            this.forceUpdate();
-          });
-          // this.state.previewImgList.push(uploadResule.data[0]);
           message.success('上传成功');
           port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
-
+          this.props.dispatch({
+            type: 'album/changePreview',
+            payload: {
+              previewImgList: [ ...this.props.previewImgList, uploadResule.data[0] ]
+            },
+          })
         } else {
           message.error(uploadResule.message);
         }
@@ -100,20 +70,34 @@ export default class AlbumModal extends PureComponent {
 
   }
   handleOk = () => {
-    if (this.state.choosen.length) {
+    if (this.state.choosen.length > 0) {
       if (this.props.onOk) this.props.onOk(this.state.choosen);
-      this.setState({ choosen: [], fileList: [] });
+      this.setState({ choosen: [] });
+    } else if (this.props.previewImgList.length > 0) {
+      if (this.props.onOk) this.props.onOk(this.props.previewImgList);
     }
     this.props.dispatch({
       type: 'album/hide',
     });
+    this.props.dispatch({
+      type: 'album/changePreview',
+      payload: {
+        previewImgList: []
+      },
+    })
   }
   handleCancel = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'album/hide',
     });
-    this.setState({ choosen: [], fileList: [] });
+    this.setState({ choosen: [] });
+    this.props.dispatch({
+      type: 'album/changePreview',
+      payload: {
+        previewImgList: []
+      },
+    })
   }
   handleChoose = (photo) => {
     const { mode } = this.props;
@@ -130,69 +114,8 @@ export default class AlbumModal extends PureComponent {
       }
     }
   }
-  makeUploadData = (file) => {
-    const { qiniucloud } = this.props;
-    const extname = path.extname(file.name);
-    return {
-      token: qiniucloud.uptoken,
-      key: `${file.uid}${extname}`,
-    }
-  }
-
-  handleChange = async ({file,fileList}) => {
-    const { dispatch, currentUser, mode, minSize } = this.props;
-    const that = this;
-    const payload = {
-      user_id: currentUser._id,
-      originalname: file.name,
-      album_name: '相册一',
-    };
-    if(mode==='single') {
-      this.setState({ fileList: [file] });
-    } else {
-      this.setState({ fileList: fileList });
-    }
-    if (file.status === 'done' && file.response && !file.error) {
-      const url = `${QINIU_DOMAIN}/${file.response.key}`;
-      payload.href = url;
-      const result = await fetch(`${url}?imageInfo`, {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8',
-      }).then(response => response.json());
-      payload.width = result.width;
-      payload.height = result.height;
-      dispatch({
-        type: 'album/add',
-        payload,
-        callback: (result1) => {
-          if (result1.error) {
-            message.error(result1.msg);
-          } else {
-            message.success(result1.msg);
-            if(mode==='single') {
-              that.setState({ choosen: [ result1.photo ] });
-            } else {
-              that.setState({ choosen: [ ...that.state.choosen, result1.photo ] });
-            }
-            dispatch({
-              type: 'album/fetch',
-              payload: { user_id: currentUser._id }
-            });
-          }
-        },
-      });
-    } else if (file.status === 'removed') {
-      const index = this.state.choosen.findIndex(item => item.originalname === file.name);
-      this.state.choosen.splice(index,1);
-      this.setState({
-        fileList: fileList,
-      })
-    }
-  }
-
   renderPhoto = (photo, index) => {
     const { minSize } = this.props;
-    const isChoosen = this.state.choosen.find(item => item.id === photo.id);
     return (
       <Card style={{ width: 140, display: 'inline-block', margin: 5 }} bodyStyle={{ padding: 0 }} key={photo.id}>
         <div className={styles.customImageBox} onClick={() => this.handleChoose(photo)}>
@@ -213,9 +136,23 @@ export default class AlbumModal extends PureComponent {
       </Card>
     );
   }
+
+  previewPhoto = (photo, index) => {
+    return (
+      <div className={styles.previewImg} key={index}>
+        <img src={photo.url} />
+      </div>
+    );
+  }
   changeTab = (e) => {
     const { choosen } = this.state;
     this.setState({ choosen: [] });
+    this.props.dispatch({
+      type: 'album/changePreview',
+      payload: {
+        previewImgList: []
+      },
+    })
   }
   changeAlbumPage = (current, pageSize) => {
     if (this.state.port) {
@@ -229,22 +166,23 @@ export default class AlbumModal extends PureComponent {
   }
   handleUpload = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();   
-    reader.readAsDataURL(file);   
-    reader.onload = (e) => {   
-      // console.log(e.target.result); //就是base64  
-      if (this.state.port) {
-        this.state.port.postMessage({
-          name: 'image',
-          data: e.target.result,
-        });
-      }
-    }   
+    if (file) {
+      const reader = new FileReader();   
+      reader.readAsDataURL(file);   
+      reader.onload = (e) => {   
+        // console.log(e.target.result); //就是base64  
+        if (this.state.port) {
+          this.state.port.postMessage({
+            name: 'image',
+            data: e.target.result,
+          });
+        }
+      }   
+    }
   }
   render() {
-    const { visible, k, currentKey, minSize } = this.props;
-    const { choosen, fileList, previewImage, itemList, pagination, loading, previewImgList } = this.state;
-    console.log(previewImgList)
+    const { visible, k, currentKey, minSize, previewImgList } = this.props;
+    const { choosen, previewImage, itemList, pagination, loading } = this.state;
     return (
       <Modal
         title="素材"
@@ -275,13 +213,8 @@ export default class AlbumModal extends PureComponent {
                 <input className={styles.fileInp} type="file" onChange={this.handleUpload} />
               </div>
               <p style={{ fontSize: 12 }}>请选择大小不超过 3 MB 的文件</p>
-              <div className={styles.previewBox}>
-                {
-                  previewImgList.map(item =>
-                  <div key={item.id}>
-                    <img src={item.url} />
-                  </div>)
-                }
+              <div className={styles.previewBox}>           
+                {previewImgList.map(this.previewPhoto)}
               </div>
             </div>
           </TabPane>

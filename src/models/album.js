@@ -14,6 +14,8 @@ export default {
     loading: true,
     visible: false,
     currentKey: '',
+    previewImgList: [],
+    choosen: [],
   },
 
   effects: {
@@ -52,7 +54,6 @@ export default {
         payload: { visible: false, currentKey: '' },
       });
     },
-
   },
 
   reducers: {
@@ -73,6 +74,12 @@ export default {
         ...state,
         visible: action.payload.visible,
         currentKey: action.payload.currentKey,
+      };
+    },
+    changePreview(state, action) {
+      return {
+        ...state,
+        previewImgList: action.payload.previewImgList,
       };
     },
   },
