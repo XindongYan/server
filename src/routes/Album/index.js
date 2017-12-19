@@ -88,7 +88,7 @@ export default class Album extends PureComponent {
     const file = e.target.files[0];
     const reader = new FileReader();   
     reader.readAsDataURL(file);   
-    reader.onload = function(e){   
+    reader.onload = (e) => {   
       console.log(e.target.result); //就是base64  
       if (this.state.port) {
         this.state.port.postMessage({
