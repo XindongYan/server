@@ -46,8 +46,6 @@ export default class AlbumModal extends PureComponent {
     choosen: [],
     fileList: [],
     previewImage: '',
-    previewVisible: false,
-
     port: null,
     itemList: [],
     pagination: {
@@ -64,15 +62,18 @@ export default class AlbumModal extends PureComponent {
     });
     port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
     port.onMessage.addListener((res) => {
-      this.setState({
-        itemList: res.itemList || [],
-        pagination: {
-          pageSize: res.pageSize,
-          current: res.current,
-          total: res.total,
-        },
-        loading: false,
-      });
+      if (res.name === 'album'){
+        const data = res.data;
+        this.setState({
+          itemList: data.itemList || [],
+          pagination: {
+            pageSize: data.pageSize,
+            current: data.current,
+            total: data.total,
+          },
+          loading: false,
+        });
+      }
     });
     if (!this.state.port) {
       this.setState({ port });
@@ -209,22 +210,23 @@ export default class AlbumModal extends PureComponent {
       });
     }
   }
-  handlePreview = (file) => {
-    console.log(file)
-    this.setState({
-      previewImage: file.url || file.thumbUrl || '',
-      previewVisible: true,
-    });
-  }
-  handleImgCancel = () => {
-    this.setState({
-      previewImage: '',
-      previewVisible: false,
-    });
+  handleUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();   
+    reader.readAsDataURL(file);   
+    reader.onload = (e) => {   
+      // console.log(e.target.result); //就是base64  
+      if (this.state.port) {
+        this.state.port.postMessage({
+          name: 'image',
+          data: e.target.result,
+        });
+      }
+    }   
   }
   render() {
     const { visible, k, currentKey, minSize } = this.props;
-    const { choosen, fileList, previewVisible, previewImage, itemList, pagination, loading } = this.state;
+    const { choosen, fileList, previewImage, itemList, pagination, loading } = this.state;
     return (
       <Modal
         title="素材"
@@ -247,29 +249,14 @@ export default class AlbumModal extends PureComponent {
           </TabPane>
           <TabPane tab={<span><Icon type="upload" />上传</span>} key="upload">
             <div className="uploadBox">
-              <Upload
-                name="file"
-                accept="image/*"
-                action={QINIU_UPLOAD_DOMAIN}
-                data={this.makeUploadData}
-                beforeUpload={(file) => beforeUpload(file,minSize)}
-                onChange={this.handleChange}
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={this.handlePreview}
-              >
-                <div style={{height: '120px', 'paddingTop': '40px'}}>
-                  <Icon type="plus" />
-                  <div className="ant-upload-text">Upload</div>
+              <div className={styles.uploadInpBox}>
+                <div className={styles.uploadViewBox}>
+                  <Icon type="plus" style={{ fontSize: 32, color: '#6AF' }} />
+                  <p>直接拖拽文件到虚线框内即可上传</p>
                 </div>
-              </Upload>
-              <Modal visible={previewVisible} footer={null} onCancel={this.handleImgCancel}>
-                <div style={{ minHeight: 200 }}>
-                  { previewImage &&
-                    <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                  }
-                </div>
-              </Modal>
+                <input className={styles.fileInp} type="file" onChange={this.handleUpload} />
+              </div>
+              <p style={{ fontSize: 12 }}>请选择大小不超过 3 MB 的文件</p>
             </div>
           </TabPane>
         </Tabs>

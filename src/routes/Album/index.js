@@ -24,22 +24,25 @@ export default class Album extends PureComponent {
     });
     port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
     port.onMessage.addListener((res) => {
-      this.setState({
-        itemList: res.itemList || [],
-        pagination: {
-          pageSize: res.pageSize,
-          current: res.current,
-          total: res.total,
-        },
-        loading: false,
-      });
+      console.log(res);
+      if (res.name === 'album'){
+        const data = res.data;
+        this.setState({
+          itemList: res.itemList || [],
+          pagination: {
+            pageSize: res.pageSize,
+            current: res.current,
+            total: res.total,
+          },
+          loading: false,
+        });
+      }
     });
     if (!this.state.port) {
       this.setState({ port });
     }
   }
   componentWillReceiveProps(nextProps) {
-    
   }
   handleCancel = () => {
     this.setState({
@@ -89,7 +92,7 @@ export default class Album extends PureComponent {
     const reader = new FileReader();   
     reader.readAsDataURL(file);   
     reader.onload = (e) => {   
-      console.log(e.target.result); //就是base64  
+      // console.log(e.target.result); //就是base64  
       if (this.state.port) {
         this.state.port.postMessage({
           name: 'image',
@@ -110,7 +113,10 @@ export default class Album extends PureComponent {
   render() {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
     const extra = (
-      <Input type="file" onChange={this.beforeUpload}/>
+      <div className={styles.fileInpBox}>
+        <div>添加图片</div>
+        <input className={styles.fileInp} type="file" onChange={this.beforeUpload} />
+      </div>
     );
     return (
       <div>
