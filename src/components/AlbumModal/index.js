@@ -30,7 +30,7 @@ export default class AlbumModal extends PureComponent {
   }
   componentDidMount() {
     const { pagination } = this.state;
-    const port = chrome.runtime.connect('bendghlleccgejkhgieaadgambphgemo', {
+    const port = chrome.runtime.connect('fjnglclceahccegpanoeilhlacgfgncn', {
       name: 'album',
     });
     port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });

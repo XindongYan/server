@@ -9,6 +9,7 @@ export default class Album extends PureComponent {
     ProgressVisible: false,
     ProgressPercent: 10,
     port: null,
+    album: null,
     itemList: [],
     pagination: {
       pageSize: 20,
@@ -19,7 +20,7 @@ export default class Album extends PureComponent {
   }
   componentDidMount() {
     const { pagination } = this.state;
-    const port = chrome.runtime.connect('bendghlleccgejkhgieaadgambphgemo', {
+    const port = chrome.runtime.connect('fjnglclceahccegpanoeilhlacgfgncn', {
       name: 'album',
     });
     port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
@@ -48,6 +49,34 @@ export default class Album extends PureComponent {
     });
     if (!this.state.port) {
       this.setState({ port });
+    }
+    let album = document.getElementById('album');
+    if (!album) {
+      album = document.createElement('div');
+      album.id = 'album';
+      album.style.display = 'none';
+      document.body.appendChild(album);
+    }
+    
+    album.addEventListener('setAlbum', (e) => {
+      const data = JSON.parse(e.target.innerText);
+      console.log(data);
+      this.setState({
+        itemList: data.itemList || [],
+        pagination: {
+          pageSize: data.pageSize,
+          current: data.current,
+          total: data.total,
+        },
+        loading: false,
+      });
+    });
+    album.innerText = JSON.stringify({ pageSize: pagination.pageSize, currentPage: pagination.current });
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getAlbum', true, true);
+    album.dispatchEvent(customEvent);
+    if (!this.state.album) {
+      this.setState({ album });
     }
   }
   componentWillReceiveProps(nextProps) {
