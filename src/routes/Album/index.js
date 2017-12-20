@@ -20,36 +20,36 @@ export default class Album extends PureComponent {
   }
   componentDidMount() {
     const { pagination } = this.state;
-    const port = chrome.runtime.connect('fjnglclceahccegpanoeilhlacgfgncn', {
-      name: 'album',
-    });
-    port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
-    port.onMessage.addListener((res) => {
-      if (res.name === 'album'){
-        const data = res.data;
-        this.setState({
-          itemList: data.itemList || [],
-          pagination: {
-            pageSize: data.pageSize,
-            current: data.current,
-            total: data.total,
-          },
-          loading: false,
-        });
-      } else if (res.name === 'uploadResule') {
-        const data = res.result;
-        console.log(data);
-        if (!data.errorCode) {
-          message.success('上传成功');
-          port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
-        } else {
-          message.error(data.message);
-        }
-      }
-    });
-    if (!this.state.port) {
-      this.setState({ port });
-    }
+    // const port = chrome.runtime.connect('fjnglclceahccegpanoeilhlacgfgncn', {
+    //   name: 'album',
+    // });
+    // port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
+    // port.onMessage.addListener((res) => {
+    //   if (res.name === 'album'){
+    //     const data = res.data;
+    //     this.setState({
+    //       itemList: data.itemList || [],
+    //       pagination: {
+    //         pageSize: data.pageSize,
+    //         current: data.current,
+    //         total: data.total,
+    //       },
+    //       loading: false,
+    //     });
+    //   } else if (res.name === 'uploadResule') {
+    //     const data = res.result;
+    //     console.log(data);
+    //     if (!data.errorCode) {
+    //       message.success('上传成功');
+    //       port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
+    //     } else {
+    //       message.error(data.message);
+    //     }
+    //   }
+    // });
+    // if (!this.state.port) {
+    //   this.setState({ port });
+    // }
     let nicaiCrx = document.getElementById('nicaiCrx');
     
     nicaiCrx.addEventListener('setAlbum', (e) => {
@@ -65,18 +65,31 @@ export default class Album extends PureComponent {
         loading: false,
       });
     });
-    nicaiCrx.innerText = JSON.stringify({ pageSize: pagination.pageSize, currentPage: pagination.current });
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getAlbum', true, true);
+    nicaiCrx.addEventListener('uploadResule', (e) => {
+      const data = JSON.parse(e.target.innerText);
+      console.log(data);
+      if (!data.errorCode) {
+        message.success('上传成功');
+        this.handleLoadAlbum({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
+      } else {
+        message.error(data.message);
+      }
+    });
     setTimeout(() => {
-      nicaiCrx.dispatchEvent(customEvent);
-    }, 1000);
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: pagination.current });
+    }, 500);
     
     if (!this.state.nicaiCrx) {
       this.setState({ nicaiCrx });
     }
   }
   componentWillReceiveProps(nextProps) {
+  }
+  handleLoadAlbum = (params) => {
+    this.state.nicaiCrx.innerText = JSON.stringify(params);
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getAlbum', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleCancel = () => {
     this.setState({
@@ -114,25 +127,33 @@ export default class Album extends PureComponent {
   changeAlbumPage = (current, pageSize) => {
     if (this.state.port) {
       this.setState({ loading: true });
-      this.state.port.postMessage({
-        name: 'album',
+      this.handleLoadAlbum({
         pageSize,
         currentPage: current,
       });
+      // this.state.port.postMessage({
+      //   name: 'album',
+      //   pageSize,
+      //   currentPage: current,
+      // });
     }
   }
   beforeUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();   
     reader.readAsDataURL(file);   
-    reader.onload = (e) => {   
+    reader.onload = (e) => {
       // console.log(e.target.result); //就是base64  
-      if (this.state.port) {
-        this.state.port.postMessage({
-          name: 'image',
-          data: e.target.result,
-        });
-      }
+      // if (this.state.port) {
+      //   this.state.port.postMessage({
+      //     name: 'image',
+      //     data: e.target.result,
+      //   });
+      // }
+      this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
+      const customEvent = document.createEvent('Event');
+      customEvent.initEvent('image', true, true);
+      this.state.nicaiCrx.dispatchEvent(customEvent);
     }   
     // const promise = new Promise(function(resolve, reject) {
     //   const isLt3M = file.size / 1024 / 1024 <= 3;
