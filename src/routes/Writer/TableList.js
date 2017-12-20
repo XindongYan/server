@@ -42,10 +42,7 @@ export default class TableList extends PureComponent {
         message.error(data.msg);
       } else {
         message.success(data.msg);
-        dispatch({
-          type: 'task/fetchTakerTasks',
-          payload: { ...pagination, approve_status, user_id: currentUser._id, currentPage: 1, },
-        });
+        this.handleFetch();
       }
     });
     if (!this.state.nicaiCrx) {
@@ -60,6 +57,13 @@ export default class TableList extends PureComponent {
         payload: { ...pagination, approve_status, user_id: currentUser._id },
       });
     }
+  }
+  handleFetch = () => {
+    const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
+    dispatch({
+      type: 'task/fetchTakerTasks',
+      payload: { ...pagination, approve_status, user_id: currentUser._id, currentPage: 1, },
+    });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, currentUser, data: { approve_status } } = this.props;
@@ -97,7 +101,7 @@ export default class TableList extends PureComponent {
     console.log(tasks);
     this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
     const customEvent = document.createEvent('Event');
-    customEvent.initEvent('publish', true, true);
+    customEvent.initEvent('publishToTaobao', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
 
