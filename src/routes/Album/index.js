@@ -23,7 +23,6 @@ export default class Album extends PureComponent {
     let nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.addEventListener('setAlbum', (e) => {
       const data = JSON.parse(e.target.innerText);
-      console.log(data);
       this.setState({
         itemList: data.itemList || [],
         pagination: {
@@ -36,7 +35,6 @@ export default class Album extends PureComponent {
     });
     nicaiCrx.addEventListener('uploadResult', (e) => {
       const data = JSON.parse(e.target.innerText);
-      console.log(data);
       if (!data.errorCode) {
         message.success('上传成功');
         this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: 1 });
@@ -100,11 +98,6 @@ export default class Album extends PureComponent {
         pageSize,
         currentPage: current,
       });
-      // this.state.port.postMessage({
-      //   name: 'album',
-      //   pageSize,
-      //   currentPage: current,
-      // });
     }
   }
   beforeUpload = (e) => {
