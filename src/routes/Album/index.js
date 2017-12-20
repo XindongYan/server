@@ -68,7 +68,10 @@ export default class Album extends PureComponent {
     nicaiCrx.innerText = JSON.stringify({ pageSize: pagination.pageSize, currentPage: pagination.current });
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getAlbum', true, true);
-    nicaiCrx.dispatchEvent(customEvent);
+    setTimeout(() => {
+      nicaiCrx.dispatchEvent(customEvent);
+    }, 1000);
+    
     if (!this.state.nicaiCrx) {
       this.setState({ nicaiCrx });
     }
