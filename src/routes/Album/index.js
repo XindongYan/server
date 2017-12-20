@@ -20,38 +20,7 @@ export default class Album extends PureComponent {
   }
   componentDidMount() {
     const { pagination } = this.state;
-    // const port = chrome.runtime.connect('fjnglclceahccegpanoeilhlacgfgncn', {
-    //   name: 'album',
-    // });
-    // port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
-    // port.onMessage.addListener((res) => {
-    //   if (res.name === 'album'){
-    //     const data = res.data;
-    //     this.setState({
-    //       itemList: data.itemList || [],
-    //       pagination: {
-    //         pageSize: data.pageSize,
-    //         current: data.current,
-    //         total: data.total,
-    //       },
-    //       loading: false,
-    //     });
-    //   } else if (res.name === 'uploadResule') {
-    //     const data = res.result;
-    //     console.log(data);
-    //     if (!data.errorCode) {
-    //       message.success('上传成功');
-    //       port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
-    //     } else {
-    //       message.error(data.message);
-    //     }
-    //   }
-    // });
-    // if (!this.state.port) {
-    //   this.setState({ port });
-    // }
     let nicaiCrx = document.getElementById('nicaiCrx');
-    
     nicaiCrx.addEventListener('setAlbum', (e) => {
       const data = JSON.parse(e.target.innerText);
       console.log(data);
@@ -65,7 +34,7 @@ export default class Album extends PureComponent {
         loading: false,
       });
     });
-    nicaiCrx.addEventListener('uploadResule', (e) => {
+    nicaiCrx.addEventListener('uploadResult', (e) => {
       const data = JSON.parse(e.target.innerText);
       console.log(data);
       if (!data.errorCode) {
@@ -144,12 +113,6 @@ export default class Album extends PureComponent {
     reader.readAsDataURL(file);   
     reader.onload = (e) => {
       // console.log(e.target.result); //就是base64  
-      // if (this.state.port) {
-      //   this.state.port.postMessage({
-      //     name: 'image',
-      //     data: e.target.result,
-      //   });
-      // }
       this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('uploadImg', true, true);
