@@ -100,7 +100,7 @@ export default class TaskCreate extends PureComponent {
               } else {
                 this.props.dispatch({
                   type: 'task/handin',
-                  payload: { _id: result.task._id },
+                  payload: { _id: result.task._id, user_id: currentUser._id },
                   callback: (result2) => {
                     if (result2.error) {
                       message.error(result2.msg);
@@ -214,7 +214,7 @@ export default class TaskCreate extends PureComponent {
         } else {
           this.props.dispatch({
             type: 'task/handin',
-            payload: { _id: result.task._id },
+            payload: { _id: result.task._id, user_id: currentUser._id },
             callback: (result1) => {
               if (result1.error) {
                 message.error(result1.msg);

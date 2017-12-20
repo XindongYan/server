@@ -15,6 +15,7 @@ import styles from './TableList.less';
 
 @connect(state => ({
   formData: state.task.formData,
+  currentUser: state.user.currentUser,
 }))
 
 export default class TaskEdit extends PureComponent {
@@ -61,6 +62,7 @@ export default class TaskEdit extends PureComponent {
     });
   }
   handleSubmit = () => {
+    const { currentUser } = this.props;
     const { task } = this.state;
     if (!task.title || !task.title.replace(/\s+/g, '')) {
       message.warn('请填写标题');
@@ -81,7 +83,7 @@ export default class TaskEdit extends PureComponent {
           } else {
             this.props.dispatch({
               type: 'task/handin',
-              payload: { _id: query._id },
+              payload: { _id: query._id, user_id: currentUser._id },
               callback: (result1) => {
                 if (result1.error) {
                   message.error(result1.msg);

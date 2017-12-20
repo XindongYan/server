@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import $ from 'jquery';
+import fetch from 'dva/fetch';
 import { Icon, Card, Table, Input, message } from 'antd';
 import { ORIGIN } from '../../constants';
 import styles from './ShopPool.less';

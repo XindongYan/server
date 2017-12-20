@@ -1,5 +1,6 @@
 import fetch from 'dva/fetch';
 import { notification } from 'antd';
+import { ORIGIN } from '../constants';
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -34,9 +35,7 @@ export default function request(url, options) {
     };
     newOptions.body = JSON.stringify(newOptions.body);
   }
-  const origin = 'http://test.nicai360.com';
-  // const origin = `http://www.nicai360.com`;
-  // const origin = `http://${location.hostname}:3000`;
+  const origin = ORIGIN;
   return fetch(/^http/.test(url) ? url : `${origin}${url}`, newOptions)
     .then(checkStatus)
     .then(response => response.json())

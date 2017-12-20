@@ -1,5 +1,5 @@
 import { queryProjects, addProject, updateProject, removeProject, queryProject, publishProject, offshelfProject,
-publishTasks } from '../services/project';
+publishTasks, darenTasks } from '../services/project';
 
 export default {
   namespace: 'project',
@@ -51,6 +51,10 @@ export default {
     },
     *publishTasks({ payload, callback }, { call, put }) {
       const result = yield call(publishTasks, payload);
+      if (callback) callback(result);
+    },
+    *darenTasks({ payload, callback }, { call, put }) {
+      const result = yield call(darenTasks, payload);
       if (callback) callback(result);
     },
     *remove({ payload, callback }, { call, put }) {

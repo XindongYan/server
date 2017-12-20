@@ -29,6 +29,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 export default class TableList extends PureComponent {
   state = {
     modalVisible: false,
+    darenModalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
@@ -176,6 +177,35 @@ export default class TableList extends PureComponent {
       },
     });
   }
+  handleSpecifyDaren = () => {
+    const { dispatch, currentUser } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'project/darenTasks',
+          payload: {
+            task_ids: this.state.selectedRowKeys,
+            user_id: currentUser._id,
+            phone: values.phone,
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              message.success(result.msg);
+              this.handleShowSpecifyModal(false);
+              dispatch({
+                type: 'task/fetchProjectTasks',
+                payload: { project_id: query.project_id },
+              });
+              this.handleRowSelectChange([], []);
+            }
+          },
+        });
+      }
+    });
+  }
   handleEdit = (record) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch(routerRedux.push(`/project/task/edit?project_id=${query.project_id}&_id=${record._id}`));
@@ -210,6 +240,11 @@ export default class TableList extends PureComponent {
   handleShowSpecifyModal = (record) => {
     this.handleModalVisible(true);
     this.setState({ task: record });
+  }
+  handleDarenModalVisible = (flag) => {
+    this.setState({
+      darenModalVisible: !!flag,
+    });
   }
   handleSpecify = () => {
     const { dispatch, currentUser } = this.props;
@@ -273,7 +308,7 @@ export default class TableList extends PureComponent {
   }
   render() {
     const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
-    const { selectedRows, modalVisible, selectedRowKeys } = this.state;
+    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -431,6 +466,7 @@ export default class TableList extends PureComponent {
                 selectedRows.length > 0 && (
                   <span>
                     <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量发布</Button>
+                    <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
                     {/*<Dropdown overlay={menu}>
                       <Button>
                         更多操作 <Icon type="down" />
@@ -454,7 +490,7 @@ export default class TableList extends PureComponent {
               rowKey="_id"
             />
           </div>
-          <Modal
+          {modalVisible && <Modal
             title="指定写手"
             visible={modalVisible}
             onOk={this.handleSpecify}
@@ -484,7 +520,38 @@ export default class TableList extends PureComponent {
                 </Select>
               )}
             </FormItem>
-          </Modal>
+          </Modal>}
+          { darenModalVisible && <Modal
+            title="指定达人"
+            visible={darenModalVisible}
+            onOk={this.handleSpecifyDaren}
+            onCancel={() => this.handleDarenModalVisible(false)}
+          >
+            <FormItem
+              label="达人"
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+            >
+              {getFieldDecorator('phone', {
+                initialValue: '',
+                rules: [{ required: true, message: '请选择达人！' }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  mode="combobox"
+                  optionLabelProp="children"
+                  placeholder="搜索电话指定达人"
+                  notFoundContent=""
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={false}
+                  onSearch={this.onSearch}
+                >
+                  {suggestionUsers.map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+          </Modal>}
         </Card>
       </div>
     );

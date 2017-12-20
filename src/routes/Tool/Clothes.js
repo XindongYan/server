@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import fetch from 'dva/fetch';
 import { Card, message } from 'antd';
 import { ORIGIN } from '../../constants';
 import styles from './Clothes.less';

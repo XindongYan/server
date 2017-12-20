@@ -59,6 +59,15 @@ export async function publishTasks(params) {
   });
 }
 
+export async function darenTasks(params) {
+  return request('/api/task/project/daren/tasks', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProject(params) {
   return request(`/api/task/project?${stringify(params)}`);
 }

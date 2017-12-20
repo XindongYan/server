@@ -31,7 +31,7 @@ export default class AlbumModal extends PureComponent {
   }
   componentDidMount() {
     const { pagination } = this.state;
-    let nicaiCrx = document.getElementById('nicaiCrx');
+    const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.addEventListener('setAlbum', (e) => {
       const data = JSON.parse(e.target.innerText);
       this.setState({

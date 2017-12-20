@@ -1,8 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider } from 'antd';
+import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, message } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
+import $ from 'jquery';
+import fetch from 'dva/fetch';
+import { stringify } from 'qs';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
@@ -21,7 +24,7 @@ const Search = Input.Search;
 }))
 export default class TableList extends PureComponent {
   state = {
-
+    nicaiCrx: null,
   }
 
   componentDidMount() {
@@ -31,6 +34,22 @@ export default class TableList extends PureComponent {
         type: 'task/fetchTakerTasks',
         payload: { ...pagination, approve_status, user_id: currentUser._id },
       });
+    }
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.addEventListener('publishResult', (e) => {
+      const data = JSON.parse(e.target.innerText);
+      if (data.error) {
+        message.error(data.msg);
+      } else {
+        message.success(data.msg);
+        dispatch({
+          type: 'task/fetchTakerTasks',
+          payload: { ...pagination, approve_status, user_id: currentUser._id, currentPage: 1, },
+        });
+      }
+    });
+    if (!this.state.nicaiCrx) {
+      this.setState({ nicaiCrx });
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -68,6 +87,20 @@ export default class TableList extends PureComponent {
     });
   }
 
+  handlePublish = async (record) => {
+    const { currentUser } = this.props;
+    const tasks = await fetch(`${ORIGIN}/api/chrome/test.json?${stringify({
+      _ids: JSON.stringify([record._id]),
+    })}`, {
+      credentials: 'include',
+    }).then(response => response.json());
+    console.log(tasks);
+    this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('publish', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
+
   handleSearch = (value, name) => {
     const { dispatch, data: { pagination, approve_status }, currentUser } = this.props;
     const values = {
@@ -94,7 +127,7 @@ export default class TableList extends PureComponent {
     const { dispatch, currentUser, data: { pagination } } = this.props;
     dispatch({
       type: 'task/fetchTakerTasks',
-      payload: { ...pagination, user_id: currentUser._id, approve_status: e.target.value, }
+      payload: { ...pagination, user_id: currentUser._id, approve_status: e.target.value, currentPage: 1, }
     });
   }
   render() {
@@ -197,6 +230,18 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/view?_id=${record._id}`}>
                 <span>查看</span>
               </Link>
+            </div>
+          );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
+          return (
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <a onClick={() => this.handlePublish(record)}>
+                <span>发布</span>
+              </a>
             </div>
           );
         }

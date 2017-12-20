@@ -66,7 +66,7 @@ export default class TaskList extends PureComponent {
       type: 'taskSquare/takeTask',
       payload: {
         _id: task._id,
-        taker_id: currentUser._id,
+        user_id: currentUser._id,
       },
       callback: (result) => {
         if (result.error) {
