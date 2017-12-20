@@ -217,6 +217,26 @@ export default class TableList extends PureComponent {
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
+            <Tooltip placement="top" title="待发布至阿里创作平台">
+              <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
+                待发布
+              </RadioButton>
+            </Tooltip>
+            <Tooltip placement="top" title="已发布至阿里创作平台">
+              <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
+                已发布
+              </RadioButton>
+            </Tooltip>
+            <Tooltip placement="top" title="阿里创作平台接受">
+              <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
+                接受
+              </RadioButton>
+            </Tooltip>
+            <Tooltip placement="top" title="阿里创作平台拒绝">
+              <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
+                拒绝
+              </RadioButton>
+            </Tooltip>
           </RadioGroup>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>

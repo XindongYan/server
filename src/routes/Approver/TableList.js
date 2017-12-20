@@ -23,7 +23,6 @@ function onChange(date, dateString) {
   data: state.task.approverTask,
   loading: state.task.approverTaskLoading,
   currentUser: state.user.currentUser,
-  projects: state.project.data,
   teamUser: state.user.teamUser,
   teamUsers: state.team.data.list,
 }))
@@ -44,12 +43,6 @@ export default class TableList extends PureComponent {
       });
     }
     if (teamUser.team_id) {
-      dispatch({
-        type: 'project/fetch',
-        payload: {
-          team_id: teamUser.team_id,
-        },
-      });
       if (currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) {
         dispatch({
           type: 'team/fetch',
@@ -72,12 +65,6 @@ export default class TableList extends PureComponent {
       });
     }
     if (teamUser.team_id !== this.props.teamUser.team_id) {
-      dispatch({
-        type: 'project/fetch',
-        payload: {
-          team_id: teamUser.team_id,
-        },
-      });
       if (currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) {
         dispatch({
           type: 'team/fetch',
@@ -185,7 +172,7 @@ export default class TableList extends PureComponent {
     });
   }
   render() {
-    const { data, loading, currentUser, projects: { list }, teamUsers } = this.props;
+    const { data, loading, currentUser, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys } = this.state;
     const columns = [
       {
@@ -413,19 +400,6 @@ export default class TableList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Select
-                showSearch
-                allowClear
-                style={{ width: 160, marginRight: 8 }}
-                placeholder="活动"
-                optionFilterProp="children"
-                onChange={(value) => this.handleSearch(value,'project_id')}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                { list && list.length > 0 &&
-                  list.map(item => <Option key={item._id} value={item._id}>{item.name}</Option>)
-                }
-              </Select>
               <Select
                 allowClear
                 showSearch
