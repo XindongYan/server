@@ -194,7 +194,7 @@ export default class TableList extends PureComponent {
               message.error(result.msg);
             } else {
               message.success(result.msg);
-              this.handleShowSpecifyModal(false);
+              this.handleDarenModalVisible(false);
               dispatch({
                 type: 'task/fetchProjectTasks',
                 payload: { project_id: query.project_id },
