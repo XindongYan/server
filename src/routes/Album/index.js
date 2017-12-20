@@ -70,7 +70,7 @@ export default class Album extends PureComponent {
       console.log(data);
       if (!data.errorCode) {
         message.success('上传成功');
-        this.handleLoadAlbum({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
+        this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: 1 });
       } else {
         message.error(data.message);
       }
@@ -152,7 +152,7 @@ export default class Album extends PureComponent {
       // }
       this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
       const customEvent = document.createEvent('Event');
-      customEvent.initEvent('image', true, true);
+      customEvent.initEvent('uploadImg', true, true);
       this.state.nicaiCrx.dispatchEvent(customEvent);
     }   
     // const promise = new Promise(function(resolve, reject) {

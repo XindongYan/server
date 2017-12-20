@@ -27,47 +27,87 @@ export default class AlbumModal extends PureComponent {
       total: 0,
     },
     loading: true,
+    previewImgList: [],
   }
   componentDidMount() {
     const { pagination } = this.state;
-    const port = chrome.runtime.connect('fjnglclceahccegpanoeilhlacgfgncn', {
-      name: 'album',
+    // const port = chrome.runtime.connect('fjnglclceahccegpanoeilhlacgfgncn', {
+    //   name: 'album',
+    // });
+    // port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
+    // port.onMessage.addListener((res) => {
+    //   if (res.name === 'album'){
+    //     const data = res.data;
+    //     this.setState({
+    //       itemList: data.itemList || [],
+    //       pagination: {
+    //         pageSize: data.pageSize,
+    //         current: data.current,
+    //         total: data.total,
+    //       },
+    //       loading: false,
+    //     });
+    //   } else if (res.name === 'uploadResule') {
+    //     const uploadResule = res.result;
+    //     if (!uploadResule.errorCode) {
+    //       message.success('上传成功');
+    //       port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
+    //       this.props.dispatch({
+    //         type: 'album/changePreview',
+    //         payload: {
+    //           previewImgList: [ ...this.props.previewImgList, uploadResule.data[0] ]
+    //         },
+    //       })
+    //     } else {
+    //       message.error(uploadResule.message);
+    //     }
+    //   }
+    // });
+    // if (!this.state.port) {
+    //   this.setState({ port });
+    // }
+    let nicaiCrx = document.getElementById('nicaiCrx');
+    
+    nicaiCrx.addEventListener('setAlbum', (e) => {
+      const data = JSON.parse(e.target.innerText);
+      this.setState({
+        itemList: data.itemList || [],
+        pagination: {
+          pageSize: data.pageSize,
+          current: data.current,
+          total: data.total,
+        },
+        loading: false,
+      });
     });
-    port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: pagination.current });
-    port.onMessage.addListener((res) => {
-      if (res.name === 'album'){
-        const data = res.data;
+    nicaiCrx.addEventListener('uploadResule', (e) => {
+      const result = JSON.parse(e.target.innerText);
+      if (!result.errorCode) {
+        message.success('上传成功');
         this.setState({
-          itemList: data.itemList || [],
-          pagination: {
-            pageSize: data.pageSize,
-            current: data.current,
-            total: data.total,
-          },
-          loading: false,
-        });
-      } else if (res.name === 'uploadResule') {
-        const uploadResule = res.result;
-        if (!uploadResule.errorCode) {
-          message.success('上传成功');
-          port.postMessage({ name: 'album', pageSize: pagination.pageSize, currentPage: 1 });
-          this.props.dispatch({
-            type: 'album/changePreview',
-            payload: {
-              previewImgList: [ ...this.props.previewImgList, uploadResule.data[0] ]
-            },
-          })
-        } else {
-          message.error(uploadResule.message);
-        }
+          previewImgList: [ ...this.state.previewImgList, result.data[0] ],
+        })
+        this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: 1 });
+      } else {
+        message.error(result.message);
       }
     });
-    if (!this.state.port) {
-      this.setState({ port });
+    setTimeout(() => {
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: pagination.current });
+    }, 500);
+    
+    if (!this.state.nicaiCrx) {
+      this.setState({ nicaiCrx });
     }
   }
   componentWillReceiveProps(nextProps) {
 
+  }
+  handleLoadAlbum = (params) => {
+    this.state.nicaiCrx.innerText = JSON.stringify(params);
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getAlbum', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleOk = () => {
     if (this.state.choosen.length > 0) {
@@ -169,20 +209,24 @@ export default class AlbumModal extends PureComponent {
     if (file) {
       const reader = new FileReader();   
       reader.readAsDataURL(file);   
-      reader.onload = (e) => {   
+      reader.onload = (e) => {
         // console.log(e.target.result); //就是base64  
-        if (this.state.port) {
-          this.state.port.postMessage({
-            name: 'image',
-            data: e.target.result,
-          });
-        }
+        this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
+        const customEvent = document.createEvent('Event');
+        customEvent.initEvent('uploadImg', true, true);
+        this.state.nicaiCrx.dispatchEvent(customEvent);
+        // if (this.state.port) {
+        //   this.state.port.postMessage({
+        //     name: 'image',
+        //     data: e.target.result,
+        //   });
+        // }
       }   
     }
   }
   render() {
-    const { visible, k, currentKey, minSize, previewImgList } = this.props;
-    const { choosen, previewImage, itemList, pagination, loading } = this.state;
+    const { visible, k, currentKey, minSize } = this.props;
+    const { choosen, previewImage, itemList, pagination, loading, previewImgList } = this.state;
     return (
       <Modal
         title="素材"
