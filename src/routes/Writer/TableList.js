@@ -25,6 +25,7 @@ const Search = Input.Search;
 export default class TableList extends PureComponent {
   state = {
     nicaiCrx: null,
+    version: '',
   }
 
   componentDidMount() {
@@ -36,17 +37,14 @@ export default class TableList extends PureComponent {
       });
     }
     const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.addEventListener('publishResult', (e) => {
-      const data = JSON.parse(e.target.innerText);
-      if (data.error) {
-        message.error(data.msg);
-      } else {
-        message.success(data.msg);
-        this.handleFetch();
-      }
-    });
+    nicaiCrx.addEventListener('publishResult', this.publishResult);
+    nicaiCrx.addEventListener('setVersion', this.setVersion);
     if (!this.state.nicaiCrx) {
-      this.setState({ nicaiCrx });
+      this.setState({ nicaiCrx }, () => {
+        setTimeout(() => {
+          this.handleGetVersion();
+        }, 400);
+      });
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -57,6 +55,31 @@ export default class TableList extends PureComponent {
         payload: { ...pagination, approve_status, user_id: currentUser._id },
       });
     }
+  }
+  componentWillUnmount() {
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.removeEventListener('publishResult', this.publishResult);
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+  }
+  publishResult = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    if (data.error) {
+      message.error(data.msg);
+    } else {
+      message.success(data.msg);
+      this.handleFetch();
+    }
+  }
+  setVersion = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    this.setState({
+      version: data,
+    })
+  }
+  handleGetVersion = () => {
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getVersion', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleFetch = () => {
     const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
@@ -92,17 +115,22 @@ export default class TableList extends PureComponent {
   }
 
   handlePublish = async (record) => {
-    const { currentUser } = this.props;
-    const tasks = await fetch(`${ORIGIN}/api/chrome/test.json?${stringify({
-      _ids: JSON.stringify([record._id]),
-    })}`, {
-      credentials: 'include',
-    }).then(response => response.json());
-    console.log(tasks);
-    this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('publishToTaobao', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
+    if (this.state.version) {
+      const { currentUser } = this.props;
+      const tasks = await fetch(`${ORIGIN}/api/chrome/test.json?${stringify({
+        _ids: JSON.stringify([record._id]),
+      })}`, {
+        credentials: 'include',
+      }).then(response => response.json());
+      console.log(tasks);
+      this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
+      const customEvent = document.createEvent('Event');
+      customEvent.initEvent('publishToTaobao', true, true);
+      this.state.nicaiCrx.dispatchEvent(customEvent);
+    } else {
+      message.destroy();
+      message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+    }
   }
 
   handleSearch = (value, name) => {
