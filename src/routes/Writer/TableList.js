@@ -248,6 +248,18 @@ export default class TableList extends PureComponent {
               </a>
             </div>
           );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
+          return (
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
+                查看
+              </a>
+            </div>
+          );
         }
       }
     };

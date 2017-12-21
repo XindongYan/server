@@ -194,7 +194,7 @@ export default class TableList extends PureComponent {
               message.error(result.msg);
             } else {
               message.success(result.msg);
-              this.handleShowSpecifyModal(false);
+              this.handleDarenModalVisible(false);
               dispatch({
                 type: 'task/fetchProjectTasks',
                 payload: { project_id: query.project_id },
@@ -371,7 +371,7 @@ export default class TableList extends PureComponent {
                 <a onClick={() => this.handleEdit(record)}>修改</a>
                 <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                  <a>发布</a>
+                  <a>上架</a>
                 </Popconfirm>
                 <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
@@ -465,7 +465,7 @@ export default class TableList extends PureComponent {
               {
                 selectedRows.length > 0 && (
                   <span>
-                    <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量发布</Button>
+                    <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量上架</Button>
                     <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
                     {/*<Dropdown overlay={menu}>
                       <Button>

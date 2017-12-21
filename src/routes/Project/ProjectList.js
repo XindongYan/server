@@ -299,7 +299,7 @@ export default class ProjectList extends PureComponent {
                 <a onClick={() => this.handleEdit(record)}>修改</a>
                 <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                  <a>发布</a>
+                  <a>上架</a>
                 </Popconfirm>
                 <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
@@ -325,7 +325,7 @@ export default class ProjectList extends PureComponent {
                 <a onClick={() => this.handleEdit(record)}>修改</a>
                 <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                  <a>发布</a>
+                  <a>上架</a>
                 </Popconfirm>
                 <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
@@ -362,7 +362,7 @@ export default class ProjectList extends PureComponent {
           <div>
             <RadioGroup value={status} onChange={this.changeStatus}> 
               <RadioButton value={1}>已创建</RadioButton>
-              <RadioButton value={2}>已发布</RadioButton>
+              <RadioButton value={2}>已上架</RadioButton>
               <RadioButton value={3}>已下架</RadioButton>
             </RadioGroup>
           </div>
