@@ -68,7 +68,8 @@
   height: 32px;
   position: relative;
 }
-.fileInpBox>div{
+.fileInpBox>label{
+  display: block;
   width: 100%;
   height: 100%;
   line-height: 32px;
@@ -79,13 +80,5 @@
   cursor: pointer;
 }
 .fileInp{
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  opacity: 0;
-  filter:Alpha(opacity=0);
-  cursor: pointer;
+  display: none;
 }

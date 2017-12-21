@@ -144,8 +144,8 @@ export default class Album extends PureComponent {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
     const extra = (
       <div className={styles.fileInpBox}>
-        <div>添加图片</div>
-        <input className={styles.fileInp} type="file" onChange={this.beforeUpload} />
+        <label htmlFor="upload">添加图片</label>
+        <input id="upload" className={styles.fileInp} type="file" onChange={this.beforeUpload} />
       </div>
     );
     return (
