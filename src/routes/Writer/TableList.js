@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, message } from 'antd';
+import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message } from 'antd';
 import moment from 'moment';
 import { Link } from 'dva/router';
 import $ from 'jquery';
@@ -243,9 +243,9 @@ export default class TableList extends PureComponent {
                 外链
               </a>
               <Divider type="vertical" />
-              <a onClick={() => this.handlePublish(record)}>
-                <span>发布</span>
-              </a>
+              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                <a>发布</a>
+              </Popconfirm>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
