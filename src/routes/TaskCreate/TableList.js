@@ -320,7 +320,6 @@ export default class TableList extends PureComponent {
   }
   render() {
     const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
-    console.log(projectTask);
     const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
     const menu = (

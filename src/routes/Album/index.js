@@ -124,14 +124,15 @@ export default class Album extends PureComponent {
     this.setState({
       pagination: {
         ...this.state.pagination,
-        current: current,
+        current,
+        pageSize,
       }
     })
     if (this.state.nicaiCrx) {
       this.setState({ loading: true });
       this.handleLoadAlbum({
-        pageSize: pageSize,
-        current: current,
+        pageSize,
+        current,
       });
     }
   }
@@ -174,8 +175,13 @@ export default class Album extends PureComponent {
           </Spin>
         </Card>
         <Pagination
-          {...pagination}
+          {...{
+            showSizeChanger: true,
+            showQuickJumper: true,
+            ...pagination,
+          }}
           onChange={this.changeAlbumPage}
+          onShowSizeChange={this.changeAlbumPage}
           style={{float: 'right', margin: '10px 20px'}}
         />
         <Modal visible={previewVisible} footer={null} width={620} onCancel={this.handleCancel}>
