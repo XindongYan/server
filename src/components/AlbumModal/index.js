@@ -143,7 +143,7 @@ export default class AlbumModal extends PureComponent {
     }
   }
   renderPhoto = (photo, index) => {
-    const { minSize } = this.props;
+    const { minSize, k } = this.props;
     return (
       <Card style={{ width: 140, display: 'inline-block', margin: 5 }} bodyStyle={{ padding: 0 }} key={photo.id}>
         <div className={styles.customImageBox} onClick={() => this.handleChoose(photo)}>
@@ -156,7 +156,12 @@ export default class AlbumModal extends PureComponent {
             <Icon type="check" />
           </div>          
         </div>
-        <div style={{display: minSize && (photo.picWidth < minSize.width || photo.picHeight < minSize.height) ? 'block' : 'none'}} className={styles.diabledModal}>尺寸不符</div>
+        { k === 'cover' && (photo.picWidth < minSize.width || photo.picHeight < minSize.height || ((photo.picHeight / minSize.height).toFixed(2) != (photo.picWidth / minSize.width).toFixed(2))) &&
+          <div
+            className={styles.diabledModal}>
+            尺寸不符
+          </div>
+        }
         <div className="custom-card">
           <p className={styles.customNodes}>{photo.picWidth} * {photo.picHeight}</p>
           <p className={styles.customNodes}>{photo.title}</p>
