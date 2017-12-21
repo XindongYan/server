@@ -65,6 +65,7 @@ export default class TableList extends PureComponent {
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
+    const query = querystring.parse(this.props.location.search.substr(1));
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -73,6 +74,7 @@ export default class TableList extends PureComponent {
     }, {});
 
     const params = {
+      project_id: query.project_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...formValues,
