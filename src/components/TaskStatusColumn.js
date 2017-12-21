@@ -21,9 +21,9 @@ export default class TaskStatusColumn extends PureComponent {
     } else if (status === 4) {
       return (<Badge status="processing" text="已发布到淘宝" />);
     } else if (status === 5) {
-      return (<Badge status="success" text="淘宝接受" />);
+      return (<Badge status="success" text="淘宝通过" />);
     } else if (status === 6) {
-      return (<Badge status="error" text="淘宝拒绝" />);
+      return (<Badge status="error" text="淘宝不通过" />);
     } else {
       return <span>{status}</span> ;
     }

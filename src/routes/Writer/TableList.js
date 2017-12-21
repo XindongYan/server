@@ -225,6 +225,17 @@ export default class TableList extends PureComponent {
         </Tooltip> : ''
       ),
     };
+    const pushStatusText = {
+      title: '推送状态',
+      dataIndex: 'taobao',
+      render: val => {
+        let pushStatusTextTags = '';
+        if (val.pushStatusText) {
+          pushStatusTextTags = val.pushStatusText.map((item, index) => <p key={index}>{item}</p>);
+        }
+        return <span>{pushStatusTextTags}</span>
+      },
+    };
     const opera = {
       title: '操作',
       render: (record) => {
@@ -295,6 +306,9 @@ export default class TableList extends PureComponent {
       columns.push(opera);
     } else if (data.approve_status === 0) {
       columns.push( approveStatus, opera);
+    } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted
+      || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
+      columns.push( approveStatus, pushStatusText, opera);
     } else {
       columns.push( approveStatus, approver, grade, approveTime, opera);
     }
@@ -316,14 +330,14 @@ export default class TableList extends PureComponent {
                 已发布
               </RadioButton>
             </Tooltip>
-            <Tooltip placement="top" title="阿里创作平台接收">
+            <Tooltip placement="top" title="阿里创作平台通过">
               <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
-                淘宝接收
+                淘宝通过
               </RadioButton>
             </Tooltip>
-            <Tooltip placement="top" title="阿里创作平台拒绝">
+            <Tooltip placement="top" title="阿里创作平台不通过">
               <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
-                淘宝拒绝
+                淘宝不通过
               </RadioButton>
             </Tooltip>
           </RadioGroup>
