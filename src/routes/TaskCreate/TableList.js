@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, } from 'antd';
+import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import styles from './TableList.less';
@@ -14,6 +14,8 @@ import TaskOperationRecord from './TaskOperationRecord';
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
@@ -41,7 +43,7 @@ export default class TableList extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/fetchProjectTasks',
-      payload: { project_id: query.project_id },
+      payload: { ...this.props.projectTask, project_id: query.project_id },
     });
     dispatch({
       type: 'project/fetchProject',
@@ -308,8 +310,17 @@ export default class TableList extends PureComponent {
       });
     }
   }
+  changeApproveStatus = (e) => {
+    const { dispatch, projectTask } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    dispatch({
+      type: 'task/fetchProjectTasks',
+      payload: { project_id: query.project_id, approve_status: e.target.value, },
+    });
+  }
   render() {
     const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
+    console.log(projectTask);
     const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
     const menu = (
@@ -459,6 +470,36 @@ export default class TableList extends PureComponent {
               );
             })
           }
+        </Card>
+        <Card style={{ marginBottom: 14 }}>
+          <RadioGroup value={projectTask.approve_status} onChange={this.changeApproveStatus}>
+            <RadioButton value={TASK_APPROVE_STATUS.created}>创建</RadioButton>
+            <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
+            <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
+            <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
+            <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
+            <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
+            <Tooltip placement="top" title="待发布至阿里创作平台">
+              <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
+                待发布
+              </RadioButton>
+            </Tooltip>
+            <Tooltip placement="top" title="已发布至阿里创作平台">
+              <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
+                已发布
+              </RadioButton>
+            </Tooltip>
+            <Tooltip placement="top" title="阿里创作平台接收">
+              <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
+                淘宝接收
+              </RadioButton>
+            </Tooltip>
+            <Tooltip placement="top" title="阿里创作平台拒绝">
+              <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
+                淘宝拒绝
+              </RadioButton>
+            </Tooltip>
+          </RadioGroup>
         </Card>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>

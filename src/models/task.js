@@ -14,6 +14,7 @@ export default {
     approveData: [],
     operationRecords: [],
     projectTask: {
+      approve_status: TASK_APPROVE_STATUS.created,
       list: [],
       pagination: {},
     },
@@ -102,7 +103,7 @@ export default {
       if (!response.error) {
         yield put({
           type: 'saveProjectTasks',
-          payload: response,
+          payload: {...response, approve_status: payload.approve_status},
         });
       }
       yield put({
