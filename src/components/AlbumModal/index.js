@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Modal, message, Tabs, Icon, Upload, Button, Pagination} from 'antd';
+import { Table, Card, Modal, message, Tabs, Icon, Upload, Button, Pagination, Spin} from 'antd';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
 import path from 'path';
 import styles from './index.less';
@@ -30,55 +30,68 @@ export default class AlbumModal extends PureComponent {
     previewImgList: [],
   }
   componentDidMount() {
-    const { pagination } = this.state;
-    const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.addEventListener('setAlbum', (e) => {
-      const data = JSON.parse(e.target.innerText);
-      this.setState({
-        itemList: data.itemList || [],
-        pagination: {
-          pageSize: data.pageSize,
-          current: data.current,
-          total: data.total,
-        },
-        loading: false,
-      });
-    });
-    nicaiCrx.addEventListener('uploadResult', (e) => {
-      const result = JSON.parse(e.target.innerText);
-      if (this.props.k === this.props.currentKey) {
-        if (!result.errorCode) {
-          message.success('上传成功');
-          this.setState({
-            choosen: [ ...this.state.choosen, result.data[0] ],
-          })
-        } else {
-          message.error(result.message);
-        }
-      }
-    });
-    nicaiCrx.addEventListener('setVersion', (e) => {
-      const data = JSON.parse(e.target.innerText);
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
-      this.setState({
-        version: data,
-      })
-    });
-    setTimeout(() => {
-      if(!this.state.version){
-        message.warn('请安装最新版尼采创作平台插件！');
-      }
-    }, 3000);
-    if (!this.state.nicaiCrx) {
-      this.setState({ nicaiCrx }, () => {
-        setTimeout(() => {
-          this.handleGetVersion();
-        }, 400);
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
-
+    if (nextProps.k === nextProps.currentKey) {
+      if (!this.props.visible && nextProps.visible) {
+        const nicaiCrx = document.getElementById('nicaiCrx');
+        nicaiCrx.addEventListener('setAlbum', this.setAlbum);
+        nicaiCrx.addEventListener('uploadResult', this.uploadResult);
+        nicaiCrx.addEventListener('setVersion', this.setVersion);
+        if (!this.state.nicaiCrx) {
+          this.setState({ nicaiCrx }, () => {
+            setTimeout(() => {
+              this.handleGetVersion();
+            }, 400);
+          });
+        }
+        setTimeout(() => {
+          if(!this.state.version){
+            message.destroy();
+            message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+            this.setState({ loading: false });
+          }
+        }, 3000);
+      } else if (this.props.visible && !nextProps.visible) {
+        const nicaiCrx = document.getElementById('nicaiCrx');
+        nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
+        nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
+        nicaiCrx.removeEventListener('setVersion', this.setVersion);
+      }
+    }
+  }
+  setAlbum = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    this.setState({
+      itemList: data.itemList || [],
+      pagination: {
+        pageSize: data.pageSize,
+        current: data.current,
+        total: data.total,
+      },
+      loading: false,
+    });
+  }
+  uploadResult = (e) => {
+    const result = JSON.parse(e.target.innerText);
+    if (this.props.k === this.props.currentKey) {
+      if (!result.errorCode) {
+        message.success('上传成功');
+        this.setState({
+          choosen: [ ...this.state.choosen, result.data[0] ],
+        })
+      } else {
+        message.error(result.message);
+      }
+    }
+  }
+  setVersion = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    const { pagination } = this.state;
+    this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+    this.setState({
+      version: data,
+    })
   }
   handleLoadAlbum = (params) => {
     this.state.nicaiCrx.innerText = JSON.stringify(params);
@@ -193,14 +206,16 @@ export default class AlbumModal extends PureComponent {
       >
         <Tabs defaultActiveKey="album" onChange={this.changeTab}>
           <TabPane tab={<span><Icon type="picture" />素材库</span>} key="album">
-            <div>
-              {itemList.map(this.renderPhoto)}
-            </div>
-            <Pagination
-              {...pagination}
-              onChange={this.changeAlbumPage}
-              style={{float: 'right', margin: '10px 20px'}}
-            />
+            <Spin spinning={loading}>
+              <div>
+                {itemList.map(this.renderPhoto)}
+              </div>
+              <Pagination
+                {...pagination}
+                onChange={this.changeAlbumPage}
+                style={{float: 'right', margin: '10px 20px'}}
+              />
+            </Spin>
           </TabPane>
           <TabPane tab={<span><Icon type="upload" />上传</span>} key="upload">
             <div className="uploadBox">

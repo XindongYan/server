@@ -20,39 +20,15 @@ export default class Album extends PureComponent {
     version: '',
   }
   componentDidMount() {
-    const { pagination } = this.state;
     const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.addEventListener('setAlbum', (e) => {
-      const data = JSON.parse(e.target.innerText);
-      this.setState({
-        itemList: data.itemList || [],
-        pagination: {
-          pageSize: data.pageSize,
-          current: data.current,
-          total: data.total,
-        },
-        loading: false,
-      });
-    });
-    nicaiCrx.addEventListener('uploadResult', (e) => {
-      const data = JSON.parse(e.target.innerText);
-      if (!data.errorCode) {
-        message.success('上传成功');
-        this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
-      } else {
-        message.error(data.message);
-      }
-    });
-    nicaiCrx.addEventListener('setVersion', (e) => {
-      const data = JSON.parse(e.target.innerText);
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
-      this.setState({
-        version: data,
-      })
-    });
+    nicaiCrx.addEventListener('setAlbum', this.setAlbum);
+    nicaiCrx.addEventListener('uploadResult', this.uploadResult);
+    nicaiCrx.addEventListener('setVersion', this.setVersion);
     setTimeout(() => {
       if(!this.state.version){
-        message.warn('请安装最新版尼采创作平台插件！');
+        message.destroy();
+        message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+        this.setState({ loading: false });
       }
     }, 3000);
     if (!this.state.nicaiCrx) {
@@ -64,6 +40,42 @@ export default class Album extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
+  }
+  componentWillUnmount() {
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
+    nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+  }
+  setAlbum = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    this.setState({
+      itemList: data.itemList || [],
+      pagination: {
+        pageSize: data.pageSize,
+        current: data.current,
+        total: data.total,
+      },
+      loading: false,
+    });
+  }
+  uploadResult = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    const { pagination } = this.state;
+    if (!data.errorCode) {
+      message.success('上传成功');
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+    } else {
+      message.error(data.message);
+    }
+  }
+  setVersion = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    const { pagination } = this.state;
+    this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+    this.setState({
+      version: data,
+    })
   }
   handleLoadAlbum = (params) => {
     this.state.nicaiCrx.innerText = JSON.stringify(params);

@@ -290,12 +290,12 @@ export default class TableList extends PureComponent {
             </Tooltip>
             <Tooltip placement="top" title="阿里创作平台接受">
               <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
-                接受
+                淘宝接受
               </RadioButton>
             </Tooltip>
             <Tooltip placement="top" title="阿里创作平台拒绝">
               <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
-                拒绝
+                淘宝拒绝
               </RadioButton>
             </Tooltip>
           </RadioGroup>
