@@ -38,7 +38,7 @@ export default class Album extends PureComponent {
       const data = JSON.parse(e.target.innerText);
       if (!data.errorCode) {
         message.success('上传成功');
-        this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: 1 });
+        this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
       } else {
         message.error(data.message);
       }
@@ -50,12 +50,14 @@ export default class Album extends PureComponent {
       })
     });
     setTimeout(() => {
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: pagination.current });
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
       this.handleGetVersion();
     }, 500);
     setTimeout(() => {
       if(!this.state.version){
-        message.warn('请安装最新版尼采创作平台插件！')
+        message.warn('请安装最新版尼采创作平台插件！');
+      } else{
+        console.log(this.state.version);
       }
     }, 3000);
     if (!this.state.nicaiCrx) {
@@ -109,11 +111,11 @@ export default class Album extends PureComponent {
     );
   }
   changeAlbumPage = (current, pageSize) => {
-    if (this.state.port) {
+    if (this.state.nicaiCrx) {
       this.setState({ loading: true });
       this.handleLoadAlbum({
         pageSize,
-        currentPage: current,
+        current: current,
       });
     }
   }
