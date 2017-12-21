@@ -316,9 +316,9 @@ export default class TableList extends PureComponent {
                 已发布
               </RadioButton>
             </Tooltip>
-            <Tooltip placement="top" title="阿里创作平台接受">
+            <Tooltip placement="top" title="阿里创作平台接收">
               <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
-                淘宝接受
+                淘宝接收
               </RadioButton>
             </Tooltip>
             <Tooltip placement="top" title="阿里创作平台拒绝">
