@@ -58,7 +58,7 @@ export default class AlbumModal extends PureComponent {
       }
     });
     setTimeout(() => {
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: pagination.current });
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
     }, 500);
     
     if (!this.state.nicaiCrx) {
@@ -138,18 +138,14 @@ export default class AlbumModal extends PureComponent {
   changeTab = (e) => {
     const { choosen, pagination } = this.state;
     if (e === "album") {
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, currentPage: pagination.currentPage });
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
     }
     this.setState({ choosen: [] });
   }
   changeAlbumPage = (current, pageSize) => {
-    if (this.state.port) {
+    if (this.state.nicaiCrx) {
       this.setState({ loading: true });
-      this.state.port.postMessage({
-        name: 'album',
-        pageSize,
-        currentPage: current,
-      });
+      this.handleLoadAlbum({ pageSize, current });
     }
   }
   handleUpload = (e) => {

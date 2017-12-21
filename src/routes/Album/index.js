@@ -111,10 +111,16 @@ export default class Album extends PureComponent {
     );
   }
   changeAlbumPage = (current, pageSize) => {
+    this.setState({
+      pagination: {
+        ...this.state.pagination,
+        current: current,
+      }
+    })
     if (this.state.nicaiCrx) {
       this.setState({ loading: true });
       this.handleLoadAlbum({
-        pageSize,
+        pageSize: pageSize,
         current: current,
       });
     }
