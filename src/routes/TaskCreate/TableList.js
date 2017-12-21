@@ -39,11 +39,11 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch, teamUser } = this.props;
+    const { dispatch, teamUser, projectTask: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/fetchProjectTasks',
-      payload: { ...this.props.projectTask, project_id: query.project_id },
+      payload: { ...pagination, approve_status, project_id: query.project_id },
     });
     dispatch({
       type: 'project/fetchProject',
@@ -65,7 +65,7 @@ export default class TableList extends PureComponent {
     }
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
+    const { dispatch, projectTask: { approve_status } } = this.props;
     const { formValues } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
 
@@ -79,6 +79,7 @@ export default class TableList extends PureComponent {
       project_id: query.project_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
+      approve_status,
       ...formValues,
       ...filters,
     };
@@ -159,7 +160,7 @@ export default class TableList extends PureComponent {
     this.props.dispatch(routerRedux.push(`/project/task/create?project_id=${query.project_id}`));
   }
   publishTasks = () => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'project/publishTasks',
@@ -174,7 +175,7 @@ export default class TableList extends PureComponent {
           message.success(result.msg);
           dispatch({
             type: 'task/fetchProjectTasks',
-            payload: { project_id: query.project_id },
+            payload: { ...pagination, approve_status, project_id: query.project_id },
           });
           this.handleRowSelectChange([], []);
         }
@@ -182,7 +183,7 @@ export default class TableList extends PureComponent {
     });
   }
   handleSpecifyDaren = () => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -201,7 +202,7 @@ export default class TableList extends PureComponent {
               this.handleDarenModalVisible(false);
               dispatch({
                 type: 'task/fetchProjectTasks',
-                payload: { project_id: query.project_id },
+                payload: { ...pagination, approve_status, project_id: query.project_id },
               });
               this.handleRowSelectChange([], []);
             }
@@ -215,7 +216,7 @@ export default class TableList extends PureComponent {
     this.props.dispatch(routerRedux.push(`/project/task/edit?project_id=${query.project_id}&_id=${record._id}`));
   }
   handlePublish = (record) => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/publish',
@@ -230,7 +231,7 @@ export default class TableList extends PureComponent {
           message.success(result.msg);
           dispatch({
             type: 'task/fetchProjectTasks',
-            payload: { project_id: query.project_id },
+            payload: { ...pagination, approve_status, project_id: query.project_id },
           });
         }
       },
