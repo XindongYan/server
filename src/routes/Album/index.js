@@ -8,7 +8,6 @@ export default class Album extends PureComponent {
     previewImage: '',
     ProgressVisible: false,
     ProgressPercent: 10,
-    port: null,
     nicaiCrx: null,
     itemList: [],
     pagination: {
@@ -138,24 +137,22 @@ export default class Album extends PureComponent {
   }
   beforeUpload = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();   
-    reader.readAsDataURL(file);   
-    reader.onload = (e) => {
-      // console.log(e.target.result); //就是base64  
-      this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
-      const customEvent = document.createEvent('Event');
-      customEvent.initEvent('uploadImg', true, true);
-      this.state.nicaiCrx.dispatchEvent(customEvent);
-    }   
-    // const promise = new Promise(function(resolve, reject) {
-    //   const isLt3M = file.size / 1024 / 1024 <= 3;
-    //   if (!isLt3M) {
-    //     message.error('上传图片最大3M');
-    //     reject(isLt3M);
-    //   }
-    //     resolve(isLt3M);
-    // });
-    // return promise;
+    if (file) {
+      if (file.size / 1024 / 1024 >= 3) {
+        message.warn('上传图片最大3M');
+      } else {
+        console.log(file.size)
+        const reader = new FileReader();   
+        reader.readAsDataURL(file);   
+        reader.onload = (e) => {
+          // console.log(e.target.result); //就是base64  
+          this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
+          const customEvent = document.createEvent('Event');
+          customEvent.initEvent('uploadImg', true, true);
+          this.state.nicaiCrx.dispatchEvent(customEvent);
+        }
+      }
+    }
   }
   render() {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;

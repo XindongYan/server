@@ -19,7 +19,7 @@ export default class AlbumModal extends PureComponent {
   state = {
     choosen: [],
     previewImage: '',
-    port: null,
+    nicaiCrx: null,
     itemList: [],
     pagination: {
       pageSize: 12,
@@ -77,9 +77,16 @@ export default class AlbumModal extends PureComponent {
     if (this.props.k === this.props.currentKey) {
       if (!result.errorCode) {
         message.success('上传成功');
-        this.setState({
-          choosen: [ ...this.state.choosen, result.data[0] ],
-        })
+        if (this.props.k === 'cover'){
+          this.setState({
+            choosen: [ result.data[0] ],
+          })
+        } else {
+          this.setState({
+            choosen: [ ...this.state.choosen, result.data[0] ],
+          })
+        }
+        
       } else {
         message.error(result.message);
       }
@@ -179,19 +186,44 @@ export default class AlbumModal extends PureComponent {
     }
   }
   handleUpload = (e) => {
+    const { k, minSize } = this.props;
+    const { nicaiCrx } = this.state;
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();   
-      reader.readAsDataURL(file);   
-      reader.onload = (e) => {
-        // console.log(e.target.result); //就是base64  
-        this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
-        const customEvent = document.createEvent('Event');
-        customEvent.initEvent('uploadImg', true, true);
-        this.state.nicaiCrx.dispatchEvent(customEvent);
-      }   
+      if (file.size / 1024 / 1024 >= 3) {
+        message.warn('上传图片最大3M');
+      } else {
+        // console.log(file)
+        var reader = new FileReader();  
+        reader.readAsDataURL(file);  
+        //监听文件读取结束后事件  
+        reader.onloadend = (e) => {
+          if (k === 'cover') {
+            var img = new Image();
+            img.src = e.target.result;
+            img.onload = function(event) {
+              if (img.height < minSize.height || img.width < minSize.width) {
+                message.warn('封面图尺寸不能小于750*422px');
+              } else if ((img.height / minSize.height).toFixed(2) != (img.width / minSize.width).toFixed(2)) {
+                message.warn('封面图宽高比必须为750*422');
+              } else {
+                nicaiCrx.innerText = JSON.stringify({data: e.target.result});
+                const customEvent = document.createEvent('Event');
+                customEvent.initEvent('uploadImg', true, true);
+                nicaiCrx.dispatchEvent(customEvent);
+              }
+            }
+          } else {
+            nicaiCrx.innerText = JSON.stringify({data: e.target.result});
+            const customEvent = document.createEvent('Event');
+            customEvent.initEvent('uploadImg', true, true);
+            nicaiCrx.dispatchEvent(customEvent);
+          }
+        };
+      }
     }
   }
+ 
   render() {
     const { visible, k, currentKey, minSize } = this.props;
     const { choosen, previewImage, itemList, pagination, loading, previewImgList } = this.state;
