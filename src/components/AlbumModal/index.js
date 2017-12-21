@@ -57,12 +57,24 @@ export default class AlbumModal extends PureComponent {
         }
       }
     });
+    nicaiCrx.addEventListener('setVersion', (e) => {
+      const data = JSON.parse(e.target.innerText);
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+      this.setState({
+        version: data,
+      })
+    });
     setTimeout(() => {
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
-    }, 500);
-    
+      if(!this.state.version){
+        message.warn('请安装最新版尼采创作平台插件！');
+      }
+    }, 3000);
     if (!this.state.nicaiCrx) {
-      this.setState({ nicaiCrx });
+      this.setState({ nicaiCrx }, () => {
+        setTimeout(() => {
+          this.handleGetVersion();
+        }, 400);
+      });
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -72,6 +84,11 @@ export default class AlbumModal extends PureComponent {
     this.state.nicaiCrx.innerText = JSON.stringify(params);
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getAlbum', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
+  handleGetVersion = () => {
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getVersion', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleOk = () => {

@@ -50,13 +50,9 @@ export default class Album extends PureComponent {
         version: data,
       })
     });
-    
     setTimeout(() => {
       if(!this.state.version){
         message.warn('请安装最新版尼采创作平台插件！');
-      } else{
-        this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
-        console.log(this.state.version);
       }
     }, 3000);
     if (!this.state.nicaiCrx) {
