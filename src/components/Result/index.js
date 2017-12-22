@@ -9,6 +9,7 @@ export default function Result({
   const iconMap = {
     error: <Icon className={styles.error} type="close-circle" />,
     success: <Icon className={styles.success} type="check-circle" />,
+    warning: <Icon className={styles.warning} type="warning" />,
   };
   const clsString = classNames(styles.result, className);
   return (

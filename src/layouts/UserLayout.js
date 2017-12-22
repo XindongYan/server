@@ -9,6 +9,7 @@ import styles from './UserLayout.less';
 import Login from '../routes/User/Login';
 import Register from '../routes/User/Register';
 import RegisterResult from '../routes/User/RegisterResult';
+import ToBind from '../routes/Result/ToBind';
 
 const links = [{
   title: '帮助',
@@ -54,6 +55,7 @@ class UserLayout extends React.PureComponent {
             <Route key="login" path="/user/login" component={Login} />
             <Route key="register" path="/user/register" component={Register} />
             <Route key="register-result" path="/user/register-result" component={RegisterResult} />
+            <Route key="to-bind" path="/user/to-bind" component={ToBind} />
             <Redirect to="/user/login" />
           </Switch>
           <GlobalFooter className={styles.footer} links={links} copyright={copyright} />

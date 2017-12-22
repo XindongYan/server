@@ -4,6 +4,7 @@ import { routerRedux, Link } from 'dva/router';
 import { Form, Input, Tabs, Button, Icon, Checkbox, Row, Col, Alert, message } from 'antd';
 import styles from './Login.less';
 import { ORIGIN } from '../../constants';
+import querystring from 'querystring';
 
 const FormItem = Form.Item;
 const { TabPane } = Tabs;
@@ -70,7 +71,15 @@ export default class Login extends Component {
                 this.props.dispatch({
                   type: 'user/fetchCurrent',
                   callback: () => {
-                    this.props.dispatch(routerRedux.push('/'));
+                    console.log(this.props.location);
+                    const search = this.props.location.search;
+                    const query = querystring.parse(search.substr(1));
+                    console.log(query);
+                    if (query.redirectUrl) {
+                      window.location.href = query.redirectUrl;
+                    } else {
+                      this.props.dispatch(routerRedux.push('/'));
+                    }
                   },
                 });
               }
