@@ -110,7 +110,9 @@ export default class Album extends PureComponent {
           <img className={styles.customImage} src={photo.url} />
           <div className={styles.customModals}>
             <Icon type="eye" className={styles.customIcon} onClick={() => this.handlePreview(photo)}/>
-            <Icon type="delete" className={styles.customIcon} onClick={() => console.log('remove')} />
+            {/*
+              <Icon type="delete" className={styles.customIcon} onClick={() => console.log('remove')} />
+            */}
           </div>
         </div>
         <div className={styles.customCard}>
@@ -184,8 +186,8 @@ export default class Album extends PureComponent {
           onShowSizeChange={this.changeAlbumPage}
           style={{float: 'right', margin: '10px 20px'}}
         />
-        <Modal visible={previewVisible} footer={null} width={620} onCancel={this.handleCancel}>
-          <div style={{ padding: 20, height: 480, lineHeight: '420px', textAlign: 'center' }}>
+        <Modal visible={previewVisible} footer={null} width={720} onCancel={this.handleCancel}>
+          <div style={{ padding: 20, height: 480, lineHeight: '440px', textAlign: 'center' }}>
             <img style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} src={previewImage} />
           </div>
         </Modal>
