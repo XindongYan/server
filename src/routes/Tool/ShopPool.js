@@ -3,6 +3,8 @@ import { connect } from 'dva';
 import $ from 'jquery';
 import fetch from 'dva/fetch';
 import { Icon, Card, Table, Input, message } from 'antd';
+import url from 'url';
+import querystring from 'querystring';
 import { ORIGIN } from '../../constants';
 import styles from './ShopPool.less';
 
@@ -38,8 +40,20 @@ export default class ShopPool extends PureComponent {
     let numLine = 0;
     for (var i = 0; i < shopArr.length; i ++) {
       const value = shopArr[i];
+      const kxuan_uplus_c2c_url = url.parse(value.kxuan_uplus_c2c_url);
+      const query = querystring.parse(kxuan_uplus_c2c_url.query);
+      let param_name = 'kxuan_swyt_c2c';
+      if (query.kxuan_swyt_c2c) {
+        param_name = 'kxuan_swyt_c2c';
+      } else if (query.oetag) {
+        param_name = 'oetag';
+      } else if (query.kxuan_uplus_c2c) {
+        param_name = 'kxuan_uplus_c2c';
+      } else if (query.oetag) {
+        param_name = 'oetag';
+      }
       let kxuan_url = `https://kxuan.taobao.com/searchSp.htm?ajax=true&callback=jsonp2711&q=${
-      searchValue}&id=${value.nested_id}&${value.param_name}=${value.second_param}&nested=we&number=${Math.random()}`;
+      searchValue}&id=${query.id}&${param_name}=${query[param_name]}&nested=we&number=${Math.random()}`;
       $.ajax({
         url:kxuan_url,
         dataType:'jsonp',
@@ -48,21 +62,13 @@ export default class ShopPool extends PureComponent {
         success: (data) => {
           const aryAuctions = data["mods"]["itemlist"] ? data["mods"]["itemlist"]["data"]["auctions"] : []; // object
           if (aryAuctions.length >= 1) {
-            kxuan_url = "https://kxuan.taobao.com/search.htm?uniq=pid&navigator=all&q=";
-            kxuan_url += searchValue;
-            kxuan_url += "&id=";
-            kxuan_url += value.nested_id;
-            kxuan_url += "&";
-            kxuan_url += value.param_name;
-            kxuan_url += "=";
-            kxuan_url += value.second_param;
             numLine += 1;
             var json = {
               numLine:numLine,
               value:value,
               shopName:value.theme_name,
-              accountNick:value.account_nick,
-              url:kxuan_url
+              accountNick: '',
+              url: `${value.kxuan_uplus_c2c_url}&q=${searchValue}`
             }
             this.setState({
               tableMsg: [ ...this.state.tableMsg, json ],
