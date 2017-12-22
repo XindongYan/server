@@ -33,9 +33,12 @@ export default class ShopPool extends PureComponent {
       num: 0,
     })
     const { shopArr, searchValue, tableMsg } = this.state;
-    if (!searchValue) {
-      message.warn('请输入店铺名称');
+    let valueInp = searchValue;
+    if (!valueInp) {
+      message.warn('请输入要搜索的关键词或商品链接');
       return;
+    } else if (/(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/.test(valueInp)) {
+      valueInp = escape(valueInp);
     }
     let numLine = 0;
     for (var i = 0; i < shopArr.length; i ++) {
@@ -53,7 +56,7 @@ export default class ShopPool extends PureComponent {
         param_name = 'oetag';
       }
       let kxuan_url = `https://kxuan.taobao.com/searchSp.htm?ajax=true&callback=jsonp2711&q=${
-      searchValue}&id=${query.id}&${param_name}=${query[param_name]}&nested=we&number=${Math.random()}`;
+      valueInp}&id=${query.id}&${param_name}=${query[param_name]}&nested=we&number=${Math.random()}`;
       $.ajax({
         url:kxuan_url,
         dataType:'jsonp',
@@ -68,7 +71,7 @@ export default class ShopPool extends PureComponent {
               value:value,
               shopName:value.theme_name,
               accountNick: '',
-              url: `${value.kxuan_uplus_c2c_url}&q=${searchValue}`
+              url: `${value.kxuan_uplus_c2c_url}&q=${valueInp}`
             }
             this.setState({
               tableMsg: [ ...this.state.tableMsg, json ],
@@ -119,7 +122,7 @@ export default class ShopPool extends PureComponent {
           <p className={styles.tbSearchTit}>查询店铺商品入选的池子</p>
           <div className={styles.searchBox} style={{ position: 'relative' }}>
             <Search
-              placeholder="请输入店铺名"
+              placeholder="请输入要搜索的关键词或商品链接"
               enterButton="搜索"
               size="large"
               onSearch={this.getShops}
