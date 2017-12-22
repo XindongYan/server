@@ -7,10 +7,11 @@ import url from 'url';
 import querystring from 'querystring';
 import { ORIGIN } from '../../constants';
 import styles from './ShopPool.less';
+import { searchStatistic } from '../../services/tool';
 
 const Search = Input.Search;
 @connect(state => ({
-
+  currentUser: state.user.currentUser,
 }))
 export default class ShopPool extends PureComponent {
   state = {
@@ -28,11 +29,12 @@ export default class ShopPool extends PureComponent {
     })
   }
   getShops = () => {
+    const { currentUser } = this.props;
+    const { shopArr, searchValue, tableMsg } = this.state;
     this.setState({
       tableMsg: [],
       num: 0,
     })
-    const { shopArr, searchValue, tableMsg } = this.state;
     let valueInp = searchValue;
     if (!valueInp) {
       message.warn('请输入要搜索的关键词或商品链接');
@@ -90,6 +92,11 @@ export default class ShopPool extends PureComponent {
         }
       });
     }
+    searchStatistic({
+      name: '查询店铺池子',
+      user_id: currentUser._id,
+      username: currentUser.name,
+    });
   }
   clearInpVal = () => {
     this.setState({

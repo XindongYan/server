@@ -61,7 +61,6 @@ export default class WeTaobao extends PureComponent {
     const { qualitList } = this.state;
     if (value){
       const result = await searchNew7({text: value});
-      console.log(result);
       if(result.data && result.data.length > 0 ){
         this.setState({
           qualitList: result.data,
