@@ -6,6 +6,8 @@ import { Icon } from 'antd';
 import styles from './UserInfoLayout.less';
 import UserInfo from '../routes/User/UserInfo';
 import UserPassWord from '../routes/User/UserPassWord';
+import ToBind from '../routes/User/ToBind';
+import BindSuccess from '../routes/User/BindSuccess';
 
 class UserInfoLayout extends React.PureComponent {
   static childContextTypes = {
@@ -26,6 +28,8 @@ class UserInfoLayout extends React.PureComponent {
           <Switch>
             <Route key="setting" path="/setting/userInfo" component={UserInfo} />
             <Route key="password" path="/setting/password" component={UserPassWord} />
+            <Route key="to-bind" path="/setting/to-bind" component={ToBind} />
+            <Route key="bind-success" path="/setting/bind-success" component={BindSuccess} />
             <Redirect to="/setting/userInfo" />
           </Switch>
         </div>
