@@ -91,7 +91,7 @@ export default class SubmissionCard extends PureComponent {
             { project.deadline &&
               <span className={styles.cardMsgDeadline}>截稿日期：{ moment(project.deadline).format('YYYY-MM-DD') }</span>
             }
-            <Link to={`/writer/task/create?project_id=${project._id}&channel_name=${project.channel_name}`}>
+            <Link to={`/taskSquare/submission/details?project_id=${project._id}`}>
               <Button type="primary" ghost style={{ float: 'right' }}>投稿</Button>
             </Link>
           </div>

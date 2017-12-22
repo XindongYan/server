@@ -449,7 +449,7 @@ export default class TableList extends PureComponent {
     return (
       <div>
         <ProjectDetail project={formData} />
-        <Card style={{ marginBottom: 14 }}>
+        <Card style={{ marginBottom: 12 }}>
           {
             (flow ? flow.texts : []).map((item, index) => {
               const label = APPROVE_ROLES.find(item1 => item1.value === item).label;
@@ -471,40 +471,41 @@ export default class TableList extends PureComponent {
             })
           }
         </Card>
-        <Card style={{ marginBottom: 14 }}>
-          <RadioGroup value={projectTask.approve_status} onChange={this.changeApproveStatus}>
-            <RadioButton value={TASK_APPROVE_STATUS.created}>已创建</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
-            <Tooltip placement="top" title="待发布至阿里创作平台">
-              <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
-                待发布
-              </RadioButton>
-            </Tooltip>
-            <Tooltip placement="top" title="已发布至阿里创作平台">
-              <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
-                已发布
-              </RadioButton>
-            </Tooltip>
-            <Tooltip placement="top" title="阿里创作平台通过">
-              <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
-                淘宝通过
-              </RadioButton>
-            </Tooltip>
-            <Tooltip placement="top" title="阿里创作平台不通过">
-              <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
-                淘宝不通过
-              </RadioButton>
-            </Tooltip>
-          </RadioGroup>
-        </Card>
+        <div style={{ marginBottom: 12 }}>
+          <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
+        </div>
+        
+        <RadioGroup value={projectTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>
+          <RadioButton value={TASK_APPROVE_STATUS.created}>已创建</RadioButton>
+          <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
+          <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
+          <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
+          <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
+          <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
+          <Tooltip placement="top" title="待发布至阿里创作平台">
+            <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
+              待发布
+            </RadioButton>
+          </Tooltip>
+          <Tooltip placement="top" title="已发布至阿里创作平台">
+            <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
+              已发布
+            </RadioButton>
+          </Tooltip>
+          <Tooltip placement="top" title="阿里创作平台通过">
+            <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
+              淘宝通过
+            </RadioButton>
+          </Tooltip>
+          <Tooltip placement="top" title="阿里创作平台不通过">
+            <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
+              淘宝不通过
+            </RadioButton>
+          </Tooltip>
+        </RadioGroup>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
               {
                 selectedRows.length > 0 && (
                   <span>
