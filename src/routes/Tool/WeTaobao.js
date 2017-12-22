@@ -1,14 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import $ from 'jquery';
 import { Card, Table, Input, message, Icon } from 'antd';
-import { ORIGIN } from '../../constants';
 import styles from './WeTaobao.less';
-import request from '../../utils/request';
+import { searchStatistic, searchNew7 } from '../../services/tool';
 
 const Search = Input.Search;
 @connect(state => ({
-
+  currentUser: state.user.currentUser,
 }))
 export default class WeTaobao extends PureComponent {
   state = {
@@ -50,41 +48,37 @@ export default class WeTaobao extends PureComponent {
   //     message.warn('请输入搜索内容');
   //   }
   // }
-  onSearchqualit = (value) => {
+  onSearchqualit = async (value) => {
+    const { currentUser } = this.props;
+    searchStatistic({
+      name: '查询新七条',
+      user_id: currentUser._id,
+      username: currentUser.name,
+    });
     this.setState({
       qualitList: [],
     })
     const { qualitList } = this.state;
     if (value){
-      $.ajax({
-        type:'GET',
-        url:`${ORIGIN}/api/spider/title.detail.taobao`,
-        data:{
-          text: value
-        },
-        success: (result) => {
-          if( result.data && result.data.length > 0 ){
-            this.setState({
-              qualitList: result.data,
-            })
-          } else {
-            this.setState({
-              qualitList: [
-                {
-                  raw_title: '商品',
-                  detail_url: value,
-                  icon: [],
-                  nid: 0,
-                }
-              ],
-            })
-            // message.warn('没有找到该商品！');
-          }
-        },
-        error: () => {
-          message.warn('查询失败！');
-        }
-      })
+      const result = await searchNew7({text: value});
+      console.log(result);
+      if(result.data && result.data.length > 0 ){
+        this.setState({
+          qualitList: result.data,
+        })
+      } else {
+        this.setState({
+          qualitList: [
+            {
+              raw_title: '商品',
+              detail_url: value,
+              icon: [],
+              nid: 0,
+            }
+          ],
+        })
+        // message.warn('没有找到该商品！');
+      }
     } else {
       message.warn('请输入要查询的宝贝');
     }
