@@ -62,15 +62,22 @@ export default class AlbumModal extends PureComponent {
   }
   setAlbum = (e) => {
     const data = JSON.parse(e.target.innerText);
-    this.setState({
-      itemList: data.itemList || [],
-      pagination: {
-        pageSize: data.pageSize,
-        current: data.current,
-        total: data.total,
-      },
-      loading: false,
-    });
+    if (!data.error) {
+      this.setState({
+        itemList: data.itemList || [],
+        pagination: {
+          pageSize: data.pageSize,
+          current: data.current,
+          total: data.total,
+        },
+        loading: false,
+      });
+    } else {
+      message.warn(data.msg);
+      this.setState({
+        loading: false,
+      });
+    }
   }
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);

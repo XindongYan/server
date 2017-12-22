@@ -129,7 +129,7 @@ const tool = {
     path: `/clothes`,
     component: Tool.Clothes,
   }, {
-    name: '每日好店',
+    name: '查询每日好店',
     path: 'https://we.taobao.com/shop/shopList.htm',
     target: '_blank',
   }],
