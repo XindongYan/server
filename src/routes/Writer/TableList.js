@@ -122,7 +122,6 @@ export default class TableList extends PureComponent {
       })}`, {
         credentials: 'include',
       }).then(response => response.json());
-      console.log(tasks);
       this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('publishToTaobao', true, true);
