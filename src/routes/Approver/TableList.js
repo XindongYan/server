@@ -180,7 +180,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'id',
       },
       {
-        title: '任务名称',
+        title: '名称',
         dataIndex: 'name',
         width: 200,
         render: (record, task) => (
@@ -217,11 +217,6 @@ export default class TableList extends PureComponent {
         title: '商家标签',
         dataIndex: 'merchant_tag',
         render: val => val ? <TaskNameColumn text={val} length={10}/> : '',
-      },
-      {
-        title: '审核状态',
-        dataIndex: 'approve_status',
-        render: val => (<TaskStatusColumn status={val}/>),
       },
     ];
     const approver = {
@@ -414,7 +409,7 @@ export default class TableList extends PureComponent {
               <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
               <Search
                 style={{ width: 260, float: 'right'}}
-                placeholder="任务名称／商家标签"
+                placeholder="名称／商家标签"
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />

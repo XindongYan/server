@@ -169,7 +169,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'id',
       },
       {
-        title: '任务名称',
+        title: '名称',
         dataIndex: 'name',
         render: (record, task) => (
           <Link to={`/project/task/view?_id=${task._id}`}>
@@ -199,11 +199,6 @@ export default class TableList extends PureComponent {
         )
       },
     ];
-    const approveStatus = {
-      title: '审核状态',
-      dataIndex: 'approve_status',
-      render: val => (<TaskStatusColumn status={val} />),
-    };
     const approver = {
       title: '审核人',
       dataIndex: 'approver_id',
@@ -301,15 +296,13 @@ export default class TableList extends PureComponent {
         }
       }
     };
-    if (data.approve_status === -1) {
+    if (data.approve_status === -1 || data.approve_status === 0) {
       columns.push(opera);
-    } else if (data.approve_status === 0) {
-      columns.push( approveStatus, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted
       || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
-      columns.push( approveStatus, pushStatusText, opera);
+      columns.push( pushStatusText, opera);
     } else {
-      columns.push( approveStatus, approver, grade, approveTime, opera);
+      columns.push( approver, grade, approveTime, opera);
     }
     return (
       <div>
@@ -347,7 +340,7 @@ export default class TableList extends PureComponent {
               <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
               <Search
                 style={{ width: 260, float: 'right' }}
-                placeholder="任务名称／商家标签"
+                placeholder="名称／商家标签"
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />
