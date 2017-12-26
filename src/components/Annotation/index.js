@@ -127,6 +127,9 @@ export default class Annotation extends PureComponent {
       signVisible: false,
     });
   }
+  handleClear = () => {
+    if (this.props.onChange) this.props.onChange([]);
+  }
   editComment = (e, index) => {
     e.preventDefault();
     e.stopPropagation();
@@ -151,6 +154,7 @@ export default class Annotation extends PureComponent {
       <div style={{height: '100%', position: 'relative'}}>
         <div className={styles.commentTitle}>
           批注
+          <a onClick={this.handleClear} style={{ float: 'right', marginRight: 10 }}>清空</a>
         </div>
         <div
           ref="AnnotationBox"
