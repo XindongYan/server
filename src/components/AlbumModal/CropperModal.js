@@ -21,6 +21,7 @@ export default class CropperModal extends PureComponent {
     dataUrl: '',
     nicaiCrx: null,
     version: '',
+    uploading: false,
   }
   componentDidMount() {
   }
@@ -52,6 +53,7 @@ export default class CropperModal extends PureComponent {
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);
     if (!result.errorCode) {
+      this.setState({ uploading: false });
       message.destroy();
       message.success('上传成功');
       if (this.props.onOk) this.props.onOk(result.data[0].url);
@@ -75,7 +77,8 @@ export default class CropperModal extends PureComponent {
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleOk = () => {
-    if (this.state.dataUrl) {
+    if (this.state.dataUrl && !this.state.uploading) {
+      this.setState({ uploading: true });
       nicaiCrx.innerText = JSON.stringify({data: this.state.dataUrl});
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('uploadImg', true, true);
@@ -101,13 +104,13 @@ export default class CropperModal extends PureComponent {
     const { visible, minSize, src, aspectRatio, data, width, height, picWidth, picHeight } = this.props;
     const { dataUrl } = this.state;
     let rate = 1;
-    const frameWidth = (992-40) * 0.62;
+    // const frameWidth = (992-40) * 0.62;
     const frameHeight = 400;
-    if (picWidth/frameWidth > picHeight / frameHeight) {
-      rate = picWidth/frameWidth;
-    } else {
+    // if (picWidth/frameWidth > picHeight / frameHeight) {
+    //   rate = picWidth/frameWidth;
+    // } else {
       rate = picHeight / frameHeight;
-    }
+    // }
     return (
       <Modal
         title="裁切"
@@ -129,7 +132,7 @@ export default class CropperModal extends PureComponent {
           zoomable={false}
           guides={false}
           crop={this._crop.bind(this)} /> }
-        <div style={{ width: '38%',  display: 'inline-block', verticalAlign: 'middle', marginLeft: 10}}>
+        <div style={{ width: '38%',  display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, paddingTop: 10}}>
           <img
             src={dataUrl}
             style={{ width: '100%'}}
