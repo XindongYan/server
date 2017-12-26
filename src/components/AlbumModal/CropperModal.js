@@ -119,6 +119,7 @@ export default class CropperModal extends PureComponent {
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         bodyStyle={{ padding: '5px 20px' }}
+        maskClosable={false}
       >
         {visible && <Cropper
           ref='cropper'

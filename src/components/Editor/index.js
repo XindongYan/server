@@ -19,23 +19,25 @@ export default class Editor extends PureComponent {
       document.body.appendChild(script);
       script.onload = () => {
         if (!document.getElementById('ueditor')) {
-          let script1 = document.createElement('script');
-          script1.id = 'ueditor';
-          script1.src = '/ueditor/ueditor.all.min.js';
-          script1.async = true;
-          document.body.appendChild(script1);
-          script1.onload = () => {
+          script = document.createElement('script');
+          script.id = 'ueditor';
+          script.src = '/ueditor/ueditor.all.min.js';
+          script.async = true;
+          document.body.appendChild(script);
+          script.onload = () => {
             this.showUeditor();
           };
-          script1.onreadystatechange = script1.onload;
+          script.onreadystatechange = script.onload;
         }
       };
       script.onreadystatechange = script.onload;
     } else {
       this.showUeditor();
     }
+    console.log('componentDidMount');
   }
   componentWillUnmount() {
+    console.log('componentWillUnmount');
     if (this.state.ue) {
       this.state.ue.destroy();
     }
@@ -94,8 +96,10 @@ export default class Editor extends PureComponent {
     // this.state.ue.execCommand('inserthtml', html);
   }
   handleChange = () => {
-    const content = this.state.ue.getContent();
-    if (this.props.onChange) this.props.onChange(content);
+    if (this.state.ue) {
+      const content = this.state.ue.getContent();
+      if (this.props.onChange) this.props.onChange(content);
+    }
   }
   render() {
     const { style } = this.props;

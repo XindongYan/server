@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import { Input, Icon, message } from 'antd';
 import styles from './WeitaoForm.less';
 import Editor from '../Editor';
-import AlbumModal from '../AlbumModal';
 
 @connect(state => ({
 
@@ -24,12 +23,6 @@ export default class ZhiboForm extends PureComponent {
   }
   handleTitleChange = (e) => {
     if (this.props.onChange) this.props.onChange({ title: e.target.value });
-  }
-  handleAddImg = (imgs) => {
-    if (this.props.onChange) this.props.onChange({ cover_img: imgs[0] ? imgs[0].href : '' });
-  }
-  deleteCover = () => {
-    if (this.props.onChange) this.props.onChange({ cover_img: '' });
   }
   render() {
     const { style, operation, formData } = this.props;
