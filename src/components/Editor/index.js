@@ -36,7 +36,9 @@ export default class Editor extends PureComponent {
     }
   }
   componentWillUnmount() {
-    this.state.ue.destroy();
+    if (this.state.ue) {
+      this.state.ue.destroy();
+    }
   }
   showUeditor = () => {
     const forecolor = this.props.role === 'approve' ? 'forecolor' : '';
