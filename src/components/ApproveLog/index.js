@@ -38,6 +38,11 @@ export default class ApproveLog extends PureComponent {
                   </Timeline.Item>
                 );
               })}
+              { approveData.length === 0 &&
+                <Timeline.Item color="blue" key={0}>
+                  暂无审批记录
+                </Timeline.Item>
+              }
             </Timeline>
           }
           title="审核记录"
