@@ -4,6 +4,7 @@ import { Input, Icon, message } from 'antd';
 import styles from './WeitaoForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
+import CropperModal from '../AlbumModal/CropperModal';
 
 @connect(state => ({
 
@@ -28,8 +29,23 @@ export default class WeitaoForm extends PureComponent {
   handleTitleChange = (e) => {
     if (this.props.onChange) this.props.onChange({ title: e.target.value });
   }
-  handleAddImg = (imgs) => {
-    if (this.props.onChange) this.props.onChange({ cover_img: imgs[0] ? imgs[0].url : '' });
+  handleCropCoverImg = (imgs) => {
+    if (imgs[0]) {
+      this.props.dispatch({
+        type: 'album/showCropper',
+        payload: {
+          visible: true,
+          src: imgs[0].url,
+          width: 750,
+          height: 422,
+          picHeight: imgs[0].picHeight,
+          picWidth: imgs[0].picWidth,
+        }
+      });
+    }
+  }
+  handleAddCoverImg = (url) => {
+    if (this.props.onChange) this.props.onChange({ cover_img: url });
   }
   uploadCoverImg = () => {
     this.props.dispatch({
@@ -95,7 +111,8 @@ export default class WeitaoForm extends PureComponent {
             </div>
           </div>
         }
-        <AlbumModal mode="single" k="cover" minSize={this.state.minSize} onOk={this.handleAddImg}/>
+        <AlbumModal mode="single" k="cover" minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
+        <CropperModal onOk={this.handleAddCoverImg}/>
       </div>
     );
   }

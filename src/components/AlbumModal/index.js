@@ -1,17 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Modal, message, Tabs, Icon, Upload, Button, Pagination, Spin} from 'antd';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
-import path from 'path';
 import styles from './index.less';
 const TabPane = Tabs.TabPane;
 
 @connect(state => ({
-  currentUser: state.user.currentUser,
   visible: state.album.visible,
   qiniucloud: state.qiniucloud,
   currentKey: state.album.currentKey,
-  previewImgList: state.album.previewImgList,
 }))
 
   
@@ -27,7 +23,7 @@ export default class AlbumModal extends PureComponent {
       total: 0,
     },
     loading: true,
-    previewImgList: [],
+    version: '',
   }
   componentDidMount() {
   }
@@ -114,6 +110,7 @@ export default class AlbumModal extends PureComponent {
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleGetVersion = () => {
+    this.state.nicaiCrx.innerText = '';
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getVersion', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
@@ -163,7 +160,7 @@ export default class AlbumModal extends PureComponent {
             <Icon type="check" />
           </div>          
         </div>
-        { k === 'cover' && (photo.picWidth < minSize.width || photo.picHeight < minSize.height || ((photo.picHeight / minSize.height).toFixed(2) != (photo.picWidth / minSize.width).toFixed(2))) &&
+        { k === 'cover' && (photo.picWidth < minSize.width || photo.picHeight < minSize.height) &&
           <div
             className={styles.diabledModal}>
             尺寸不符
@@ -209,24 +206,22 @@ export default class AlbumModal extends PureComponent {
         var reader = new FileReader();  
         reader.readAsDataURL(file);  
         //监听文件读取结束后事件  
-        reader.onloadend = (e) => {
+        reader.onloadend = (e1) => {
           if (k === 'cover') {
             var img = new Image();
-            img.src = e.target.result;
+            img.src = e1.target.result;
             img.onload = function(event) {
               if (img.height < minSize.height || img.width < minSize.width) {
                 message.warn('封面图尺寸不能小于750*422px');
-              } else if ((img.height / minSize.height).toFixed(2) != (img.width / minSize.width).toFixed(2)) {
-                message.warn('封面图宽高比必须为750*422');
               } else {
-                nicaiCrx.innerText = JSON.stringify({data: e.target.result});
+                nicaiCrx.innerText = JSON.stringify({data: e1.target.result});
                 const customEvent = document.createEvent('Event');
                 customEvent.initEvent('uploadImg', true, true);
                 nicaiCrx.dispatchEvent(customEvent);
               }
             }
           } else {
-            nicaiCrx.innerText = JSON.stringify({data: e.target.result});
+            nicaiCrx.innerText = JSON.stringify({data: e1.target.result});
             const customEvent = document.createEvent('Event');
             customEvent.initEvent('uploadImg', true, true);
             nicaiCrx.dispatchEvent(customEvent);
@@ -238,7 +233,7 @@ export default class AlbumModal extends PureComponent {
  
   render() {
     const { visible, k, currentKey, minSize } = this.props;
-    const { choosen, previewImage, itemList, pagination, loading, previewImgList } = this.state;
+    const { choosen, previewImage, itemList, pagination, loading } = this.state;
     return (
       <Modal
         title="素材"
@@ -262,7 +257,7 @@ export default class AlbumModal extends PureComponent {
             </Spin>
           </TabPane>
           <TabPane tab={<span><Icon type="upload" />上传</span>} key="upload">
-            <div className="uploadBox">
+            <div>
               <div className={styles.uploadInpBox}>
                 <div className={styles.uploadViewBox}>
                   <Icon type="plus" style={{ fontSize: 32, color: '#6AF' }} />

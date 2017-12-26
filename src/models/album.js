@@ -14,8 +14,15 @@ export default {
     loading: true,
     visible: false,
     currentKey: '',
-    previewImgList: [],
-    choosen: [],
+
+    cropperModal: {
+      visible: false,
+      src: '',
+      width: 1,
+      height: 1,
+      picHeight: 1,
+      picWidth: 1,
+    }
   },
 
   effects: {
@@ -51,7 +58,19 @@ export default {
     *hide(_, { call, put }) {
       yield put({
         type: 'changeVisible',
-        payload: { visible: false, currentKey: '' },
+        payload: { visible: false },
+      });
+    },
+    *showCropper({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeCropperVisible',
+        payload: { visible: true, ...payload },
+      });
+    },
+    *hideCropper({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeCropperVisible',
+        payload: { visible: false, src: '' },
       });
     },
   },
@@ -72,14 +91,16 @@ export default {
     changeVisible(state, action) {
       return {
         ...state,
-        visible: action.payload.visible,
-        currentKey: action.payload.currentKey,
+        ...action.payload,
       };
     },
-    changePreview(state, action) {
+    changeCropperVisible(state, action) {
       return {
         ...state,
-        previewImgList: action.payload.previewImgList,
+        cropperModal: {
+          ...state.cropperModal,
+          ...action.payload,
+        },
       };
     },
   },
