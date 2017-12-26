@@ -78,7 +78,7 @@ export default class Success extends PureComponent {
         <Result
           type="success"
           title="提交成功"
-          description="任务将由审核人员作出审核，审核人员会给批注，请在审核完成后可以在 [已通过] 或 [未通过] 列表查看"
+          description="审核结果请在 [已通过] 或 [未通过] 列表中查看"
           extra={extra}
           actions={actions}
           style={{ marginTop: 48, marginBottom: 16 }}

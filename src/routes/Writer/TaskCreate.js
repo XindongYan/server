@@ -6,6 +6,8 @@ import { Card, Button, Popconfirm, message, Modal, Form, Select, Input } from 'a
 // import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
+import GoodProductionForm from '../../components/Forms/GoodProductionForm';
+import MerchantTag from '../../components/Forms/MerchantTag';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
@@ -26,6 +28,24 @@ export default class TaskCreate extends PureComponent {
       task_desc: '',
       cover_img: '',
       merchant_tag: '',
+    },
+    haveGoodsTask: {
+      title: '',
+      task_desc: '',
+      merchant_tag: '',
+      product_url: '', // 商品图片
+      product_img: '', // 商品图片
+      target_population: '', // 目标人群
+      cover_imgs: [], // 封面图
+      white_bg_img: '', // 白底图
+      long_advantage: [], // 亮点
+      short_advantage: [], // 短亮点
+      industry_title: '', // 行业标题
+      industry_introduction: '', // 行业介绍
+      industry_img: '', // 行业图
+      brand_name: '', // 品牌名称
+      brand_introduction: '', // 品牌介绍
+      brand_logo: '', // 商品logo
     },
     modalVisible: false,
     phone: '',
@@ -48,6 +68,10 @@ export default class TaskCreate extends PureComponent {
   }
   handleShowAddTeamUserModal = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
+    if (query.channel_name === '有好货') {
+      this.handleShowModalGoods();
+      return false;
+    }
     const { task } = this.state;
     if (!task.merchant_tag) {
       message.warn('请填写商家标签');
@@ -64,6 +88,28 @@ export default class TaskCreate extends PureComponent {
         this.handleSubmitTask();
       } else {
         this.setState({ modalVisible: true, });
+      }
+    }
+  }
+  handleShowModalGoods = () => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const { haveGoodsTask } = this.state;
+    // if (!task.merchant_tag) {
+    //   message.warn('请填写商家标签');
+    // } else 
+    if (!haveGoodsTask.title.replace(/\s+/g, '')) {
+      scrollTo(0, 200)
+    } else if (haveGoodsTask.title && haveGoodsTask.title.length > 19) {
+      message.warn('标题字数不符合要求');
+    } else if (!haveGoodsTask.task_desc) {
+      message.warn('请填写内容');
+    } else if (!haveGoodsTask.cover_img && query.channel_name !== '直播脚本') {
+      message.warn('请选择封面图');
+    } else {
+      if (query.project_id) {
+        // this.handleSubmitTask();
+      } else {
+        // this.setState({ modalVisible: true, });
       }
     }
   }
@@ -137,6 +183,9 @@ export default class TaskCreate extends PureComponent {
   }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });
+  }
+  handleChangeGoods = (task) => {
+    this.setState({ haveGoodsTask: { ...this.state.haveGoodsTask, ...task } });
   }
   handleModalVisible = (flag) => {
     this.setState({
@@ -243,24 +292,13 @@ export default class TaskCreate extends PureComponent {
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;
-    const { modalVisible, task, suggestionUsers, suggestionUsers2 } = this.state;
+    const { modalVisible, task, haveGoodsTask, suggestionUsers, suggestionUsers2 } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
           <div style={{ width: 720 }}>
-            <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
-              内容创作
-            </div>
-            <div className={styles.taskList}>
-              <Input
-                type="text"
-                value={task.merchant_tag}
-                maxLength="30"
-                onChange={(e) => this.setState({ task: { ...task, merchant_tag: e.target.value }})}
-                placeholder="请在这里输入商家标签,最多30个字"
-              />
-            </div>
+            <MerchantTag merchant_tag={task.merchant_tag} onChange={this.handleChange} />
             { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&
               <WeitaoForm
                 role="writer"
@@ -275,6 +313,14 @@ export default class TaskCreate extends PureComponent {
                 operation="create"
                 formData={task}
                 onChange={this.handleChange}
+              />
+            }
+            { query.channel_name === '有好货' &&
+              <GoodProductionForm
+                role="writer"
+                operation="create"
+                formData={haveGoodsTask}
+                onChange={this.handleChangeGoods}
               />
             }
           </div>
@@ -294,7 +340,6 @@ export default class TaskCreate extends PureComponent {
               :
               <Button onClick={this.handleShowAddTeamUserModal}>提交</Button>
             }
-            
             {/*
               <Button onClick={this.handleSave}>保存</Button>
             */}

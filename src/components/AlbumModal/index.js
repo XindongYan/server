@@ -163,7 +163,7 @@ export default class AlbumModal extends PureComponent {
             <Icon type="check" />
           </div>          
         </div>
-        { k === 'cover' && (photo.picWidth < minSize.width || photo.picHeight < minSize.height || ((photo.picHeight / minSize.height).toFixed(2) != (photo.picWidth / minSize.width).toFixed(2))) &&
+        { k === 'cover' && (photo.picWidth < minSize.width || photo.picHeight < minSize.height || ((photo.picHeight / minSize.height) != (photo.picWidth / minSize.width))) &&
           <div
             className={styles.diabledModal}>
             尺寸不符
@@ -216,7 +216,7 @@ export default class AlbumModal extends PureComponent {
             img.onload = function(event) {
               if (img.height < minSize.height || img.width < minSize.width) {
                 message.warn('封面图尺寸不能小于750*422px');
-              } else if ((img.height / minSize.height).toFixed(2) != (img.width / minSize.width).toFixed(2)) {
+              } else if ((img.height / minSize.height) != (img.width / minSize.width)) {
                 message.warn('封面图宽高比必须为750*422');
               } else {
                 nicaiCrx.innerText = JSON.stringify({data: e.target.result});

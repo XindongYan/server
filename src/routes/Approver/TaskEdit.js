@@ -184,9 +184,6 @@ export default class TaskEdit extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
           <div style={{ width: 650 }}>
-            <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
-              内容创作
-            </div>
             { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
               <WeitaoForm
                 role="approve"

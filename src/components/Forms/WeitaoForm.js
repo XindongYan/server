@@ -43,7 +43,10 @@ export default class WeitaoForm extends PureComponent {
   render() {
     const { style, operation, formData } = this.props;
     return (
-      <div className={styles.taskBox}>
+      <div className={styles.taskBox} style={style}>
+        <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
+          内容创作
+        </div>
         { (operation==='edit' || operation === 'create') &&
           <div className={styles.taskContentBox}>
             <div className={styles.taskList}>
