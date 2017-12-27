@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Input, Icon, message, Tag, Tooltip, Form } from 'antd';
 import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
+import CropperModal from '../AlbumModal/CropperModal';
 
 const FormItem = Form.Item;
 @Form.create()
@@ -15,6 +16,11 @@ export default class GoodProductionForm extends PureComponent {
   state = {
     longPoint: '',
     shortPoint: '',
+    minSize: {
+      width: 750,
+      height: 422,
+    },
+    k: '',
   }
   componentDidMount() {
     const fieldsValue = {
@@ -53,7 +59,6 @@ export default class GoodProductionForm extends PureComponent {
     const short_advantage = this.props.formData.short_advantage.filter(tag => tag !== removedTag);
     if (this.props.onChange) this.props.onChange({ short_advantage: short_advantage })
   }
-
   handleInputChangeLong = (e) => {
     this.setState({ longPoint: e.target.value });
   }
@@ -71,7 +76,6 @@ export default class GoodProductionForm extends PureComponent {
         longPoint: '',
       });
     }
-
   }
   handleInputConfirmShort = (min, max) => {
     const { formData } = this.props;
@@ -85,11 +89,38 @@ export default class GoodProductionForm extends PureComponent {
       });
     }
   }
-
+  uploadCoverImg = (key) => {
+    this.setState({
+      k: key,
+    },() => {
+      this.props.dispatch({
+        type: 'album/show',
+        payload: { currentKey: key }
+      });
+    })
+  }
   handleTaskChange = (e, key) => {
     const data = {};
     data[key] = e.target.value;
     if (this.props.onChange) this.props.onChange(data);
+  }
+
+  handleCropCoverImg = (imgs) => {
+    const { minSize } = this.state;
+    if (imgs[0]) {
+      this.props.dispatch({
+        type: 'album/showCropper',
+        payload: {
+          visible: true,
+          src: imgs[0].url,
+          width: minSize.width,
+          height: minSize.height,
+          picHeight: imgs[0].picHeight,
+          picWidth: imgs[0].picWidth,
+          cropperKey: 'cover',
+        }
+      });
+    }
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, style, operation, formData } = this.props;
@@ -115,7 +146,7 @@ export default class GoodProductionForm extends PureComponent {
                   商品宝贝
                 </p>
                 <div>
-                  <div class="pic">
+                  <div>
                     <a ><img /></a>
                   </div>
                 </div>
@@ -198,7 +229,7 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   白底图
                 </p>
-                <label className={styles.uploadImgBox} style={{ width: 200, height: 200 }}>
+                <label className={styles.uploadImgBox} style={{ width: 200, height: 200 }} onClick={() => this.uploadCoverImg('white_bg_img')}>
                   <div>
                     <Icon type="plus" className={styles.uploadIcon} />
                     <p>添加上传图片</p>
@@ -427,6 +458,8 @@ export default class GoodProductionForm extends PureComponent {
             </article>
           </section>
         }
+        <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
+        <CropperModal onOk={this.handleAddCoverImg}/>
       </div>
     );
   }

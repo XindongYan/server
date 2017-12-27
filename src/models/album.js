@@ -22,6 +22,7 @@ export default {
       height: 1,
       picHeight: 1,
       picWidth: 1,
+      cropperKey: '',
     }
   },
 

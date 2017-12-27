@@ -40,6 +40,7 @@ export default class WeitaoForm extends PureComponent {
           height: 422,
           picHeight: imgs[0].picHeight,
           picWidth: imgs[0].picWidth,
+          cropperKey: 'cover',
         }
       });
     }
