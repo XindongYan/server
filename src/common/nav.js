@@ -132,6 +132,10 @@ const tool = {
     name: '查询每日好店',
     path: 'https://we.taobao.com/shop/shopList.htm',
     target: '_blank',
+  }, {
+    name: '淘客订单明细',
+    path: '/alimamaOrders',
+    component: Tool.AlimamaOrderList,
   }],
 };
 

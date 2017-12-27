@@ -11,3 +11,7 @@ export async function searchStatistic(params) {
 export async function searchNew7(params) {
   return request(`/api/spider/title.detail.taobao?${stringify(params)}`);
 }
+
+export async function queryAlimamaOrders(params) {
+  return request(`/api/alimama/orders?${stringify(params)}`);
+}
