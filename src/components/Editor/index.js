@@ -34,10 +34,8 @@ export default class Editor extends PureComponent {
     } else {
       this.showUeditor();
     }
-    console.log('componentDidMount');
   }
   componentWillUnmount() {
-    console.log('componentWillUnmount');
     if (this.state.ue) {
       this.state.ue.destroy();
     }

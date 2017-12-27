@@ -69,6 +69,9 @@ export default class TaskEdit extends PureComponent {
       type: 'global/changeLayoutCollapsed',
       payload: false,
     });
+    this.props.dispatch({
+      type: 'task/clearFormData'
+    });
   }
   changeGrades = (index, value) => {
     const { grades } = this.state;
@@ -180,26 +183,27 @@ export default class TaskEdit extends PureComponent {
         }
       </div>
     );
+    let form = '';
+    if (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') {
+      form = <WeitaoForm
+                role="approve"
+                operation={operation}
+                formData={this.state.task}
+                onChange={this.handleChange}
+              />;
+    } else if (!formData.channel_name && formData.task_type === 3) {
+      form = <ZhiboForm
+                role="approve"
+                operation={operation}
+                formData={this.state.task}
+                onChange={this.handleChange}
+              />;
+    }
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox">
           <div style={{ width: 650 }}>
-            { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
-              <WeitaoForm
-                role="approve"
-                operation={operation}
-                formData={this.state.task}
-                onChange={this.handleChange}
-              />
-            }
-            { !formData.channel_name && formData.task_type === 3 &&
-              <ZhiboForm
-                role="approve"
-                operation={operation}
-                formData={this.state.task}
-                onChange={this.handleChange}
-              />
-            }
+            {form}
           </div>
           <div className={styles.taskComment}>
             <Annotation
