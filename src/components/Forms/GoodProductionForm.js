@@ -17,8 +17,8 @@ export default class GoodProductionForm extends PureComponent {
     longPoint: '',
     shortPoint: '',
     minSize: {
-      width: 750,
-      height: 422,
+      width: 0,
+      height: 0,
     },
     k: '',
   }
@@ -89,9 +89,13 @@ export default class GoodProductionForm extends PureComponent {
       });
     }
   }
-  uploadCoverImg = (key) => {
+  uploadCoverImg = (key,width,height) => {
     this.setState({
       k: key,
+      minSize: {
+        width: width,
+        height: height,
+      },
     },() => {
       this.props.dispatch({
         type: 'album/show',
@@ -104,22 +108,30 @@ export default class GoodProductionForm extends PureComponent {
     data[key] = e.target.value;
     if (this.props.onChange) this.props.onChange(data);
   }
-
+  handleAddCoverImg = (url) => {
+    const data = {};
+    data[this.state.k] = url;
+    if (this.props.onChange) this.props.onChange(data);
+  }
   handleCropCoverImg = (imgs) => {
-    const { minSize } = this.state;
+    const { minSize, k } = this.state;
     if (imgs[0]) {
-      this.props.dispatch({
-        type: 'album/showCropper',
-        payload: {
-          visible: true,
-          src: imgs[0].url,
-          width: minSize.width,
-          height: minSize.height,
-          picHeight: imgs[0].picHeight,
-          picWidth: imgs[0].picWidth,
-          cropperKey: 'cover',
-        }
-      });
+      if (k === 'industry_img') {
+        this.handleAddCoverImg(imgs[0].url);
+      } else {
+        this.props.dispatch({
+          type: 'album/showCropper',
+          payload: {
+            visible: true,
+            src: imgs[0].url,
+            width: minSize.width,
+            height: minSize.height,
+            picHeight: imgs[0].picHeight,
+            picWidth: imgs[0].picWidth,
+            cropperKey: k,
+          }
+        });
+      }
     }
   }
   render() {
@@ -229,12 +241,22 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   白底图
                 </p>
-                <label className={styles.uploadImgBox} style={{ width: 200, height: 200 }} onClick={() => this.uploadCoverImg('white_bg_img')}>
-                  <div>
-                    <Icon type="plus" className={styles.uploadIcon} />
-                    <p>添加上传图片</p>
+                { !formData.white_bg_img &&
+                  <label className={styles.uploadImgBox} style={{ width: 200, height: 200 }} onClick={() => this.uploadCoverImg('white_bg_img',500,500)}>
+                    <div>
+                      <Icon type="plus" className={styles.uploadIcon} />
+                      <p>添加上传图片</p>
+                    </div>
+                  </label>
+                }
+                { formData.white_bg_img &&
+                  <div className={styles.imgShowBox} style={{ width: 200, height: 200 }}>
+                    <img src={formData.white_bg_img} />
+                    <div className={styles.clearImg}>
+                      <Icon type="delete" />
+                    </div>
                   </div>
-                </label>
+                }
                 <p className={styles.promptTextRed}></p>
                 <p className={styles.promptText}>请上传1张白底商品图，尺寸不小于500*500，查看
                   <a href="https://daren.bbs.taobao.com/detail.html?postId=7477203" target="_blank">#图片提交规则#</a>
@@ -371,17 +393,26 @@ export default class GoodProductionForm extends PureComponent {
                   )}
                 </FormItem>
               </div>
-              
               <div>
                 <p className={styles.lineTitleDefult}>
                   配图
                 </p>
-                <label className={styles.uploadImgBox} style={{ width: 130, height: 130 }}>
-                  <div>
-                    <Icon type="plus" className={styles.uploadIcon} />
-                    <p>添加上传图片</p>
+                { !formData.industry_img &&
+                  <label className={styles.uploadImgBox} style={{ width: 130, height: 130 }} onClick={() => this.uploadCoverImg('industry_img',0,0)}>
+                    <div>
+                      <Icon type="plus" className={styles.uploadIcon} />
+                      <p>添加上传图片</p>
+                    </div>
+                  </label>
+                }
+                { formData.industry_img &&
+                  <div className={styles.imgShowBox} style={{ width: 130, height: 130 }}>
+                    <img src={formData.industry_img} />
+                    <div className={styles.clearImg}>
+                      <Icon type="delete" />
+                    </div>
                   </div>
-                </label>
+                } 
                 <p className={styles.promptTextRed}></p>
                 <p className={styles.promptText}>宽度702px以上，无文字、清晰有质感</p>
               </div>
@@ -446,12 +477,22 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   品牌logo
                 </p>
-                <label className={styles.uploadImgBox} style={{ width: 200, height: 83 }}>
-                  <div>
-                    <Icon type="plus" className={styles.uploadIcon} />
-                    <p>添加上传图片</p>
+                { !formData.brand_logo &&
+                  <label className={styles.uploadImgBox} style={{ width: 200, height: 83 }} onClick={() => this.uploadCoverImg('brand_logo',360,150)}>
+                    <div>
+                      <Icon type="plus" className={styles.uploadIcon} />
+                      <p>添加上传图片</p>
+                    </div>
+                  </label>
+                }
+                { formData.brand_logo &&
+                  <div className={styles.imgShowBox} style={{ width: 200, height: 83 }}>
+                    <img src={formData.brand_logo} />
+                    <div className={styles.clearImg} onClick={this.clearImg}>
+                      <Icon type="delete" />
+                    </div>
                   </div>
-                </label>
+                }
                 <p className={styles.promptTextRed}></p>
                 <p className={styles.promptText}>固定360*150，无文字、清晰、有质感</p>
               </div>
