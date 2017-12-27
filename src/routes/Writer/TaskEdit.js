@@ -60,6 +60,9 @@ export default class TaskEdit extends PureComponent {
       type: 'global/changeLayoutCollapsed',
       payload: false,
     });
+    this.props.dispatch({
+      type: 'task/clearFormData'
+    });
   }
   handleSubmit = () => {
     const { currentUser } = this.props;
