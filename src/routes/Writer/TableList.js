@@ -308,7 +308,9 @@ export default class TableList extends PureComponent {
       <div>
         <div className={styles.searchBox}>
           <RadioGroup value={data.approve_status} onChange={this.changeApproveStatus}>
-            <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
+            <Tooltip placement="top" title="待完成/草稿箱">
+              <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
+            </Tooltip>
             <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
             <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>

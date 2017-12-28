@@ -109,8 +109,13 @@ export default class GoodProductionForm extends PureComponent {
     if (this.props.onChange) this.props.onChange(data);
   }
   handleAddCoverImg = (url) => {
+    const { k } = this.state;
     const data = {};
-    data[this.state.k] = url;
+    if (k === 'cover_imgs') {
+      data[k] = [ ...this.props.formData.cover_imgs, url ];
+    } else {
+      data[k] = url;
+    }
     if (this.props.onChange) this.props.onChange(data);
   }
   handleCropCoverImg = (imgs) => {
@@ -133,6 +138,23 @@ export default class GoodProductionForm extends PureComponent {
         });
       }
     }
+  }
+  handleRemoveImg = (key, index) => {
+    const data = {};
+    if (key === 'cover_imgs') {
+      data[key] = [];
+      
+    } else {
+      data[key] = '';
+    }
+    if (this.props.onChange) this.props.onChange(data);
+  }
+  normFile = (e) => {
+    console.log('Upload event:', e);
+    // if (Array.isArray(e)) {
+    //   return e;
+    // }
+    // return e && e.fileList;
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, style, operation, formData } = this.props;
@@ -165,8 +187,7 @@ export default class GoodProductionForm extends PureComponent {
               </div>
               
               <div>
-                <FormItem
-                >
+                <FormItem>
                   {getFieldDecorator('title', {
                     rules: [{
                       required: true, message: '标题不能为空',
@@ -188,9 +209,7 @@ export default class GoodProductionForm extends PureComponent {
                 </FormItem>
               </div>
               <div>
-                <FormItem
-                  // {...formItemLayout}
-                >
+                <FormItem>
                   {getFieldDecorator('task_desc', {
                     rules: [{
                       required: true, message: '不能为空',
@@ -225,12 +244,23 @@ export default class GoodProductionForm extends PureComponent {
                   上传宝贝图
                 </p>
                 <div>
-                  <label className={styles.uploadImgBox} style={{ width: 200, height: 200 }}>
-                    <div>
-                      <Icon type="plus" className={styles.uploadIcon} />
-                      <p>上传封面</p>
-                    </div>
-                  </label>
+                  { formData.cover_imgs && formData.cover_imgs.length > 0 &&
+                    formData.cover_imgs.map((img,index) =>
+                    <div className={styles.imgShowBox} style={{ width: 200, height: 200 }} key={index}>
+                      <img src={img} />
+                      <div className={styles.clearImg} onClick={() => this.handleRemoveImg('cover_imgs',index)}>
+                        <Icon type="delete" />
+                      </div>
+                    </div>)
+                  }
+                  { formData.cover_imgs.length < 5 &&
+                    <label className={styles.uploadImgBox} style={{ width: 200, height: 200 }} onClick={() => this.uploadCoverImg('cover_imgs',500,500)}>
+                      <div>
+                        <Icon type="plus" className={styles.uploadIcon} />
+                        <p>上传封面</p>
+                      </div>
+                    </label>
+                  }
                 </div>
                 <p className={styles.promptTextRed}></p>
                 <p className={styles.promptText}>请上传3-5张商品图片，尺寸不小于500*500，默认选取第一张作为频道首页店铺列表页封面图</p>
@@ -252,7 +282,7 @@ export default class GoodProductionForm extends PureComponent {
                 { formData.white_bg_img &&
                   <div className={styles.imgShowBox} style={{ width: 200, height: 200 }}>
                     <img src={formData.white_bg_img} />
-                    <div className={styles.clearImg}>
+                    <div className={styles.clearImg} onClick={() => this.handleRemoveImg('white_bg_img')}>
                       <Icon type="delete" />
                     </div>
                   </div>
@@ -342,9 +372,7 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   标题
                 </p>
-                <FormItem
-                  // {...formItemLayout}
-                >
+                <FormItem>
                   {getFieldDecorator('industry_title', {
                     rules: [{
                       required: true, message: '不能为空',
@@ -370,8 +398,7 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   介绍
                 </p>
-                <FormItem
-                >
+                <FormItem>
                   {getFieldDecorator('industry_introduction', {
                     rules: [{
                       required: true, message: '不能为空',
@@ -406,9 +433,9 @@ export default class GoodProductionForm extends PureComponent {
                   </label>
                 }
                 { formData.industry_img &&
-                  <div className={styles.imgShowBox} style={{ width: 130, height: 130 }}>
-                    <img src={formData.industry_img} />
-                    <div className={styles.clearImg}>
+                  <div className={styles.imgShowBox} style={{ width: 130, height: 130, lineHeight: '130px', textAlign: 'center' }}>
+                    <img src={formData.industry_img} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} />
+                    <div className={styles.clearImg} onClick={() => this.handleRemoveImg('industry_img')}>
                       <Icon type="delete" />
                     </div>
                   </div>
@@ -423,8 +450,7 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   品牌名称
                 </p>
-                <FormItem
-                >
+                <FormItem>
                   {getFieldDecorator('brand_name', {
                     rules: [{
                       required: true, message: '不能为空',
@@ -449,9 +475,7 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   介绍
                 </p>
-                <FormItem
-                  // {...formItemLayout}
-                >
+                <FormItem>
                   {getFieldDecorator('brand_introduction', {
                     rules: [{
                       required: true, message: '不能为空',
@@ -488,7 +512,7 @@ export default class GoodProductionForm extends PureComponent {
                 { formData.brand_logo &&
                   <div className={styles.imgShowBox} style={{ width: 200, height: 83 }}>
                     <img src={formData.brand_logo} />
-                    <div className={styles.clearImg} onClick={this.clearImg}>
+                    <div className={styles.clearImg} onClick={() => this.handleRemoveImg('brand_logo')}>
                       <Icon type="delete" />
                     </div>
                   </div>
