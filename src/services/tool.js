@@ -15,3 +15,7 @@ export async function searchNew7(params) {
 export async function queryAlimamaOrders(params) {
   return request(`/api/alimama/orders?${stringify(params)}`);
 }
+
+export async function queryAlimamaShopOrders(params) {
+  return request(`/api/alimama/orders?${stringify(params)}`);
+}

@@ -1,4 +1,4 @@
-import { queryAlimamaOrders } from '../services/tool';
+import { queryAlimamaOrders, queryAlimamaShopOrders } from '../services/tool';
 
 export default {
   namespace: 'tool',
@@ -9,12 +9,17 @@ export default {
       pagination: {},
     },
     alimamaOrdersloading: true,
+    alimamaShopOrders: {
+      list: [],
+      pagination: {},
+    },
+    alimamaShopOrdersloading: true,
   },
 
   effects: {
     *fetchAlimamaOrders({ payload }, { call, put }) {
       yield put({
-        type: 'changeLoading',
+        type: 'changeAlimamaOrdersLoading',
         payload: true,
       });
       const response = yield call(queryAlimamaOrders, payload);
@@ -26,6 +31,23 @@ export default {
       }
       yield put({
         type: 'changeAlimamaOrdersLoading',
+        payload: false,
+      });
+    },
+    *fetchAlimamaShopOrders({ payload }, { call, put }) {
+      yield put({
+        type: 'changeAlimamaShopOrdersLoading',
+        payload: true,
+      });
+      const response = yield call(queryAlimamaOrders, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveAlimamaShopOrders',
+          payload: response,
+        });
+      }
+      yield put({
+        type: 'changeAlimamaShopOrdersLoading',
         payload: false,
       });
     },
@@ -42,6 +64,18 @@ export default {
       return {
         ...state,
         alimamaOrdersloading: action.payload,
+      };
+    },
+    saveAlimamaShopOrders(state, action) {
+      return {
+        ...state,
+        alimamaShopOrders: action.payload,
+      };
+    },
+    changeAlimamaShopOrdersLoading(state, action) {
+      return {
+        ...state,
+        alimamaShopOrdersloading: action.payload,
       };
     },
   },

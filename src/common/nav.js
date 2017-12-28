@@ -135,7 +135,7 @@ const tool = {
   }, {
     name: '淘客订单明细',
     path: '/alimamaOrders',
-    component: Tool.AlimamaOrderList,
+    component: Tool.AlimamaOrder,
   }],
 };
 
