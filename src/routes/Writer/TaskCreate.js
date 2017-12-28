@@ -335,10 +335,10 @@ export default class TaskCreate extends PureComponent {
           <div className={styles.submitBox}>
             { query.project_id ?
               <Popconfirm placement="top" title="确认已经写完并提交给审核人员?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
-                <Button>提交</Button>
+                <Button>提交审核</Button>
               </Popconfirm>
               :
-              <Button onClick={this.handleShowAddTeamUserModal}>提交</Button>
+              <Button onClick={this.handleShowAddTeamUserModal}>提交审核</Button>
             }
             {/*
               <Button onClick={this.handleSave}>保存</Button>
