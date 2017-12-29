@@ -1,5 +1,5 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
-queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask } from '../services/task';
+queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, queryTaskOperationRecords } from '../services/task';
 import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
@@ -53,10 +53,14 @@ export default {
         type: 'saveApproveData',
         payload: response.approveData || [],
       });
+    },
+    *fetchOperationRecords({ payload, callback }, { call, put }) {
+      const response = yield call(queryTaskOperationRecords, payload);
       yield put({
         type: 'saveOperationRecords',
         payload: response.operationRecords || [],
       });
+      if (callback) callback(response);
     },
     *add({ payload, callback }, { call }) {
       const result = yield call(addTask, payload);
