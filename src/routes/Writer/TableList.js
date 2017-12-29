@@ -13,6 +13,7 @@ import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
 import styles from './TableList.less';
 
 import { queryConvertedTasks } from '../../services/task';
+import TaskOperationRecord from '../TaskCreate/TaskOperationRecord';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const RadioButton = Radio.Button;
@@ -261,6 +262,10 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a>发布</a>
               </Popconfirm>
+              <Divider type="vertical" />
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
