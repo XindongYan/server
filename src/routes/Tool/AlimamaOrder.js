@@ -107,7 +107,7 @@ export default class AlimamaOrder extends PureComponent {
   render() {
     return (
       <div>
-        <Card bordered={false} bodyStyle={{ padding: 14 }}>
+        <Card bordered={false} bodyStyle={{ padding: 14 }} extra={this.state.alimamaUser.mmNick}>
           <Tabs
             defaultActiveKey="1"
           >
