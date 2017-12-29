@@ -39,6 +39,14 @@ export default class AlimamaOrder extends PureComponent {
         }, 400);
       });
     }
+    if (this.props.currentUser._id && this.props.currentUser.alimama) {
+      this.setState({ alimamaUser: this.props.currentUser.alimama[0] });
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.currentUser._id && nextProps.currentUser.alimama) {
+      this.setState({ alimamaUser: nextProps.currentUser.alimama[0] });
+    }
   }
   componentWillUnmount() {
     this.setState({
@@ -107,7 +115,7 @@ export default class AlimamaOrder extends PureComponent {
   render() {
     return (
       <div>
-        <Card bordered={false} bodyStyle={{ padding: 14 }} extra={this.state.alimamaUser.mmNick}>
+        <Card bordered={false} bodyStyle={{ padding: 14 }} extra={`数据来源于：${this.state.alimamaUser.mmNick}`}>
           <Tabs
             defaultActiveKey="1"
           >
