@@ -37,6 +37,7 @@ export default class TableList extends PureComponent {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
+    modalLoading: false,
   }
 
   componentDidMount() {
@@ -213,6 +214,9 @@ export default class TableList extends PureComponent {
     const { dispatch, currentUser, data: { pagination } } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        this.setState({
+          modalLoading: true,
+        })
         dispatch({
           type: 'task/pass',
           payload: {
@@ -227,7 +231,8 @@ export default class TableList extends PureComponent {
               message.success(result.msg);
               this.handleRowSelectChange([], []);
               this.setState({
-                modalVisible: false
+                modalVisible: false,
+                modalLoading: false,
               })
             }
           }
@@ -500,6 +505,7 @@ export default class TableList extends PureComponent {
           visible={modalVisible}
           onOk={this.handlePass}
           onCancel={() => {this.setState({ modalVisible: false })}}
+          confirmLoading={this.state.modalLoading}
         >
           <FormItem
             label="用户"
