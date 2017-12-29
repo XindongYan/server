@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message } from 'antd';
 import moment from 'moment';
+import querystring from 'querystring';
 import { Link } from 'dva/router';
 import $ from 'jquery';
 import fetch from 'dva/fetch';
@@ -32,10 +33,15 @@ export default class TableList extends PureComponent {
 
   componentDidMount() {
     const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id) {
       dispatch({
         type: 'task/fetchTakerTasks',
-        payload: { ...pagination, approve_status, user_id: currentUser._id },
+        payload: {
+          ...pagination,
+          approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
+          user_id: currentUser._id
+        },
       });
     }
     const nicaiCrx = document.getElementById('nicaiCrx');

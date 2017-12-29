@@ -93,6 +93,7 @@ export default class TaskCreate extends PureComponent {
       message.error(data.msg);
     } else {
       message.success(data.msg);
+      this.props.dispatch(routerRedux.push(`/creation/writer-list?approve_status=${TASK_APPROVE_STATUS.publishedToTaobao}`));
     }
   }
   setVersion = (e) => {
