@@ -111,40 +111,51 @@ export default class TaskCreate extends PureComponent {
       const { currentUser, teamUser } = this.props;
       const { task, approver_id } = this.state;
       const query = querystring.parse(this.props.location.search.substr(1));
-      this.props.dispatch({
-        type: 'task/addByWriter',
-        payload: {
-          ...this.state.task,
-          name: task.title,
-          approve_status: TASK_APPROVE_STATUS.waitingToTaobao,
-          channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
-          task_type: query.task_type ? Number(query.task_type) : 1,
-          team_id: teamUser ? teamUser.team_id : null,
-          publisher_id: currentUser._id,
-          publish_time: new Date(),
-          taker_id: currentUser._id,
-          take_time: new Date(),
-          creator_id: currentUser._id,
-          daren_id: currentUser._id,
-          daren_time: new Date(),
-        },
-        callback: async (result) => {
-          if (result.error) {
-            message.error(result.msg);
-          } else {
-            const tasks = await queryConvertedTasks({
-              _ids: JSON.stringify([result.task._id]),
-            });
-            this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
-            const customEvent = document.createEvent('Event');
-            customEvent.initEvent('publishToTaobao', true, true);
-            this.state.nicaiCrx.dispatchEvent(customEvent);
-            message.destroy();
-            message.loading('发布中 ...', 60);
-          }
-        },
-      });
-      
+      if (!task.merchant_tag) {
+        message.warn('请填写商家标签');
+      } else if (!task.title || !task.title.replace(/\s+/g, '')) {
+        message.warn('请填写标题');
+      } else if (task.title && task.title.length > 19) {
+        message.warn('标题字数不符合要求');
+      } else if (!task.task_desc) {
+        message.warn('请填写内容');
+      } else if (!task.cover_img && query.channel_name !== '直播脚本') {
+        message.warn('请选择封面图');
+      } else {
+        this.props.dispatch({
+          type: 'task/addByWriter',
+          payload: {
+            ...this.state.task,
+            name: task.title,
+            approve_status: TASK_APPROVE_STATUS.waitingToTaobao,
+            channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+            task_type: query.task_type ? Number(query.task_type) : 1,
+            team_id: teamUser ? teamUser.team_id : null,
+            publisher_id: currentUser._id,
+            publish_time: new Date(),
+            taker_id: currentUser._id,
+            take_time: new Date(),
+            creator_id: currentUser._id,
+            daren_id: currentUser._id,
+            daren_time: new Date(),
+          },
+          callback: async (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              const tasks = await queryConvertedTasks({
+                _ids: JSON.stringify([result.task._id]),
+              });
+              this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
+              const customEvent = document.createEvent('Event');
+              customEvent.initEvent('publishToTaobao', true, true);
+              this.state.nicaiCrx.dispatchEvent(customEvent);
+              message.destroy();
+              message.loading('发布中 ...', 60);
+            }
+          },
+        }); 
+      }
     } else {
       message.destroy();
       message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
