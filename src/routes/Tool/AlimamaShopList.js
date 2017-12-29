@@ -15,7 +15,7 @@ const { RangePicker } = DatePicker;
 
 export default class AlimamaShopList extends PureComponent {
   state = {
-
+    searchValur: '',
   };
 
   componentDidMount() {
@@ -52,7 +52,6 @@ export default class AlimamaShopList extends PureComponent {
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
-
     dispatch({
       type: 'tool/fetchAlimamaShops',
       payload: params,
@@ -91,7 +90,7 @@ export default class AlimamaShopList extends PureComponent {
 
     const columns = [
       {
-        title: '店铺名称',
+        title: '店铺',
         dataIndex: 'exNickName',
       },
       {

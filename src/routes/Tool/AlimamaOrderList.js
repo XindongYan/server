@@ -85,7 +85,7 @@ export default class AlimamaOrderList extends PureComponent {
     const { alimamaOrders, loading,  } = this.props;
     const columns = [
       {
-        title: '商品名称',
+        title: '商品',
         dataIndex: 'auctionTitle',
         render: (val, record) => <a href={record.auctionUrl} target="_blank">{val}</a>,
       },
@@ -100,26 +100,13 @@ export default class AlimamaOrderList extends PureComponent {
         render: (val) => val.toFixed(2),
       },
       {
-        title: '店铺名称',
+        title: '店铺',
         dataIndex: 'exShopTitle',
       },
     ];
     return (
       <div>
         <div style={{ marginBottom: 10 }}>
-          {/*
-            <Select
-            allowClear
-            showSearch
-            style={{ width: 160, marginRight: 8 }}
-            placeholder="订单付款"
-            onChange={(value) => this.handleSearch(value,'channel_name')}
-            optionFilterProp="children"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            <Option key={1} value={1}>{1}</Option>
-          </Select>
-          */}
           <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
           <Search
             style={{ width: 260, float: 'right'}}
