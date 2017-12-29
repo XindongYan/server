@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message } from 'antd';
+import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message, Form, Select, Modal } from 'antd';
 import moment from 'moment';
 import querystring from 'querystring';
 import { Link } from 'dva/router';
@@ -14,6 +14,8 @@ import styles from './TableList.less';
 
 import { queryConvertedTasks } from '../../services/task';
 
+const FormItem = Form.Item;
+const { Option } = Select;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -24,11 +26,14 @@ const Search = Input.Search;
   data: state.task.takerTask,
   loading: state.task.takerTaskLoading,
   currentUser: state.user.currentUser,
+  suggestionUsers: state.team.suggestionUsers,
 }))
+@Form.create()
 export default class TableList extends PureComponent {
   state = {
     nicaiCrx: null,
     version: '',
+    modalVisible: false,
   }
 
   componentDidMount() {
@@ -175,8 +180,33 @@ export default class TableList extends PureComponent {
       payload: { ...pagination, user_id: currentUser._id, approve_status: e.target.value, currentPage: 1, }
     });
   }
+  handlePassSearch = (value) => {
+    this.setState({
+      approver_id: '',
+    })
+    if (value.length == 11) {
+      this.props.dispatch({
+        type: 'team/fetchUsersByPhone',
+        payload: {
+          phone: value
+        }
+      });
+    }
+  }
+  handlePassSelect = (value) => {
+    
+  }
+  handlePass = () => {
+    this.props.form.validateFields((err, values) => {
+      console.log(1)
+      if (!err) {
+        console.log(values)
+      }
+    });
+  }
   render() {
-    const { data, loading } = this.props;
+    const { data, loading, form: { getFieldDecorator }, suggestionUsers } = this.props;
+    const { modalVisible } = this.state;
     const columns = [
       {
         title: '任务ID',
@@ -261,6 +291,8 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a>发布</a>
               </Popconfirm>
+              <Divider type="vertical" />
+              <a onClick={() => {this.setState({ modalVisible: true })}}>转交</a>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
@@ -391,6 +423,39 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
+
+        <Modal
+          title="选择转交对象"
+          visible={modalVisible}
+          onOk={this.handlePass}
+          onCancel={() => {this.setState({ modalVisible: false })}}
+        >
+          <FormItem
+            label="用户"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+          >
+            {getFieldDecorator('phone', {
+              initialValue: '',
+              rules: [{ required: true, message: '请选择转交用户！' }],
+            })(
+              <Select
+                style={{ width: '100%' }}
+                mode="combobox"
+                optionLabelProp="children"
+                placeholder="搜索电话指定转交用户"
+                notFoundContent=""
+                defaultActiveFirstOption={false}
+                showArrow={false}
+                filterOption={false}
+                onSearch={this.handlePassSearch}
+                onSelect={this.handlePassSelect}
+              >
+                {suggestionUsers.map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+              </Select>
+            )}
+          </FormItem>
+        </Modal>
       </div>
     );
   }

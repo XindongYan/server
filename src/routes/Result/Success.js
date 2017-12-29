@@ -57,7 +57,9 @@ export default class Success extends PureComponent {
           </Col>
         </Row>
         <Steps style={{ marginLeft: -42, width: 'calc(100% + 84px)' }} progressDot current={1}>
-          <Step title={<span style={{ fontSize: 14 }}>接单</span>} description={desc1} />
+          <Step title={<span style={{ fontSize: 14 }}>
+            { formData.project_id ? "接单" : "创建" }
+          </span>} description={desc1} />
           <Step title={<span style={{ fontSize: 14 }}>提交审核</span>} description={desc2} />
           <Step title={<span style={{ fontSize: 14 }}>审核通过</span>} />
         </Steps>

@@ -49,7 +49,7 @@ export default class ProjectDetail extends PureComponent {
       <Card bordered={false} bodyStyle={{paddingBottom: 10 }} style={{ marginBottom: 10 }}>
         <div>
           <h3 className={styles.clearFix}>
-            { project.name ? project.name : '无' }
+            { project.name ? project.name : '' }
             { type && type === 2 &&
               <Button type="primary" style={{ float: 'right' }} onClick={this.createTaskInto}>投稿</Button>
             }
@@ -73,7 +73,7 @@ export default class ProjectDetail extends PureComponent {
         </div>
         <div>
           <div className={styles.projectDescBox} style={{ marginTop: 10 }}>
-            { project.desc ? project.desc : '无' }
+            { project.desc ? project.desc : '' }
           </div>
           <div className={styles.projectTagBox}>
             { project.price !== 0 &&
