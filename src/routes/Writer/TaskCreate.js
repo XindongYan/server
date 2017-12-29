@@ -12,6 +12,8 @@ import { TASK_APPROVE_STATUS } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
+import { queryConvertedTasks } from '../../services/task';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 @connect(state => ({
@@ -53,18 +55,100 @@ export default class TaskCreate extends PureComponent {
     approver_id2: '',
     suggestionUsers: [],
     suggestionUsers2: [],
+
+    nicaiCrx: null,
+    version: '',
   }
   componentDidMount() {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: true,
     });
+
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.addEventListener('publishResult', this.publishResult);
+    nicaiCrx.addEventListener('setVersion', this.setVersion);
+    if (!this.state.nicaiCrx) {
+      this.setState({ nicaiCrx }, () => {
+        setTimeout(() => {
+          this.handleGetVersion();
+        }, 400);
+      });
+    }
   }
   componentWillUnmount() {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: false,
     });
+
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.removeEventListener('publishResult', this.publishResult);
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+  }
+  publishResult = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    message.destroy();
+    if (data.error) {
+      message.error(data.msg);
+    } else {
+      message.success(data.msg);
+    }
+  }
+  setVersion = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    this.setState({
+      version: data,
+    })
+  }
+  handleGetVersion = () => {
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getVersion', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
+  handlePublish = () => {
+    if (this.state.version) {
+      const { currentUser, teamUser } = this.props;
+      const { task, approver_id } = this.state;
+      const query = querystring.parse(this.props.location.search.substr(1));
+      this.props.dispatch({
+        type: 'task/addByWriter',
+        payload: {
+          ...this.state.task,
+          name: task.title,
+          approve_status: TASK_APPROVE_STATUS.waitingToTaobao,
+          channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+          task_type: query.task_type ? Number(query.task_type) : 1,
+          team_id: teamUser ? teamUser.team_id : null,
+          publisher_id: currentUser._id,
+          publish_time: new Date(),
+          taker_id: currentUser._id,
+          take_time: new Date(),
+          creator_id: currentUser._id,
+          daren_id: currentUser._id,
+          daren_time: new Date(),
+        },
+        callback: async (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            const tasks = await queryConvertedTasks({
+              _ids: JSON.stringify([result.task._id]),
+            });
+            this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
+            const customEvent = document.createEvent('Event');
+            customEvent.initEvent('publishToTaobao', true, true);
+            this.state.nicaiCrx.dispatchEvent(customEvent);
+            message.destroy();
+            message.loading('发布中 ...', 60);
+          }
+        },
+      });
+      
+    } else {
+      message.destroy();
+      message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+    }
   }
   handleShowAddTeamUserModal = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -156,7 +240,7 @@ export default class TaskCreate extends PureComponent {
       },
     });
   }
-  handleSpecify = () => {
+  handleSpecifyApprover = () => {
     const { dispatch } = this.props;
     const { approver_id, approver_id2 } = this.state;
     const approvers = [ approver_id ];
@@ -337,12 +421,15 @@ export default class TaskCreate extends PureComponent {
             {/*
               <Button onClick={this.handleSave}>保存</Button>
             */}
+            <Popconfirm placement="top" title="确认已经写完并发布至阿里创作平台?" okText="确认" cancelText="取消" onConfirm={this.handlePublish}>
+              <Button>发布</Button>
+            </Popconfirm>
           </div>
         </div>
         <Modal
           title="选择审核人员"
           visible={modalVisible}
-          onOk={this.handleSpecify}
+          onOk={this.handleSpecifyApprover}
           onCancel={() => this.handleModalVisible(false)}
         >
           <FormItem
