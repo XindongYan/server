@@ -66,8 +66,11 @@ export default class AlimamaOrder extends PureComponent {
       this.setState({
         visible: true
       })
+    } else {
+      if (data.alimamaUser && data.alimamaUser.memberid) {
+        this.setState({ alimamaUser: data.alimamaUser });
+      }
     }
-    this.setState({ alimamaUser: data.alimamaUser });
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
