@@ -93,7 +93,7 @@ export default class AlimamaOrderList extends PureComponent {
         render: (val) => val.toFixed(2),
       },
       {
-        title: '效果预估',
+        title: '淘客佣金',
         dataIndex: 'fee',
         render: (val) => val.toFixed(2),
       },
