@@ -1,12 +1,14 @@
 import BasicLayout from '../layouts/BasicLayout';
 import BlankLayout from '../layouts/BlankLayout';
 
+import Home from '../routes/Home';
 import Approver from '../routes/Approver/TableList';
 import Project from '../routes/Project/ProjectList';
 import ProjectCreate from '../routes/Project/ProjectCreate';
 import TeamUser from '../routes/Team/TeamUserList';
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
+
 import TaskSquare from '../routes/TaskSquare/ProjectList';
 import SubmissionList from '../routes/TaskSquare/SubmissionList';
 import Invitation from '../routes/Invitation/InvitationList';
@@ -18,10 +20,17 @@ import Error from '../routes/Result/Error';
 
 import { RIGHT } from '../constants';
 
+const home = {
+  name: '首页',
+  path: 'home',
+  icon: 'home',
+  children: [],
+  component: Home,
+};
 const square = {
   name: '广场',
   path: 'square',
-  icon: 'home',
+  icon: 'appstore-o',
   children: [{
     name: '赏金任务',
     path: 'task',
@@ -151,7 +160,7 @@ export function getNavData(user) {
   const menuItems = [];
   if (user.rights) {
     if (user.rights.indexOf(RIGHT.writer) >= 0) {
-      menuItems.push(square, creation);
+      menuItems.push(home, square, creation);
     }
     if (user.rights.indexOf(RIGHT.approver) >= 0) {
       menuItems.push(approve);

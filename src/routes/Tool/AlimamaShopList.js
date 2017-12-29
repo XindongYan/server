@@ -15,7 +15,9 @@ const { RangePicker } = DatePicker;
 
 export default class AlimamaShopList extends PureComponent {
   state = {
-    searchValur: '',
+    searchValue: '',
+    createTime_start: '',
+    createTime_end: '',
   };
 
   componentDidMount() {
@@ -56,6 +58,9 @@ export default class AlimamaShopList extends PureComponent {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...filters,
+      search: this.state.searchValue,
+      createTime_start: this.state.createTime_start,
+      createTime_end: this.state.createTime_end,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -81,10 +86,17 @@ export default class AlimamaShopList extends PureComponent {
       memberid: memberid || (currentUser.alimama[0] ? currentUser.alimama[0].memberid : ''),
       currentPage: 1,
       pageSize: pagination.pageSize,
+      search: this.state.searchValue,
+      createTime_start: this.state.createTime_start,
+      createTime_end: this.state.createTime_end,
     };
     if(name === 'time') {
       values['createTime_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['createTime_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+      this.setState({
+        createTime_start: values.createTime_start,
+        createTime_end: values.createTime_end,
+      })
     } else {
       values[name] = value;
     }
