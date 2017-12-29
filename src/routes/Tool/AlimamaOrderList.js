@@ -9,7 +9,7 @@ const { RangePicker } = DatePicker;
 
 @connect(state => ({
   alimamaOrders: state.tool.alimamaOrders,
-  loading: state.tool.projectTaskLoading,
+  loading: state.tool.alimamaOrdersloading,
   currentUser: state.user.currentUser,
 }))
 
@@ -90,10 +90,12 @@ export default class AlimamaOrderList extends PureComponent {
       {
         title: '付款金额',
         dataIndex: 'totalAlipayFee',
+        render: (val) => val ? val.toFixed(2) : '',
       },
       {
         title: '效果预估',
         dataIndex: 'fee',
+        render: (val) => val ? val.toFixed(2) : '',
       },
       {
         title: '店铺名称',
@@ -134,7 +136,7 @@ export default class AlimamaOrderList extends PureComponent {
             ...alimamaOrders.pagination,
           }}
           onChange={this.handleStandardTableChange}
-          rowKey="exMemberId"
+          rowKey="auctionId"
         />
       </div>
     );
