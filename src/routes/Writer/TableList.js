@@ -57,10 +57,15 @@ export default class TableList extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, data: { pagination, approve_status } } = nextProps;
+    const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id !== this.props.currentUser._id) {
       dispatch({
         type: 'task/fetchTakerTasks',
-        payload: { ...pagination, approve_status, user_id: currentUser._id },
+        payload: {
+          ...pagination,
+          approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
+          user_id: currentUser._id,
+        },
       });
     }
   }
