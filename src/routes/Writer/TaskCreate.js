@@ -55,112 +55,18 @@ export default class TaskCreate extends PureComponent {
     approver_id2: '',
     suggestionUsers: [],
     suggestionUsers2: [],
-
-    nicaiCrx: null,
-    version: '',
   }
   componentDidMount() {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: true,
     });
-
-    const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.addEventListener('publishResult', this.publishResult);
-    nicaiCrx.addEventListener('setVersion', this.setVersion);
-    if (!this.state.nicaiCrx) {
-      this.setState({ nicaiCrx }, () => {
-        setTimeout(() => {
-          this.handleGetVersion();
-        }, 400);
-      });
-    }
   }
   componentWillUnmount() {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: false,
     });
-
-    const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.removeEventListener('publishResult', this.publishResult);
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
-  }
-  publishResult = (e) => {
-    const data = JSON.parse(e.target.innerText);
-    message.destroy();
-    if (data.error) {
-      message.error(data.msg);
-    } else {
-      message.success(data.msg);
-      this.props.dispatch(routerRedux.push(`/creation/writer-list?approve_status=${TASK_APPROVE_STATUS.publishedToTaobao}`));
-    }
-  }
-  setVersion = (e) => {
-    const data = JSON.parse(e.target.innerText);
-    this.setState({
-      version: data,
-    })
-  }
-  handleGetVersion = () => {
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getVersion', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
-  }
-  handlePublish = () => {
-    if (this.state.version) {
-      const { currentUser, teamUser } = this.props;
-      const { task, approver_id } = this.state;
-      const query = querystring.parse(this.props.location.search.substr(1));
-      if (!task.merchant_tag) {
-        message.warn('请填写商家标签');
-      } else if (!task.title || !task.title.replace(/\s+/g, '')) {
-        message.warn('请填写标题');
-      } else if (task.title && task.title.length > 19) {
-        message.warn('标题字数不符合要求');
-      } else if (!task.task_desc) {
-        message.warn('请填写内容');
-      } else if (!task.cover_img && query.channel_name !== '直播脚本') {
-        message.warn('请选择封面图');
-      } else {
-        this.props.dispatch({
-          type: 'task/addByWriter',
-          payload: {
-            ...this.state.task,
-            name: task.title,
-            approve_status: TASK_APPROVE_STATUS.waitingToTaobao,
-            channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
-            task_type: query.task_type ? Number(query.task_type) : 1,
-            team_id: teamUser ? teamUser.team_id : null,
-            publisher_id: currentUser._id,
-            publish_time: new Date(),
-            taker_id: currentUser._id,
-            take_time: new Date(),
-            creator_id: currentUser._id,
-            daren_id: currentUser._id,
-            daren_time: new Date(),
-          },
-          callback: async (result) => {
-            if (result.error) {
-              message.error(result.msg);
-            } else {
-              const tasks = await queryConvertedTasks({
-                _ids: JSON.stringify([result.task._id]),
-              });
-              this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
-              const customEvent = document.createEvent('Event');
-              customEvent.initEvent('publishToTaobao', true, true);
-              this.state.nicaiCrx.dispatchEvent(customEvent);
-              message.destroy();
-              message.loading('发布中 ...', 60);
-            }
-          },
-        }); 
-      }
-    } else {
-      message.destroy();
-      message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
-    }
   }
   handleShowAddTeamUserModal = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -367,17 +273,49 @@ export default class TaskCreate extends PureComponent {
   }
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'task/update',
-      payload: { ...this.state.task, _id: query._id },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
+    if (query._id) {
+      this.props.dispatch({
+        type: 'task/update',
+        payload: { ...this.state.task, _id: query._id },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            message.success(result.msg);
+          }
         }
-      }
-    });
+      });
+    } else {
+      const { currentUser, teamUser } = this.props;
+      const { task, approver_id } = this.state;
+      this.props.dispatch({
+        type: 'task/addByWriter',
+        payload: {
+          ...this.state.task,
+          name: task.title,
+          approve_status: TASK_APPROVE_STATUS.taken,
+          channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+          task_type: query.task_type ? Number(query.task_type) : 1,
+          team_id: teamUser ? teamUser.team_id : null,
+
+          publisher_id: currentUser._id,
+          publish_time: new Date(),
+          taker_id: currentUser._id,
+          take_time: new Date(),
+          creator_id: currentUser._id,
+          daren_id: currentUser._id,
+          daren_time: new Date(),
+        },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            message.success(result.msg);
+          }
+        },
+      });
+    }
+    
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;
@@ -430,12 +368,7 @@ export default class TaskCreate extends PureComponent {
               :
               <Button onClick={this.handleShowAddTeamUserModal}>提交审核</Button>
             }
-            {/*
-              <Button onClick={this.handleSave}>保存</Button>
-            */}
-            <Popconfirm placement="top" title="确认已经写完并发布至阿里创作平台?" okText="确认" cancelText="取消" onConfirm={this.handlePublish}>
-              <Button>发布</Button>
-            </Popconfirm>
+            <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
         <Modal
