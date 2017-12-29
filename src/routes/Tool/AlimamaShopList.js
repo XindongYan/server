@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Table, Button, Modal, Card, Select, Input, message, DatePicker } from 'antd';
-import { Link } from 'dva/router';
+
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const Search = Input.Search;
 const { RangePicker } = DatePicker;
@@ -13,7 +13,7 @@ const { RangePicker } = DatePicker;
   currentUser: state.user.currentUser,
 }))
 
-export default class AlimamaOrderList extends PureComponent {
+export default class AlimamaShopList extends PureComponent {
   state = {
 
   };
@@ -37,7 +37,6 @@ export default class AlimamaOrderList extends PureComponent {
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, currentUser } = this.props;
-
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -60,6 +59,9 @@ export default class AlimamaOrderList extends PureComponent {
     });
   }
 
+  handleRowSelectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({ selectedRowKeys, selectedRows });
+  }
   handleSearch = (value, name) => {
     const { dispatch, currentUser, alimamaOrders: { pagination } } = this.props;
     const values = {
@@ -81,11 +83,11 @@ export default class AlimamaOrderList extends PureComponent {
 
   render() {
     const { alimamaOrders, loading,  } = this.props;
+
     const columns = [
       {
-        title: '商品名称',
-        dataIndex: 'auctionTitle',
-        render: (val, record) => <a href={record.auctionUrl} target="_blank">{val}</a>,
+        title: '店铺名称',
+        dataIndex: 'exShopTitle',
       },
       {
         title: '付款金额',
@@ -95,11 +97,8 @@ export default class AlimamaOrderList extends PureComponent {
         title: '效果预估',
         dataIndex: 'fee',
       },
-      {
-        title: '店铺名称',
-        dataIndex: 'exShopTitle',
-      },
     ];
+    
     return (
       <div>
         <div style={{ marginBottom: 10 }}>
@@ -134,7 +133,7 @@ export default class AlimamaOrderList extends PureComponent {
             ...alimamaOrders.pagination,
           }}
           onChange={this.handleStandardTableChange}
-          rowKey="exMemberId"
+          rowKey="auctionId"
         />
       </div>
     );

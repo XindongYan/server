@@ -80,7 +80,7 @@ export default class AlbumModal extends PureComponent {
     if (this.props.k === this.props.currentKey) {
       if (!result.errorCode) {
         message.success('上传成功');
-        if (this.props.k === 'cover'){
+        if (this.props.k !== 'editor'){
           this.setState({
             choosen: [ result.data[0] ],
           })
@@ -160,7 +160,7 @@ export default class AlbumModal extends PureComponent {
             <Icon type="check" />
           </div>          
         </div>
-        { k === 'cover' && (photo.picWidth < minSize.width || photo.picHeight < minSize.height) &&
+        { k !== 'editor' && minSize && (photo.picWidth < minSize.width || photo.picHeight < minSize.height) &&
           <div className={styles.diabledModal}>
             尺寸不符
           </div>
@@ -206,12 +206,12 @@ export default class AlbumModal extends PureComponent {
         reader.readAsDataURL(file);  
         //监听文件读取结束后事件  
         reader.onloadend = (e1) => {
-          if (k === 'cover') {
+          if (k !== 'editor') {
             var img = new Image();
             img.src = e1.target.result;
             img.onload = function(event) {
               if (img.height < minSize.height || img.width < minSize.width) {
-                message.warn('封面图尺寸不能小于750*422px');
+                message.warn(`封面图尺寸不能小于${minSize.width}*${minSize.height}px`);
               } else {
                 nicaiCrx.innerText = JSON.stringify({data: e1.target.result});
                 const customEvent = document.createEvent('Event');

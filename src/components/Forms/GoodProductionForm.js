@@ -4,6 +4,7 @@ import { Input, Icon, message, Tag, Tooltip, Form } from 'antd';
 import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
+import CascaderSelect from '../Forms/CascaderSelect';
 
 const FormItem = Form.Item;
 @Form.create()
@@ -103,9 +104,9 @@ export default class GoodProductionForm extends PureComponent {
       });
     })
   }
-  handleTaskChange = (e, key) => {
+  handleTaskChange = (value, key) => {
     const data = {};
-    data[key] = e.target.value;
+    data[key] = value;
     if (this.props.onChange) this.props.onChange(data);
   }
   handleAddCoverImg = (url) => {
@@ -142,20 +143,19 @@ export default class GoodProductionForm extends PureComponent {
   handleRemoveImg = (key, index) => {
     const data = {};
     if (key === 'cover_imgs') {
-      data[key] = [];
-      
+      const arr = this.props.formData.cover_imgs.filter((item, i) => {
+        return i !== index;
+      })
+      data[key] = arr;
     } else {
       data[key] = '';
     }
     if (this.props.onChange) this.props.onChange(data);
   }
-  normFile = (e) => {
-    console.log('Upload event:', e);
-    // if (Array.isArray(e)) {
-    //   return e;
-    // }
-    // return e && e.fileList;
+  handleSubmit = () => {
+    console.log(1)
   }
+
   render() {
     const { form: { getFieldDecorator, getFieldValue }, style, operation, formData } = this.props;
     const { task, longPoint, shortPoint } = this.state;
@@ -198,7 +198,7 @@ export default class GoodProductionForm extends PureComponent {
                     <div className={styles.InputBox} style={{ border: 'none' }}>
                       <Input
                         style={{ fontSize: '18px', border: 'none', outline: 'none' }}
-                        onChange={(e) => this.handleTaskChange(e, 'title')}
+                        onChange={(e) => this.handleTaskChange(e.target.value, 'title')}
                         placeholder="请在这里输入标题"
                       />
                       <span style={{ color: formData.title.length>18 ? 'red' : '#666' }} className={styles.inputNum}>
@@ -220,7 +220,7 @@ export default class GoodProductionForm extends PureComponent {
                     <div className={styles.textareaBox}>
                       <textarea
                         className={styles.textarea}
-                        onChange={(e) => this.handleTaskChange(e, 'task_desc')}
+                        onChange={(e) => this.handleTaskChange(e.target.value, 'task_desc')}
                         placeholder="用一句话概括商品亮点，最多30个字，用于在有好货列表中显示">
                       </textarea>
                       <span style={{ color: formData.task_desc.length>30 ? 'red' : '#666' }} className={styles.textareaNum}>
@@ -231,22 +231,17 @@ export default class GoodProductionForm extends PureComponent {
                 </FormItem>
                 <p className={styles.promptText}>提示：用一句话概括商品亮点，最多30个字，用于在有好货列表中显示</p>
               </div>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  本文目标人群
-                </p>
-                <div>
-            
-                </div>
-              </div>
+              <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
+
+
               <div>
                 <p className={styles.lineTitleDefult}>
                   上传宝贝图
                 </p>
-                <div>
+                <div className={styles.clearFix}>
                   { formData.cover_imgs && formData.cover_imgs.length > 0 &&
                     formData.cover_imgs.map((img,index) =>
-                    <div className={styles.imgShowBox} style={{ width: 200, height: 200 }} key={index}>
+                    <div className={styles.imgShowBox} style={{ width: 200, height: 200, float: 'left' }} key={index}>
                       <img src={img} />
                       <div className={styles.clearImg} onClick={() => this.handleRemoveImg('cover_imgs',index)}>
                         <Icon type="delete" />
@@ -254,7 +249,7 @@ export default class GoodProductionForm extends PureComponent {
                     </div>)
                   }
                   { formData.cover_imgs.length < 5 &&
-                    <label className={styles.uploadImgBox} style={{ width: 200, height: 200 }} onClick={() => this.uploadCoverImg('cover_imgs',500,500)}>
+                    <label className={styles.uploadImgBox} style={{ width: 200, height: 200, float: 'left' }} onClick={() => this.uploadCoverImg('cover_imgs',500,500)}>
                       <div>
                         <Icon type="plus" className={styles.uploadIcon} />
                         <p>上传封面</p>
@@ -382,7 +377,7 @@ export default class GoodProductionForm extends PureComponent {
                   })(
                     <div className={styles.InputBox}>
                       <Input
-                        onChange={(e) => this.handleTaskChange(e, 'industry_title')}
+                        onChange={(e) => this.handleTaskChange(e.target.value, 'industry_title')}
                         placeholder="请围绕商品的其中一个行业特征填写标题"
                       />
                       <span style={{ color: formData.industry_title.length>6 ? 'red' : '#666' }} className={styles.inputNum}>
@@ -410,7 +405,7 @@ export default class GoodProductionForm extends PureComponent {
                   })(
                     <div className={styles.textareaBox}>
                       <textarea
-                        onChange={(e) => this.handleTaskChange(e, 'industry_introduction')}
+                        onChange={(e) => this.handleTaskChange(e.target.value, 'industry_introduction')}
                         placeholder="根据你选择的标题，针对这个商品在该方面的特色和优势进行补充说明，限200字">
                       </textarea>
                       <span style={{ color: formData.industry_introduction.length>200 ? 'red' : '#666' }} className={styles.textareaNum}>
@@ -460,7 +455,7 @@ export default class GoodProductionForm extends PureComponent {
                   })(
                     <div className={styles.InputBox}>
                       <input
-                        onChange={(e) => this.handleTaskChange(e, 'brand_name')}
+                        onChange={(e) => this.handleTaskChange(e.target.value, 'brand_name')}
                         placeholder="限30个字"
                       />
                       <span style={{ color: formData.brand_name.length>30 ? 'red' : '#666' }} className={styles.inputNum}>
@@ -485,7 +480,7 @@ export default class GoodProductionForm extends PureComponent {
                   })(
                     <div className={styles.textareaBox}>
                       <textarea
-                        onChange={(e) => this.handleTaskChange(e, 'brand_introduction')}
+                        onChange={(e) => this.handleTaskChange(e.target.value, 'brand_introduction')}
                         placeholder="根据你选择的标题，针对这个商品在该方面的特色和优势进行补充说明，限200字">
                       </textarea>
                       <span style={{ color: formData.brand_name.length>200 ? 'red' : '#666' }} className={styles.textareaNum}>

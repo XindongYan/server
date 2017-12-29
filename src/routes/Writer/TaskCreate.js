@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import { Card, Button, Popconfirm, message, Modal, Form, Select, Input } from 'antd';
-// import $ from 'jquery';
+import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
@@ -97,21 +97,14 @@ export default class TaskCreate extends PureComponent {
     // if (!task.merchant_tag) {
     //   message.warn('请填写商家标签');
     // } else 
-    if (!haveGoodsTask.title.replace(/\s+/g, '')) {
-      scrollTo(0, 200)
-    } else if (haveGoodsTask.title && haveGoodsTask.title.length > 19) {
-      message.warn('标题字数不符合要求');
-    } else if (!haveGoodsTask.task_desc) {
-      message.warn('请填写内容');
-    } else if (!haveGoodsTask.cover_img && query.channel_name !== '直播脚本') {
-      message.warn('请选择封面图');
-    } else {
-      if (query.project_id) {
-        // this.handleSubmitTask();
-      } else {
-        // this.setState({ modalVisible: true, });
+    // this.refs.goodProductionForm.handleSubmit();
+    this.refs.goodProductionForm.getForm().validateFields({ force: true },
+      (err) => {
+        if (!err) {
+        }
+        console.log(this.state.haveGoodsTask)
       }
-    }
+    );
   }
   handleSubmitTask = () => {
     const { currentUser, teamUser } = this.props;
@@ -321,6 +314,7 @@ export default class TaskCreate extends PureComponent {
                 operation="create"
                 formData={haveGoodsTask}
                 onChange={this.handleChangeGoods}
+                ref="goodProductionForm"
               />
             }
           </div>

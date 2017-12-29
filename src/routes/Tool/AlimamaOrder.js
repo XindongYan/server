@@ -1,14 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import moment from 'moment';
-import querystring from 'querystring';
-import { Table, Card, Button, Tabs, Modal, message } from 'antd';
+import { Card, Tabs, Modal, message } from 'antd';
 import { Link } from 'dva/router';
 import AlimamaOrderList from './AlimamaOrderList';
-import AlimamaShopOrderList from './AlimamaShopOrderList';
+import AlimamaShopList from './AlimamaShopList';
 const TabPane = Tabs.TabPane;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
 
@@ -16,21 +13,55 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 export default class AlimamaOrder extends PureComponent {
   state = {
+    nicaiCrx: null,
+    visible: false,
   }
   componentDidMount() {
-
-    Modal.confirm({
-      title: '更新数据需要登录阿里妈妈',
-      content: '点击确定去登录',
-      onOk() {
-        window.open('http://pub.alimama.com/myunion.htm?spm=a219t.7900221/1.1998910419.db9f5f632.6cc0f2fbJH3A8I#!/report/detail/taoke');
-      },
-      onCancel() {
-        
-      },
-    });
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.addEventListener('setAlimamaInfo', this.setAlimamaInfo);
+    if (!this.state.nicaiCrx) {
+      this.setState({ nicaiCrx }, () => {
+        setTimeout(() => {
+          this.getAlimamaInfo();
+        }, 400);
+      });
+    }
+  }
+  componentWillUnmount() {
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.removeEventListener('setAlimamaInfo', this.setAlimamaInfo);
   }
 
+  getAlimamaInfo = () => {
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getAlimamaInfo', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
+  setAlimamaInfo = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    console.log(data);
+    if (data.error) {
+      const modal = Modal.warning({
+        title: data.msg,
+        content: '点击确定去登录',
+        okText: '去登陆',
+        onOk: () => {
+          modal.destroy();
+          window.open('http://pub.alimama.com/myunion.htm?spm=a219t.7900221/1.1998910419.db9f5f632.6cc0f2fbJH3A8I#!/report/detail/taoke');
+          Modal.confirm({
+            title: '是否已成功登陆阿里妈妈网站',
+            okText: '是的',
+            onOk: () => {
+              this.getAlimamaInfo();
+            },
+            onCancel: () => {
+              this.getAlimamaInfo();
+            },
+          });
+        },
+      });
+    }
+  }
   render() {
     return (
       <div>
@@ -39,13 +70,23 @@ export default class AlimamaOrder extends PureComponent {
             defaultActiveKey="1"
           >
             <TabPane tab="店铺" key="1">
-              <AlimamaShopOrderList />
+              <AlimamaShopList />
             </TabPane>
             <TabPane tab="商品" key="2">
               <AlimamaOrderList />
             </TabPane>
           </Tabs>
         </Card>
+        <Modal
+          title="Modal"
+          visible={this.state.visible}
+          onOk={this.hideModal}
+          onCancel={this.hideModal}
+          okText="是的"
+          cancelText="没有"
+        >
+          <p>Bla bla ...</p>
+        </Modal>
       </div>
     );
   }
