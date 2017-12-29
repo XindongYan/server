@@ -1,5 +1,5 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
-queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask } from '../services/task';
+queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask } from '../services/task';
 import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
@@ -92,6 +92,10 @@ export default {
     },
     *withdraw({ payload, callback }, { call, put }) {
       const result = yield call(withdrawTask, payload);
+      if (callback) callback(result);
+    },
+    *pass({ payload, callback }, { call, put }) {
+      const result = yield call(passTask, payload);
       if (callback) callback(result);
     },
     *fetchProjectTasks({ payload }, { call, put }) {

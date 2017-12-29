@@ -99,6 +99,15 @@ export async function withdrawTask(params) {
   });
 }
 
+export async function passTask(params) {
+  return request('/api/task/pass', {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }
