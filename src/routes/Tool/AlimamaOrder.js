@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Tabs, Modal, message } from 'antd';
+import { Card, Tabs, Modal, message, Button, Icon } from 'antd';
 import { Link } from 'dva/router';
 import AlimamaOrderList from './AlimamaOrderList';
 import AlimamaShopList from './AlimamaShopList';
@@ -42,30 +42,30 @@ export default class AlimamaOrder extends PureComponent {
     const data = JSON.parse(e.target.innerText);
     console.log(data);
     if (data.error) {
-      const modal = Modal.warning({
-        title: data.msg,
-        content: '点击确定去登录',
-        okText: '去登陆',
-        onOk: () => {
-          modal.destroy();
-          window.open('http://pub.alimama.com/myunion.htm?spm=a219t.7900221/1.1998910419.db9f5f632.6cc0f2fbJH3A8I#!/report/detail/taoke');
-          Modal.confirm({
-            title: '是否已成功登陆阿里妈妈网站',
-            okText: '是的',
-            onOk: () => {
-              location.reload();
-            },
-            onCancel: () => {
-              this.getAlimamaInfo();
-            },
-          });
-        },
-      });
+      this.setState({
+        visible: true
+      })
     }
+  }
+  handleOk = () => {
+    this.setState({
+      visible: false
+    })
+    window.open('http://pub.alimama.com/myunion.htm?spm=a219t.7900221/1.1998910419.db9f5f632.6cc0f2fbJH3A8I#!/report/detail/taoke');
+    Modal.confirm({
+      title: '是否已成功登陆阿里妈妈网站',
+      okText: '是的',
+      onOk: () => {
+        location.reload();
+      },
+      onCancel: () => {
+        this.getAlimamaInfo();
+      },
+    });
   }
   render() {
     return (
-      <div>
+      <div id="alimama" style={{ position: 'relative' }}>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <Tabs
             defaultActiveKey="1"
@@ -79,14 +79,28 @@ export default class AlimamaOrder extends PureComponent {
           </Tabs>
         </Card>
         <Modal
-          title="Modal"
+          title={
+            <span>
+              <Icon type="warning" style={{ fontSize: 24, color: '#faad14', marginRight: 10 }} />
+              阿里妈妈未登录
+            </span>
+          }
+          closable={false}
           visible={this.state.visible}
-          onOk={this.hideModal}
-          onCancel={this.hideModal}
-          okText="是的"
-          cancelText="没有"
+          footer={[
+            <Button key="submit" type="primary" onClick={this.handleOk}>
+              去登陆
+            </Button>
+          ]}
+          getContainer={() => {return document.getElementById('alimama')}}
+          bodyStyle={{ border: 'none' }}
+          style={{ position: 'absolute', top: 150, right: 0, left: 0 }}
+          maskStyle={{ position: 'absolute' }}
         >
-          <p>Bla bla ...</p>
+          <p style={{ fontSize: 16, height: 40, lineHeight: '40px' }}>
+            <span>当前页面功能需要先登录阿里妈妈网站</span>
+          </p>
+          <p>点击确定去登录</p>
         </Modal>
       </div>
     );
