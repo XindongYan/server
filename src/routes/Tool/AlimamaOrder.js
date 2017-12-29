@@ -17,6 +17,10 @@ export default class AlimamaOrder extends PureComponent {
     nicaiCrx: null,
     visible: false,
     version: '',
+    alimamaUser: {
+      memberid: null,
+      mmNick: '',
+    },
   }
   componentDidMount() {
     setTimeout(() => {
@@ -43,7 +47,6 @@ export default class AlimamaOrder extends PureComponent {
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.removeEventListener('setAlimamaInfo', this.setAlimamaInfo);
     nicaiCrx.removeEventListener('setVersion', this.setVersion);
-
   }
 
   handleGetVersion = () => {
@@ -64,9 +67,11 @@ export default class AlimamaOrder extends PureComponent {
         visible: true
       })
     }
+    this.setState({ alimamaUser: data.alimamaUser });
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
+    console.log(data);
     if (data !== '1.0.4') {
       message.warn('插件版本较低，请更新！');
     }
@@ -105,10 +110,10 @@ export default class AlimamaOrder extends PureComponent {
             defaultActiveKey="1"
           >
             <TabPane tab="店铺" key="1">
-              <AlimamaShopList />
+              <AlimamaShopList memberid={this.state.alimamaUser.memberid}/>
             </TabPane>
             <TabPane tab="商品" key="2">
-              <AlimamaOrderList />
+              <AlimamaOrderList memberid={this.state.alimamaUser.memberid}/>
             </TabPane>
           </Tabs>
           <div

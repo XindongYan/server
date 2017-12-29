@@ -19,24 +19,31 @@ export default class AlimamaShopList extends PureComponent {
   };
 
   componentDidMount() {
-    const { currentUser, alimamaShops: { pagination } } = this.props;
+    const { currentUser, alimamaShops: { pagination }, memberid } = this.props;
     if (currentUser._id) {
       this.props.dispatch({
         type: 'tool/fetchAlimamaShops',
-        payload: { user_id: currentUser._id },
+        payload: {
+          user_id: currentUser._id,
+          memberid: memberid || (currentUser.alimama[0] ? currentUser.alimama[0].memberid : ''),
+        },
       });
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.currentUser._id !== this.props.currentUser._id) {
+    const { currentUser, memberid } = nextProps;
+    if (nextProps.currentUser._id !== this.props.currentUser._id || (nextProps.currentUser._id && nextProps.memberid !== this.props.memberid)) {
       this.props.dispatch({
         type: 'tool/fetchAlimamaShops',
-        payload: { user_id: nextProps.currentUser._id },
+        payload: {
+          user_id: nextProps.currentUser._id,
+          memberid: memberid || (currentUser.alimama[0] ? currentUser.alimama[0].memberid : ''),
+        },
       });
     }
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, memberid } = this.props;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -45,6 +52,7 @@ export default class AlimamaShopList extends PureComponent {
 
     const params = {
       user_id: currentUser._id,
+      memberid: memberid || (currentUser.alimama[0] ? currentUser.alimama[0].memberid : ''),
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...filters,
@@ -68,9 +76,10 @@ export default class AlimamaShopList extends PureComponent {
     }
   }
   handleSearch = (value, name) => {
-    const { dispatch, currentUser, alimamaShops: { pagination } } = this.props;
+    const { dispatch, currentUser, alimamaShops: { pagination }, memberid } = this.props;
     const values = {
       user_id: currentUser._id,
+      memberid: memberid || (currentUser.alimama[0] ? currentUser.alimama[0].memberid : ''),
       currentPage: 1,
       pageSize: pagination.pageSize,
     };
