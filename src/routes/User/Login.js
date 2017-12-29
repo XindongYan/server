@@ -71,10 +71,10 @@ export default class Login extends Component {
                 this.props.dispatch({
                   type: 'user/fetchCurrent',
                   callback: () => {
-                    console.log(this.props.location);
+                    // console.log(this.props.location);
                     const search = this.props.location.search;
                     const query = querystring.parse(search.substr(1));
-                    console.log(query);
+                    // console.log(query);
                     if (query.redirectUrl) {
                       window.location.href = query.redirectUrl;
                     } else {
