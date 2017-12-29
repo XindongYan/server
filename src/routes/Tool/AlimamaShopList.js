@@ -92,12 +92,12 @@ export default class AlimamaShopList extends PureComponent {
       {
         title: '付款金额',
         dataIndex: 'totalAlipayFee',
-        render: (val) => val ? val.toFixed(2) : '',
+        render: (val) => val.toFixed(2),
       },
       {
         title: '效果预估',
         dataIndex: 'fee',
-        render: (val) => val ? val.toFixed(2) : '',
+        render: (val) => val.toFixed(2),
       },
     ];
     
