@@ -81,6 +81,7 @@ export default class AlimamaOrderList extends PureComponent {
 
   render() {
     const { alimamaOrders, loading,  } = this.props;
+    console.log(alimamaOrders.list);
     const columns = [
       {
         title: '商品名称',
