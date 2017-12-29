@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Popover, Timeline } from 'antd';
 import moment from 'moment';
-import { TASK_APPROVE_STATUS } from '../../constants';
 
 @connect(state => ({
   operationRecords: state.task.operationRecords,
@@ -14,7 +13,7 @@ export default class TaskOperationRecord extends PureComponent {
   handleLoadRecords = () => {
     const { _id } = this.props;
     this.props.dispatch({
-      type: 'task/fetchTask',
+      type: 'task/fetchOperationRecords',
       payload: { _id },
     });
   }

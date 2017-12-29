@@ -9,6 +9,10 @@ export async function queryTask(params) {
   return request(`/api/task?${stringify(params)}`);
 }
 
+export async function queryTaskOperationRecords(params) {
+  return request(`/api/task/operationRecords?${stringify(params)}`);
+}
+
 export async function addTask(params) {
   return request('/api/v2/task', {
     method: 'POST',

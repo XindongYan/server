@@ -13,6 +13,7 @@ import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
 import styles from './TableList.less';
 
 import { queryConvertedTasks } from '../../services/task';
+import TaskOperationRecord from '../TaskCreate/TaskOperationRecord';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -34,6 +35,8 @@ export default class TableList extends PureComponent {
     nicaiCrx: null,
     version: '',
     modalVisible: false,
+    selectedRows: [],
+    selectedRowKeys: [],
   }
 
   componentDidMount() {
@@ -172,13 +175,23 @@ export default class TableList extends PureComponent {
       }
     });
   }
-
+  handleRowSelectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({ selectedRowKeys, selectedRows });
+  }
   changeApproveStatus = (e) => {
     const { dispatch, currentUser, data: { pagination } } = this.props;
     dispatch({
       type: 'task/fetchTakerTasks',
       payload: { ...pagination, user_id: currentUser._id, approve_status: e.target.value, currentPage: 1, }
     });
+  }
+
+  handleShowPassModal = (record) => {
+    this.setState({
+      selectedRowKeys: [record._id],
+      selectedRows: [record],
+      modalVisible: true
+    })
   }
   handlePassSearch = (value) => {
     this.setState({
@@ -197,16 +210,34 @@ export default class TableList extends PureComponent {
     
   }
   handlePass = () => {
+    const { dispatch, currentUser, data: { pagination } } = this.props;
     this.props.form.validateFields((err, values) => {
-      console.log(1)
       if (!err) {
-        console.log(values)
+        dispatch({
+          type: 'task/pass',
+          payload: {
+            phone: values.phone,
+            user_id: currentUser._id,
+            _id: this.state.selectedRowKeys[0],
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              message.success(result.msg);
+              this.handleRowSelectChange([], []);
+              this.setState({
+                modalVisible: false
+              })
+            }
+          }
+        })
       }
     });
   }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers } = this.props;
-    const { modalVisible } = this.state;
+    const { modalVisible, selectedRowKeys } = this.state;
     const columns = [
       {
         title: '任务ID',
@@ -292,7 +323,11 @@ export default class TableList extends PureComponent {
                 <a>发布</a>
               </Popconfirm>
               <Divider type="vertical" />
-              <a onClick={() => {this.setState({ modalVisible: true })}}>转交</a>
+              <a onClick={() => this.handleShowPassModal(record)}>转交</a>
+              <Divider type="vertical" />
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
@@ -305,6 +340,10 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/view?_id=${record._id}`}>
                 <span>查看</span>
               </Link>
+              <Divider type="vertical" />
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
@@ -317,6 +356,10 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/view?_id=${record._id}`}>
                 <span>查看</span>
               </Link>
+              <Divider type="vertical" />
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
@@ -329,6 +372,10 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
+              <Divider type="vertical" />
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
@@ -341,6 +388,10 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a>发布</a>
               </Popconfirm>
+              <Divider type="vertical" />
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
@@ -353,10 +404,29 @@ export default class TableList extends PureComponent {
               <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
                 查看
               </a>
+              <Divider type="vertical" />
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
+            </div>
+          );
+        } else {
+          return (
+            <div>
+              <TaskOperationRecord _id={record._id}>
+                <a>动态</a>
+              </TaskOperationRecord>
             </div>
           );
         }
       }
+    };
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.handleRowSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.disabled,
+      }),
     };
     if (data.approve_status === -1 || data.approve_status === 0) {
       columns.push(opera);
@@ -420,6 +490,7 @@ export default class TableList extends PureComponent {
               }}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
+              rowSelection={rowSelection}
             />
           </div>
         </Card>
