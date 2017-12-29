@@ -81,7 +81,7 @@ export default class AlimamaOrder extends PureComponent {
       title: '是否已成功登陆阿里妈妈网站',
       okText: '是的',
       onOk: () => {
-        location.reload();
+        this.getAlimamaInfo();
       },
       onCancel: () => {
         this.getAlimamaInfo();
@@ -119,7 +119,7 @@ export default class AlimamaOrder extends PureComponent {
           ]}
           getContainer={() => {return document.getElementById('alimama')}}
           bodyStyle={{ border: 'none' }}
-          style={{ position: 'absolute', top: 150, right: 0, left: 0 }}
+          style={{ position: 'absolute', top: 200, right: 0, left: 0 }}
           maskStyle={{ position: 'absolute' }}
           wrapClassName={styles.modalOuterBox}
         >
