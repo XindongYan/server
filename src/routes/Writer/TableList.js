@@ -250,7 +250,7 @@ export default class TableList extends PureComponent {
     const opera = {
       title: '操作',
       render: (record) => {
-        if (record.approve_status === TASK_APPROVE_STATUS.taken || record.approve_status === TASK_APPROVE_STATUS.rejected) {
+        if (record.approve_status === TASK_APPROVE_STATUS.taken) {
           return (
             <div>
               <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
@@ -260,6 +260,10 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                <a>发布</a>
+              </Popconfirm>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
@@ -283,6 +287,18 @@ export default class TableList extends PureComponent {
               <Divider type="vertical" />
               <Link to={`/writer/task/view?_id=${record._id}`}>
                 <span>查看</span>
+              </Link>
+            </div>
+          );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
+          return (
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <Link to={`/writer/task/edit?_id=${record._id}`}>
+                <span>编辑</span>
               </Link>
             </div>
           );
