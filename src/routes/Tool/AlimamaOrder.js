@@ -9,7 +9,7 @@ import styles from './AlimamaOrder.less';
 const TabPane = Tabs.TabPane;
 
 @connect(state => ({
-
+  currentUser: state.user.currentUser,
 }))
 
 export default class AlimamaOrder extends PureComponent {
@@ -76,6 +76,8 @@ export default class AlimamaOrder extends PureComponent {
     this.getAlimamaInfo();
   }
   handleOk = () => {
+    const { currentUser } = this.props;
+    currentUser
     this.setState({
       visible: false
     })
@@ -85,6 +87,10 @@ export default class AlimamaOrder extends PureComponent {
       okText: '是的',
       onOk: () => {
         this.getAlimamaInfo();
+        this.props.dispatch({
+          type: 'tool/fetchAlimamaShops',
+          payload: { user_id: currentUser._id },
+        });
       },
       onCancel: () => {
         this.getAlimamaInfo();
@@ -93,8 +99,8 @@ export default class AlimamaOrder extends PureComponent {
   }
   render() {
     return (
-      <div style={{ position: 'relative' }}>
-        <Card id="alimama" bordered={false} bodyStyle={{ padding: 14 }}>
+      <div>
+        <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <Tabs
             defaultActiveKey="1"
           >
@@ -105,6 +111,10 @@ export default class AlimamaOrder extends PureComponent {
               <AlimamaOrderList />
             </TabPane>
           </Tabs>
+          <div
+            id="alimama"
+            style={{ position: 'absolute', width: '100%', minHeight: '500px', top: 0, height: '100%', minHeight: '500px', display: this.state.visible ? 'block' : 'none' }}>
+          </div>
         </Card>
         <Modal
           title={
