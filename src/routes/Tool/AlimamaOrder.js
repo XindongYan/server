@@ -115,9 +115,10 @@ export default class AlimamaOrder extends PureComponent {
   render() {
     return (
       <div>
-        <Card bordered={false} bodyStyle={{ padding: 14 }} extra={`数据来源于：${this.state.alimamaUser.mmNick}`}>
+        <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <Tabs
             defaultActiveKey="1"
+            tabBarExtraContent={`数据来源于：${this.state.alimamaUser.mmNick}`}
           >
             <TabPane tab="店铺" key="1">
               <AlimamaShopList memberid={this.state.alimamaUser.memberid}/>
