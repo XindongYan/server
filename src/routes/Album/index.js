@@ -77,9 +77,6 @@ export default class Album extends PureComponent {
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
-    if (data !== '1.0.4') {
-      message.warn('插件版本较低，请更新！');
-    }
     const { pagination } = this.state;
     this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
     this.setState({
