@@ -293,6 +293,8 @@ export default class ProjectForm extends PureComponent {
               initialValue: 0,
               rules: [{
                 required: true, message: '请输入项目奖励'
+              }, {
+                pattern: /^(\d{1,5}|0)(\.\d{1,2})?$/, message: '请输入整数位5以内，小数位2以内的数字'
               }],
             })(
               <Input type="number" addonAfter="元" />

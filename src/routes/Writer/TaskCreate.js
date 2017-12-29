@@ -98,6 +98,9 @@ export default class TaskCreate extends PureComponent {
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
+    if (data !== '1.0.4') {
+      message.warn('插件版本较低，请更新！');
+    }
     this.setState({
       version: data,
     })

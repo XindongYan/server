@@ -182,6 +182,9 @@ export default class TaskForm extends PureComponent {
           >
             {getFieldDecorator('price', {
               initialValue: 0,
+              rules: [{
+                pattern: /^(\d{1,5}|0)(\.\d{1,2})?$/, message: '请输入整数位5以内，小数位2以内的数字'
+              }]
             })(
               <Input type="number" addonAfter="元" />
             )}
