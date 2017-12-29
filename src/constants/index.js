@@ -78,7 +78,7 @@ export const PROJECT_STATUS_TEXT = {
   '3': '已下架',
 };
 
-export const CHANNEL_NAMES = ['淘宝头条', '微淘', '有好货'];
+export const CHANNEL_NAMES = ['淘宝头条', '微淘'];
 
 export const RIGHT = {
   writer: 1,
