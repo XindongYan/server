@@ -33,6 +33,7 @@ export default class AlimamaOrder extends PureComponent {
   }
 
   getAlimamaInfo = () => {
+    this.state.nicaiCrx.innerText = '';
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getAlimamaInfo', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
@@ -52,7 +53,7 @@ export default class AlimamaOrder extends PureComponent {
             title: '是否已成功登陆阿里妈妈网站',
             okText: '是的',
             onOk: () => {
-              this.getAlimamaInfo();
+              location.reload();
             },
             onCancel: () => {
               this.getAlimamaInfo();
