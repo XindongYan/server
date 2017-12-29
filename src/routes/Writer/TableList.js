@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message } from 'antd';
 import moment from 'moment';
+import querystring from 'querystring';
 import { Link } from 'dva/router';
 import $ from 'jquery';
 import fetch from 'dva/fetch';
@@ -10,6 +11,8 @@ import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
 import styles from './TableList.less';
+
+import { queryConvertedTasks } from '../../services/task';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const RadioButton = Radio.Button;
@@ -30,10 +33,15 @@ export default class TableList extends PureComponent {
 
   componentDidMount() {
     const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id) {
       dispatch({
         type: 'task/fetchTakerTasks',
-        payload: { ...pagination, approve_status, user_id: currentUser._id },
+        payload: {
+          ...pagination,
+          approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
+          user_id: currentUser._id
+        },
       });
     }
     const nicaiCrx = document.getElementById('nicaiCrx');
@@ -63,6 +71,7 @@ export default class TableList extends PureComponent {
   }
   publishResult = (e) => {
     const data = JSON.parse(e.target.innerText);
+    message.destroy();
     if (data.error) {
       message.error(data.msg);
     } else {
@@ -117,15 +126,15 @@ export default class TableList extends PureComponent {
   handlePublish = async (record) => {
     if (this.state.version) {
       const { currentUser } = this.props;
-      const tasks = await fetch(`${ORIGIN}/api/chrome/test.json?${stringify({
+      const tasks = await queryConvertedTasks({
         _ids: JSON.stringify([record._id]),
-      })}`, {
-        credentials: 'include',
-      }).then(response => response.json());
+      });
       this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('publishToTaobao', true, true);
       this.state.nicaiCrx.dispatchEvent(customEvent);
+      message.destroy();
+      message.loading('发布中 ...', 60);
     } else {
       message.destroy();
       message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
