@@ -1,4 +1,4 @@
-import { queryAlimamaOrders, queryAlimamaShopOrders } from '../services/tool';
+import { queryAlimamaOrders, queryAlimamaShops } from '../services/tool';
 
 export default {
   namespace: 'tool',
@@ -9,11 +9,11 @@ export default {
       pagination: {},
     },
     alimamaOrdersloading: true,
-    alimamaShopOrders: {
+    alimamaShops: {
       list: [],
       pagination: {},
     },
-    alimamaShopOrdersloading: true,
+    alimamaShopsloading: true,
   },
 
   effects: {
@@ -23,7 +23,6 @@ export default {
         payload: true,
       });
       const response = yield call(queryAlimamaOrders, payload);
-      console.log(response)
       if (!response.error) {
         yield put({
           type: 'saveAlimamaOrders',
@@ -35,20 +34,20 @@ export default {
         payload: false,
       });
     },
-    *fetchAlimamaShopOrders({ payload }, { call, put }) {
+    *fetchAlimamaShops({ payload }, { call, put }) {
       yield put({
-        type: 'changeAlimamaShopOrdersLoading',
+        type: 'changeAlimamaShopsLoading',
         payload: true,
       });
-      const response = yield call(queryAlimamaOrders, payload);
+      const response = yield call(queryAlimamaShops, payload);
       if (!response.error) {
         yield put({
-          type: 'saveAlimamaShopOrders',
+          type: 'saveAlimamaShops',
           payload: response,
         });
       }
       yield put({
-        type: 'changeAlimamaShopOrdersLoading',
+        type: 'changeAlimamaShopsLoading',
         payload: false,
       });
     },
@@ -67,16 +66,16 @@ export default {
         alimamaOrdersloading: action.payload,
       };
     },
-    saveAlimamaShopOrders(state, action) {
+    saveAlimamaShops(state, action) {
       return {
         ...state,
-        alimamaShopOrders: action.payload,
+        alimamaShops: action.payload,
       };
     },
-    changeAlimamaShopOrdersLoading(state, action) {
+    changeAlimamaShopsLoading(state, action) {
       return {
         ...state,
-        alimamaShopOrdersloading: action.payload,
+        alimamaShopsloading: action.payload,
       };
     },
   },

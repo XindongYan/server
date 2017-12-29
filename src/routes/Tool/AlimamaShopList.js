@@ -8,8 +8,8 @@ const Search = Input.Search;
 const { RangePicker } = DatePicker;
 
 @connect(state => ({
-  alimamaOrders: state.tool.alimamaOrders,
-  loading: state.tool.projectTaskLoading,
+  alimamaShops: state.tool.alimamaShops,
+  loading: state.tool.alimamaShopsloading,
   currentUser: state.user.currentUser,
 }))
 
@@ -19,10 +19,10 @@ export default class AlimamaShopList extends PureComponent {
   };
 
   componentDidMount() {
-    const { currentUser, alimamaOrders: { pagination } } = this.props;
+    const { currentUser, alimamaShops: { pagination } } = this.props;
     if (currentUser._id) {
       this.props.dispatch({
-        type: 'tool/fetchAlimamaOrders',
+        type: 'tool/fetchAlimamaShops',
         payload: { user_id: currentUser._id },
       });
     }
@@ -30,7 +30,7 @@ export default class AlimamaShopList extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentUser._id !== this.props.currentUser._id) {
       this.props.dispatch({
-        type: 'tool/fetchAlimamaOrders',
+        type: 'tool/fetchAlimamaShops',
         payload: { user_id: nextProps.currentUser._id },
       });
     }
@@ -54,7 +54,7 @@ export default class AlimamaShopList extends PureComponent {
     }
 
     dispatch({
-      type: 'tool/fetchAlimamaOrders',
+      type: 'tool/fetchAlimamaShops',
       payload: params,
     });
   }
@@ -63,7 +63,7 @@ export default class AlimamaShopList extends PureComponent {
     this.setState({ selectedRowKeys, selectedRows });
   }
   handleSearch = (value, name) => {
-    const { dispatch, currentUser, alimamaOrders: { pagination } } = this.props;
+    const { dispatch, currentUser, alimamaShops: { pagination } } = this.props;
     const values = {
       user_id: currentUser._id,
       currentPage: pagination.current,
@@ -76,26 +76,28 @@ export default class AlimamaShopList extends PureComponent {
       values[name] = value;
     }
     dispatch({
-      type: 'tool/fetchAlimamaOrders',
+      type: 'tool/fetchAlimamaShops',
       payload: values,
     });
   }
 
   render() {
-    const { alimamaOrders, loading,  } = this.props;
+    const { alimamaShops, loading,  } = this.props;
 
     const columns = [
       {
         title: '店铺名称',
-        dataIndex: 'exShopTitle',
+        dataIndex: 'exNickName',
       },
       {
         title: '付款金额',
         dataIndex: 'totalAlipayFee',
+        render: (val) => val ? val.toFixed(2) : '',
       },
       {
         title: '效果预估',
         dataIndex: 'fee',
+        render: (val) => val ? val.toFixed(2) : '',
       },
     ];
     
@@ -125,15 +127,15 @@ export default class AlimamaShopList extends PureComponent {
         </div>
         <Table
           loading={loading}
-          dataSource={alimamaOrders.list}
+          dataSource={alimamaShops.list}
           columns={columns}
           pagination={{
             showSizeChanger: true,
             showQuickJumper: true,
-            ...alimamaOrders.pagination,
+            ...alimamaShops.pagination,
           }}
           onChange={this.handleStandardTableChange}
-          rowKey="auctionId"
+          rowKey="exMemberId"
         />
       </div>
     );
