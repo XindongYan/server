@@ -62,11 +62,16 @@ export default class AlimamaShopList extends PureComponent {
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     this.setState({ selectedRowKeys, selectedRows });
   }
+  handleChange = (e) => {
+    if (!e.target.value) {
+      this.handleSearch(e.target.value, 'search')
+    }
+  }
   handleSearch = (value, name) => {
     const { dispatch, currentUser, alimamaShops: { pagination } } = this.props;
     const values = {
       user_id: currentUser._id,
-      currentPage: pagination.current,
+      currentPage: 1,
       pageSize: pagination.pageSize,
     };
     if(name === 'time') {
@@ -121,6 +126,7 @@ export default class AlimamaShopList extends PureComponent {
           <Search
             style={{ width: 260, float: 'right'}}
             placeholder="店铺名称"
+            onChange={this.handleChange}
             onSearch={(value) => this.handleSearch(value, 'search')}
             enterButton
           />

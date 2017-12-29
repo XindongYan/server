@@ -15,7 +15,6 @@ const { RangePicker } = DatePicker;
 
 export default class AlimamaOrderList extends PureComponent {
   state = {
-    searchValue: '',
   };
 
   componentDidMount() {
@@ -37,7 +36,6 @@ export default class AlimamaOrderList extends PureComponent {
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, currentUser } = this.props;
-
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -59,12 +57,16 @@ export default class AlimamaOrderList extends PureComponent {
       payload: params,
     });
   }
-
+  handleChange = (e) => {
+    if (!e.target.value) {
+      this.handleSearch(e.target.value, 'search')
+    }
+  }
   handleSearch = (value, name) => {
     const { dispatch, currentUser, alimamaOrders: { pagination } } = this.props;
     const values = {
       user_id: currentUser._id,
-      currentPage: pagination.current,
+      currentPage: 1,
       pageSize: pagination.pageSize,
     };
     if(name === 'time') {
@@ -123,7 +125,7 @@ export default class AlimamaOrderList extends PureComponent {
           <Search
             style={{ width: 260, float: 'right'}}
             placeholder="商品／店铺名称"
-            onChange={(e) => {this.setState({ searchValue: e.target.value })}}
+            onChange={this.handleChange}
             onSearch={(value) => this.handleSearch(value, 'search')}
             enterButton
           />
