@@ -5,6 +5,7 @@ import { Card, Tabs, Modal, message, Button, Icon } from 'antd';
 import { Link } from 'dva/router';
 import AlimamaOrderList from './AlimamaOrderList';
 import AlimamaShopList from './AlimamaShopList';
+import styles from './AlimamaOrder.less';
 const TabPane = Tabs.TabPane;
 
 @connect(state => ({
@@ -15,23 +16,41 @@ export default class AlimamaOrder extends PureComponent {
   state = {
     nicaiCrx: null,
     visible: false,
+    version: '',
   }
   componentDidMount() {
+    setTimeout(() => {
+      if(!this.state.version){
+        message.destroy();
+        message.warn('请安装尼采创作平台插件！');
+      }
+    }, 3000);
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.addEventListener('setAlimamaInfo', this.setAlimamaInfo);
+    nicaiCrx.addEventListener('setVersion', this.setVersion);
     if (!this.state.nicaiCrx) {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
-          this.getAlimamaInfo();
+          this.handleGetVersion();
         }, 400);
       });
     }
   }
   componentWillUnmount() {
+    this.setState({
+      visible: false
+    })
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.removeEventListener('setAlimamaInfo', this.setAlimamaInfo);
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+
   }
 
+  handleGetVersion = () => {
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getVersion', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
   getAlimamaInfo = () => {
     this.state.nicaiCrx.innerText = '';
     const customEvent = document.createEvent('Event');
@@ -40,12 +59,18 @@ export default class AlimamaOrder extends PureComponent {
   }
   setAlimamaInfo = (e) => {
     const data = JSON.parse(e.target.innerText);
-    console.log(data);
     if (data.error) {
       this.setState({
         visible: true
       })
     }
+  }
+  setVersion = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    this.setState({
+      version: data,
+    })
+    this.getAlimamaInfo();
   }
   handleOk = () => {
     this.setState({
@@ -56,7 +81,7 @@ export default class AlimamaOrder extends PureComponent {
       title: '是否已成功登陆阿里妈妈网站',
       okText: '是的',
       onOk: () => {
-        location.reload();
+        this.getAlimamaInfo();
       },
       onCancel: () => {
         this.getAlimamaInfo();
@@ -65,8 +90,8 @@ export default class AlimamaOrder extends PureComponent {
   }
   render() {
     return (
-      <div id="alimama" style={{ position: 'relative' }}>
-        <Card bordered={false} bodyStyle={{ padding: 14 }}>
+      <div style={{ position: 'relative' }}>
+        <Card id="alimama" bordered={false} bodyStyle={{ padding: 14 }}>
           <Tabs
             defaultActiveKey="1"
           >
@@ -94,8 +119,9 @@ export default class AlimamaOrder extends PureComponent {
           ]}
           getContainer={() => {return document.getElementById('alimama')}}
           bodyStyle={{ border: 'none' }}
-          style={{ position: 'absolute', top: 150, right: 0, left: 0 }}
+          style={{ position: 'absolute', top: 200, right: 0, left: 0 }}
           maskStyle={{ position: 'absolute' }}
+          wrapClassName={styles.modalOuterBox}
         >
           <p style={{ fontSize: 16, height: 40, lineHeight: '40px' }}>
             <span>当前页面功能需要先登录阿里妈妈网站</span>
