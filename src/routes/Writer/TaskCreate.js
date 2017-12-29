@@ -424,7 +424,7 @@ export default class TaskCreate extends PureComponent {
           </div>
           <div className={styles.submitBox}>
             { query.project_id ?
-              <Popconfirm placement="top" title="确认已经写完并提交给审核人员?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
+              <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
                 <Button>提交审核</Button>
               </Popconfirm>
               :
@@ -433,7 +433,7 @@ export default class TaskCreate extends PureComponent {
             {/*
               <Button onClick={this.handleSave}>保存</Button>
             */}
-            <Popconfirm placement="top" title="确认已经写完并发布至阿里创作平台?" okText="确认" cancelText="取消" onConfirm={this.handlePublish}>
+            <Popconfirm placement="top" title="确认发布至阿里创作平台?" okText="确认" cancelText="取消" onConfirm={this.handlePublish}>
               <Button>发布</Button>
             </Popconfirm>
           </div>
