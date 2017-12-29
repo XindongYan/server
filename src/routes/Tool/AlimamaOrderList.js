@@ -15,7 +15,7 @@ const { RangePicker } = DatePicker;
 
 export default class AlimamaOrderList extends PureComponent {
   state = {
-
+    searchValue: '',
   };
 
   componentDidMount() {
@@ -121,7 +121,8 @@ export default class AlimamaOrderList extends PureComponent {
           <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
           <Search
             style={{ width: 260, float: 'right'}}
-            placeholder="名称／商家标签"
+            placeholder="商品／店铺名称"
+            onChange={(e) => {this.setState({ searchValue: e.target.value })}}
             onSearch={(value) => this.handleSearch(value, 'search')}
             enterButton
           />
