@@ -22,7 +22,7 @@ export default class CropperModal extends PureComponent {
     dataUrl: '',
     nicaiCrx: null,
     version: '',
-    uploading: false,
+    confirmLoading: false,
   }
   componentDidMount() {
   }
@@ -54,7 +54,7 @@ export default class CropperModal extends PureComponent {
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);
     if (!result.errorCode) {
-      this.setState({ uploading: false });
+      this.setState({ confirmLoading: false });
       message.destroy();
       message.success('上传成功');
       if (this.props.onOk) this.props.onOk(result.data[0].url);
@@ -78,8 +78,8 @@ export default class CropperModal extends PureComponent {
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleOk = () => {
-    if (this.state.dataUrl && !this.state.uploading) {
-      this.setState({ uploading: true });
+    if (this.state.dataUrl && !this.state.confirmLoading) {
+      this.setState({ confirmLoading: true });
       nicaiCrx.innerText = JSON.stringify({data: this.state.dataUrl});
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('uploadImg', true, true);
@@ -93,7 +93,8 @@ export default class CropperModal extends PureComponent {
     dispatch({
       type: 'album/hideCropper',
     });
-    this.setState({ dataUrl: '' });
+    message.destroy();
+    this.setState({ dataUrl: '', confirmLoading: false });
   }
 
   _crop = () => {
@@ -103,7 +104,7 @@ export default class CropperModal extends PureComponent {
   }
   render() {
     const { visible, minSize, src, aspectRatio, data, width, height, picWidth, picHeight, cropperKey } = this.props;
-    const { dataUrl } = this.state;
+    const { dataUrl, confirmLoading } = this.state;
     let rate = 1;
     // const frameWidth = (992-40) * 0.62;
     const frameHeight = 400;
@@ -121,6 +122,7 @@ export default class CropperModal extends PureComponent {
         onCancel={this.handleCancel}
         bodyStyle={{ padding: '5px 20px' }}
         maskClosable={false}
+        confirmLoading={confirmLoading}
       >
         {visible && <Cropper
           ref='cropper'
