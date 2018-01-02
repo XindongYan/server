@@ -329,8 +329,8 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a>发布</a>
               </Popconfirm>
-              <Divider type="vertical" />
-              <a onClick={() => this.handleShowPassModal(record)}>转交</a>
+              {!record.project_id && <Divider type="vertical" />}
+              {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
               <Divider type="vertical" />
               <TaskOperationRecord _id={record._id}>
                 <a>动态</a>
