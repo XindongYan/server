@@ -17,7 +17,7 @@ export default class AlimamaOrder extends PureComponent {
     nicaiCrx: null,
     visible: false,
     version: '',
-    alimamaUser: {
+    alimamaUser : {
       memberid: null,
       mmNick: '',
     },
@@ -118,12 +118,13 @@ export default class AlimamaOrder extends PureComponent {
     });
   }
   render() {
+    const { alimamaUser: { mmNick, memberid } } = this.state;
     return (
-      <div>
+      <div style={{ position: 'relative' }}>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <Tabs
             defaultActiveKey="1"
-            tabBarExtraContent={`数据来源于：${this.state.alimamaUser.mmNick}`}
+            tabBarExtraContent={mmNick ? `数据来源于：${mmNick}` : ''}
           >
             <TabPane tab="店铺" key="1">
               <AlimamaShopList memberid={this.state.alimamaUser.memberid}/>
@@ -137,7 +138,8 @@ export default class AlimamaOrder extends PureComponent {
             style={{ position: 'absolute', width: '100%', minHeight: '500px', top: 0, height: '100%', minHeight: '500px', display: this.state.visible ? 'block' : 'none' }}>
           </div>
         </Card>
-        <Modal
+        {/*
+          <Modal
           title={
             <span>
               <Icon type="warning" style={{ fontSize: 24, color: '#faad14', marginRight: 10 }} />
@@ -162,6 +164,20 @@ export default class AlimamaOrder extends PureComponent {
           </p>
           <p>点击确定去登录</p>
         </Modal>
+        */}
+        { this.state.visible &&
+          <div className={styles.modalOuterBox}>
+            <div className={styles.modalBox}>
+              <div className={styles.clearFix}>
+                <Icon type="warning" style={{ float: 'left', fontSize: 40, marginRight: 10, color: '#faad14', marginRight: 10 }} />
+                <span  style={{ float: 'left', display: 'inline-block', height: 40, fontSize: 18, lineHeight: '40px' }}>当前页面功能需要先登录阿里妈妈网站</span>
+              </div>
+              <div className={styles.modalButtonBox}>
+                <Button type="primary" onClick={this.handleOk}>去登陆</Button>
+              </div>
+            </div>
+          </div>
+        }
       </div>
     );
   }
