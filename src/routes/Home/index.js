@@ -23,7 +23,7 @@ export default class Home extends PureComponent {
   render() {
     return (
       <Card bordered={false} bodyStyle={{ padding: '50px 100px' }}>
-        下载插件：
+        尼采插件：
         <a href={`${ORIGIN}/nicaiCrx_v1.0.4.zip`} download="尼采插件_v1.0.4.zip">点击下载</a>
       </Card>
     );
