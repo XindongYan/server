@@ -265,6 +265,7 @@ export default class TableList extends PureComponent {
             {moment(val).format('MM/DD')}
           </Tooltip>
         ),
+        sorter: true,
       },
       {
         title: '发布渠道',
