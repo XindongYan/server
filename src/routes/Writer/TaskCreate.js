@@ -120,7 +120,6 @@ export default class TaskCreate extends PureComponent {
       type: 'task/add',
       payload: {
         ...payload,
-        approve_status: TASK_APPROVE_STATUS.taken,
       },
       callback: (result) => {
         if (result.error) {
@@ -134,6 +133,7 @@ export default class TaskCreate extends PureComponent {
               approve_status: TASK_APPROVE_STATUS.taken,
               publisher_id: currentUser._id,
               taker_id: currentUser._id,
+              take_time: new Date(),
             },
             callback: (result1) => {
               if (result1.error) {
@@ -248,6 +248,7 @@ export default class TaskCreate extends PureComponent {
         team_id: teamUser ? teamUser.team_id : null,
         publisher_id: currentUser._id,
         taker_id: currentUser._id,
+        take_time: new Date(),
         creator_id: currentUser._id,
         current_approvers: [ approver_id ],
         approvers: [ ...approvers ],
