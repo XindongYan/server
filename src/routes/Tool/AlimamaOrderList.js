@@ -116,17 +116,24 @@ export default class AlimamaOrderList extends PureComponent {
       },
       {
         title: '付款金额',
+        width: 100,
         dataIndex: 'totalAlipayFee',
         render: (val) => val.toFixed(2),
       },
       {
         title: '淘客佣金',
+        width: 90,
         dataIndex: 'fee',
         render: (val) => val.toFixed(2),
       },
       {
-        title: '店铺',
+        title: '所属店铺',
         dataIndex: 'exShopTitle',
+      },
+      {
+        title: '掌柜旺旺',
+        width: 100,
+        dataIndex: 'exNickName',
       },
     ];
     return (
