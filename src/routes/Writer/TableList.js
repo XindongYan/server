@@ -260,8 +260,8 @@ export default class TableList extends PureComponent {
       {
         title: '接单时间',
         dataIndex: 'take_time',
-        render: val =>
-          val ?
+        render: (val, record) =>
+          val && record.project_id ?
           <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
             {moment(val).format('MM/DD')}
           </Tooltip>

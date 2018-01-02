@@ -62,12 +62,10 @@ export default class TaskCreate extends PureComponent {
       payload: true,
     });
     if (query._id) {
-      console.log(1)
       this.props.dispatch({
         type: 'task/fetchTask',
         payload: { _id: query._id },
         callback: (result) => {
-          console.log(result)
           if (!result.error) {
             this.setState({
               task: {
@@ -179,7 +177,7 @@ export default class TaskCreate extends PureComponent {
     if(approver_id2){
       approvers.push(approver_id2);
     }
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(['approver', 'approver2'], (err, values) => {
       if (!err) {
         if (approver_id) {
           this.setState({ modalVisible: false });
