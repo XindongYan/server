@@ -67,15 +67,7 @@ export default class TaskEdit extends PureComponent {
   handleSubmit = () => {
     const { currentUser } = this.props;
     const { task } = this.state;
-    if (!task.title || !task.title.replace(/\s+/g, '')) {
-      message.warn('请填写标题');
-    } else if (task.title && task.title.length > 19) {
-      message.warn('标题字数不符合要求');
-    } else if (!task.task_desc) {
-      message.warn('请填写内容');
-    } else if (!task.cover_img && this.props.formData.task_type !== 3) {
-      message.warn('请选择封面图');
-    } else {
+    if (this.validate()) {
       const query = querystring.parse(this.props.location.search.substr(1));
       this.props.dispatch({
         type: 'task/update',
@@ -100,19 +92,39 @@ export default class TaskEdit extends PureComponent {
       });
     }
   }
+  validate = () => {
+    const { task } = this.state;
+    if (!task.title || !task.title.replace(/\s+/g, '')) {
+      message.warn('请填写标题');
+      return false;
+    } else if (task.title && task.title.length > 19) {
+      message.warn('标题字数不符合要求');
+      return false;
+    } else if (!task.task_desc) {
+      message.warn('请填写内容');
+      return false;
+    } else if (!task.cover_img && this.props.formData.task_type !== 3) {
+      message.warn('请选择封面图');
+      return false;
+    } else {
+      return true;
+    }
+  }
   handleSave = () => {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'task/update',
-      payload: { ...this.state.task, _id: query._id },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
+    if (this.validate()) {
+      const query = querystring.parse(this.props.location.search.substr(1));
+      this.props.dispatch({
+        type: 'task/update',
+        payload: { ...this.state.task, _id: query._id },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            message.success(result.msg);
+          }
         }
-      }
-    });
+      });
+    }
   }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });

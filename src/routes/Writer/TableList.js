@@ -214,34 +214,41 @@ export default class TableList extends PureComponent {
     const { dispatch, currentUser, data: { pagination } } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.setState({
-          modalLoading: true,
-        })
-        dispatch({
-          type: 'task/pass',
-          payload: {
-            phone: values.phone,
-            user_id: currentUser._id,
-            _id: this.state.selectedRowKeys[0],
-          },
-          callback: (result) => {
-            if (result.error) {
-              message.error(result.msg);
-            } else {
-              message.success(result.msg);
-              this.handleRowSelectChange([], []);
-              this.setState({
-                modalVisible: false,
-                modalLoading: false,
-              })
+        if (values.phone !== currentUser.phone) {
+          this.setState({
+            modalLoading: true,
+          })
+          dispatch({
+            type: 'task/pass',
+            payload: {
+              phone: values.phone,
+              user_id: currentUser._id,
+              _id: this.state.selectedRowKeys[0],
+            },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+                this.setState({
+                  modalLoading: false,
+                })
+              } else {
+                message.success(result.msg);
+                this.handleRowSelectChange([], []);
+                this.setState({
+                  modalVisible: false,
+                  modalLoading: false,
+                })
+              }
             }
-          }
-        })
+          });
+        } else {
+          message.warn('不能转交给自己');
+        }
       }
     });
   }
   render() {
-    const { data, loading, form: { getFieldDecorator }, suggestionUsers } = this.props;
+    const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
     const { modalVisible, selectedRowKeys } = this.state;
     const columns = [
       {
@@ -535,7 +542,7 @@ export default class TableList extends PureComponent {
                 onSearch={this.handlePassSearch}
                 onSelect={this.handlePassSelect}
               >
-                {suggestionUsers.map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+                {suggestionUsers.filter(item => item.phone !== currentUser.phone).map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
               </Select>
             )}
           </FormItem>
