@@ -286,6 +286,10 @@ export default class TaskCreate extends PureComponent {
   }
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
+    if (!this.state.task.title) {
+      message.warn('请填写标题');
+      return;
+    }
     if (query._id) {
       this.props.dispatch({
         type: 'task/update',

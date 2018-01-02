@@ -333,7 +333,7 @@ export default class TableList extends PureComponent {
                 外链
               </a>
               <Divider type="vertical" />
-              { record.publisher_id === record.taker_id._id ?
+              { !record.project_id ?
                 <Link to={`/writer/task/create?_id=${record._id}&channel_name=${record.channel_name || '直播脚本'}&task_type=${record.task_type || 1}`}>
                   <span>编辑</span>
                 </Link>
@@ -341,7 +341,7 @@ export default class TableList extends PureComponent {
                   <span>编辑</span>
                 </Link>
               }
-              {record.channel_name &&
+              { record.channel_name &&
                 <span>
                   <Divider type="vertical" />
                   <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
