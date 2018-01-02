@@ -10,6 +10,7 @@ import Login from '../routes/User/Login';
 import Register from '../routes/User/Register';
 import RegisterResult from '../routes/User/RegisterResult';
 
+import UserAgent from './UserAgent';
 const links = [{
   title: '帮助',
   href: '',
@@ -38,7 +39,7 @@ class UserLayout extends React.PureComponent {
     return title;
   }
   componentDidMount() {
-    
+
   }
   render() {
     return (
@@ -50,6 +51,7 @@ class UserLayout extends React.PureComponent {
                 <img alt="" className={styles.logo} src="" />
                 <span className={styles.title}>尼采创作平台</span>
               </Link>
+              <UserAgent />
             </div>
             <p className={styles.desc}>尼采创作平台</p>
           </div>
