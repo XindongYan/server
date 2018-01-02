@@ -82,14 +82,9 @@ export default class AlimamaOrder extends PureComponent {
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
-    if (data && data.length > 0) {
-      const arr = data.split('.');
-      const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
-      if (data < 104) { // 1.0.4
-        message.warn('插件版本较低，请更新！');
-      }
+    if (data !== '1.0.4') {
+      message.warn('插件版本较低，请更新！');
     }
-    
     this.setState({
       version: data,
     })
@@ -118,13 +113,13 @@ export default class AlimamaOrder extends PureComponent {
     });
   }
   render() {
-    const { alimamaUser: { mmNick, memberid } } = this.state;
+    const { alimamaUser } = this.state;
     return (
       <div style={{ position: 'relative' }}>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <Tabs
             defaultActiveKey="1"
-            tabBarExtraContent={mmNick ? `数据来源于：${mmNick}` : ''}
+            tabBarExtraContent={alimamaUser.mmNick ? `数据来源于：${alimamaUser.mmNick}` : ''}
           >
             <TabPane tab="店铺" key="1">
               <AlimamaShopList memberid={this.state.alimamaUser.memberid}/>
