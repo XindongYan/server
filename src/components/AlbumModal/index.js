@@ -129,6 +129,7 @@ export default class AlbumModal extends PureComponent {
     dispatch({
       type: 'album/hide',
     });
+    message.destroy();
     this.setState({ choosen: [] });
   }
   handleChoose = (photo) => {

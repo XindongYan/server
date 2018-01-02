@@ -93,6 +93,7 @@ export default class CropperModal extends PureComponent {
     dispatch({
       type: 'album/hideCropper',
     });
+    message.destroy();
     this.setState({ dataUrl: '' });
   }
 
