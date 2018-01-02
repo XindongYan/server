@@ -258,10 +258,21 @@ export default class TableList extends PureComponent {
         ),
       },
       {
-        title: '接单时间',
-        dataIndex: 'take_time',
-        render: (val, record) =>
-          val && record.project_id ?
+        title: '最后修改时间',
+        dataIndex: 'last_update_time',
+        render: (val) =>
+          val ?
+          <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+            {moment(val).fromNow()}
+          </Tooltip>
+          : '',
+        sorter: true,
+      },
+      {
+        title: '截止时间',
+        dataIndex: 'deadline',
+        render: (val) =>
+          val ?
           <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
             {moment(val).format('MM/DD')}
           </Tooltip>
