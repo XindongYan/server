@@ -112,6 +112,15 @@ export async function passTask(params) {
   });
 }
 
+export async function removeTask(params) {
+  return request('/api/task', {
+    method: 'DELETE',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }

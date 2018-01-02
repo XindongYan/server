@@ -301,6 +301,28 @@ export default class TableList extends PureComponent {
       },
     });
   }
+  handleRemove = (record) => {
+    const { dispatch, currentUser } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    dispatch({
+      type: 'task/remove',
+      payload: {
+        _id: record._id,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          dispatch({
+            type: 'task/fetchProjectTasks',
+            payload: { project_id: query.project_id },
+          });
+        }
+      },
+    });
+  }
   onSearch = (value) => {
     if (value.length == 11) {
       this.props.dispatch({
