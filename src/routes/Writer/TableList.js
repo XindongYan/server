@@ -265,9 +265,20 @@ export default class TableList extends PureComponent {
         ),
       },
       {
-        title: '接单时间',
-        dataIndex: 'take_time',
-        render: val =>
+        title: '最后修改时间',
+        dataIndex: 'last_update_time',
+        render: (val) =>
+          val ?
+          <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+            {moment(val).fromNow()}
+          </Tooltip>
+          : '',
+        sorter: true,
+      },
+      {
+        title: '截止时间',
+        dataIndex: 'deadline',
+        render: (val) =>
           val ?
           <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
             {moment(val).format('MM/DD')}
@@ -337,10 +348,14 @@ export default class TableList extends PureComponent {
                   <span>编辑</span>
                 </Link>
               }
-              <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                <a>发布</a>
-              </Popconfirm>
+              {record.channel_name &&
+                <span>
+                  <Divider type="vertical" />
+                  <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                    <a>发布</a>
+                  </Popconfirm>
+                </span>
+              }
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
               <Divider type="vertical" />
