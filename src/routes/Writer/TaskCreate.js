@@ -11,7 +11,6 @@ import MerchantTag from '../../components/Forms/MerchantTag';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
-
 import { queryConvertedTasks } from '../../services/task';
 
 const FormItem = Form.Item;
@@ -57,10 +56,31 @@ export default class TaskCreate extends PureComponent {
     suggestionUsers2: [],
   }
   componentDidMount() {
+    const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: true,
     });
+    if (query._id) {
+      console.log(1)
+      this.props.dispatch({
+        type: 'task/fetchTask',
+        payload: { _id: query._id },
+        callback: (result) => {
+          console.log(result)
+          if (!result.error) {
+            this.setState({
+              task: {
+                merchant_tag: result.task.merchant_tag,
+                title: result.task.title,
+                task_desc: result.task.task_desc,
+                cover_img: result.task.cover_img,
+              }
+            });
+          }
+        }
+      });
+    }
   }
   componentWillUnmount() {
     this.props.dispatch({
@@ -100,13 +120,7 @@ export default class TaskCreate extends PureComponent {
     //   message.warn('请填写商家标签');
     // } else 
     // this.refs.goodProductionForm.handleSubmit();
-    this.refs.goodProductionForm.getForm().validateFields({ force: true },
-      (err) => {
-        if (!err) {
-        }
-        console.log(this.state.haveGoodsTask)
-      }
-    );
+    
   }
   handleSubmitTask = () => {
     const { currentUser, teamUser } = this.props;
@@ -276,7 +290,7 @@ export default class TaskCreate extends PureComponent {
     if (query._id) {
       this.props.dispatch({
         type: 'task/update',
-        payload: { ...this.state.task, _id: query._id },
+        payload: { ...this.state.task, _id: query._id, name: this.state.task.title },
         callback: (result) => {
           if (result.error) {
             message.error(result.msg);
@@ -297,7 +311,6 @@ export default class TaskCreate extends PureComponent {
           channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
           task_type: query.task_type ? Number(query.task_type) : 1,
           team_id: teamUser ? teamUser.team_id : null,
-
           publisher_id: currentUser._id,
           publish_time: new Date(),
           taker_id: currentUser._id,
@@ -305,17 +318,19 @@ export default class TaskCreate extends PureComponent {
           creator_id: currentUser._id,
           daren_id: currentUser._id,
           daren_time: new Date(),
+          project_id: query.project_id || undefined,
         },
         callback: (result) => {
           if (result.error) {
             message.error(result.msg);
           } else {
             message.success(result.msg);
+            query._id = result.task._id;
+            this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
           }
         },
       });
     }
-    
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;

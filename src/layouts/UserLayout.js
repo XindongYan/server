@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, Route, Switch, Redirect } from 'dva/router';
 import DocumentTitle from 'react-document-title';
-import { Icon } from 'antd';
+import { Icon, Modal } from 'antd';
 import GlobalFooter from '../components/GlobalFooter';
 import styles from './UserLayout.less';
 
@@ -36,6 +36,20 @@ class UserLayout extends React.PureComponent {
     // const { pathname } = location;
     const title = '尼采创作平台';
     return title;
+  }
+  componentDidMount() {
+    if (navigator.userAgent.indexOf('Chrome') === -1) {
+        Modal.warning({
+          title: '当前的浏览器版本可能存在兼容性问题，需要使用Chrome',
+      });
+    } else {
+      var userAgent = navigator.userAgent.substring(navigator.userAgent.indexOf('Chrome')+7,navigator.userAgent.indexOf('Chrome')+9);
+      if (Number(userAgent) < 59) {
+        Modal.warning({
+          title: '当前的浏览器版本过低，需要升级',
+        });
+      }
+    }
   }
   render() {
     return (

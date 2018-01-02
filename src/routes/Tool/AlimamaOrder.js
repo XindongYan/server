@@ -17,6 +17,7 @@ export default class AlimamaOrder extends PureComponent {
     nicaiCrx: null,
     visible: false,
     version: '',
+    visibleChoose: '',
     alimamaUser : {
       memberid: null,
       mmNick: '',
@@ -92,30 +93,28 @@ export default class AlimamaOrder extends PureComponent {
   }
   handleOk = () => {
     const { currentUser } = this.props;
-    currentUser
-    this.setState({
-      visible: false
-    })
     window.open('http://pub.alimama.com/myunion.htm?spm=a219t.7900221/1.1998910419.db9f5f632.6cc0f2fbJH3A8I#!/report/detail/taoke');
-    Modal.confirm({
-      title: '是否已成功登陆阿里妈妈网站',
-      okText: '是的',
-      onOk: () => {
-        this.getAlimamaInfo();
-        this.props.dispatch({
-          type: 'tool/fetchAlimamaShops',
-          payload: { user_id: currentUser._id },
-        });
-      },
-      onCancel: () => {
-        this.getAlimamaInfo();
-      },
+    this.setState({
+      visible: false,
+      visibleChoose: true,
+    })
+  }
+
+  handleLoginOk = () => {
+    const { currentUser } = this.props;
+    this.getAlimamaInfo();
+    this.setState({
+      visibleChoose: false,
+    });
+    this.props.dispatch({
+      type: 'tool/fetchAlimamaShops',
+      payload: { user_id: currentUser._id },
     });
   }
   render() {
     const { alimamaUser } = this.state;
     return (
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', minHeight: '400px' }}>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <Tabs
             defaultActiveKey="1"
@@ -165,10 +164,23 @@ export default class AlimamaOrder extends PureComponent {
             <div className={styles.modalBox}>
               <div className={styles.clearFix}>
                 <Icon type="warning" style={{ float: 'left', fontSize: 40, marginRight: 10, color: '#faad14', marginRight: 10 }} />
-                <span  style={{ float: 'left', display: 'inline-block', height: 40, fontSize: 18, lineHeight: '40px' }}>当前页面功能需要先登录阿里妈妈网站</span>
+                <span style={{ float: 'left', display: 'inline-block', height: 40, fontSize: 18, lineHeight: '40px' }}>当前页面功能需要先登录阿里妈妈网站</span>
               </div>
               <div className={styles.modalButtonBox}>
                 <Button type="primary" onClick={this.handleOk}>去登陆</Button>
+              </div>
+            </div>
+          </div>
+        }
+        { this.state.visibleChoose &&
+          <div className={styles.modalOuterBox}>
+            <div className={styles.modalBox}>
+              <div className={styles.clearFix}>
+                <span style={{ float: 'left', display: 'inline-block', height: 40, fontSize: 18, lineHeight: '40px' }}>是否已成功登陆阿里妈妈网站</span>
+              </div>
+              <div className={styles.modalButtonBox}>
+                <Button type="primary" onClick={this.handleLoginOk} style={{ marginRight: 20 }}>否</Button>
+                <Button type="primary" onClick={this.handleLoginOk}>是的</Button>
               </div>
             </div>
           </div>
