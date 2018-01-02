@@ -334,21 +334,17 @@ export default class TableList extends PureComponent {
               </a>
               <Divider type="vertical" />
               { record.publisher_id === record.taker_id._id ?
-                <Link to={`/writer/task/create?_id=${record._id}&channel_name=${record.channel_name || '直播脚本'}&task_type=${record.channel_name ? 1 : 3}`}>
+                <Link to={`/writer/task/create?_id=${record._id}&channel_name=${record.channel_name || '直播脚本'}&task_type=${record.task_type || 1}`}>
                   <span>编辑</span>
                 </Link>
                 : <Link to={`/writer/task/edit?_id=${record._id}`}>
                   <span>编辑</span>
                 </Link>
               }
-              {record.channel_name &&
-                <span>
-                  <Divider type="vertical" />
-                  <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                    <a>发布</a>
-                  </Popconfirm>
-                </span>
-              }
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                <a>发布</a>
+              </Popconfirm>
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
               <Divider type="vertical" />
