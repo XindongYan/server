@@ -29,7 +29,6 @@ import ApproverTaskView from '../routes/Approver/TaskView';
 import { getNavData } from '../common/nav';
 import { getRouteData } from '../utils/utils';
 
-import UserAgent from './UserAgent'
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -338,7 +337,6 @@ class BasicLayout extends React.PureComponent {
               onClick={this.toggle}
             />
             <div className={styles.right}>
-              <UserAgent />
               { /* <HeaderSearch
                 className={`${styles.action} ${styles.search}`}
                 placeholder="站内搜索"
