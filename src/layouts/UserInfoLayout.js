@@ -8,7 +8,6 @@ import UserInfo from '../routes/User/UserInfo';
 import UserPassWord from '../routes/User/UserPassWord';
 import ToBind from '../routes/User/ToBind';
 import BindSuccess from '../routes/User/BindSuccess';
-import UserAgent from './UserAgent';
 
 class UserInfoLayout extends React.PureComponent {
   static childContextTypes = {
@@ -29,7 +28,6 @@ class UserInfoLayout extends React.PureComponent {
     return (
       <DocumentTitle title={this.getPageTitle()}>
         <div className={styles.container}>
-          <UserAgent />
           <Switch>
             <Route key="setting" path="/setting/userInfo" component={UserInfo} />
             <Route key="password" path="/setting/password" component={UserPassWord} />
