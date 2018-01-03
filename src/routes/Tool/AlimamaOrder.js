@@ -41,6 +41,7 @@ export default class AlimamaOrder extends PureComponent {
       });
     }
     if (this.props.currentUser._id && this.props.currentUser.alimama) {
+      console.log(this.props.currentUser.alimama)
       this.setState({ alimamaUser: this.props.currentUser.alimama[0] });
     }
   }

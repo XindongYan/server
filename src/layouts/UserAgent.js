@@ -13,9 +13,12 @@ export default class UserAgent extends PureComponent {
         visible: true,
       })
     } else {
-      this.setState({
-        lowerVisible: true,
-      })
+      var userAgent = navigator.userAgent.substring(navigator.userAgent.indexOf('Chrome')+7,navigator.userAgent.indexOf('Chrome')+9);
+      if (Number(userAgent) < 59) {
+        this.setState({
+          lowerVisible: true,
+        })
+      }
     }
   }
   componentWillReceiveProps(nextProps) {
