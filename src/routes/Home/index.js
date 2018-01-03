@@ -31,7 +31,7 @@ export default class Home extends PureComponent {
           (要求:运行插件的chrome浏览器版本必须 >= 59.0)
         </div>
         <div style={{ marginTop: 10 }}>
-          <p><a href={`${ORIGIN}/nicaiTeach.rtf`} download="插件安装使用说明.rtf">#点击查看插件安装步骤#</a></p>
+          <p><a href={`${ORIGIN}/nicaiTeach.pdf`} target="_blank">#点击查看插件安装步骤#</a></p>
         </div>
       </Card>
     );

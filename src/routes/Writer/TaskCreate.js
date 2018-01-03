@@ -79,6 +79,17 @@ export default class TaskCreate extends PureComponent {
         }
       });
     }
+    if (query.channel_name === '有好货') {
+      const fieldsValue = {
+        title: this.props.formData.title,
+        task_desc: this.props.formData.task_desc,
+        industry_title: this.props.formData.industry_title,
+        industry_introduction: this.props.formData.industry_introduction,
+        brand_name: this.props.formData.brand_name,
+        brand_introduction: this.props.formData.brand_introduction,
+      };
+      this.props.form.setFieldsValue(fieldsValue);
+    }
   }
   componentWillUnmount() {
     this.props.dispatch({
@@ -103,7 +114,10 @@ export default class TaskCreate extends PureComponent {
   }
   handleShowModalGoods = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { haveGoodsTask } = this.state;
+    // const { haveGoodsTask } = this.state;
+    this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
+
+    })
     // if (!task.merchant_tag) {
     //   message.warn('请填写商家标签');
     // } else 
@@ -372,6 +386,7 @@ export default class TaskCreate extends PureComponent {
             }
             { query.channel_name === '有好货' &&
               <GoodProductionForm
+                form={this.props.form}
                 role="writer"
                 operation="create"
                 formData={haveGoodsTask}

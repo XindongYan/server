@@ -7,8 +7,6 @@ import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from '../Forms/CascaderSelect';
 
 const FormItem = Form.Item;
-@Form.create()
-
 @connect(state => ({
 
 }))
@@ -24,9 +22,9 @@ export default class GoodProductionForm extends PureComponent {
     k: '',
   }
   componentDidMount() {
-    const fieldsValue = {
-      title: this.props.formData.title,
-      task_desc: this.props.formData.task_desc,
+    // const fieldsValue = {
+      // title: this.props.formData.title,
+      // task_desc: this.props.formData.task_desc,
       // merchant_tag: this.props.formData.merchant_tag,
       // product_url: this.props.formData.product_url,
       // product_img: this.props.formData.product_img,
@@ -35,14 +33,14 @@ export default class GoodProductionForm extends PureComponent {
       // white_bg_img: this.props.formData.white_bg_img,
       // long_advantage: this.props.formData.long_advantage,
       // short_advantage: this.props.formData.short_advantage,
-      industry_title: this.props.formData.industry_title,
-      industry_introduction: this.props.formData.industry_introduction,
+      // industry_title: this.props.formData.industry_title,
+      // industry_introduction: this.props.formData.industry_introduction,
       // industry_img: this.props.formData.industry_img,
-      brand_name: this.props.formData.brand_name,
-      brand_introduction: this.props.formData.brand_introduction,
+      // brand_name: this.props.formData.brand_name,
+      // brand_introduction: this.props.formData.brand_introduction,
       // brand_logo: this.props.formData.brand_logo,
-    };
-    this.props.form.setFieldsValue(fieldsValue);
+    // };
+    // this.props.form.setFieldsValue(fieldsValue);
   }
   componentWillReceiveProps(nextProps) {
     
