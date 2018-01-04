@@ -5,6 +5,7 @@ import styles from './WeitaoForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
+import CascaderSelect from '../Forms/CascaderSelect';
 
 @connect(state => ({
 
@@ -28,6 +29,11 @@ export default class WeitaoForm extends PureComponent {
   }
   handleTitleChange = (e) => {
     if (this.props.onChange) this.props.onChange({ title: e.target.value });
+  }
+  handleTaskChange = (value, key) => {
+    const data = {};
+    data[key] = value;
+    if (this.props.onChange) this.props.onChange(data);
   }
   handleCropCoverImg = (imgs) => {
     if (imgs[0]) {
@@ -79,6 +85,10 @@ export default class WeitaoForm extends PureComponent {
               <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
+            <div style={{ background: '#fff', padding: '20px 10px' }}>
+              <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
+            </div>
+
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
               <p>封面图</p>
               <div className={styles.coverPicBox}>

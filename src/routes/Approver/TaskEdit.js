@@ -26,6 +26,7 @@ const FormItem = Form.Item;
 export default class TaskEdit extends PureComponent {
   state = {
     task: {
+      crowd: [],
       title: '',
       task_desc: '',
       cover_img: '',
@@ -65,6 +66,7 @@ export default class TaskEdit extends PureComponent {
         if (!result.error) {
           this.setState({
             task: {
+              crowd: result.task.crowd,
               title: result.task.title,
               task_desc: result.task.task_desc,
               cover_img: result.task.cover_img,

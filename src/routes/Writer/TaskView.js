@@ -19,6 +19,7 @@ import styles from './TableList.less';
 export default class TaskView extends PureComponent {
   state = {
     task: {
+      crowd: [],
       title: '',
       task_desc: '',
       cover_img: '',
@@ -58,6 +59,7 @@ export default class TaskView extends PureComponent {
   componentWillReceiveProps(nextProps) {
     this.setState({
       task: {
+        crowd: nextProps.formData.crowd,
         title: nextProps.formData.title,
         task_desc: nextProps.formData.task_desc,
         cover_img: nextProps.formData.cover_img,
