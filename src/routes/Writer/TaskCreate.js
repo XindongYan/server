@@ -124,7 +124,7 @@ export default class TaskCreate extends PureComponent {
       let bOk = true;
       this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
         if (!err) {
-          if (!haveGoodsTask.merchant_tag) {
+          if (!task.merchant_tag) {
             message.warn('请填写商家标签');
             bOk = false;
           } else if (!haveGoodsTask.product_url) {

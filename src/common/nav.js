@@ -66,7 +66,7 @@ const creation = {
 };
 
 const project = {
-  name: '活动创建',
+  name: '活动',
   path: 'project',
   icon: 'file',
   children: [{

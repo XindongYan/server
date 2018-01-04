@@ -336,7 +336,7 @@ export default class TableList extends PureComponent {
         if (record.approve_status === TASK_APPROVE_STATUS.taken) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -367,7 +367,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -383,7 +383,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -399,7 +399,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -415,7 +415,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -431,7 +431,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
               <Divider type="vertical" />
