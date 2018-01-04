@@ -2,21 +2,24 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
-import { Card, Button, Popconfirm, message } from 'antd';
+import { Card, Button, Popconfirm, message, Form } from 'antd';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import $ from 'jquery';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
+import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
 // import styles from './Project.less';
+const FormItem = Form.Item;
 
 @connect(state => ({
   formData: state.task.formData,
   currentUser: state.user.currentUser,
 }))
+@Form.create()
 
 export default class TaskEdit extends PureComponent {
   state = {
@@ -25,6 +28,23 @@ export default class TaskEdit extends PureComponent {
       task_desc: '',
       cover_img: '',
       approve_notes: [],
+    },
+    haveGoodsTask: {
+      crowd: [],
+      title: '',
+      task_desc: '',
+      product_url: '', // 商品图片
+      product_img: '', // 商品图片
+      cover_imgs: [], // 封面图
+      white_bg_img: '', // 白底图
+      long_advantage: [], // 亮点
+      short_advantage: [], // 短亮点
+      industry_title: '', // 行业标题
+      industry_introduction: '', // 行业介绍
+      industry_img: '', // 行业图
+      brand_name: '', // 品牌名称
+      brand_introduction: '', // 品牌介绍
+      brand_logo: '', // 商品logo
     },
     grade: 0,
     grades: [],
@@ -43,6 +63,7 @@ export default class TaskEdit extends PureComponent {
               cover_img: result.task.cover_img,
               approve_notes: result.task.approve_notes || [],
             },
+            haveGoodsTask: result.task.haveGoods,
             grade: result.task.grade,
             grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
           });
@@ -65,13 +86,21 @@ export default class TaskEdit extends PureComponent {
     });
   }
   handleSubmit = () => {
-    const { currentUser } = this.props;
-    const { task } = this.state;
+    const { currentUser, formData } = this.props;
+    const { task, haveGoodsTask } = this.state;
     if (this.validate()) {
       const query = querystring.parse(this.props.location.search.substr(1));
+      const values = {
+        ...this.state.task,
+        haveGoods: this.state.haveGoodsTask,
+        _id: query._id,
+      }
+      if (!formData.project_id) {
+        values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
+      }
       this.props.dispatch({
         type: 'task/update',
-        payload: { ...this.state.task, _id: query._id },
+        payload: values,
         callback: (result) => {
           if (result.error) {
             message.error(result.msg);
@@ -93,29 +122,48 @@ export default class TaskEdit extends PureComponent {
     }
   }
   validate = () => {
-    const { task } = this.state;
-    if (!task.title || !task.title.replace(/\s+/g, '')) {
-      message.warn('请填写标题');
-      return false;
-    } else if (task.title && task.title.length > 19) {
-      message.warn('标题字数不符合要求');
-      return false;
-    } else if (!task.task_desc) {
-      message.warn('请填写内容');
-      return false;
-    } else if (!task.cover_img && this.props.formData.task_type !== 3) {
-      message.warn('请选择封面图');
-      return false;
+    const { task, haveGoodsTask } = this.state;
+    if (this.props.formData.channel_name === '有好货') {
+      if (!haveGoodsTask.title || !haveGoodsTask.title.replace(/\s+/g, '')) {
+        message.warn('请填写标题');
+        return false;
+      } else {
+        return true;
+      }
     } else {
-      return true;
+      if (!task.title || !task.title.replace(/\s+/g, '')) {
+        message.warn('请填写标题');
+        return false;
+      } else if (task.title && task.title.length > 19) {
+        message.warn('标题字数不符合要求');
+        return false;
+      } else if (!task.task_desc) {
+        message.warn('请填写内容');
+        return false;
+      } else if (!task.cover_img && this.props.formData.task_type !== 3) {
+        message.warn('请选择封面图');
+        return false;
+      } else {
+        return true;
+      }
     }
   }
   handleSave = () => {
+    const { formData } = this.props;
+    const { task, haveGoodsTask } = this.state;
     if (this.validate()) {
       const query = querystring.parse(this.props.location.search.substr(1));
+      const values = {
+        ...this.state.task,
+        haveGoods: this.state.haveGoodsTask,
+        _id: query._id,
+      }
+      if (!formData.project_id) {
+        values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
+      }
       this.props.dispatch({
         type: 'task/update',
-        payload: { ...this.state.task, _id: query._id },
+        payload: values,
         callback: (result) => {
           if (result.error) {
             message.error(result.msg);
@@ -129,9 +177,13 @@ export default class TaskEdit extends PureComponent {
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });
   }
+  handleChangeGoods = (task) => {
+    this.setState({ haveGoodsTask: { ...this.state.haveGoodsTask, ...task } });
+  }
   render() {
     // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
     const { formData } = this.props;
+    const { haveGoodsTask } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
@@ -151,6 +203,15 @@ export default class TaskEdit extends PureComponent {
                 operation="edit"
                 formData={this.state.task}
                 onChange={this.handleChange}
+              />
+            }
+            { formData.channel_name === '有好货' &&
+              <GoodProductionForm
+                form={this.props.form}
+                role="writer"
+                operation="edit"
+                formData={haveGoodsTask}
+                onChange={this.handleChangeGoods}
               />
             }
           </div>

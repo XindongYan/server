@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
-import { Card, Button, Popconfirm, message, Modal, Form, Select, Input } from 'antd';
+import { Card, Button, Popconfirm, message, Modal, Form, Select, Input, Tooltip } from 'antd';
 import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
@@ -25,18 +25,19 @@ const Option = Select.Option;
 export default class TaskCreate extends PureComponent {
   state = {
     task: {
+      crowd: [],
       title: '',
       task_desc: '',
       cover_img: '',
       merchant_tag: '',
     },
     haveGoodsTask: {
+      crowd: [],
       title: '',
       task_desc: '',
       merchant_tag: '',
       product_url: '', // 商品图片
       product_img: '', // 商品图片
-      target_population: '', // 目标人群
       cover_imgs: [], // 封面图
       white_bg_img: '', // 白底图
       long_advantage: [], // 亮点
@@ -67,28 +68,30 @@ export default class TaskCreate extends PureComponent {
         payload: { _id: query._id },
         callback: (result) => {
           if (!result.error) {
-            this.setState({
-              task: {
-                merchant_tag: result.task.merchant_tag,
-                title: result.task.title,
-                task_desc: result.task.task_desc,
-                cover_img: result.task.cover_img,
-              }
-            });
+            if (result.task.channel_name === '微淘' || result.task.channel_name === '淘宝头条') {
+              this.setState({
+                task: {
+                  crowd: result.task.crowd,
+                  merchant_tag: result.task.merchant_tag,
+                  title: result.task.title,
+                  task_desc: result.task.task_desc,
+                  cover_img: result.task.cover_img,
+                }
+              });
+            } else if (result.task.channel_name === '有好货') {
+              this.setState({
+                haveGoodsTask: { ...result.task.haveGoods, merchant_tag: result.task.merchant_tag }
+              },() => {
+                this.handleCreatGoodForm();
+              });
+            }
           }
         }
       });
-    }
-    if (query.channel_name === '有好货') {
-      const fieldsValue = {
-        title: this.props.formData.title,
-        task_desc: this.props.formData.task_desc,
-        industry_title: this.props.formData.industry_title,
-        industry_introduction: this.props.formData.industry_introduction,
-        brand_name: this.props.formData.brand_name,
-        brand_introduction: this.props.formData.brand_introduction,
-      };
-      this.props.form.setFieldsValue(fieldsValue);
+    } else {
+      if (query.channel_name === '有好货') {
+        this.handleCreatGoodForm();
+      }
     }
   }
   componentWillUnmount() {
@@ -97,32 +100,46 @@ export default class TaskCreate extends PureComponent {
       payload: false,
     });
   }
+
+  handleCreatGoodForm = () => {
+    const fieldsValue = {
+      title: this.state.haveGoodsTask.title,
+      task_desc: this.state.haveGoodsTask.task_desc,
+      industry_title: this.state.haveGoodsTask.industry_title,
+      industry_introduction: this.state.haveGoodsTask.industry_introduction,
+      brand_name: this.state.haveGoodsTask.brand_name,
+      brand_introduction: this.state.haveGoodsTask.brand_introduction,
+    };
+    this.props.form.setFieldsValue(fieldsValue);
+  }
   handleShowAddTeamUserModal = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     if (query.channel_name === '有好货') {
       this.handleShowModalGoods();
-      return false;
-    }
-    const { task } = this.state;
-    if (this.validate()) {
-      if (query.project_id) {
-        this.handleSubmitTask();
-      } else {
-        this.setState({ modalVisible: true, });
+    } else {
+      const { task } = this.state;
+      if (this.validate()) {
+        if (query.project_id) {
+          this.handleSubmitTask();
+        } else {
+          this.setState({ modalVisible: true, });
+        }
       }
     }
   }
   handleShowModalGoods = () => {
+    const haveGoodsTask = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     // const { haveGoodsTask } = this.state;
     this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
-
+      if (!err && this.havegoodValidate()) {
+        if (query.project_id) {
+          this.handleSubmitHaveGoods();
+        } else {
+          this.setState({ modalVisible: true, });
+        }
+      }
     })
-    // if (!task.merchant_tag) {
-    //   message.warn('请填写商家标签');
-    // } else 
-    // this.refs.goodProductionForm.handleSubmit();
-    
   }
   validate = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -146,55 +163,37 @@ export default class TaskCreate extends PureComponent {
       return true;
     }
   }
-  handleSubmitTask = () => {
-    const { currentUser, teamUser } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    const payload = {
-      name: this.state.task.title,
-      project_id: query.project_id,
-      creator_id: currentUser._id,
-    };
-    this.props.dispatch({
-      type: 'task/add',
-      payload: {
-        ...payload,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/update',
-            payload: {
-              ...this.state.task,
-              _id: result.task._id,
-              approve_status: TASK_APPROVE_STATUS.taken,
-              publisher_id: currentUser._id,
-              taker_id: currentUser._id,
-              take_time: new Date(),
-            },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                this.props.dispatch({
-                  type: 'task/handin',
-                  payload: { _id: result.task._id, user_id: currentUser._id },
-                  callback: (result2) => {
-                    if (result2.error) {
-                      message.error(result2.msg);
-                    } else {
-                      message.success(result2.msg);
-                      this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
-                    }
-                  }
-                });
-              }
-            }
-          });
-        }
-      },
-    });
+  havegoodValidate = () => {
+    // product_url: '', // 商品图片
+      // product_img: '', // 商品图片
+    const { haveGoodsTask } = this.state;
+    if (!haveGoodsTask.merchant_tag) {
+      message.warn('请填写商家标签');
+      return false;
+    } else if (!haveGoodsTask.product_url) {
+      message.warn('请选择商品宝贝');
+      return false;
+    } else if (!haveGoodsTask.cover_imgs || haveGoodsTask.cover_imgs.length < 3) {
+      message.warn('请选择至少三张封面图');
+      return false;
+    } else if (!haveGoodsTask.white_bg_img) {
+      message.warn('请选择一张白底图');
+      return false;
+    } else if (!haveGoodsTask.long_advantage || haveGoodsTask.long_advantage.length < 2) {
+      message.warn('请输入至少2条长亮点');
+      return false;
+    } else if (!haveGoodsTask.short_advantage || haveGoodsTask.short_advantage.length < 2) {
+      message.warn('请输入至少2条短亮点');
+      return false;
+    } else if (!haveGoodsTask.industry_img) {
+      message.warn('请选择一张行业配图');
+      return false;
+    } else if (!haveGoodsTask.brand_logo) {
+      message.warn('请上传品牌logo');
+      return false;
+    } else {
+      return true;
+    }
   }
   handleSpecifyApprover = () => {
     const { dispatch } = this.props;
@@ -273,46 +272,84 @@ export default class TaskCreate extends PureComponent {
   }
   handleSubmit = (approvers) => {
     const { currentUser, teamUser } = this.props;
-    const { task, approver_id } = this.state;
+    const { task, haveGoodsTask, approver_id } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'task/addByWriter',
-      payload: {
-        ...this.state.task,
-        name: task.title,
-        approve_status: TASK_APPROVE_STATUS.taken,
-        channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
-        task_type: query.task_type ? Number(query.task_type) : 1,
-        team_id: teamUser ? teamUser.team_id : null,
-        publisher_id: currentUser._id,
-        taker_id: currentUser._id,
-        take_time: new Date(),
-        creator_id: currentUser._id,
-        current_approvers: [ approver_id ],
-        approvers: [ ...approvers ],
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/handin',
-            payload: { _id: result.task._id, user_id: currentUser._id },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
+    if (query.channel_name === '有好货') {
+      this.props.dispatch({
+        type: 'task/addByWriter',
+        payload: {
+          haveGoods: haveGoodsTask,
+          merchant_tag: haveGoodsTask.merchant_tag,
+          name: haveGoodsTask.title,
+          approve_status: TASK_APPROVE_STATUS.taken,
+          channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+          task_type: query.task_type ? Number(query.task_type) : 1,
+          team_id: teamUser ? teamUser.team_id : null,
+          publisher_id: currentUser._id,
+          taker_id: currentUser._id,
+          take_time: new Date(),
+          creator_id: currentUser._id,
+          current_approvers: [ approver_id ],
+          approvers: [ ...approvers ],
+        },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/handin',
+              payload: { _id: result.task._id, user_id: currentUser._id },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
+                }
               }
-            }
-          });
-        }
-      },
-    });
+            });
+          }
+        },
+      });
+    } else {
+      this.props.dispatch({
+        type: 'task/addByWriter',
+        payload: {
+          ...this.state.task,
+          name: task.title,
+          approve_status: TASK_APPROVE_STATUS.taken,
+          channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+          task_type: query.task_type ? Number(query.task_type) : 1,
+          team_id: teamUser ? teamUser.team_id : null,
+          publisher_id: currentUser._id,
+          taker_id: currentUser._id,
+          take_time: new Date(),
+          creator_id: currentUser._id,
+          current_approvers: [ approver_id ],
+          approvers: [ ...approvers ],
+        },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/handin',
+              payload: { _id: result.task._id, user_id: currentUser._id },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
+                }
+              }
+            });
+          }
+        },
+      });
+    }
   }
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    if (this.validate()) {
+    if (query.channel_name !== '有好货' && this.validate()) {
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
@@ -357,7 +394,164 @@ export default class TaskCreate extends PureComponent {
           },
         });
       }
+    } else if (query.channel_name === '有好货') {
+      if (query._id) {
+        if (!this.state.haveGoodsTask.title) {
+          message.warn('请输入标题')
+          return false;
+        }
+        this.props.dispatch({
+          type: 'task/update',
+          payload: {
+            haveGoods: this.state.haveGoodsTask,
+            _id: query._id,
+            name: this.state.haveGoodsTask.title,
+            merchant_tag: this.state.haveGoodsTask.merchant_tag,
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              message.success(result.msg);
+            }
+          }
+        });
+      } else {
+        const { currentUser, teamUser } = this.props;
+        const { task, approver_id } = this.state;
+        this.props.dispatch({
+          type: 'task/addByWriter',
+          payload: {
+            merchant_tag: this.state.haveGoodsTask.merchant_tag,
+            haveGoods: this.state.haveGoodsTask,
+            name: this.state.haveGoodsTask.title,
+            approve_status: TASK_APPROVE_STATUS.taken,
+            channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+            task_type: query.task_type ? Number(query.task_type) : 1,
+            team_id: teamUser ? teamUser.team_id : null,
+            publisher_id: currentUser._id,
+            publish_time: new Date(),
+            taker_id: currentUser._id,
+            take_time: new Date(),
+            creator_id: currentUser._id,
+            daren_id: currentUser._id,
+            daren_time: new Date(),
+            project_id: query.project_id || undefined,
+          },
+          callback: (result) => {
+            console.log(result)
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              message.success(result.msg);
+              query._id = result.task._id;
+              this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
+            }
+          },
+        });
+      }
     }
+  }
+  handleSubmitTask = () => {
+    const { currentUser, teamUser } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const payload = {
+      name: this.state.task.title,
+      project_id: query.project_id,
+      creator_id: currentUser._id,
+    };
+    this.props.dispatch({
+      type: 'task/add',
+      payload: {
+        ...payload,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          this.props.dispatch({
+            type: 'task/update',
+            payload: {
+              ...this.state.task,
+              _id: result.task._id,
+              approve_status: TASK_APPROVE_STATUS.taken,
+              publisher_id: currentUser._id,
+              taker_id: currentUser._id,
+              take_time: new Date(),
+            },
+            callback: (result1) => {
+              if (result1.error) {
+                message.error(result1.msg);
+              } else {
+                this.props.dispatch({
+                  type: 'task/handin',
+                  payload: { _id: result.task._id, user_id: currentUser._id },
+                  callback: (result2) => {
+                    if (result2.error) {
+                      message.error(result2.msg);
+                    } else {
+                      message.success(result2.msg);
+                      this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
+                    }
+                  }
+                });
+              }
+            }
+          });
+        }
+      },
+    });
+  }
+  //有好货
+  handleSubmitHaveGoods = () => {
+    const { currentUser, teamUser } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const payload = {
+      name: this.state.haveGoodsTask.title,
+      project_id: query.project_id,
+      creator_id: currentUser._id,
+    };
+    this.props.dispatch({
+      type: 'task/add',
+      payload: {
+        ...payload,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          this.props.dispatch({
+            type: 'task/update',
+            payload: {
+              haveGoods: this.state.haveGoodsTask,
+              _id: result.task._id,
+              approve_status: TASK_APPROVE_STATUS.taken,
+              publisher_id: currentUser._id,
+              taker_id: currentUser._id,
+              take_time: new Date(),
+            },
+            callback: (result1) => {
+              if (result1.error) {
+                message.error(result1.msg);
+              } else {
+                this.props.dispatch({
+                  type: 'task/handin',
+                  payload: { _id: result.task._id, user_id: currentUser._id },
+                  callback: (result2) => {
+                    if (result2.error) {
+                      message.error(result2.msg);
+                    } else {
+                      message.success(result2.msg);
+                      this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
+                    }
+                  }
+                });
+              }
+            }
+          });
+        }
+      },
+    });
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;
@@ -367,7 +561,7 @@ export default class TaskCreate extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
           <div style={{ width: 720 }}>
-            <MerchantTag merchant_tag={task.merchant_tag} onChange={this.handleChange} />
+            <MerchantTag merchant_tag={ query.channel_name === '有好货' ? haveGoodsTask.merchant_tag : task.merchant_tag} onChange={ query.channel_name === '有好货' ? this.handleChangeGoods : this.handleChange} />
             { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&
               <WeitaoForm
                 role="writer"
@@ -391,7 +585,6 @@ export default class TaskCreate extends PureComponent {
                 operation="create"
                 formData={haveGoodsTask}
                 onChange={this.handleChangeGoods}
-                ref="goodProductionForm"
               />
             }
           </div>
@@ -404,6 +597,7 @@ export default class TaskCreate extends PureComponent {
             </ul>
           </div>
           <div className={styles.submitBox}>
+            <Tooltip placement="top" title="提交到平台审核方进行审核">
             { query.project_id ?
               <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
                 <Button>提交审核</Button>
@@ -411,7 +605,10 @@ export default class TaskCreate extends PureComponent {
               :
               <Button onClick={this.handleShowAddTeamUserModal}>提交审核</Button>
             }
-            <Button onClick={this.handleSave}>保存</Button>
+            </Tooltip>
+            <Tooltip placement="top" title="保存到待完成列表">
+              <Button onClick={this.handleSave}>保存</Button>
+            </Tooltip>
           </div>
         </div>
         <Modal

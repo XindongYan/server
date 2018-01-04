@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Modal, message, Button } from 'antd';
+import { Card, Modal, message, Button, Popconfirm } from 'antd';
 import $ from 'jquery';
 import styles from './index.less';
 import SignBox from './signBox.js';
@@ -154,7 +154,11 @@ export default class Annotation extends PureComponent {
       <div style={{height: '100%', position: 'relative'}}>
         <div className={styles.commentTitle}>
           批注
-          { viewStatus !== 'view' && <a onClick={this.handleClear} style={{ float: 'right', marginRight: 10 }}>清空</a>}
+          { viewStatus !== 'view' &&
+            <Popconfirm placement="top" title="确认清空批注?" onConfirm={this.handleClear} okText="确认" cancelText="取消">
+              <a style={{ float: 'right', marginRight: 10 }}>清空批注</a>
+            </Popconfirm>
+          }
         </div>
         <div
           ref="AnnotationBox"

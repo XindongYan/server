@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Input, Icon, message, Tag, Tooltip, Form } from 'antd';
 import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
+import TaobaoAuction from '../TaobaoAuction';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from '../Forms/CascaderSelect';
 
@@ -20,27 +21,10 @@ export default class GoodProductionForm extends PureComponent {
       height: 0,
     },
     k: '',
+    auctionVisible: false,
   }
   componentDidMount() {
-    // const fieldsValue = {
-      // title: this.props.formData.title,
-      // task_desc: this.props.formData.task_desc,
-      // merchant_tag: this.props.formData.merchant_tag,
-      // product_url: this.props.formData.product_url,
-      // product_img: this.props.formData.product_img,
-      // target_population: this.props.formData.target_population,
-      // cover_imgs: this.props.formData.cover_imgs,
-      // white_bg_img: this.props.formData.white_bg_img,
-      // long_advantage: this.props.formData.long_advantage,
-      // short_advantage: this.props.formData.short_advantage,
-      // industry_title: this.props.formData.industry_title,
-      // industry_introduction: this.props.formData.industry_introduction,
-      // industry_img: this.props.formData.industry_img,
-      // brand_name: this.props.formData.brand_name,
-      // brand_introduction: this.props.formData.brand_introduction,
-      // brand_logo: this.props.formData.brand_logo,
-    // };
-    // this.props.form.setFieldsValue(fieldsValue);
+    
   }
   componentWillReceiveProps(nextProps) {
     
@@ -48,22 +32,39 @@ export default class GoodProductionForm extends PureComponent {
   componentWillUnmount() {
     
   }
-  handleCloseLong = (e, removedTag) => {
+
+  handleAuctionHide = () => {
+    this.setState({
+      auctionVisible: false,
+    })
+  }
+  handlePointClose = (e, removedTag, key) => {
     e.preventDefault();
-    const long_advantage = this.props.formData.long_advantage.filter(tag => tag !== removedTag);
-    if (this.props.onChange) this.props.onChange({ long_advantage: long_advantage })
+    const advantage = this.props.formData[key].filter(tag => tag !== removedTag);
+    const data = {};
+    data[key] = advantage;
+    if (this.props.onChange) this.props.onChange(data)
   }
-  handleCloseShort = (e, removedTag) => {
-    e.preventDefault();
-    const short_advantage = this.props.formData.short_advantage.filter(tag => tag !== removedTag);
-    if (this.props.onChange) this.props.onChange({ short_advantage: short_advantage })
+  handlePointChange = (e, key) => {
+    const data = {};
+    data[key] = e.target.value;
+    this.setState({ ...data });
   }
-  handleInputChangeLong = (e) => {
-    this.setState({ longPoint: e.target.value });
+  handlePointConfirm = (min, max, k, key) => {
+    const { formData } = this.props;
+    const str = this.state[k];
+    if (str && str.length >= min && str.length <= max ) {
+      const data = {};
+      data[key] = [ ...formData[key], str ]
+      if (formData[key].indexOf(str) === -1) {
+        if (this.props.onChange) this.props.onChange(data);
+      }
+      const point = {};
+      point[k] = '';
+      this.setState({ ...point });
+    }
   }
-  handleInputChangeShort = (e) => {
-    this.setState({ shortPoint: e.target.value });
-  }
+
   handleInputConfirmLong = (min, max) => {
     const { formData } = this.props;
     const { longPoint } = this.state;
@@ -138,6 +139,18 @@ export default class GoodProductionForm extends PureComponent {
       }
     }
   }
+  handleAddProduct = (url, img) => {
+    if (this.props.onChange) this.props.onChange({
+      product_url: url,
+      product_img: img,
+    });
+  }
+  handleClearProduct = () => {
+    if (this.props.onChange) this.props.onChange({
+      product_url: '',
+      product_img: '',
+    });
+  }
   handleRemoveImg = (key, index) => {
     const data = {};
     if (key === 'cover_imgs') {
@@ -155,8 +168,12 @@ export default class GoodProductionForm extends PureComponent {
   }
 
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, style, operation, formData } = this.props;
+    const { style, operation, formData } = this.props;
     const { task, longPoint, shortPoint } = this.state;
+    let getFieldDecorator = null;
+    if (this.props.form) {
+      getFieldDecorator = this.props.form.getFieldDecorator;
+    }
     const tagStyle = {
       height: 32,
       lineHeight: '32px',
@@ -164,7 +181,6 @@ export default class GoodProductionForm extends PureComponent {
       background: '#fff',
       margin: '3px',
     }
-    // console.log(formData)
     return (
       <div>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
@@ -178,12 +194,24 @@ export default class GoodProductionForm extends PureComponent {
                   商品宝贝
                 </p>
                 <div>
-                  <div>
-                    <a ><img /></a>
-                  </div>
+                  { !formData.product_img &&
+                    <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={() => {this.setState({ auctionVisible: true })}}>
+                      <div>
+                        <Icon type="plus" className={styles.uploadIcon} />
+                        <p>上传宝贝</p>
+                      </div>
+                    </label>
+                  }
+                  { formData.product_img &&
+                    <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
+                      <img src={formData.product_img} />
+                      <div className={styles.clearImg} onClick={this.handleClearProduct}>
+                        <Icon type="delete" />
+                      </div>
+                    </div>
+                  }
                 </div>
               </div>
-              
               <div>
                 <FormItem>
                   {getFieldDecorator('title', {
@@ -196,6 +224,7 @@ export default class GoodProductionForm extends PureComponent {
                     <div className={styles.InputBox} style={{ border: 'none' }}>
                       <Input
                         style={{ fontSize: '18px', border: 'none', outline: 'none' }}
+                        value={formData.title}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'title')}
                         placeholder="请在这里输入标题"
                       />
@@ -218,6 +247,7 @@ export default class GoodProductionForm extends PureComponent {
                     <div className={styles.textareaBox}>
                       <textarea
                         className={styles.textarea}
+                        value={formData.task_desc}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'task_desc')}
                         placeholder="用一句话概括商品亮点，最多30个字，用于在有好货列表中显示">
                       </textarea>
@@ -229,7 +259,7 @@ export default class GoodProductionForm extends PureComponent {
                 </FormItem>
                 <p className={styles.promptText}>提示：用一句话概括商品亮点，最多30个字，用于在有好货列表中显示</p>
               </div>
-              <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
+              <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} />
 
 
               <div>
@@ -298,23 +328,25 @@ export default class GoodProductionForm extends PureComponent {
                   <span>
                     { formData.long_advantage.map((tag, index) => {
                       return (
-                        <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handleCloseLong(e, tag)}>
+                        <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handlePointClose(e, tag, 'long_advantage')}>
                           {tag}
                         </Tag>
                       );
                     })}
                   </span>
-                  <span>
-                    <Input
-                      ref={this.saveInputRef}
-                      type="text"
-                      style={{ width: 150, border: 'none', marginTop: 3 }}
-                      value={longPoint}
-                      onChange={this.handleInputChangeLong}
-                      onPressEnter={() => this.handleInputConfirmLong(12, 20)}
-                      placeholder="选择标签或输入标签"
-                    />
-                  </span>
+                  {  formData.long_advantage.length < 3 &&
+                    <span>
+                      <Input
+                        ref={this.saveInputRef}
+                        type="text"
+                        style={{ width: 150, border: 'none', marginTop: 3 }}
+                        value={longPoint}
+                        onChange={(e) => this.handlePointChange(e, 'longPoint')}
+                        onPressEnter={() => this.handlePointConfirm(12, 20, 'longPoint', 'long_advantage')}
+                        placeholder="选择标签或输入标签"
+                      />
+                    </span>
+                  }
                 </label>
                 <p className={styles.promptTextRed}>
                   { longPoint.length > 0 && ( longPoint.length < 12 || longPoint.length > 20) &&
@@ -331,23 +363,25 @@ export default class GoodProductionForm extends PureComponent {
                   <span>
                     { formData.short_advantage.map((tag, index) => {
                       return (
-                        <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handleCloseShort(e, tag)}>
+                        <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handlePointClose(e, tag, 'short_advantage')}>
                           {tag}
                         </Tag>
                       );
                     })}
                   </span>
-                  <span>
-                    <Input
-                      ref={this.saveInputRef}
-                      type="text"
-                      style={{ width: 150, border: 'none', marginTop: 3 }}
-                      value={shortPoint}
-                      onChange={this.handleInputChangeShort}
-                      onPressEnter={() => this.handleInputConfirmShort(6, 12)}
-                      placeholder="选择标签或输入标签"
-                    />
-                  </span>
+                  { formData.short_advantage.length < 3 &&
+                    <span>
+                      <Input
+                        ref={this.saveInputRef}
+                        type="text"
+                        style={{ width: 150, border: 'none', marginTop: 3 }}
+                        value={shortPoint}
+                        onChange={(e) => this.handlePointChange(e, 'shortPoint')}
+                        onPressEnter={() => this.handlePointConfirm(6, 12, 'shortPoint', 'short_advantage')}
+                        placeholder="选择标签或输入标签"
+                      />
+                    </span>
+                  }
                 </label>
                 <p className={styles.promptTextRed}>
                   { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
@@ -375,6 +409,7 @@ export default class GoodProductionForm extends PureComponent {
                   })(
                     <div className={styles.InputBox}>
                       <Input
+                        value={formData.industry_title}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'industry_title')}
                         placeholder="请围绕商品的其中一个行业特征填写标题"
                       />
@@ -403,6 +438,7 @@ export default class GoodProductionForm extends PureComponent {
                   })(
                     <div className={styles.textareaBox}>
                       <textarea
+                        value={formData.industry_introduction}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'industry_introduction')}
                         placeholder="根据你选择的标题，针对这个商品在该方面的特色和优势进行补充说明，限200字">
                       </textarea>
@@ -453,6 +489,7 @@ export default class GoodProductionForm extends PureComponent {
                   })(
                     <div className={styles.InputBox}>
                       <input
+                        value={formData.brand_name}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'brand_name')}
                         placeholder="限30个字"
                       />
@@ -478,6 +515,7 @@ export default class GoodProductionForm extends PureComponent {
                   })(
                     <div className={styles.textareaBox}>
                       <textarea
+                        value={formData.brand_introduction}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'brand_introduction')}
                         placeholder="根据你选择的标题，针对这个商品在该方面的特色和优势进行补充说明，限200字">
                       </textarea>
@@ -516,7 +554,168 @@ export default class GoodProductionForm extends PureComponent {
             </article>
           </section>
         }
+        { operation === 'view' &&
+          <section className={styles.taskContentBox}>
+            <article className={styles.articleView}>
+              <div>
+                <p className={styles.lineTitleDefult}>
+                  商品宝贝
+                </p>
+                <div>
+                  { formData.product_img &&
+                    <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
+                      <a href={formData.product_url}>
+                        <img src={formData.product_img} />
+                      </a>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div>
+                <p style={{ fontSize: 18 }}>{formData.title}</p>
+              </div>
+              <div>
+                <p style={{ marginBottom: 20 }}>{formData.task_desc}</p>
+              </div>
+              
+              <div>
+                <p>
+                  宝贝图
+                </p>
+                <div className={styles.clearFix}>
+                  { formData.cover_imgs && formData.cover_imgs.length > 0 &&
+                    formData.cover_imgs.map((img,index) =>
+                    <div className={styles.imgShowBox} style={{ width: 200, height: 200, float: 'left' }} key={index}>
+                      <img src={img} />
+                    </div>)
+                  }
+                </div>
+              </div>
+              <div>
+                <p>
+                  白底图
+                </p>
+                { formData.white_bg_img &&
+                  <div className={styles.imgShowBox} style={{ width: 200, height: 200 }}>
+                    <img src={formData.white_bg_img} />
+                  </div>
+                }
+              </div>
+            </article>
+            
+            <article className={styles.articleView}> 
+              <p className={styles.lineTitleBlue}>好在哪里</p>
+              <div>
+                <p className={styles.lineTitleDefult}>
+                  宝贝长亮点
+                </p>
+                  <span>
+                    { formData.long_advantage.map((tag, index) => {
+                      return (
+                        <Tag style={tagStyle} key={index}>
+                          {tag}
+                        </Tag>
+                      );
+                    })}
+                  </span>
+                <p className={styles.promptTextRed}>
+                  { longPoint.length > 0 && ( longPoint.length < 12 || longPoint.length > 20) &&
+                    "标签的字数必须在12～20之间"
+                  }
+                </p>
+                <p className={styles.promptText}>提示：轻敲【回车键】添加【宝贝长亮点】，【宝贝长亮点】数量2-3个，每个【宝贝长亮点】字数12-20个字，每个亮点必须以'。'结尾</p>
+              </div>
+              <div>
+                <p className={styles.lineTitleDefult}>
+                  宝贝短亮点
+                </p>
+                <span>
+                  { formData.short_advantage.map((tag, index) => {
+                    return (
+                      <Tag style={tagStyle} key={index}>
+                        {tag}
+                      </Tag>
+                    );
+                  })}
+                </span>
+                <p className={styles.promptTextRed}>
+                  { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
+                    "标签的字数必须在6～12之间"
+                  }
+                </p>
+                <p className={styles.promptText}>提示：敲击【回车键】添加【宝贝短亮点】, 【宝贝短亮点】数量2-3个，每个【宝贝短亮点】字数6-12个字</p>
+              </div>
+            </article>
+            <article className={styles.articleView}>  
+              <p className={styles.lineTitleBlue}>行业补充</p>
+              <div>
+                <p className={styles.lineTitleDefult}>
+                  标题
+                </p>
+                <div className={styles.InputBox}>
+                  <span style={{ fontSize: 16 }}>
+                    {formData.industry_title}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p className={styles.lineTitleDefult}>
+                  介绍
+                </p>
+                <div>
+                  <span>
+                    {formData.industry_introduction}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p className={styles.lineTitleDefult}>
+                  配图
+                </p>
+                { formData.industry_img &&
+                  <div className={styles.imgShowBox} style={{ width: 130, height: 130, lineHeight: '130px', textAlign: 'center' }}>
+                    <img src={formData.industry_img} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} />
+                  </div>
+                }
+              </div>
+            </article>
+            <article className={styles.articleView}> 
+              <p className={styles.lineTitleBlue}>品牌故事</p>
+              <div>
+                <p className={styles.lineTitleDefult}>
+                  品牌名称
+                </p>
+                <div>
+                  <span style={{ fontSize: 16 }}>
+                    {formData.brand_name}
+                  </span>
+                </div>
+              </div>
+               <div>
+                <p className={styles.lineTitleDefult}>
+                  介绍
+                </p>
+                <div>
+                  <span>
+                    {formData.brand_introduction}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p className={styles.lineTitleDefult}>
+                  品牌logo
+                </p>
+                { formData.brand_logo &&
+                  <div className={styles.imgShowBox} style={{ width: 200, height: 83 }}>
+                    <img src={formData.brand_logo} />
+                  </div>
+                }
+              </div>
+            </article>
+          </section>
+        }
         <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
+        <TaobaoAuction visible={this.state.auctionVisible} onOk={this.handleAddProduct} onCancel={this.handleAuctionHide} />
         <CropperModal onOk={this.handleAddCoverImg}/>
       </div>
     );

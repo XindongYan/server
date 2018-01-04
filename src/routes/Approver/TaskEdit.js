@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
 import $ from 'jquery';
-import { Card, Button, message, Popover, Slider, Popconfirm } from 'antd';
+import { Card, Button, message, Popover, Slider, Popconfirm, Form } from 'antd';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
 import { routerRedux } from 'dva/router';
 import Editor from '../../components/Editor';
@@ -11,15 +11,17 @@ import ApproveLog from '../../components/ApproveLog';
 import styles from './TableList.less';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
+import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import Annotation from '../../components/Annotation';
 
 // import styles from './Project.less';
-
+const FormItem = Form.Item;
 @connect(state => ({
   formData: state.task.formData,
   approveData: state.task.approveData,
   currentUser: state.user.currentUser,
 }))
+@Form.create()
 
 export default class TaskEdit extends PureComponent {
   state = {
@@ -27,6 +29,23 @@ export default class TaskEdit extends PureComponent {
       title: '',
       task_desc: '',
       cover_img: '',
+    },
+    haveGoodsTask: {
+      crowd: [],
+      title: '',
+      task_desc: '',
+      product_url: '', // 商品图片
+      product_img: '', // 商品图片
+      cover_imgs: [], // 封面图
+      white_bg_img: '', // 白底图
+      long_advantage: [], // 亮点
+      short_advantage: [], // 短亮点
+      industry_title: '', // 行业标题
+      industry_introduction: '', // 行业介绍
+      industry_img: '', // 行业图
+      brand_name: '', // 品牌名称
+      brand_introduction: '', // 品牌介绍
+      brand_logo: '', // 商品logo
     },
     grade: 0,
     grades: [
@@ -50,6 +69,7 @@ export default class TaskEdit extends PureComponent {
               task_desc: result.task.task_desc,
               cover_img: result.task.cover_img,
             },
+            haveGoodsTask: result.task.haveGoods,
             grade: result.task.grade,
             grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
             approve_status: result.task.approve_status,
@@ -94,16 +114,25 @@ export default class TaskEdit extends PureComponent {
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });
   }
+  handleChangeGoods = (task) => {
+    this.setState({ haveGoodsTask: { ...this.state.haveGoodsTask, ...task } });
+  }
   handleSave = () => {
-    const { grade, grades, approve_status, approve_notes } = this.state;
+    const { formData } = this.props;
+    const { grade, grades, approve_status, approve_notes, task, haveGoodsTask } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
+    const values = {
+      ...this.state.task,
+      haveGoods: this.state.haveGoodsTask,
+      _id: query._id,
+      approve_notes: approve_notes,
+    }
+    if (!formData.project_id) {
+      values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
+    }
     this.props.dispatch({
       type: 'task/update',
-      payload: {
-        ...this.state.task,
-        _id: query._id,
-        approve_notes: approve_notes,
-      },
+      payload: values,
       callback: (result) => {
         if (result.error) {
           message.error(result.msg);
@@ -115,10 +144,19 @@ export default class TaskEdit extends PureComponent {
   }
   handleSubmit = (status) => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { grade, grades, approve_status, approve_notes } = this.state;
+    const { formData } = this.props;
+    const { grade, grades, approve_status, approve_notes, haveGoodsTask, task } = this.state;
+    const values = {
+      ...this.state.task,
+      haveGoods: this.state.haveGoodsTask,
+      _id: query._id,
+    }
+    if (!formData.project_id) {
+      values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
+    }
     this.props.dispatch({
       type: 'task/update',
-      payload: { ...this.state.task, _id: query._id },
+      payload: values,
       callback: (result) => {
         if (result.error) {
           message.error(result.msg);
@@ -198,6 +236,14 @@ export default class TaskEdit extends PureComponent {
                 formData={this.state.task}
                 onChange={this.handleChange}
               />;
+    } else if (true) {
+      form = <GoodProductionForm
+                form={this.props.form}
+                role="approve"
+                operation={operation}
+                formData={this.state.haveGoodsTask}
+                onChange={this.handleChangeGoods}
+              />
     }
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>

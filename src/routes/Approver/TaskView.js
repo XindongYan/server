@@ -8,6 +8,7 @@ import Annotation from '../../components/Annotation';
 import ApproveLog from '../../components/ApproveLog';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
+import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -25,6 +26,24 @@ export default class TaskView extends PureComponent {
       title: '',
       task_desc: '',
       cover_img: '',
+      approve_notes: [],
+    },
+    haveGoodsTask: {
+      crowd: [],
+      title: '',
+      task_desc: '',
+      product_url: '', // 商品图片
+      product_img: '', // 商品图片
+      cover_imgs: [], // 封面图
+      white_bg_img: '', // 白底图
+      long_advantage: [], // 亮点
+      short_advantage: [], // 短亮点
+      industry_title: '', // 行业标题
+      industry_introduction: '', // 行业介绍
+      industry_img: '', // 行业图
+      brand_name: '', // 品牌名称
+      brand_introduction: '', // 品牌介绍
+      brand_logo: '', // 商品logo
       approve_notes: [],
     },
   }
@@ -45,6 +64,10 @@ export default class TaskView extends PureComponent {
         title: nextProps.formData.title,
         task_desc: nextProps.formData.task_desc,
         cover_img: nextProps.formData.cover_img,
+        approve_notes: nextProps.formData.approve_notes || [],
+      },
+      haveGoodsTask: {
+        ...nextProps.formData.haveGoods,
         approve_notes: nextProps.formData.approve_notes || [],
       }
     });
@@ -87,6 +110,13 @@ export default class TaskView extends PureComponent {
                 style={{ width: 650 }}
                 formData={this.state.task}
                 onChange={this.handleChange}
+              />
+            }
+            { formData.channel_name === '有好货' &&
+              <GoodProductionForm
+                role="approve"
+                operation={operation}
+                formData={this.state.haveGoodsTask}
               />
             }
           </div>  
