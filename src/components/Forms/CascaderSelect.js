@@ -2,9 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import $ from 'jquery';
 import { Input, Icon, message, Cascader } from 'antd';
-// import { ORIGIN  } from '../../constants';
+import { ORIGIN  } from '../../constants';
 import styles from './MerchantTag.less';
-const ORIGIN = 'http://localhost:3000';
 
 @connect(state => ({
 
