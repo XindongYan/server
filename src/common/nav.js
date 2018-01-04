@@ -157,10 +157,10 @@ const data = [{
 }];
 
 export function getNavData(user) {
-  const menuItems = [];
+  const menuItems = [home];
   if (user.rights) {
     if (user.rights.indexOf(RIGHT.writer) >= 0) {
-      menuItems.push(home, square, creation);
+      menuItems.push(square, creation);
     }
     if (user.rights.indexOf(RIGHT.approver) >= 0) {
       menuItems.push(approve);
