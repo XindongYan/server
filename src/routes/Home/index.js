@@ -30,6 +30,13 @@ export default class Home extends PureComponent {
           </a>
           (要求:运行插件的chrome浏览器版本必须 >= 59.0)
         </div>
+        <div>
+          尼采插件v1.0.4(测试版)：
+          <a href={`${ORIGIN}/test.nicaiCrx_v1.0.4.zip`} download="尼采插件测试版_v1.0.4.zip">
+            点击下载
+          </a>
+          (要求:运行插件的chrome浏览器版本必须 >= 59.0)
+        </div>
         <div style={{ marginTop: 10 }}>
           <p><a href={`${ORIGIN}/nicaiTeach.pdf`} target="_blank">#点击查看插件安装步骤#</a></p>
         </div>
