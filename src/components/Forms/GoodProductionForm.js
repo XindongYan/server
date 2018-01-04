@@ -216,6 +216,8 @@ export default class GoodProductionForm extends PureComponent {
                       required: true, message: '标题不能为空',
                     }, {
                       max: 18, message: '文字长度太长, 要求长度最大为18',
+                    }, {
+                      whitespace: true, message: '标题不能为空格'
                     }],
                   })(
                     <div className={styles.InputBox} style={{ border: 'none' }}>
@@ -239,6 +241,8 @@ export default class GoodProductionForm extends PureComponent {
                       required: true, message: '不能为空',
                     }, {
                       max: 30, message: '文字长度太长, 要求长度最多为30',
+                    }, {
+                      whitespace: true, message: '内容不能为空格'
                     }],
                   })(
                     <div className={styles.textareaBox}>
@@ -402,6 +406,8 @@ export default class GoodProductionForm extends PureComponent {
                       required: true, message: '不能为空',
                     }, {
                       max: 6, message: '文字长度太长, 要求长度最多为6',
+                    }, {
+                      whitespace: true, message: '内容不能为空格'
                     }],
                   })(
                     <div className={styles.InputBox}>
@@ -431,6 +437,8 @@ export default class GoodProductionForm extends PureComponent {
                       min: 60, message: '文字长度太短, 要求长度最少为60',
                     }, {
                       max: 200, message: '文字长度太长, 要求长度最多为200',
+                    }, {
+                      whitespace: true, message: '内容不能为空格'
                     }],
                   })(
                     <div className={styles.textareaBox}>
@@ -482,6 +490,8 @@ export default class GoodProductionForm extends PureComponent {
                       required: true, message: '不能为空',
                     }, {
                       max: 30, message: '文字长度太长, 要求长度最多为30',
+                    }, {
+                      whitespace: true, message: '内容不能为空格'
                     }],
                   })(
                     <div className={styles.InputBox}>
@@ -508,6 +518,8 @@ export default class GoodProductionForm extends PureComponent {
                       required: true, message: '不能为空',
                     }, {
                       max: 200, message: '文字长度太长, 要求长度最多为200',
+                    }, {
+                      whitespace: true, message: '内容不能为空格'
                     }],
                   })(
                     <div className={styles.textareaBox}>
