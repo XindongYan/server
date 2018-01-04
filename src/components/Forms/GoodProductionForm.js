@@ -47,7 +47,7 @@ export default class GoodProductionForm extends PureComponent {
   }
   handlePointChange = (e, key) => {
     const data = {};
-    data[key] = e.target.value;
+    data[key] = e.target.value.trim();
     this.setState({ ...data });
   }
   handlePointConfirm = (min, max, k, key) => {
@@ -162,9 +162,6 @@ export default class GoodProductionForm extends PureComponent {
       data[key] = '';
     }
     if (this.props.onChange) this.props.onChange(data);
-  }
-  handleSubmit = () => {
-    console.log(1)
   }
 
   render() {
@@ -462,7 +459,7 @@ export default class GoodProductionForm extends PureComponent {
                   </label>
                 }
                 { formData.industry_img &&
-                  <div className={styles.imgShowBox} style={{ width: 130, height: 130, lineHeight: '130px', textAlign: 'center' }}>
+                  <div className={styles.imgShowBox} style={{ width: 130, height: 130, lineHeight: '126px', textAlign: 'center' }}>
                     <img src={formData.industry_img} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} />
                     <div className={styles.clearImg} onClick={() => this.handleRemoveImg('industry_img')}>
                       <Icon type="delete" />

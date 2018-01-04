@@ -66,6 +66,12 @@ export default class TaskEdit extends PureComponent {
             haveGoodsTask: result.task.haveGoods,
             grade: result.task.grade,
             grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
+          }, () => {
+            setTimeout(() => {
+              if (result.task.channel_name === '有好货') {
+                this.handleCreatGoodForm();
+              }
+            },10)
           });
         }
       }
@@ -75,7 +81,6 @@ export default class TaskEdit extends PureComponent {
       payload: true,
     });
   }
-
   componentWillUnmount() {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
@@ -121,15 +126,50 @@ export default class TaskEdit extends PureComponent {
       });
     }
   }
+  handleCreatGoodForm = () => {
+    const fieldsValue = {
+      title: this.state.haveGoodsTask.title,
+      task_desc: this.state.haveGoodsTask.task_desc,
+      industry_title: this.state.haveGoodsTask.industry_title,
+      industry_introduction: this.state.haveGoodsTask.industry_introduction,
+      brand_name: this.state.haveGoodsTask.brand_name,
+      brand_introduction: this.state.haveGoodsTask.brand_introduction,
+    };
+    this.props.form.setFieldsValue(fieldsValue);
+  }
   validate = () => {
     const { task, haveGoodsTask } = this.state;
     if (this.props.formData.channel_name === '有好货') {
-      if (!haveGoodsTask.title || !haveGoodsTask.title.replace(/\s+/g, '')) {
-        message.warn('请填写标题');
-        return false;
-      } else {
-        return true;
-      }
+      let bOk = true;
+      this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
+        if (!err) {
+          if (!haveGoodsTask.product_url) {
+            message.warn('请选择商品宝贝');
+            bOk = false;
+          } else if (!haveGoodsTask.cover_imgs || haveGoodsTask.cover_imgs.length < 3) {
+            message.warn('请选择至少三张封面图');
+            bOk = false;
+          } else if (!haveGoodsTask.white_bg_img) {
+            message.warn('请选择一张白底图');
+            bOk = false;
+          } else if (!haveGoodsTask.long_advantage || haveGoodsTask.long_advantage.length < 2) {
+            message.warn('请输入至少2条长亮点');
+            bOk = false;
+          } else if (!haveGoodsTask.short_advantage || haveGoodsTask.short_advantage.length < 2) {
+            message.warn('请输入至少2条短亮点');
+            bOk = false;
+          } else if (!haveGoodsTask.industry_img) {
+            message.warn('请选择一张行业配图');
+            bOk = false;
+          } else if (!haveGoodsTask.brand_logo) {
+            message.warn('请上传品牌logo');
+            bOk = false;
+          }
+        } else {
+          bOk = false;
+        }
+      })
+      return bOk;
     } else {
       if (!task.title || !task.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');

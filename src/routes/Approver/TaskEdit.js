@@ -74,6 +74,10 @@ export default class TaskEdit extends PureComponent {
             grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
             approve_status: result.task.approve_status,
             approve_notes: result.task.approve_notes || [],
+          }, () => {
+            if (result.task.channel_name === '有好货') {
+              this.handleCreatGoodForm();
+            }
           });
         }
       }
@@ -111,6 +115,17 @@ export default class TaskEdit extends PureComponent {
       approve_notes: [...commentContent],
     })
   }
+  handleCreatGoodForm = () => {
+    const fieldsValue = {
+      title: this.state.haveGoodsTask.title,
+      task_desc: this.state.haveGoodsTask.task_desc,
+      industry_title: this.state.haveGoodsTask.industry_title,
+      industry_introduction: this.state.haveGoodsTask.industry_introduction,
+      brand_name: this.state.haveGoodsTask.brand_name,
+      brand_introduction: this.state.haveGoodsTask.brand_introduction,
+    };
+    this.props.form.setFieldsValue(fieldsValue);
+  }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });
   }
@@ -142,47 +157,101 @@ export default class TaskEdit extends PureComponent {
       }
     });
   }
+  validate = () => {
+    const { formData } = this.props;
+    const { task, haveGoodsTask } = this.state;
+    if (formData.channel_name === '有好货') {
+      let bOk = true;
+      this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
+        if (!err) {
+          if (!haveGoodsTask.product_url) {
+            message.warn('请选择商品宝贝');
+            bOk = false;
+          } else if (!haveGoodsTask.cover_imgs || haveGoodsTask.cover_imgs.length < 3) {
+            message.warn('请选择至少三张封面图');
+            bOk = false;
+          } else if (!haveGoodsTask.white_bg_img) {
+            message.warn('请选择一张白底图');
+            bOk = false;
+          } else if (!haveGoodsTask.long_advantage || haveGoodsTask.long_advantage.length < 2) {
+            message.warn('请输入至少2条长亮点');
+            bOk = false;
+          } else if (!haveGoodsTask.short_advantage || haveGoodsTask.short_advantage.length < 2) {
+            message.warn('请输入至少2条短亮点');
+            bOk = false;
+          } else if (!haveGoodsTask.industry_img) {
+            message.warn('请选择一张行业配图');
+            bOk = false;
+          } else if (!haveGoodsTask.brand_logo) {
+            message.warn('请上传品牌logo');
+            bOk = false;
+          }
+        } else {
+          bOk = false;
+        }
+      })
+      return bOk;
+    } else {
+      if (!task.title || !task.title.replace(/\s+/g, '')) {
+        message.warn('请填写标题');
+        return false;
+      } else if (task.title && task.title.length > 19) {
+        message.warn('标题字数不符合要求');
+        return false;
+      } else if (!task.task_desc) {
+        message.warn('请填写内容');
+        return false;
+      } else if (!task.cover_img && query.channel_name !== '直播脚本') {
+        message.warn('请选择封面图');
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
   handleSubmit = (status) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { formData } = this.props;
     const { grade, grades, approve_status, approve_notes, haveGoodsTask, task } = this.state;
-    const values = {
-      ...this.state.task,
-      haveGoods: this.state.haveGoodsTask,
-      _id: query._id,
-    }
-    if (!formData.project_id) {
-      values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
-    }
-    this.props.dispatch({
-      type: 'task/update',
-      payload: values,
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/approve',
-            payload: {
-              _id: query._id,
-              grade: grade,
-              grades: grades,
-              approve_status: status,
-              approver_id: this.props.currentUser._id,
-              approve_notes: approve_notes,
-            },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                message.success(result1.msg);
-                this.props.dispatch(routerRedux.push('/approve/approve-list'));
-              }
-            }
-          });
-        }
+    if (this.validate()) {
+      const values = {
+        ...this.state.task,
+        haveGoods: this.state.haveGoodsTask,
+        _id: query._id,
       }
-    });
+      if (!formData.project_id) {
+        values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
+      }
+      this.props.dispatch({
+        type: 'task/update',
+        payload: values,
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/approve',
+              payload: {
+                _id: query._id,
+                grade: grade,
+                grades: grades,
+                approve_status: status,
+                approver_id: this.props.currentUser._id,
+                approve_notes: approve_notes,
+              },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  message.success(result1.msg);
+                  this.props.dispatch(routerRedux.push('/approve/approve-list'));
+                }
+              }
+            });
+          }
+        }
+      });
+    }
   }
   handleReject = () => {
     const { dispatch, formData, currentUser } = this.props;
