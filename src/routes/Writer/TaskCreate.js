@@ -35,7 +35,6 @@ export default class TaskCreate extends PureComponent {
       crowd: [],
       title: '',
       task_desc: '',
-      merchant_tag: '',
       product_url: '', // 商品图片
       product_img: '', // 商品图片
       cover_imgs: [], // 封面图
@@ -75,7 +74,7 @@ export default class TaskCreate extends PureComponent {
               task_desc: result.task.task_desc,
               cover_img: result.task.cover_img,
             },
-            haveGoodsTask: { ...result.task.haveGoods, merchant_tag: result.task.merchant_tag }
+            haveGoodsTask: { ...result.task.haveGoods }
           }, () => {
             if (result.task.channel_name === '有好货') {
               this.handleCreatGoodForm();
@@ -295,7 +294,9 @@ export default class TaskCreate extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
     const { task, haveGoodsTask, approver_id } = this.state;
-    if (this.validate()) {
+    if (!task.title && !haveGoodsTask.title) {
+      message.warn('请输入标题');
+    } else {
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
@@ -405,7 +406,7 @@ export default class TaskCreate extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
           <div style={{ width: 720 }}>
-            <MerchantTag merchant_tag={ query.channel_name === '有好货' ? haveGoodsTask.merchant_tag : task.merchant_tag} onChange={ query.channel_name === '有好货' ? this.handleChangeGoods : this.handleChange} />
+            <MerchantTag merchant_tag={task.merchant_tag} onChange={this.handleChange} />
             { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&
               <WeitaoForm
                 role="writer"
