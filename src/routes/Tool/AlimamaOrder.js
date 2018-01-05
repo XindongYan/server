@@ -83,8 +83,12 @@ export default class AlimamaOrder extends PureComponent {
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
-    if (data !== '1.0.4') {
-      message.warn('插件版本较低，请更新！');
+    if (data && data.length > 0) {
+      const arr = data.split('.');
+      const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
+      if (versionNumber < 104) { // 1.0.4
+        message.warn('插件版本较低，请更新！');
+      }
     }
     this.setState({
       version: data,
