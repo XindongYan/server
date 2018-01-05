@@ -39,6 +39,7 @@ export default class Home extends PureComponent {
         </div>
         <div style={{ marginTop: 10 }}>
           <p><a href={`${ORIGIN}/nicaiTeach.pdf`} target="_blank">#点击查看插件安装步骤#</a></p>
+          <p><a href={`${ORIGIN}/chromeVersion.pdf`} target="_blank">#chrome浏览器版本号查询步骤#</a></p>
         </div>
       </Card>
     );
