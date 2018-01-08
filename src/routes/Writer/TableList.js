@@ -247,6 +247,24 @@ export default class TableList extends PureComponent {
   handleCancel = () => {
     this.setState({ extensionVisible: false });
   }
+  handleRemove = (record) => {
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'task/remove',
+      payload: {
+        _id: record._id,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          this.handleFetch();
+        }
+      },
+    });
+  }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
     const { modalVisible, selectedRowKeys } = this.state;
@@ -358,6 +376,11 @@ export default class TableList extends PureComponent {
               }
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
+              {!record.project_id && <Divider type="vertical" />}
+              {!record.project_id &&
+                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
+                <a>删除</a>
+              </Popconfirm>}
               <Divider type="vertical" />
               <TaskOperationRecord _id={record._id}>
                 <a>动态</a>
