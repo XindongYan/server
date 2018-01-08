@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
 import path from 'path';
 import { Form, Input, Tabs, Button, Icon, Checkbox, Row, Col, Alert, message, Upload } from 'antd';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, ORIGIN } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN } from '../../constants';
 import styles from './UserInfo.less';
 
 const FormItem = Form.Item;
@@ -17,6 +17,7 @@ export default class UserInfo extends Component {
   state = {
     currentUser: {
       name: '',
+      nickname: '',
       avatar: '',
       phone: '',
     }
@@ -73,17 +74,20 @@ export default class UserInfo extends Component {
       key: `${file.uid}${extname}`,
     }
   }
-  handleSubmit = () => {
+  handleSubmit = (field) => {
     const { dispatch } = this.props;
     const { currentUser } = this.state;
-    if (!currentUser.name) {
+    if (field === 'name' && !currentUser.name) {
       message.warn('姓名不能为空');
+    } else if (field === 'nickname' && !currentUser.nickname) {
+      message.warn('昵称不能为空');
     } else {
       dispatch({
         type: 'user/update',
         payload: {
           _id: currentUser._id,
           name: currentUser.name,
+          nickname: currentUser.nickname,
         },
         callback: (result) => {
           if (result.error) {
@@ -94,8 +98,6 @@ export default class UserInfo extends Component {
         },
       });
     }
-  }
-  handleBindTaobao =  () => {
   }
   render() {
     const { currentUser } = this.state;
@@ -166,6 +168,23 @@ export default class UserInfo extends Component {
           </Row>
           <Row className={styles.rowBox}>
             <Col className={styles.labelSpan} span={6}>
+              <span>昵称：</span>
+            </Col>
+            <Col span={14}>
+              <Input
+                className={styles.userInput}
+                placeholder="最多10字"
+                maxLength="10"
+                value={currentUser.nickname}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, nickname: e.target.value } })}
+              />
+            </Col>
+            <Col span={4} style={{ textAlign: 'right'}}>
+              <Button type="primary" onClick={() => this.handleSubmit('nickname')}>保存</Button>
+            </Col>
+          </Row>
+          <Row className={styles.rowBox}>
+            <Col className={styles.labelSpan} span={6}>
               <span>手机号：</span>
             </Col>
             <Col span={18}>
@@ -182,7 +201,10 @@ export default class UserInfo extends Component {
               }
             </Col>
           </Row>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 34bb381d9569220c1626ca2abe262186f195cace
           <div style={{ textAlign: 'center', paddingTop: 20 }}>
             <Link to="/">
               <Button style={{ width: 100 }}>返回</Button>

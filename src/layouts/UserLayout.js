@@ -53,7 +53,7 @@ class UserLayout extends React.PureComponent {
               </Link>
               <UserAgent />
             </div>
-            <p className={styles.desc}>尼采创作平台</p>
+            <p className={styles.desc}>让天下没有埋没的文采</p>
           </div>
           <Switch>
             <Route key="login" path="/user/login" component={Login} />
