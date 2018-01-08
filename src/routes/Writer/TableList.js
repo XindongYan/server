@@ -250,6 +250,10 @@ export default class TableList extends PureComponent {
       }
     });
   }
+
+  handleCancel = () => {
+    this.setState({ extensionVisible: false });
+  }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
     const { modalVisible, selectedRowKeys } = this.state;
@@ -565,7 +569,7 @@ export default class TableList extends PureComponent {
             )}
           </FormItem>
         </Modal>
-        <Extension visible={this.state.extensionVisible} url={this.state.extension} />
+        <Extension visible={this.state.extensionVisible} url={this.state.extension} onCancel={this.handleCancel} />
       </div>
     );
   }
