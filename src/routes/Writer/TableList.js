@@ -454,6 +454,10 @@ export default class TableList extends PureComponent {
         } else {
           return (
             <div>
+              <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
+                推广
+              </a>
+              <Divider type="vertical" />
               <TaskOperationRecord _id={record._id}>
                 <a>动态</a>
               </TaskOperationRecord>
