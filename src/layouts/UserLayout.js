@@ -22,7 +22,7 @@ const links = [{
   href: '',
 }];
 
-const copyright = <div>Copyright <Icon type="copyright" /> 2017 尼采技术部出品</div>;
+const copyright = <div>Copyright <Icon type="copyright" /> 2017 尼采出品</div>;
 
 class UserLayout extends React.PureComponent {
   static childContextTypes = {
@@ -61,7 +61,7 @@ class UserLayout extends React.PureComponent {
             <Route key="register-result" path="/user/register-result" component={RegisterResult} />
             <Redirect to="/user/login" />
           </Switch>
-          <GlobalFooter className={styles.footer} links={links} copyright={copyright} />
+          <GlobalFooter className={styles.footer} copyright={copyright} />
         </div>
       </DocumentTitle>
     );
