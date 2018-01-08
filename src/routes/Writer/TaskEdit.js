@@ -92,42 +92,6 @@ export default class TaskEdit extends PureComponent {
       type: 'task/clearFormData'
     });
   }
-  handleSubmit = () => {
-    const { currentUser, formData } = this.props;
-    const { task, haveGoodsTask } = this.state;
-    if (this.validate()) {
-      const query = querystring.parse(this.props.location.search.substr(1));
-      const values = {
-        ...this.state.task,
-        haveGoods: this.state.haveGoodsTask,
-        _id: query._id,
-      }
-      if (!formData.project_id) {
-        values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
-      }
-      this.props.dispatch({
-        type: 'task/update',
-        payload: values,
-        callback: (result) => {
-          if (result.error) {
-            message.error(result.msg);
-          } else {
-            this.props.dispatch({
-              type: 'task/handin',
-              payload: { _id: query._id, user_id: currentUser._id },
-              callback: (result1) => {
-                if (result1.error) {
-                  message.error(result1.msg);
-                } else {
-                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
-                }
-              }
-            });
-          }
-        }
-      });
-    }
-  }
   handleCreatGoodForm = () => {
     const fieldsValue = {
       title: this.state.haveGoodsTask.title,

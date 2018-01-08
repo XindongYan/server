@@ -316,6 +316,20 @@ export default class TableList extends PureComponent {
       },
     });
   }
+  handleEditSubmit = (record) => {
+    const { currentUser, teamUser } = this.props;
+    this.props.dispatch({
+      type: 'task/handin',
+      payload: { _id: record._id, user_id: currentUser._id },
+      callback: (result1) => {
+        if (result1.error) {
+          message.error(result1.msg);
+        } else {
+          this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${record._id}`));
+        }
+      }
+    });
+  }
   handleSubmit = (approvers) => {
     const { currentUser, teamUser } = this.props;
     const { task, haveGoodsTask } = this.state;
@@ -376,6 +390,25 @@ export default class TableList extends PureComponent {
       approver_id: { ...this.state.approver_id, ...data },
     })
   }
+  handleRemove = (record) => {
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'task/remove',
+      payload: {
+        _id: record._id,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          this.handleFetch();
+        }
+      },
+    });
+  }
+  
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
     const { modalVisible, selectedRowKeys, approveModalVisible, suggestionApproves } = this.state;
@@ -494,13 +527,19 @@ export default class TableList extends PureComponent {
               <Divider type="vertical" />
               <Tooltip placement="topRight" title="提交到平台审核方进行审核">
                 { record.project_id ?
-                  <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
+                  <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={() => this.handleShowAddTeamUserModal(record)}>
                     <a>提交审核</a>
                   </Popconfirm>
                   :
-                  <a onClick={this.handleShowAddTeamUserModal}>提交审核</a>
+                  <a onClick={() => this.handleShowAddTeamUserModal(record)}>提交审核</a>
                 }
               </Tooltip>
+              {!record.project_id && <Divider type="vertical" />}
+              {!record.project_id &&
+                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
+                  <a>删除</a>
+                </Popconfirm>
+              }
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
@@ -549,6 +588,12 @@ export default class TableList extends PureComponent {
               <TaskOperationRecord _id={record._id}>
                 <a>动态</a>
               </TaskOperationRecord>
+              <Divider type="vertical" />
+              <Tooltip placement="topRight" title="提交到平台审核方进行审核">
+                <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={() => this.handleEditSubmit(record)}>
+                  <a>提交审核</a>
+                </Popconfirm>
+              </Tooltip>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {

@@ -50,11 +50,6 @@ export default class TaskCreate extends PureComponent {
       brand_logo: '', // 商品logo
     },
     modalVisible: false,
-    phone: '',
-    approver_id: '',
-    approver_id2: '',
-    suggestionUsers: [],
-    suggestionUsers2: [],
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -106,17 +101,6 @@ export default class TaskCreate extends PureComponent {
       brand_introduction: this.state.haveGoodsTask.brand_introduction,
     };
     this.props.form.setFieldsValue(fieldsValue);
-  }
-  handleShowAddTeamUserModal = () => {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    const { task } = this.state;
-    if (this.validate()) {
-      if (query.project_id) {
-        this.handleSubmitTask();
-      } else {
-        this.setState({ modalVisible: true, });
-      }
-    }
   }
   validate = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -205,52 +189,6 @@ export default class TaskCreate extends PureComponent {
       modalVisible: !!flag,
     });
   }
-  onSearch = (value) => {
-    this.setState({
-      approver_id: '',
-    })
-    if (value) {
-      this.props.dispatch({
-        type: 'team/searchUsers',
-        payload: {
-          nickname: value
-        },
-        callback: (res) => {
-          this.setState({
-            suggestionUsers: res.users || [],
-          })
-        }
-      });
-    }
-  }
-  onSearch2 = (value) => {
-    this.setState({
-      approver_id2: '',
-    })
-    if (value) {
-      this.props.dispatch({
-        type: 'team/searchUsers',
-        payload: {
-          nickname: value
-        },
-        callback: (res) => {
-          this.setState({
-            suggestionUsers2: res.users || [],
-          })
-        }
-      });
-    }
-  }
-  onSelect = (value) => {
-    this.setState({
-      approver_id: value,
-    })
-  }
-  onSelect2 = (value) => {
-    this.setState({
-      approver_id2: value,
-    })
-  }
 
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -309,57 +247,6 @@ export default class TaskCreate extends PureComponent {
       }
     }
   }
-  handleSubmitTask = () => {
-    const { currentUser, teamUser } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    const payload = {
-      name: this.state.task.title || this.state.haveGoodsTask.title,
-      project_id: query.project_id,
-      creator_id: currentUser._id,
-    };
-    this.props.dispatch({
-      type: 'task/add',
-      payload: {
-        ...payload,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/update',
-            payload: {
-              ...this.state.task,
-              haveGoods: this.state.haveGoodsTask,
-              _id: result.task._id,
-              approve_status: TASK_APPROVE_STATUS.taken,
-              publisher_id: currentUser._id,
-              taker_id: currentUser._id,
-              take_time: new Date(),
-            },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                this.props.dispatch({
-                  type: 'task/handin',
-                  payload: { _id: result.task._id, user_id: currentUser._id },
-                  callback: (result2) => {
-                    if (result2.error) {
-                      message.error(result2.msg);
-                    } else {
-                      message.success(result2.msg);
-                      this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
-                    }
-                  }
-                });
-              }
-            }
-          });
-        }
-      },
-    });
-  }
   render() {
     const { form: { getFieldDecorator } } = this.props;
     const { modalVisible, task, haveGoodsTask, suggestionUsers, suggestionUsers2 } = this.state;
@@ -404,77 +291,11 @@ export default class TaskCreate extends PureComponent {
             </ul>
           </div>
           <div className={styles.submitBox}>
-            <Tooltip placement="top" title="提交到平台审核方进行审核">
-            { query.project_id ?
-              <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
-                <Button>提交审核</Button>
-              </Popconfirm>
-              :
-              <Button onClick={this.handleShowAddTeamUserModal}>提交审核</Button>
-            }
-            </Tooltip>
             <Tooltip placement="top" title="保存到待完成列表">
               <Button onClick={this.handleSave}>保存</Button>
             </Tooltip>
           </div>
         </div>
-        <Modal
-          title="选择审核人员"
-          visible={modalVisible}
-          onOk={this.handleSpecifyApprover}
-          onCancel={() => this.handleModalVisible(false)}
-        >
-          <FormItem
-              label="一审"
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-            >
-              {getFieldDecorator('approver', {
-                initialValue: '',
-                rules: [{ required: true, message: '请选择审核人员！' }],
-              })(
-                <Select
-                  style={{ width: '100%' }}
-                  mode="combobox"
-                  optionLabelProp="children"
-                  placeholder="搜索电话指定审核人员"
-                  notFoundContent=""
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  filterOption={false}
-                  onSearch={this.onSearch}
-                  onSelect={this.onSelect}
-                >
-                  {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-            <FormItem
-              label="二审"
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-            >
-              {getFieldDecorator('approver2', {
-                initialValue: '',
-                rules: [{ required: false, message: '请选择审核人员！' }],
-              })(
-                <Select
-                  style={{ width: '100%' }}
-                  mode="combobox"
-                  optionLabelProp="children"
-                  placeholder="搜索电话指定审核人员"
-                  notFoundContent=""
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  filterOption={false}
-                  onSearch={this.onSearch2}
-                  onSelect={this.onSelect2}
-                >
-                  {suggestionUsers2.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-        </Modal>
       </Card>
     );
   }

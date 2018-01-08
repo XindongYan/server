@@ -212,7 +212,6 @@ export default class Register extends Component {
             <Button size="large" loading={register.submitting} className={styles.submit} type="primary" htmlType="submit">
               确定
             </Button>
-            <Link className={styles.login} to="/user/login">使用淘宝授权登录</Link>
           </FormItem>
         </Form>
       </div>
