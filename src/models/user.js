@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent, updateUser, changePassword, changePasswordBySms_code } from '../services/user';
+import { query as queryUsers, queryCurrent, updateUser } from '../services/user';
 
 export default {
   namespace: 'user',
@@ -38,14 +38,6 @@ export default {
     },
     *update({ payload, callback }, { call, put }) {
       const response = yield call(updateUser, payload);
-      if (callback) callback(response);
-    },
-    *changePassword({ payload, callback }, { call, put }) {
-      const response = yield call(changePassword, payload);
-      if (callback) callback(response);
-    },
-    *changePasswordBySms_code({ payload, callback }, { call, put }) {
-      const response = yield call(changePasswordBySms_code, payload);
       if (callback) callback(response);
     },
   },

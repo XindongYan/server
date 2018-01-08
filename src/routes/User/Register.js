@@ -86,17 +86,6 @@ export default class Register extends Component {
     });
   }
 
-  getPasswordStatus = () => {
-    const { form } = this.props;
-    const value = form.getFieldValue('pwd');
-    if (value && value.length > 9) {
-      return 'ok';
-    }
-    if (value && value.length > 5) {
-      return 'pass';
-    }
-    return 'pool';
-  }
   handleSubmit = (e) => {
     const num = parseInt(Math.random() * 20);
     e.preventDefault();
@@ -112,63 +101,6 @@ export default class Register extends Component {
     );
   }
 
-  handleConfirmBlur = (e) => {
-    const { value } = e.target;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  }
-
-  checkConfirm = (rule, value, callback) => {
-    const { form } = this.props;
-    if (value && value !== form.getFieldValue('pwd')) {
-      callback('两次输入的密码不匹配!');
-    } else {
-      callback();
-    }
-  }
-
-  checkPassword = (rule, value, callback) => {
-    if (!value) {
-      this.setState({
-        help: '请输入密码！',
-        visible: !!value,
-      });
-      callback('error');
-    } else {
-      this.setState({
-        help: '',
-      });
-      if (!this.state.visible) {
-        this.setState({
-          visible: !!value,
-        });
-      }
-      if (value.length < 6) {
-        callback('error');
-      } else {
-        const { form } = this.props;
-        if (value && this.state.confirmDirty) {
-          form.validateFields(['confirm'], { force: true });
-        }
-        callback();
-      }
-    }
-  }
-
-  renderPasswordProgress = () => {
-    const { form } = this.props;
-    const value = form.getFieldValue('pwd');
-    const passwordStatus = this.getPasswordStatus();
-    return value && value.length ?
-      <div className={styles[`progress-${passwordStatus}`]}>
-        <Progress
-          status={passwordProgressMap[passwordStatus]}
-          className={styles.progress}
-          strokeWidth={6}
-          percent={value.length * 10 > 100 ? 100 : value.length * 10}
-          showInfo={false}
-        />
-      </div> : null;
-  }
   renderMessage = (message) => {
     return (
       <Alert
@@ -185,18 +117,29 @@ export default class Register extends Component {
     const { count } = this.state;
     return (
       <div className={styles.main}>
-        <h3>注册</h3>
+        <h3>填写用户信息</h3>
         <Form onSubmit={this.handleSubmit}>
           {
             register.status === 'error' &&
             this.renderMessage(register.msg ? register.msg : '')
           }
           <FormItem>
+            {getFieldDecorator('nickname', {
+              rules: [{
+                required: true, message: '请输入昵称！',
+              }, {
+                type: 'string', message: '昵称不能为空！',
+              }],
+            })(
+              <Input placeholder="最多10字" maxLength="10" size="large" placeholder="昵称" />
+            )}
+          </FormItem>
+          <FormItem>
             {getFieldDecorator('name', {
               rules: [{
                 required: true, message: '请输入姓名！',
               }, {
-                type: 'string', message: '姓名不能他为空！',
+                type: 'string', message: '姓名不能为空！',
               }],
             })(
               <Input placeholder="最多10字" maxLength="10" size="large" placeholder="姓名" />
@@ -265,54 +208,11 @@ export default class Register extends Component {
               <Input size="large" placeholder="邀请码" />
             )}
           </FormItem>
-          <FormItem help={this.state.help}>
-            <Popover
-              content={
-                <div style={{ padding: '4px 0' }}>
-                  {passwordStatusMap[this.getPasswordStatus()]}
-                  {this.renderPasswordProgress()}
-                  <p style={{ marginTop: 10 }}>请至少输入 6 个字符。请不要使用容易被猜到的密码。</p>
-                </div>
-              }
-              overlayStyle={{ width: 240 }}
-              placement="right"
-              visible={this.state.visible}
-            >
-              {getFieldDecorator('pwd', {
-                rules: [{
-                  validator: this.checkPassword,
-                }],
-              })(
-                <Input
-                  size="large"
-                  type="password"
-                  placeholder="至少6位密码，区分大小写"
-                />
-              )}
-            </Popover>
-          </FormItem>
-          <FormItem>
-            {getFieldDecorator('confirm', {
-              rules: [{
-                required: true, message: '请确认密码！',
-              }, {
-                validator: this.checkConfirm,
-              }],
-            })(
-              <Input
-                size="large"
-                type="password"
-                placeholder="确认密码"
-              />
-            )}
-          </FormItem>
-          
-          
           <FormItem>
             <Button size="large" loading={register.submitting} className={styles.submit} type="primary" htmlType="submit">
-              注册
+              确定
             </Button>
-            <Link className={styles.login} to="/user/login">使用已有账户登录</Link>
+            <Link className={styles.login} to="/user/login">使用淘宝授权登录</Link>
           </FormItem>
         </Form>
       </div>

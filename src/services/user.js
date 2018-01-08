@@ -12,21 +12,3 @@ export async function updateUser(params) {
     },
   });
 }
-
-export async function changePassword(params) {
-  return request('/api/user/change/pwd', {
-    method: 'PUT',
-    body: {
-      ...params,
-    },
-  });
-}
-
-export async function changePasswordBySms_code(params) {
-  return request('/api/user/change/pwd/by/sms_code', {
-    method: 'PUT',
-    body: {
-      ...params,
-    },
-  });
-}

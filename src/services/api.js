@@ -9,10 +9,6 @@ import request from '../utils/request';
 //   return request('/api/activities');
 // }
 
-export async function queryTasks(params) {
-  return request(`/api/task/list/dispatcher?${stringify(params)}`);
-}
-
 // export async function removeRule(params) {
 //   return request('/api/rule', {
 //     method: 'POST',
@@ -60,23 +56,9 @@ export async function queryTasks(params) {
 //   return request(`/api/fake_list?${stringify(params)}`);
 // }
 
-export async function fakeAccountLogin(params) {
-  return request('/api/user/login', {
-    method: 'POST',
-    body: params,
-  });
-}
-
 export async function accountLogout() {
   return request('/api/user/logout', {
     method: 'DELETE',
-  });
-}
-
-export async function fakeMobileLogin(params) {
-  return request('/api/user/login/sms', {
-    method: 'POST',
-    body: params,
   });
 }
 
