@@ -79,7 +79,11 @@ class BasicLayout extends React.PureComponent {
   componentDidMount() {
     this.props.dispatch({
       type: 'user/fetchCurrent',
-      callback: () => { },
+      callback: (result) => {
+        if (!result.user.phone) {
+          this.props.dispatch(routerRedux.push('/user/register'));
+        }
+      },
     });
     const key = this.props.location.pathname.split('/') ? this.props.location.pathname.split('/')[2] : '';
     this.props.dispatch({

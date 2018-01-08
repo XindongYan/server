@@ -23,8 +23,8 @@ export async function removeTeamUser(params) {
   });
 }
 
-export async function queryTeamUsersByPhone(params) {
-  return request(`/api/task/users/by/phone?${stringify(params)}`);
+export async function searchUsers(params) {
+  return request(`/api/task/users/search?${stringify(params)}`);
 }
 
 export async function createTeamUser(params) {

@@ -192,7 +192,7 @@ export default class TableList extends PureComponent {
           payload: {
             task_ids: this.state.selectedRowKeys,
             user_id: currentUser._id,
-            phone: values.phone,
+            target_user_id: values.target_user_id,
           },
           callback: (result) => {
             if (result.error) {
@@ -261,7 +261,7 @@ export default class TableList extends PureComponent {
           payload: {
             _id: this.state.task._id,
             user_id: currentUser._id,
-            phone: values.phone,
+            target_user_id: values.target_user_id,
           },
           callback: (result) => {
             if (result.error) {
@@ -326,7 +326,7 @@ export default class TableList extends PureComponent {
   onSearch = (value) => {
     if (value.length == 11) {
       this.props.dispatch({
-        type: 'team/fetchUsersByPhone',
+        type: 'team/searchUsers',
         payload: {
           phone: value
         },
@@ -567,7 +567,7 @@ export default class TableList extends PureComponent {
               labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }}
             >
-              {getFieldDecorator('phone', {
+              {getFieldDecorator('target_user_id', {
                 initialValue: '',
                 rules: [{ required: true, message: '请选择写手！' }],
               })(
@@ -575,14 +575,14 @@ export default class TableList extends PureComponent {
                   style={{ width: '100%' }}
                   mode="combobox"
                   optionLabelProp="children"
-                  placeholder="搜索电话指定写手"
+                  placeholder="搜索昵称指定写手"
                   notFoundContent=""
                   defaultActiveFirstOption={false}
                   showArrow={false}
                   filterOption={false}
                   onSearch={this.onSearch}
                 >
-                  {suggestionUsers.map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+                  {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
                 </Select>
               )}
             </FormItem>
@@ -598,7 +598,7 @@ export default class TableList extends PureComponent {
               labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }}
             >
-              {getFieldDecorator('phone', {
+              {getFieldDecorator('target_user_id', {
                 initialValue: '',
                 rules: [{ required: true, message: '请选择达人！' }],
               })(
@@ -606,14 +606,14 @@ export default class TableList extends PureComponent {
                   style={{ width: '100%' }}
                   mode="combobox"
                   optionLabelProp="children"
-                  placeholder="搜索电话指定达人"
+                  placeholder="搜索昵称指定达人"
                   notFoundContent=""
                   defaultActiveFirstOption={false}
                   showArrow={false}
                   filterOption={false}
                   onSearch={this.onSearch}
                 >
-                  {suggestionUsers.map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+                  {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
                 </Select>
               )}
             </FormItem>

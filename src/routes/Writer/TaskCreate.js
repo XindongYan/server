@@ -209,11 +209,11 @@ export default class TaskCreate extends PureComponent {
     this.setState({
       approver_id: '',
     })
-    if (value.length == 11) {
+    if (value) {
       this.props.dispatch({
-        type: 'team/fetchUsersByPhone',
+        type: 'team/searchUsers',
         payload: {
-          phone: value
+          nickname: value
         },
         callback: (res) => {
           this.setState({
@@ -227,11 +227,11 @@ export default class TaskCreate extends PureComponent {
     this.setState({
       approver_id2: '',
     })
-    if (value.length == 11) {
+    if (value) {
       this.props.dispatch({
-        type: 'team/fetchUsersByPhone',
+        type: 'team/searchUsers',
         payload: {
-          phone: value
+          nickname: value
         },
         callback: (res) => {
           this.setState({
@@ -484,7 +484,7 @@ export default class TaskCreate extends PureComponent {
                   onSearch={this.onSearch}
                   onSelect={this.onSelect}
                 >
-                  {suggestionUsers.map(item => <Option value={item._id} key={item.phone}>{item.name}</Option>)}
+                  {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
                 </Select>
               )}
             </FormItem>
@@ -509,7 +509,7 @@ export default class TaskCreate extends PureComponent {
                   onSearch={this.onSearch2}
                   onSelect={this.onSelect2}
                 >
-                  {suggestionUsers2.map(item => <Option value={item._id} key={item.phone}>{item.name}</Option>)}
+                  {suggestionUsers2.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
                 </Select>
               )}
             </FormItem>
