@@ -29,7 +29,7 @@ export default class Album extends PureComponent {
         message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
         this.setState({ loading: false });
       }
-    }, 3000);
+    }, 5000);
     if (!this.state.nicaiCrx) {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
@@ -59,6 +59,7 @@ export default class Album extends PureComponent {
         loading: false,
       });
     } else {
+      message.destroy();
       message.warn(data.msg);
       this.setState({
         loading: false,

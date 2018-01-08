@@ -134,6 +134,23 @@ export default class UserInfo extends Component {
           </Row>
           <Row className={styles.rowBox}>
             <Col className={styles.labelSpan} span={6}>
+              <span>昵称：</span>
+            </Col>
+            <Col span={14}>
+              <Input
+                className={styles.userInput}
+                placeholder="最多10字"
+                maxLength="10"
+                value={currentUser.name}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value } })}
+              />
+            </Col>
+            <Col span={4} style={{ textAlign: 'right'}}>
+              <Button type="primary" onClick={() => this.handleSubmit('name')}>保存</Button>
+            </Col>
+          </Row>
+          <Row className={styles.rowBox}>
+            <Col className={styles.labelSpan} span={6}>
               <span>姓名：</span>
             </Col>
             <Col span={14}>
