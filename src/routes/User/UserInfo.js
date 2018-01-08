@@ -201,10 +201,6 @@ export default class UserInfo extends Component {
               }
             </Col>
           </Row>
-<<<<<<< HEAD
-
-=======
->>>>>>> 34bb381d9569220c1626ca2abe262186f195cace
           <div style={{ textAlign: 'center', paddingTop: 20 }}>
             <Link to="/">
               <Button style={{ width: 100 }}>返回</Button>
