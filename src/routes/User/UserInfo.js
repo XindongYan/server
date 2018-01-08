@@ -151,7 +151,7 @@ export default class UserInfo extends Component {
           </Row>
           <Row className={styles.rowBox}>
             <Col className={styles.labelSpan} span={6}>
-              <span>姓名：</span>
+              <span>昵称：</span>
             </Col>
             <Col span={14}>
               <Input
