@@ -132,6 +132,23 @@ export default class UserInfo extends Component {
           </Row>
           <Row className={styles.rowBox}>
             <Col className={styles.labelSpan} span={6}>
+              <span>昵称：</span>
+            </Col>
+            <Col span={14}>
+              <Input
+                className={styles.userInput}
+                placeholder="最多10字"
+                maxLength="10"
+                value={currentUser.name}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value } })}
+              />
+            </Col>
+            <Col span={4} style={{ textAlign: 'right'}}>
+              <Button type="primary" onClick={() => this.handleSubmit('name')}>保存</Button>
+            </Col>
+          </Row>
+          <Row className={styles.rowBox}>
+            <Col className={styles.labelSpan} span={6}>
               <span>姓名：</span>
             </Col>
             <Col span={14}>
@@ -163,25 +180,9 @@ export default class UserInfo extends Component {
               { currentUser.taobao &&
                 <span>{ currentUser.taobao.taobao_user_nick }</span>
               }
-              <a style={{ float: 'right' }}
-                href={`https://oauth.taobao.com/authorize?client_id=23670142&response_type=code&redirect_uri=${ORIGIN}/api/taobao/auth&state=bind&view=web`}>
-                <Button size="small" onClick={this.handleBindTaobao}>
-                { currentUser.taobao ? '修改' : '绑定' }
-                </Button>
-              </a>
             </Col>
           </Row>
 
-          <Row className={styles.rowBox}>
-            <Col className={styles.labelSpan} span={6}>
-              <span>密码：</span>
-            </Col>
-            <Col span={18}>
-              <Link to="/setting/password?type=pass">
-                <Button size="small" onClick={() => this.setState({ changePsd: true })}>修改密码</Button>
-              </Link>
-            </Col>
-          </Row>
           <div style={{ textAlign: 'center', paddingTop: 20 }}>
             <Link to="/">
               <Button style={{ width: 100 }}>返回</Button>

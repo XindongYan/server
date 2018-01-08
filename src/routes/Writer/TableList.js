@@ -9,6 +9,7 @@ import fetch from 'dva/fetch';
 import { stringify } from 'qs';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
+import Extension from '../../components/Extension';
 import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
 import styles from './TableList.less';
 
@@ -38,6 +39,8 @@ export default class TableList extends PureComponent {
     selectedRows: [],
     selectedRowKeys: [],
     modalLoading: false,
+    extension: '',
+    extensionVisible: false,
   }
 
   componentDidMount() {
@@ -431,8 +434,8 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
-                外链
+              <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
+                推广
               </a>
               <Divider type="vertical" />
               <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
@@ -562,6 +565,7 @@ export default class TableList extends PureComponent {
             )}
           </FormItem>
         </Modal>
+        <Extension visible={this.state.extensionVisible} url={this.state.extension} />
       </div>
     );
   }
