@@ -195,14 +195,11 @@ export default class TableList extends PureComponent {
     })
   }
   handlePassSearch = (value) => {
-    this.setState({
-      approver_id: '',
-    })
-    if (value.length == 11) {
+    if (value) {
       this.props.dispatch({
-        type: 'team/fetchUsersByPhone',
+        type: 'team/searchUsers',
         payload: {
-          phone: value
+          nickname: value
         }
       });
     }
@@ -214,36 +211,32 @@ export default class TableList extends PureComponent {
     const { dispatch, currentUser, data: { pagination } } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        if (values.phone !== currentUser.phone) {
-          this.setState({
-            modalLoading: true,
-          })
-          dispatch({
-            type: 'task/pass',
-            payload: {
-              phone: values.phone,
-              user_id: currentUser._id,
-              _id: this.state.selectedRowKeys[0],
-            },
-            callback: (result) => {
-              if (result.error) {
-                message.error(result.msg);
-                this.setState({
-                  modalLoading: false,
-                })
-              } else {
-                message.success(result.msg);
-                this.handleRowSelectChange([], []);
-                this.setState({
-                  modalVisible: false,
-                  modalLoading: false,
-                })
-              }
+        this.setState({
+          modalLoading: true,
+        })
+        dispatch({
+          type: 'task/pass',
+          payload: {
+            target_user_id: values.target_user_id,
+            user_id: currentUser._id,
+            _id: this.state.selectedRowKeys[0],
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+              this.setState({
+                modalLoading: false,
+              })
+            } else {
+              message.success(result.msg);
+              this.handleRowSelectChange([], []);
+              this.setState({
+                modalVisible: false,
+                modalLoading: false,
+              })
             }
-          });
-        } else {
-          message.warn('不能转交给自己');
-        }
+          }
+        });
       }
     });
   }
@@ -541,7 +534,7 @@ export default class TableList extends PureComponent {
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
           >
-            {getFieldDecorator('phone', {
+            {getFieldDecorator('target_user_id', {
               initialValue: '',
               rules: [{ required: true, message: '请选择转交用户！' }],
             })(
@@ -549,7 +542,7 @@ export default class TableList extends PureComponent {
                 style={{ width: '100%' }}
                 mode="combobox"
                 optionLabelProp="children"
-                placeholder="搜索电话指定转交用户"
+                placeholder="搜索昵称指定转交用户"
                 notFoundContent=""
                 defaultActiveFirstOption={false}
                 showArrow={false}
@@ -557,7 +550,7 @@ export default class TableList extends PureComponent {
                 onSearch={this.handlePassSearch}
                 onSelect={this.handlePassSelect}
               >
-                {suggestionUsers.filter(item => item.phone !== currentUser.phone).map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+                {suggestionUsers.filter(item => item._id !== currentUser._id).map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
               </Select>
             )}
           </FormItem>

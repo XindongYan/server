@@ -21,7 +21,7 @@ export default class TableList extends PureComponent {
     selectedRows: [],
     selectedRowKeys: [],
     formValues: {},
-    phone: '',
+    user_id: '',
     user: {},
     addTeamUserModalVisible: false,
   };
@@ -179,27 +179,24 @@ export default class TableList extends PureComponent {
     this.setState({ selectedRowKeys });
   }
   onSearch = (value) => {
-    this.setState({
-      phone: value,
-    });
-    if (value.length >= 10) {
+    if (value) {
       this.props.dispatch({
-        type: 'team/fetchUsersByPhone',
+        type: 'team/searchUsers',
         payload: {
-          phone: value
+          nickname: value
         },
       });
     }
   }
   handleAddTeamUser = () => {
     const { dispatch, teamUser } = this.props;
-    if (!this.state.phone) {
+    if (!this.state.user_id) {
       message.warn('请先选择用户');
     } else {
       dispatch({
         type: 'team/add',
         payload: {
-          phone: this.state.phone,
+          user_id: this.state.user_id,
           team_id: teamUser.team_id,
         },
         callback: (result) => {
@@ -214,10 +211,10 @@ export default class TableList extends PureComponent {
     }
   }
   handleSelect = (value) => {
-    this.setState({ phone: value });
+    this.setState({ user_id: value });
   }
   handleShowAddTeamUserModal = () => {
-    this.setState({ addTeamUserModalVisible: true, phone: '' });
+    this.setState({ addTeamUserModalVisible: true });
   }
   handleHideTeamUserModal = () => {
     this.setState({ addTeamUserModalVisible: false });
@@ -225,7 +222,6 @@ export default class TableList extends PureComponent {
   render() {
     const { team: { loading, data: { list, pagination }, suggestionUsers }, currentUser } = this.props;
     const { selectedRows, selectedRowKeys, modalVisible, user, addTeamUserModalVisible } = this.state;
-
     const columns = [
       {
         title: '头像',
@@ -341,13 +337,12 @@ export default class TableList extends PureComponent {
           <FormItem
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
-            label="用户电话"
+            label="用户昵称"
           >
             <Select
               style={{ width: '100%' }}
               mode="combobox"
               optionLabelProp="children"
-              value={this.state.phone}
               placeholder="搜索用户添加至团队"
               notFoundContent=""
               defaultActiveFirstOption={false}
@@ -356,7 +351,7 @@ export default class TableList extends PureComponent {
               onSearch={this.onSearch}
               onSelect={this.handleSelect}
             >
-              {suggestionUsers.map(item => <Option value={item.phone} key={item.phone}>{item.name}</Option>)}
+              {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
             </Select>
           </FormItem>
         </Modal>

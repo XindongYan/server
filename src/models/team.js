@@ -1,4 +1,4 @@
-import { queryTeamUsers, updateUser, queryTeamUsersByPhone, createTeamUser, removeTeamUser,
+import { queryTeamUsers, updateUser, searchUsers, createTeamUser, removeTeamUser,
   queryTeamUsersByRole } from '../services/team';
 
 export default {
@@ -81,8 +81,8 @@ export default {
         payload,
       });
     },
-    *fetchUsersByPhone({ payload, callback }, { call, put }) {
-      const response = yield call(queryTeamUsersByPhone, payload);
+    *searchUsers({ payload, callback }, { call, put }) {
+      const response = yield call(searchUsers, payload);
       yield put({
         type: 'saveSuggestionUsers',
         payload: response.users,
