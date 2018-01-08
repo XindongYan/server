@@ -17,6 +17,7 @@ export default class UserInfo extends Component {
   state = {
     currentUser: {
       name: '',
+      nickname: '',
       avatar: '',
       phone: '',
     }
@@ -73,17 +74,20 @@ export default class UserInfo extends Component {
       key: `${file.uid}${extname}`,
     }
   }
-  handleSubmit = () => {
+  handleSubmit = (field) => {
     const { dispatch } = this.props;
     const { currentUser } = this.state;
-    if (!currentUser.name) {
+    if (field === 'name' && !currentUser.name) {
       message.warn('姓名不能为空');
+    } else if (field === 'nickname' && !currentUser.nickname) {
+      message.warn('昵称不能为空');
     } else {
       dispatch({
         type: 'user/update',
         payload: {
           _id: currentUser._id,
           name: currentUser.name,
+          nickname: currentUser.nickname,
         },
         callback: (result) => {
           if (result.error) {
@@ -143,6 +147,23 @@ export default class UserInfo extends Component {
             </Col>
             <Col span={4} style={{ textAlign: 'right'}}>
               <Button type="primary" onClick={() => this.handleSubmit('name')}>保存</Button>
+            </Col>
+          </Row>
+          <Row className={styles.rowBox}>
+            <Col className={styles.labelSpan} span={6}>
+              <span>姓名：</span>
+            </Col>
+            <Col span={14}>
+              <Input
+                className={styles.userInput}
+                placeholder="最多10字"
+                maxLength="10"
+                value={currentUser.nickname}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, nickname: e.target.value } })}
+              />
+            </Col>
+            <Col span={4} style={{ textAlign: 'right'}}>
+              <Button type="primary" onClick={() => this.handleSubmit('nickname')}>保存</Button>
             </Col>
           </Row>
           <Row className={styles.rowBox}>
