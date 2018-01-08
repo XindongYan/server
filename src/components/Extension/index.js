@@ -33,6 +33,9 @@ export default class Extension extends PureComponent {
   }
   componentWillUnmount() {
     document.removeEventListener('copy', this.handelCopy);
+    this.setState({
+      publicQRcodeUrl: '',
+    })
   }
   handleCopyClick() {
     document.execCommand('copy');
