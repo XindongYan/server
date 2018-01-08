@@ -251,46 +251,7 @@ export default class TaskCreate extends PureComponent {
       approver_id2: value,
     })
   }
-  handleSubmit = (approvers) => {
-    const { currentUser, teamUser } = this.props;
-    const { task, haveGoodsTask, approver_id } = this.state;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'task/addByWriter',
-      payload: {
-        ...this.state.task,
-        haveGoods: this.state.haveGoodsTask,
-        name: task.title || haveGoodsTask.title,
-        approve_status: TASK_APPROVE_STATUS.taken,
-        channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
-        task_type: query.task_type ? Number(query.task_type) : 1,
-        team_id: teamUser ? teamUser.team_id : null,
-        publisher_id: currentUser._id,
-        taker_id: currentUser._id,
-        take_time: new Date(),
-        creator_id: currentUser._id,
-        current_approvers: [ approver_id ],
-        approvers: [ ...approvers ],
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/handin',
-            payload: { _id: result.task._id, user_id: currentUser._id },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
-              }
-            }
-          });
-        }
-      },
-    });
-  }
+
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;

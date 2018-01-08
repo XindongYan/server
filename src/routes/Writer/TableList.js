@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message, Form, Select, Modal } from 'antd';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Link } from 'dva/router';
+import { Link, routerRedux } from 'dva/router';
 import $ from 'jquery';
 import fetch from 'dva/fetch';
 import { stringify } from 'qs';
@@ -41,6 +41,16 @@ export default class TableList extends PureComponent {
     modalLoading: false,
     extension: '',
     extensionVisible: false,
+    approveModalVisible: false,
+    approver_id: {
+      first: '',
+      second: '',
+    },
+    suggestionApproves: {
+      first: [],
+      second: [],
+    },
+    task_id: '',
   }
 
   componentDidMount() {
@@ -247,9 +257,128 @@ export default class TableList extends PureComponent {
   handleCancel = () => {
     this.setState({ extensionVisible: false });
   }
+
+  handleShowAddTeamUserModal = (record) => {
+    if (record.project_id) {
+      this.handleSubmitTask(record);
+    } else {
+      this.setState({
+        approveModalVisible: true,
+        task_id: record._id,
+      });
+    }
+  }
+  handleSpecifyApprover = () => {
+    const { dispatch } = this.props;
+    const { approver_id } = this.state;
+    this.props.form.validateFields(['approver', 'approver2'], (err, values) => {
+      if (!err) {
+        const approvers = [ [approver_id.first] ];
+        if(approver_id.second){
+          approvers.push([approver_id.second]);
+        }
+        this.setState({ modalVisible: false });
+        this.handleSubmit(approvers);
+      }
+    });
+  }
+  handleSubmitTask = (record) => {
+    const { currentUser, teamUser } = this.props;
+    const payload = {
+      name: record.title,
+      project_id: record.project_id,
+      creator_id: currentUser._id,
+      approve_status: TASK_APPROVE_STATUS.taken,
+    };
+    this.props.dispatch({
+      type: 'task/add',
+      payload: {
+        ...payload,
+      },
+      callback: (result) => {
+        console.log(result)
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          this.props.dispatch({
+            type: 'task/handin',
+            payload: { _id: result.task._id, user_id: currentUser._id },
+            callback: (result1) => {
+              if (result1.error) {
+                message.error(result1.msg);
+              } else {
+                message.success(result1.msg);
+                this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
+              }
+            }
+          });
+        }
+      },
+    });
+  }
+  handleSubmit = (approvers) => {
+    const { currentUser, teamUser } = this.props;
+    const { task, haveGoodsTask } = this.state;
+    this.props.dispatch({
+      type: 'task/update',
+      payload: {
+        _id: this.state.task_id,
+        take_time: new Date(),
+        current_approvers: approvers[0],
+        approvers: approvers,
+      },
+      callback: (result) => {
+        console.log(result)
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          this.props.dispatch({
+            type: 'task/handin',
+            payload: { _id: this.state.task_id, user_id: currentUser._id },
+            callback: (result1) => {
+              console.log(result)
+              if (result1.error) {
+                message.error(result1.msg);
+              } else {
+                this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${this.state.task_id}`));
+              }
+            }
+          });
+        }
+      },
+    });
+  }
+  handleApproveSearch = (value, key) => {
+    const data = {};
+    data[key] = '';
+    this.setState({
+      approver_id: { ...this.state.approver_id, ...data },
+    })
+    if (value) {
+      this.props.dispatch({
+        type: 'team/searchUsers',
+        payload: {
+          nickname: value
+        },
+        callback: (res) => {
+          data[key] = res.users || [];
+          this.setState({
+            suggestionApproves: { ...this.state.suggestionApproves, ...data },
+          })
+        }
+      });
+    }
+  }
+  handelApproveSelect = (value, key) => {
+    const data = {};
+    data[key] = value;
+    this.setState({
+      approver_id: { ...this.state.approver_id, ...data },
+    })
+  }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
-    const { modalVisible, selectedRowKeys } = this.state;
+    const { modalVisible, selectedRowKeys, approveModalVisible, suggestionApproves } = this.state;
     const columns = [
       {
         title: '任务ID',
@@ -362,6 +491,16 @@ export default class TableList extends PureComponent {
               <TaskOperationRecord _id={record._id}>
                 <a>动态</a>
               </TaskOperationRecord>
+              <Divider type="vertical" />
+              <Tooltip placement="topRight" title="提交到平台审核方进行审核">
+                { record.project_id ?
+                  <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
+                    <a>提交审核</a>
+                  </Popconfirm>
+                  :
+                  <a onClick={this.handleShowAddTeamUserModal}>提交审核</a>
+                }
+              </Tooltip>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
@@ -565,6 +704,64 @@ export default class TableList extends PureComponent {
               </Select>
             )}
           </FormItem>
+        </Modal>
+
+        <Modal
+          title="选择审核人员"
+          visible={approveModalVisible}
+          onOk={this.handleSpecifyApprover}
+          onCancel={() => {this.setState({ approveModalVisible: false })}}
+        >
+          <FormItem
+              label="一审"
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+            >
+              {getFieldDecorator('approver', {
+                initialValue: '',
+                rules: [{ required: true, message: '请选择审核人员！' }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  mode="combobox"
+                  optionLabelProp="children"
+                  placeholder="搜索昵称指定审核人员"
+                  notFoundContent=""
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={false}
+                  onSearch={(value) => this.handleApproveSearch(value, 'first')}
+                  onSelect={(value) => this.handelApproveSelect(value, 'first')}
+                >
+                  {suggestionApproves.first.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+            <FormItem
+              label="二审"
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+            >
+              {getFieldDecorator('approver2', {
+                initialValue: '',
+                rules: [{ required: false, message: '请选择审核人员！' }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  mode="combobox"
+                  optionLabelProp="children"
+                  placeholder="搜索昵称指定审核人员"
+                  notFoundContent=""
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={false}
+                  onSearch={(value) => this.handleApproveSearch(value, 'second')}
+                  onSelect={(value) => this.handelApproveSelect(value, 'second')}
+                >
+                  {suggestionApproves.second.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
+                </Select>
+              )}
+            </FormItem>
         </Modal>
         <Extension visible={this.state.extensionVisible} url={this.state.extension} onCancel={this.handleCancel} />
       </div>
