@@ -1,5 +1,5 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
-queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, removeTask, queryTaskOperationRecords } from '../services/task';
+queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, removeTask, queryTaskOperationRecords, queryTeamTasks } from '../services/task';
 import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
@@ -31,6 +31,12 @@ export default {
       approve_status: 'waitingForApprove',
     },
     approverTaskLoading: true,
+    teamTask: {
+      approve_status: TASK_APPROVE_STATUS.created,
+      list: [],
+      pagination: {},
+    },
+    teamTaskLoading: true,
   },
 
   effects: {
@@ -157,6 +163,23 @@ export default {
         payload: false,
       });
     },
+    *fetchTeamTasks({ payload }, { call, put }) {
+      yield put({
+        type: 'changeTeamTasksLoading',
+        payload: true,
+      });
+      const response = yield call(queryTeamTasks, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveTeamTasks',
+          payload: {...response, approve_status: payload.approve_status},
+        });
+      }
+      yield put({
+        type: 'changeTeamTasksLoading',
+        payload: false,
+      });
+    },
     *clearFormData(_, { call, put }) {
       yield put({
         type: 'saveTask',
@@ -230,6 +253,18 @@ export default {
       return {
         ...state,
         approverTaskLoading: action.payload,
+      };
+    },
+    saveTeamTasks(state, action) {
+      return {
+        ...state,
+        teamTask: action.payload,
+      };
+    },
+    changeTeamTasksLoading(state, action) {
+      return {
+        ...state,
+        teamTaskLoading: action.payload,
       };
     },
   },
