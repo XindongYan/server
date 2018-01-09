@@ -217,9 +217,6 @@ export default class TableList extends PureComponent {
       });
     }
   }
-  handlePassSelect = (value) => {
-    
-  }
   handlePass = () => {
     const { dispatch, currentUser, data: { pagination } } = this.props;
     this.props.form.validateFields((err, values) => {
@@ -743,7 +740,6 @@ export default class TableList extends PureComponent {
                 showArrow={false}
                 filterOption={false}
                 onSearch={this.handlePassSearch}
-                onSelect={this.handlePassSelect}
               >
                 {suggestionUsers.filter(item => item._id !== currentUser._id).map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
               </Select>
