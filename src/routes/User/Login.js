@@ -24,9 +24,8 @@ export default class Login extends Component {
           </a>
         </div>
         <div style={{ marginTop: 20 }}>
-          尼采插件v1.0.4：
           <a href={`${ORIGIN}/nicaiCrx_v1.0.4.crx`} download="尼采插件_v1.0.4.crx">
-            点击下载
+            尼采插件点击下载
           </a>
           <p>(要求:运行插件的chrome浏览器版本必须 >= 59.0)</p>
         </div>
