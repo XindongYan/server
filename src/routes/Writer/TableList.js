@@ -280,18 +280,19 @@ export default class TableList extends PureComponent {
     });
   }
   handleEditSubmit = (record) => {
-    const { currentUser, teamUser } = this.props;
-    this.props.dispatch({
-      type: 'task/handin',
-      payload: { _id: record._id, user_id: currentUser._id },
-      callback: (result1) => {
-        if (result1.error) {
-          message.error(result1.msg);
-        } else {
-          this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${record._id}`));
-        }
-      }
-    });
+    console.log(record)
+    // const { currentUser, teamUser } = this.props;
+    // this.props.dispatch({
+    //   type: 'task/handin',
+    //   payload: { _id: record._id, user_id: currentUser._id },
+    //   callback: (result1) => {
+    //     if (result1.error) {
+    //       message.error(result1.msg);
+    //     } else {
+    //       this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${record._id}`));
+    //     }
+    //   }
+    // });
   }
   handleSubmit = (approvers) => {
     const { currentUser, teamUser } = this.props;

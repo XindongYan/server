@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
+import { Table, Card, Button, Input, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, Radio, Tooltip, DatePicker } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import styles from './TableList.less';
@@ -12,6 +12,8 @@ import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
 import TaskOperationRecord from './TaskOperationRecord';
 
+const { RangePicker } = DatePicker;
+const Search = Input.Search;
 const FormItem = Form.Item;
 const { Option } = Select;
 const RadioButton = Radio.Button;
@@ -528,6 +530,14 @@ export default class TableList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <Search
+                style={{ width: 260, float: 'right' }}
+                placeholder="ID／名称／商家标签"
+                onChange={this.handleSearchClear}
+                onSearch={(value) => this.handleSearch(value, 'search')}
+                enterButton
+              />
               {
                 selectedRows.length > 0 && (
                   <span>
