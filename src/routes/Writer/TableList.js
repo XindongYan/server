@@ -714,7 +714,7 @@ export default class TableList extends PureComponent {
           </div>
         </Card>
 
-        <Modal
+        {modalVisible && <Modal
           title="选择转交对象"
           visible={modalVisible}
           onOk={this.handlePass}
@@ -745,9 +745,9 @@ export default class TableList extends PureComponent {
               </Select>
             )}
           </FormItem>
-        </Modal>
+        </Modal>}
 
-        <Modal
+        {approveModalVisible && <Modal
           title="选择审核人员"
           visible={approveModalVisible}
           onOk={this.handleSpecifyApprover}
@@ -803,7 +803,7 @@ export default class TableList extends PureComponent {
                 </Select>
               )}
             </FormItem>
-        </Modal>
+        </Modal>}
         <Extension visible={this.state.extensionVisible} url={this.state.extension} onCancel={this.handleCancel} />
       </div>
     );
