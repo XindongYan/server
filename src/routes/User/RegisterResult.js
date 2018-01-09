@@ -19,6 +19,5 @@ export default () => (
     title={title}
     description=""
     actions={actions}
-    style={{ marginTop: 56 }}
   />
 );

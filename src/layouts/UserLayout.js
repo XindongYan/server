@@ -11,6 +11,9 @@ import Register from '../routes/User/Register';
 import RegisterResult from '../routes/User/RegisterResult';
 
 import UserAgent from './UserAgent';
+import Logo from './nicai_logo.png';
+import Nicai from './nicai_text.png';
+
 const links = [{
   title: '帮助',
   href: '',
@@ -48,12 +51,11 @@ class UserLayout extends React.PureComponent {
           <div className={styles.top}>
             <div className={styles.header}>
               <Link to="/">
-                <img alt="" className={styles.logo} src="" />
-                <span className={styles.title}>尼采创作平台</span>
+                <img alt="" className={styles.logo} src={Logo} />
+                <img alt="" className={styles.logo} src={Nicai} />
               </Link>
               <UserAgent />
             </div>
-            <p className={styles.desc}>让天下没有埋没的文采</p>
           </div>
           <Switch>
             <Route key="login" path="/user/login" component={Login} />
