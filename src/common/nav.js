@@ -6,6 +6,8 @@ import Approver from '../routes/Approver/TableList';
 import Project from '../routes/Project/ProjectList';
 import ProjectCreate from '../routes/Project/ProjectCreate';
 import TeamUser from '../routes/Team/TeamUserList';
+import TeamTasks from '../routes/Team/TeamTasks';
+
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
 
@@ -96,6 +98,10 @@ const team = {
   path: 'team',
   icon: 'team',
   children: [{
+    name: '全部任务',
+    path: 'teamTasks-list',
+    component: TeamTasks,
+  }, {
     name: '团队管理',
     path: 'teamUser-list',
     component: TeamUser,
