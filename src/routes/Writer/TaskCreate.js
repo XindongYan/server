@@ -216,35 +216,65 @@ export default class TaskCreate extends PureComponent {
           }
         });
       } else {
-        this.props.dispatch({
-          type: 'task/addByWriter',
-          payload: {
-            ...this.state.task,
-            haveGoods: this.state.haveGoodsTask,
-            name: task.title || haveGoodsTask.title,
-            approve_status: TASK_APPROVE_STATUS.taken,
-            channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
-            task_type: query.task_type ? Number(query.task_type) : 1,
-            team_id: teamUser ? teamUser.team_id : null,
-            publisher_id: currentUser._id,
-            publish_time: new Date(),
-            taker_id: currentUser._id,
-            take_time: new Date(),
-            creator_id: currentUser._id,
-            daren_id: currentUser._id,
-            daren_time: new Date(),
-            project_id: query.project_id || undefined,
-          },
-          callback: (result) => {
-            if (result.error) {
-              message.error(result.msg);
-            } else {
-              message.success(result.msg);
-              query._id = result.task._id;
-              this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
-            }
-          },
-        });
+        if (query.project_id) {
+          this.props.dispatch({
+            type: 'task/add',
+            payload: {
+              ...this.state.task,
+              haveGoods: this.state.haveGoodsTask,
+              name: task.title || haveGoodsTask.title,
+              approve_status: TASK_APPROVE_STATUS.taken,
+              channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+              task_type: query.task_type ? Number(query.task_type) : 1,
+              team_id: teamUser ? teamUser.team_id : null,
+              publisher_id: currentUser._id,
+              publish_time: new Date(),
+              taker_id: currentUser._id,
+              take_time: new Date(),
+              creator_id: currentUser._id,
+              project_id: query.project_id,
+            },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                message.success(result.msg);
+                query._id = result.task._id;
+                this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
+              }
+            },
+          });
+        } else {
+          this.props.dispatch({
+            type: 'task/addByWriter',
+            payload: {
+              ...this.state.task,
+              haveGoods: this.state.haveGoodsTask,
+              name: task.title || haveGoodsTask.title,
+              approve_status: TASK_APPROVE_STATUS.taken,
+              channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+              task_type: query.task_type ? Number(query.task_type) : 1,
+              team_id: teamUser ? teamUser.team_id : null,
+              publisher_id: currentUser._id,
+              publish_time: new Date(),
+              taker_id: currentUser._id,
+              take_time: new Date(),
+              creator_id: currentUser._id,
+              daren_id: currentUser._id,
+              daren_time: new Date(),
+              project_id: query.project_id || undefined,
+            },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                message.success(result.msg);
+                query._id = result.task._id;
+                this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
+              }
+            },
+          });
+        }
       }
     }
   }
