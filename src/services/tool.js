@@ -19,3 +19,7 @@ export async function queryAlimamaOrders(params) {
 export async function queryAlimamaShops(params) {
   return request(`/api/alimama/shops?${stringify(params)}`);
 }
+
+export async function queryQumai(params) {
+  return request(`/api/spider/daren.qumai.org/xin7.php?${stringify(params)}`);
+}

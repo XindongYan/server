@@ -145,6 +145,10 @@ const tool = {
     name: '淘客订单明细',
     path: '/alimamaOrders',
     component: Tool.AlimamaOrder,
+  }, {
+    name: '有好货查重',
+    path: '/qumai',
+    component: Tool.Qumai,
   }],
 };
 
