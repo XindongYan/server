@@ -324,12 +324,12 @@ export default class TableList extends PureComponent {
     });
   }
   onSearch = (value) => {
-    if (value.length == 11) {
+    if (value) {
       this.props.dispatch({
         type: 'team/searchUsers',
         payload: {
-          phone: value
-        },
+          nickname: value
+        }
       });
     }
   }

@@ -12,7 +12,6 @@ import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
-// import styles from './Project.less';
 const FormItem = Form.Item;
 
 @connect(state => ({
@@ -245,9 +244,6 @@ export default class TaskEdit extends PureComponent {
                 }
               </dl>
             }
-            <Popconfirm placement="top" title="确认提交审核?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
-              <Button>提交审核</Button>
-            </Popconfirm>
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
