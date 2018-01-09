@@ -11,7 +11,7 @@ const Search = Input.Search;
 export default class WeTaobao extends PureComponent {
   state = {
     text: '',
-    data: {},
+    data: {htmls: ''},
   }
 
   componentDidMount () {
@@ -45,11 +45,11 @@ export default class WeTaobao extends PureComponent {
   clearInpValDown = () => {
     this.setState({
       text: '',
+      data: {htmls: ''}
     })
   }
   render (){
     const { text, data } = this.state;
-    console.log(data);
     return (
       <Card bordered={false}>
         <div>
@@ -60,7 +60,7 @@ export default class WeTaobao extends PureComponent {
               enterButton="搜索"
               size="large"
               onSearch={this.onSearchqualit}
-              onChange={(e) => this.setState({ text: e.target.value })}
+              onChange={(e) => this.setState({ text: e.target.value, data: {htmls: ''} })}
               value={text}
             />
             <Icon type="close-circle" className={styles.clearInpIcon} onClick={this.clearInpValDown} />
