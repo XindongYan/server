@@ -482,7 +482,7 @@ export default class TableList extends PureComponent {
                   {formData.approvers[index].map(item1 => {
                     const teamUser = teamUsers.find(item2 => item2.user_id._id === item1);
                     if (teamUser && teamUser.user_id) {
-                      return teamUser.user_id.name;
+                      return teamUser.user_id.nickname;
                     } else {
                       return '';
                     }
