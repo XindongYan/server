@@ -206,7 +206,7 @@ export default class TableList extends PureComponent {
       {
         title: '写手',
         dataIndex: 'taker_id',
-        render: val => val ? val.name : '',
+        render: val => val ? val.nickname : '',
       },
       {
         title: '发布渠道',
@@ -222,7 +222,7 @@ export default class TableList extends PureComponent {
     const approver = {
       title: '审核人',
       dataIndex: 'approver_id',
-      render: value => value ? value.name : '',
+      render: value => value ? value.nickname : '',
     }
     const grade = {
       title: '审核分数',
@@ -388,7 +388,7 @@ export default class TableList extends PureComponent {
               onSelect={this.handleSelectTeamUser}
             >
               {teamUsers.filter(item => item.user_id.rights.indexOf(RIGHT.approver) >= 0)
-                .map(item => <Option value={item.user_id._id} key={item.user_id._id}>{item.user_id.name}</Option>)}
+                .map(item => <Option value={item.user_id._id} key={item.user_id._id}>{item.user_id.nickname}</Option>)}
             </Select>
           }
         </div>

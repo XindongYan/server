@@ -464,7 +464,7 @@ export default class TableList extends PureComponent {
     const approver = {
       title: '审核人',
       dataIndex: 'approver_id',
-      render: value => value ? value.name : '',
+      render: value => value ? value.nickname : '',
     };
     const grade = {
       title: '审核分数',

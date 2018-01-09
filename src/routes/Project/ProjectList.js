@@ -276,7 +276,7 @@ export default class ProjectList extends PureComponent {
       {
         title: '创建者',
         dataIndex: 'creator_id',
-        render: val => val ? val.name : '',
+        render: val => val ? val.nickname : '',
       },
       {
         title: '创建时间',

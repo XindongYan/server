@@ -143,7 +143,7 @@ export default class TableList extends PureComponent {
       },
       {
         title: '使用者',
-        dataIndex: 'user_id.name',
+        dataIndex: 'user_id.nickname',
         render: (val) => {
           return val;
         }
@@ -155,7 +155,7 @@ export default class TableList extends PureComponent {
       },
       {
         title: '创建者',
-        dataIndex: 'creator_id.name',
+        dataIndex: 'creator_id.nickname',
         render: (val) => {
           return val;
         }

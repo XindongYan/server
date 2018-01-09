@@ -5,7 +5,7 @@ import styles from './WeitaoForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from '../Forms/CascaderSelect';
+import CascaderSelect from '../FormParts/CascaderSelect';
 
 @connect(state => ({
 

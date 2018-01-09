@@ -5,7 +5,7 @@ import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
 import TaobaoAuction from '../TaobaoAuction';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from '../Forms/CascaderSelect';
+import CascaderSelect from '../FormParts/CascaderSelect';
 
 const FormItem = Form.Item;
 @connect(state => ({

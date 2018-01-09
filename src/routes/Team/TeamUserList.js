@@ -229,8 +229,8 @@ export default class TableList extends PureComponent {
         render: val =>  <Avatar style={{ backgroundColor: '#87d068' }} icon="user" src={val}/>,
       },
       {
-        title: '姓名',
-        dataIndex: 'user_id.name',
+        title: '昵称',
+        dataIndex: 'user_id.nickname',
       },
       {
         title: '角色',
@@ -255,7 +255,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'inviter_id',
         render: val => val ?
           <Tooltip title={val.phone}>
-            <span>{val.name}</span>
+            <span>{val.nickname}</span>
           </Tooltip> : '',
       },
       {

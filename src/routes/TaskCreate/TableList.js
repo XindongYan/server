@@ -385,7 +385,7 @@ export default class TableList extends PureComponent {
       {
         title: '接单人',
         dataIndex: 'taker_id',
-        render: (val) => val ? val.name : '',
+        render: (val) => val ? val.nickname : '',
       },
       {
         title: '接单时间',
