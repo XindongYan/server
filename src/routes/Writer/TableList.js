@@ -257,7 +257,7 @@ export default class TableList extends PureComponent {
 
   handleShowAddTeamUserModal = (record) => {
     if (record.project_id) {
-      this.handleSubmitTask(record);
+      this.handleEditSubmit(record);
     } else {
       this.setState({
         approveModalVisible: true,
@@ -277,40 +277,6 @@ export default class TableList extends PureComponent {
         this.setState({ modalVisible: false });
         this.handleSubmit(approvers);
       }
-    });
-  }
-  handleSubmitTask = (record) => {
-    const { currentUser, teamUser } = this.props;
-    const payload = {
-      name: record.title,
-      project_id: record.project_id,
-      creator_id: currentUser._id,
-      approve_status: TASK_APPROVE_STATUS.taken,
-    };
-    this.props.dispatch({
-      type: 'task/add',
-      payload: {
-        ...payload,
-      },
-      callback: (result) => {
-        console.log(result)
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/handin',
-            payload: { _id: result.task._id, user_id: currentUser._id },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                message.success(result1.msg);
-                this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
-              }
-            }
-          });
-        }
-      },
     });
   }
   handleEditSubmit = (record) => {

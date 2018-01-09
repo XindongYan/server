@@ -7,6 +7,7 @@ import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
+import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
 
 import MerchantTag from '../../components/Forms/MerchantTag';
 import { TASK_APPROVE_STATUS } from '../../constants';
@@ -274,6 +275,15 @@ export default class TaskCreate extends PureComponent {
             }
             { query.channel_name === '有好货' &&
               <GoodProductionForm
+                form={this.props.form}
+                role="writer"
+                operation="create"
+                formData={haveGoodsTask}
+                onChange={this.handleChangeGoods}
+              />
+            }
+            { query.channel_name === '生活研究所' &&
+              <LifeInstituteForm
                 form={this.props.form}
                 role="writer"
                 operation="create"
