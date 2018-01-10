@@ -10,7 +10,7 @@ import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
-import TaskOperationRecord from './TaskOperationRecord';
+import DockPanel from '../../components/DockPanel';
 
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
@@ -343,6 +343,14 @@ export default class TableList extends PureComponent {
       payload: { project_id: query.project_id, approve_status: e.target.value, },
     });
   }
+  handleShowDockPanel = (record) => {
+    this.props.dispatch({
+      type: 'task/showDockPanel',
+      payload: {
+        _id: record._id,
+      },
+    });
+  }
   render() {
     const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
@@ -358,6 +366,7 @@ export default class TableList extends PureComponent {
       {
         title: '任务ID',
         dataIndex: 'id',
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record)}>{val}</a>,
       },
       {
         title: '内容标题',
@@ -416,10 +425,6 @@ export default class TableList extends PureComponent {
                 </Popconfirm>
                 <span className={styles.splitLine} />
                 <a onClick={() => this.handleShowSpecifyModal(record)}>指定</a>
-                <span className={styles.splitLine} />
-                <TaskOperationRecord _id={record._id}>
-                  <a>动态</a>
-                </TaskOperationRecord>
               </p>
             );
           } else if (record.approve_status === TASK_APPROVE_STATUS.published) {
@@ -430,10 +435,6 @@ export default class TableList extends PureComponent {
                 <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
                   <a>撤回</a>
                 </Popconfirm>
-                <span className={styles.splitLine} />
-                <TaskOperationRecord _id={record._id}>
-                  <a>动态</a>
-                </TaskOperationRecord>
               </p>
             );
           } else if (record.approve_status === TASK_APPROVE_STATUS.taken) {
@@ -442,17 +443,10 @@ export default class TableList extends PureComponent {
                 <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
                   <a>撤回</a>
                 </Popconfirm>
-                <span className={styles.splitLine} />
-                <TaskOperationRecord _id={record._id}>
-                  <a>动态</a>
-                </TaskOperationRecord>
               </p>
             );
           } else {
-            return (
-              <TaskOperationRecord _id={record._id}>
-                <a>动态</a>
-              </TaskOperationRecord>
+            return (''
             );
           }
         },
@@ -565,6 +559,7 @@ export default class TableList extends PureComponent {
               onChange={this.handleStandardTableChange}
               rowKey="_id"
             />
+            <DockPanel />
           </div>
           {modalVisible && <Modal
             title="指定写手"

@@ -9,12 +9,12 @@ import fetch from 'dva/fetch';
 import { stringify } from 'qs';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
+import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
 import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
 import styles from './TableList.less';
 
 import { queryConvertedTasks } from '../../services/task';
-import TaskOperationRecord from '../TaskCreate/TaskOperationRecord';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -371,7 +371,14 @@ export default class TableList extends PureComponent {
       },
     });
   }
-  
+  handleShowDockPanel = (record) => {
+    this.props.dispatch({
+      type: 'task/showDockPanel',
+      payload: {
+        _id: record._id,
+      },
+    });
+  }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
     const { modalVisible, selectedRowKeys, approveModalVisible, suggestionApproves } = this.state;
@@ -379,6 +386,7 @@ export default class TableList extends PureComponent {
       {
         title: '任务ID',
         dataIndex: 'id',
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record)}>{val}</a>,
       },
       {
         title: '名称',
@@ -484,10 +492,6 @@ export default class TableList extends PureComponent {
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
               <Divider type="vertical" />
-              <TaskOperationRecord _id={record._id}>
-                <a>动态</a>
-              </TaskOperationRecord>
-              <Divider type="vertical" />
               <Tooltip placement="topRight" title="提交到平台审核方进行审核">
                 { record.project_id ?
                   <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={() => this.handleShowAddTeamUserModal(record)}>
@@ -515,10 +519,6 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/view?_id=${record._id}`}>
                 <span>查看</span>
               </Link>
-              <Divider type="vertical" />
-              <TaskOperationRecord _id={record._id}>
-                <a>动态</a>
-              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
@@ -531,10 +531,6 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/view?_id=${record._id}`}>
                 <span>查看</span>
               </Link>
-              <Divider type="vertical" />
-              <TaskOperationRecord _id={record._id}>
-                <a>动态</a>
-              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
@@ -547,10 +543,6 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
-              <Divider type="vertical" />
-              <TaskOperationRecord _id={record._id}>
-                <a>动态</a>
-              </TaskOperationRecord>
               <Divider type="vertical" />
               <Tooltip placement="topRight" title="提交到平台审核方进行审核">
                 <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={() => this.handleEditSubmit(record)}>
@@ -569,10 +561,6 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a>发布</a>
               </Popconfirm>
-              <Divider type="vertical" />
-              <TaskOperationRecord _id={record._id}>
-                <a>动态</a>
-              </TaskOperationRecord>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
@@ -585,10 +573,6 @@ export default class TableList extends PureComponent {
               <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
                 查看
               </a>
-              <Divider type="vertical" />
-              <TaskOperationRecord _id={record._id}>
-                <a>动态</a>
-              </TaskOperationRecord>
             </div>
           );
         } else {
@@ -597,10 +581,6 @@ export default class TableList extends PureComponent {
               <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
                 推广
               </a>
-              <Divider type="vertical" />
-              <TaskOperationRecord _id={record._id}>
-                <a>动态</a>
-              </TaskOperationRecord>
             </div>
           );
         }
@@ -677,6 +657,7 @@ export default class TableList extends PureComponent {
               rowKey="_id"
               rowSelection={rowSelection}
             />
+            <DockPanel />
           </div>
         </Card>
 

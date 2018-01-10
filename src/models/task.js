@@ -37,6 +37,11 @@ export default {
       pagination: {},
     },
     teamTaskLoading: true,
+
+    dockPanel: {
+      visible: false,
+      _id: '',
+    },
   },
 
   effects: {
@@ -265,6 +270,26 @@ export default {
       return {
         ...state,
         teamTaskLoading: action.payload,
+      };
+    },
+    showDockPanel(state, action) {
+      return {
+        ...state,
+        dockPanel: {
+          ...state.dockPanel,
+          ...action.payload,
+          visible: true,
+        },
+      };
+    },
+    hideDockPanel(state, action) {
+      return {
+        ...state,
+        dockPanel: {
+          ...state.dockPanel,
+          visible: false,
+          _id: '',
+        },
       };
     },
   },

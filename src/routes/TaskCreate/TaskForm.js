@@ -135,12 +135,12 @@ export default class TaskForm extends PureComponent {
       <Card bordered={false} title={`${operation === 'create' ? '创建' : '修改'}任务`}>
         <Form>
           <FormItem
-            label="任务标题"
+            label="任务名称"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入项目标题！' }],
+              rules: [{ required: true, message: '请输入任务名称！' }],
             })(
               <Input placeholder="最多20字" maxLength="20" />
             )}

@@ -1,0 +1,100 @@
+.dock-panel-mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #373737;
+    background-color: rgba(55,55,55,.2);
+    height: 100%;
+    z-index: 800;
+    filter: alpha(opacity=50);
+}
+
+.dock-panel-mask-hidden {
+    display: none;
+}
+
+.dock-panel-lg {
+    width: 80% !important;
+    max-width: 1024px;
+}
+
+.dock-panel-visible {
+    right: 0 !important;
+    -webkit-transform: translate(0) !important;
+    transform: translate(0) !important; 
+}
+
+.dock-panel {
+    position: fixed;
+    width: 680px;
+    top: 0px;
+    right: -20px;
+    bottom: 0;
+    background-color: #fff;
+    -webkit-transition: -webkit-transform 358ms ease;
+    transition: -webkit-transform 358ms ease;
+    transition: transform 358ms ease;
+    transition: transform 358ms ease,-webkit-transform 358ms ease;
+    -webkit-transform: translate(100%);
+    transform: translate(100%);
+    -webkit-box-shadow: 0 7px 21px rgba(0,0,0,.3);
+    box-shadow: 0 7px 21px rgba(0,0,0,.3);
+    z-index: 900;
+}
+
+.dock-panel-head {
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    padding: 0 16px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+
+.dock-panel-head-title {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 16px 0;
+    line-height: 30px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.dock-panel-head-overlay {
+    position: absolute;
+    top: 12px;
+    right: 56px;
+}
+
+.dock-panel-head-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+}
+
+.dock-panel-head-extra {
+    height: 64px;
+}
+
+.dock-panel-body .with-header-extra {
+    top: 128px;
+    padding-bottom: 128px;
+}
+
+.dock-panel-body {
+    position: absolute;
+    top: 118px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1;
+    background: #f7f7f7;
+    padding: 16px;
+}

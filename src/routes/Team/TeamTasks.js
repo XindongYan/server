@@ -6,11 +6,10 @@ import querystring from 'querystring';
 import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
-
+import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
-import TaskOperationRecord from '../TaskCreate/TaskOperationRecord';
 import styles from './TeamList.less';
 
 const { RangePicker } = DatePicker;
@@ -240,6 +239,14 @@ export default class teamTasks extends PureComponent {
       this.handleSearch(e.target.value, 'search');
     }
   }
+  handleShowDockPanel = (record) => {
+    this.props.dispatch({
+      type: 'task/showDockPanel',
+      payload: {
+        _id: record._id,
+      },
+    });
+  }
   render() {
     const { teamTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
@@ -257,6 +264,7 @@ export default class teamTasks extends PureComponent {
         dataIndex: 'id',
         width: 80,
         fixed: 'left',
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record)}>{val}</a>,
       },
       {
         title: '内容标题',
@@ -304,9 +312,7 @@ export default class teamTasks extends PureComponent {
         fixed: 'right',
         render: (record) => {
           return (
-            <TaskOperationRecord _id={record._id}>
-              <a>动态</a>
-            </TaskOperationRecord>
+            ''
           );
         },
       },
@@ -379,6 +385,7 @@ export default class teamTasks extends PureComponent {
               onChange={this.handleStandardTableChange}
               rowKey="_id"
             />
+            <DockPanel />
           </div>
         </Card>
       </div>
