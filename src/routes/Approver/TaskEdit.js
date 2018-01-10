@@ -12,6 +12,7 @@ import styles from './TableList.less';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
+import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
 import Annotation from '../../components/Annotation';
 
 // import styles from './Project.less';
@@ -48,6 +49,14 @@ export default class TaskEdit extends PureComponent {
       brand_introduction: '', // 品牌介绍
       brand_logo: '', // 商品logo
     },
+    lifeResearch: {
+      title: '', // '任务标题',
+      sub_title: '', // '副标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      summary: '', // 目标人群
+    },
     grade: 0,
     grades: [
       {name: '标题', value: 0},
@@ -72,6 +81,7 @@ export default class TaskEdit extends PureComponent {
               cover_img: result.task.cover_img,
             },
             haveGoodsTask: result.task.haveGoods,
+            lifeResearch: result.task.lifeResearch,
             grade: result.task.grade,
             grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
             approve_status: result.task.approve_status,
@@ -134,18 +144,22 @@ export default class TaskEdit extends PureComponent {
   handleChangeGoods = (task) => {
     this.setState({ haveGoodsTask: { ...this.state.haveGoodsTask, ...task } });
   }
+  handleChangeLife = (task) => {
+    this.setState({ lifeResearch: { ...this.state.lifeResearch, ...task } });
+  }
   handleSave = () => {
     const { formData } = this.props;
-    const { grade, grades, approve_status, approve_notes, task, haveGoodsTask } = this.state;
+    const { grade, grades, approve_status, approve_notes, task, haveGoodsTask, lifeResearch } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const values = {
       ...this.state.task,
       haveGoods: this.state.haveGoodsTask,
+      lifeResearch: this.state.lifeResearch,
       _id: query._id,
       approve_notes: approve_notes,
     }
     if (!formData.project_id) {
-      values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
+      values.name =  task.title || haveGoodsTask.title || lifeResearch.title;
     }
     this.props.dispatch({
       type: 'task/update',
@@ -161,7 +175,7 @@ export default class TaskEdit extends PureComponent {
   }
   validate = () => {
     const { formData } = this.props;
-    const { task, haveGoodsTask } = this.state;
+    const { task, haveGoodsTask, lifeResearch, } = this.state;
     if (formData.channel_name === '有好货') {
       let bOk = true;
       this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
@@ -193,6 +207,25 @@ export default class TaskEdit extends PureComponent {
         }
       })
       return bOk;
+    } else if (formData.channel_name === '生活研究所') {
+      let bOk = true;
+      this.props.form.validateFields(['title','sub_title','summary'], (err, val) => {
+        if (!err) {
+          if (!lifeResearch.task_desc) {
+            message.warn('请填写内容');
+            bOk = false;
+          } else if (!lifeResearch.crowd || lifeResearch.crowd.length <= 0) {
+            message.warn('请选择目标人群');
+            bOk = false;
+          } else if (!lifeResearch.cover_img) {
+            message.warn('请上传封面图');
+            bOk = false;
+          }
+        } else {
+          bOk = false;
+        }
+      })
+      return bOk;
     } else {
       if (!task.title || !task.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');
@@ -203,7 +236,7 @@ export default class TaskEdit extends PureComponent {
       } else if (!task.task_desc) {
         message.warn('请填写内容');
         return false;
-      } else if (!task.cover_img && query.channel_name !== '直播脚本') {
+      } else if (!task.cover_img && this.props.formData.task_type !== 3) {
         message.warn('请选择封面图');
         return false;
       } else {
@@ -214,15 +247,16 @@ export default class TaskEdit extends PureComponent {
   handleSubmit = (status) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { formData } = this.props;
-    const { grade, grades, approve_status, approve_notes, haveGoodsTask, task } = this.state;
+    const { grade, grades, approve_status, approve_notes, haveGoodsTask, task, lifeResearch } = this.state;
     if (this.validate()) {
       const values = {
         ...this.state.task,
         haveGoods: this.state.haveGoodsTask,
+        lifeResearch: this.state.lifeResearch,
         _id: query._id,
       }
       if (!formData.project_id) {
-        values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
+        values.name =  task.title || haveGoodsTask.title || lifeResearch.title;
       }
       this.props.dispatch({
         type: 'task/update',
@@ -307,13 +341,21 @@ export default class TaskEdit extends PureComponent {
                 formData={this.state.task}
                 onChange={this.handleChange}
               />;
-    } else if (true) {
+    } else if (formData.channel_name === '有好货') {
       form = <GoodProductionForm
                 form={this.props.form}
                 role="approve"
                 operation={operation}
                 formData={this.state.haveGoodsTask}
                 onChange={this.handleChangeGoods}
+              />
+    } else if (formData.channel_name === '生活研究所') {
+      form = <LifeInstituteForm
+                form={this.props.form}
+                role="approve"
+                operation={operation}
+                formData={this.state.lifeResearch}
+                onChange={this.handleChangeLife}
               />
     }
     return (

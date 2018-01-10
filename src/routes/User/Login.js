@@ -24,14 +24,14 @@ export default class Login extends Component {
           </a>
         </div>
         <div style={{ marginTop: 45 }}>
-          <a href={`${ORIGIN}/nicaiCrx_v1.0.4.crx`} download="尼采插件_v1.0.4.crx">
+          <a href={`${ORIGIN}/nicaiCrx.crx`} download="尼采插件_v1.0.4.crx">
             尼采插件下载
           </a>
           <span>(chrome浏览器版本 >= 59.0)</span>
         </div>
         <p style={{ marginTop: 5 }}>
-          <a style={{ marginRight: 15 }} href={`${ORIGIN}/nicaiTeach.pdf`} target="_blank">#插件安装步骤#</a>
-          <a href={`${ORIGIN}/chromeVersion.pdf`} target="_blank">#chrome浏览器版本号#</a>
+          <a style={{ marginRight: 15 }} href={`${ORIGIN}/nicaiTeach.pdf`} target="_blank">插件安装步骤</a>
+          <a href={`${ORIGIN}/chromeVersion.pdf`} target="_blank">chrome浏览器版本号</a>
         </p>
       </div>
     );

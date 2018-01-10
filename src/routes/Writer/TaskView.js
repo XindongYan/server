@@ -7,6 +7,7 @@ import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
+import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -41,6 +42,16 @@ export default class TaskView extends PureComponent {
       brand_name: '', // 品牌名称
       brand_introduction: '', // 品牌介绍
       brand_logo: '', // 商品logo
+      approve_notes: [],
+    },
+    lifeResearch: {
+      title: '', // '任务标题',
+      sub_title: '', // '副标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      summary: '', // 目标人群
+      approve_notes: [],
     },
     grade: 0,
     grades: [],
@@ -65,7 +76,14 @@ export default class TaskView extends PureComponent {
         cover_img: nextProps.formData.cover_img,
         approve_notes: nextProps.formData.approve_notes || [],
       },
-      haveGoodsTask: nextProps.formData.haveGoods,
+      haveGoodsTask: {
+        ...nextProps.formData.haveGoods,
+        approve_notes: nextProps.formData.approve_notes || [],
+      },
+      lifeResearch: {
+        ...nextProps.formData.lifeResearch,
+        approve_notes: nextProps.formData.approve_notes || [],
+      },
       grade: nextProps.formData.grade,
       grades: nextProps.formData.grades,
     });
@@ -93,7 +111,6 @@ export default class TaskView extends PureComponent {
                 role="writer"
                 operation="view"
                 formData={this.state.task}
-                onChange={this.handleChange}
               />
             }
             { !formData.channel_name && formData.task_type === 3 &&
@@ -101,7 +118,6 @@ export default class TaskView extends PureComponent {
                 role="writer"
                 operation="view"
                 formData={this.state.task}
-                onChange={this.handleChange}
               />
             }
             { formData.channel_name === '有好货' &&
@@ -109,7 +125,13 @@ export default class TaskView extends PureComponent {
                 role="writer"
                 operation="view"
                 formData={this.state.haveGoodsTask}
-                onChange={this.handleChangeGoods}
+              />
+            }
+            { formData.channel_name === '生活研究所' &&
+              <LifeInstituteForm
+                role="writer"
+                operation="view"
+                formData={this.state.lifeResearch}
               />
             }
           </div>

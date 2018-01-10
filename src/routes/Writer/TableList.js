@@ -41,16 +41,6 @@ export default class TableList extends PureComponent {
     modalLoading: false,
     extension: '',
     extensionVisible: false,
-    approveModalVisible: false,
-    approver_id: {
-      first: '',
-      second: '',
-    },
-    suggestionApproves: {
-      first: [],
-      second: [],
-    },
-    task_id: '',
   }
 
   componentDidMount() {
@@ -256,13 +246,15 @@ export default class TableList extends PureComponent {
   }
 
   handleShowAddTeamUserModal = (record) => {
-    if (record.project_id) {
-      this.handleEditSubmit(record);
-    } else {
-      this.setState({
-        approveModalVisible: true,
-        task_id: record._id,
-      });
+    if (this.validate(record)) {
+      if (record.project_id) {
+        this.handleEditSubmit(record);
+      } else {
+        this.setState({
+          approveModalVisible: true,
+          task_id: record._id,
+        });
+      }
     }
   }
   handleSpecifyApprover = () => {
@@ -293,38 +285,7 @@ export default class TableList extends PureComponent {
       }
     });
   }
-  handleSubmit = (approvers) => {
-    const { currentUser, teamUser } = this.props;
-    const { task, haveGoodsTask } = this.state;
-    this.props.dispatch({
-      type: 'task/update',
-      payload: {
-        _id: this.state.task_id,
-        take_time: new Date(),
-        current_approvers: approvers[0],
-        approvers: approvers,
-      },
-      callback: (result) => {
-        console.log(result)
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/handin',
-            payload: { _id: this.state.task_id, user_id: currentUser._id },
-            callback: (result1) => {
-              console.log(result)
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${this.state.task_id}`));
-              }
-            }
-          });
-        }
-      },
-    });
-  }
+  
   handleApproveSearch = (value, key) => {
     const data = {};
     data[key] = '';
@@ -378,6 +339,64 @@ export default class TableList extends PureComponent {
         _id: record._id,
       },
     });
+  }
+  validate = (record) => {
+    const { haveGoods } = record;
+    console.log(record)
+    if (record.channel_name === '有好货') {
+      let bOk = true;
+      this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
+        if (!err) {
+          if (!record.merchant_tag) {
+            message.warn('请填写商家标签');
+            bOk = false;
+          } else if (!haveGoods.product_url) {
+            message.warn('请选择商品宝贝');
+            bOk = false;
+          } else if (!haveGoods.cover_imgs || haveGoods.cover_imgs.length < 3) {
+            message.warn('请选择至少三张封面图');
+            bOk = false;
+          } else if (!haveGoods.white_bg_img) {
+            message.warn('请选择一张白底图');
+            bOk = false;
+          } else if (!haveGoods.long_advantage || haveGoods.long_advantage.length < 2) {
+            message.warn('请输入至少2条长亮点');
+            bOk = false;
+          } else if (!haveGoods.short_advantage || haveGoods.short_advantage.length < 2) {
+            message.warn('请输入至少2条短亮点');
+            bOk = false;
+          } else if (!haveGoods.industry_img) {
+            message.warn('请选择一张行业配图');
+            bOk = false;
+          } else if (!haveGoods.brand_logo) {
+            message.warn('请上传品牌logo');
+            bOk = false;
+          }
+        } else {
+          bOk = false;
+        }
+      })
+      return bOk;
+    } else {
+      if (!record.merchant_tag) {
+        message.warn('请填写商家标签');
+        return false;
+      } else if (!record.title || !record.title.replace(/\s+/g, '')) {
+        message.warn('请填写标题');
+        return false;
+      } else if (record.title && record.title.length > 19) {
+        message.warn('标题字数不符合要求');
+        return false;
+      } else if (!record.task_desc) {
+        message.warn('请填写内容');
+        return false;
+      } else if (!record.cover_img && record.channel_name !== '直播脚本') {
+        message.warn('请选择封面图');
+        return false;
+      } else {
+        return true;
+      }
+    }
   }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
@@ -491,16 +510,6 @@ export default class TableList extends PureComponent {
               }
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
-              <Divider type="vertical" />
-              <Tooltip placement="topRight" title="提交到平台审核方进行审核">
-                { record.project_id ?
-                  <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={() => this.handleShowAddTeamUserModal(record)}>
-                    <a>提交审核</a>
-                  </Popconfirm>
-                  :
-                  <a onClick={() => this.handleShowAddTeamUserModal(record)}>提交审核</a>
-                }
-              </Tooltip>
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id &&
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
@@ -543,12 +552,6 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
-              <Divider type="vertical" />
-              <Tooltip placement="topRight" title="提交到平台审核方进行审核">
-                <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={() => this.handleEditSubmit(record)}>
-                  <a>提交审核</a>
-                </Popconfirm>
-              </Tooltip>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
@@ -692,64 +695,6 @@ export default class TableList extends PureComponent {
               </Select>
             )}
           </FormItem>
-        </Modal>}
-
-        {approveModalVisible && <Modal
-          title="选择审核人员"
-          visible={approveModalVisible}
-          onOk={this.handleSpecifyApprover}
-          onCancel={() => {this.setState({ approveModalVisible: false })}}
-        >
-          <FormItem
-              label="一审"
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-            >
-              {getFieldDecorator('approver', {
-                initialValue: '',
-                rules: [{ required: true, message: '请选择审核人员！' }],
-              })(
-                <Select
-                  style={{ width: '100%' }}
-                  mode="combobox"
-                  optionLabelProp="children"
-                  placeholder="搜索昵称指定审核人员"
-                  notFoundContent=""
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  filterOption={false}
-                  onSearch={(value) => this.handleApproveSearch(value, 'first')}
-                  onSelect={(value) => this.handelApproveSelect(value, 'first')}
-                >
-                  {suggestionApproves.first.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-            <FormItem
-              label="二审"
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-            >
-              {getFieldDecorator('approver2', {
-                initialValue: '',
-                rules: [{ required: false, message: '请选择审核人员！' }],
-              })(
-                <Select
-                  style={{ width: '100%' }}
-                  mode="combobox"
-                  optionLabelProp="children"
-                  placeholder="搜索昵称指定审核人员"
-                  notFoundContent=""
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  filterOption={false}
-                  onSearch={(value) => this.handleApproveSearch(value, 'second')}
-                  onSelect={(value) => this.handelApproveSelect(value, 'second')}
-                >
-                  {suggestionApproves.second.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
-                </Select>
-              )}
-            </FormItem>
         </Modal>}
         <Extension visible={this.state.extensionVisible} url={this.state.extension} onCancel={this.handleCancel} />
       </div>

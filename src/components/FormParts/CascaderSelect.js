@@ -40,11 +40,14 @@ export default class CascaderSelect extends PureComponent {
             value={formData.crowd}
             onChange={this.handleTaskChange}
             options={this.state.residences}
+            disabled={this.props.operation === 'view' ? true : false}
           />
         </div>
-        <p className={styles.promptText}>围绕匹配的人群进行创作，可得到更多曝光~, 点击
-          <a target="_blank" href="https://we.taobao.com/creative/group">#查看人群说明与热点#</a>
-        </p>
+        { this.props.operation !== 'view' &&
+          <p className={styles.promptText}>围绕匹配的人群进行创作，可得到更多曝光~, 点击
+            <a target="_blank" href="https://we.taobao.com/creative/group">#查看人群说明与热点#</a>
+          </p>
+        }
       </div>
     );
   }
