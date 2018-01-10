@@ -152,7 +152,9 @@ export default class TaskEdit extends PureComponent {
   handleSave = () => {
     const { formData } = this.props;
     const { task, haveGoodsTask, lifeResearch } = this.state;
-    if (this.validate()) {
+    if (!task.title && !haveGoodsTask.title && !lifeResearch.title) {
+      message.warn('请输入标题');
+    } else {
       const query = querystring.parse(this.props.location.search.substr(1));
       const values = {
         ...this.state.task,

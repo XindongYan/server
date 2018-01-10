@@ -336,8 +336,8 @@ export default class teamTasks extends PureComponent {
           <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
           <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
           <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
           <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
+          <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
           <Tooltip placement="top" title="待发布至阿里创作平台">
             <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
               待发布

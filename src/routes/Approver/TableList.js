@@ -370,8 +370,8 @@ export default class TableList extends PureComponent {
           <RadioGroup value={data.approve_status} onChange={this.changeApproveStatus}> 
             <RadioButton value="waitingForApprove">待审核</RadioButton>
             <RadioButton value="approving">审核中</RadioButton>
-            <RadioButton value="passed">已通过</RadioButton>
             <RadioButton value="rejected">未通过</RadioButton>
+            <RadioButton value="passed">已通过</RadioButton>
           </RadioGroup>
           {currentUser.rights && currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0 &&
             <Select

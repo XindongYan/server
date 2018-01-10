@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Card, Form, Input, Select, Icon, Button, Upload, message, Tooltip } from 'antd';
 import path from 'path';
 import querystring from 'querystring';
+import { Link, routerRedux } from 'dva/router';
 import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS } from '../../constants';
 
 const FormItem = Form.Item;
@@ -52,7 +53,7 @@ export default class TaskForm extends PureComponent {
       type: 'task/clearFormData'
     });
   }
-  handleSubmit = () => {
+  handleSubmit = (type) => {
     const { teamUser, formData } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
@@ -92,11 +93,17 @@ export default class TaskForm extends PureComponent {
               approve_status: TASK_APPROVE_STATUS.created,
             },
             callback: (result) => {
+                        console.log(result)
               if (result.error) {
                 message.error(result.msg);
               } else {
                 message.success(result.msg);
-                this.props.form.resetFields();
+                if (type === 'next') {
+                  this.props.form.resetFields();
+                } else {
+                  console.log(type)
+                  this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${query.project_id}`));
+                }
               }
             },
           });
@@ -192,9 +199,21 @@ export default class TaskForm extends PureComponent {
           <FormItem
             wrapperCol={{ span: 8, offset: 4 }}
           >
-            <Button type="primary" onClick={this.handleSubmit}>
-              {operation === 'create' ? '创建' : '保存'}
-            </Button>
+            { operation === 'edit' &&
+              <Button type="primary" onClick={() => this.handleSubmit('save')}>
+                保存
+              </Button>
+            }
+            { operation === 'create' &&
+              <div>
+                <Button type="primary" onClick={() => this.handleSubmit('next')}>
+                  创建下一个
+                </Button>
+                <Button style={{ marginLeft: 80 }} type="primary" onClick={() => this.handleSubmit('finish')}>
+                  创建完成
+                </Button>
+              </div>
+            }
           </FormItem>
         </Form>
       </Card>
