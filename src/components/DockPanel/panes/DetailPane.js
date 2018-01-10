@@ -12,27 +12,27 @@ export default class DetailPane extends PureComponent {
     };
     return (
       <Card bordered={false} style={{ padding: '0 0 40px' }}>
-          <Row gutter={24} style={labelStyle}>
-            <Col span={6}>
+          <Row gutter={2} style={labelStyle}>
+            <Col span={2}>
               任务标题：
             </Col>
-            <Col span={18}>
+            <Col span={22}>
               <div>{task.name || '无'}</div>
             </Col>
           </Row>
-          <Row gutter={24} style={labelStyle}>
-            <Col span={6}>
+          <Row gutter={2} style={labelStyle}>
+            <Col span={2}>
               任务描述：
             </Col>
-            <Col span={18}>
+            <Col span={22}>
               <div style={{ wordWrap: 'break-word' }}>{task.desc || '无'}</div>
             </Col>
           </Row>
-          <Row gutter={24} style={labelStyle}>
-            <Col span={6}>
+          <Row gutter={2} style={labelStyle}>
+            <Col span={2}>
               附 件：
             </Col>
-            <Col span={18}>
+            <Col span={22}>
               { task.attachments && task.attachments.length > 0 ?
                 task.attachments.map(item => <a target="_blank" href={item.url}>{item.name}</a>)
                 : <span>无</span>
