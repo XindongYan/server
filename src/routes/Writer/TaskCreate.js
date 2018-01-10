@@ -107,6 +107,9 @@ export default class TaskCreate extends PureComponent {
       type: 'global/changeLayoutCollapsed',
       payload: false,
     });
+    this.props.dispatch({
+      type: 'task/clearFormData'
+    });
   }
 
   handleCreatGoodForm = () => {
@@ -257,12 +260,16 @@ export default class TaskCreate extends PureComponent {
     const { approver_id } = this.state;
     this.props.form.validateFields(['approver', 'approver2'], (err, values) => {
       if (!err) {
-        const approvers = [ [approver_id.first] ];
-        if(approver_id.second){
-          approvers.push([approver_id.second]);
+        if (approver_id.first) {
+          const approvers = [ [approver_id.first] ];
+          if(approver_id.second){
+            approvers.push([approver_id.second]);
+          }
+          this.setState({ modalVisible: false });
+          this.handleSubmit(approvers);
+        } else {
+          message.warn('请选择审核人')
         }
-        this.setState({ modalVisible: false });
-        this.handleSubmit(approvers);
       }
     });
   }
@@ -368,11 +375,7 @@ export default class TaskCreate extends PureComponent {
               } else {
                 message.success(result.msg);
                 query._id = result.task._id;
-                if (type === 'finish') {
-                  this.props.dispatch(routerRedux.push('/creation/writer-list'));
-                } else {
-                  this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
-                }
+                this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
               }
             }
           });
@@ -383,32 +386,79 @@ export default class TaskCreate extends PureComponent {
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
-    this.props.dispatch({
-      type: 'task/update',
-      payload: {
-        _id: query._id,
-        take_time: new Date(),
-        current_approvers: approvers[0],
-        approvers: approvers,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/handin',
-            payload: { _id: query._id, user_id: currentUser._id },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+    const { task, haveGoodsTask, approver_id, lifeResearch } = this.state;
+    if (query._id) {
+      this.props.dispatch({
+        type: 'task/update',
+        payload: {
+          _id: query._id,
+          take_time: new Date(),
+          current_approvers: approvers[0],
+          approvers: approvers,
+        },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/handin',
+              payload: { _id: query._id, user_id: currentUser._id },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                }
               }
-            }
-          });
+            });
+          }
+        },
+      });
+    } else {
+      this.props.dispatch({
+        type: 'task/addByWriter',
+        payload: {
+          ...this.state.task,
+          haveGoods: this.state.haveGoodsTask,
+          lifeResearch: this.state.lifeResearch,
+          name: task.title || haveGoodsTask.title || lifeResearch.title,
+          approve_status: TASK_APPROVE_STATUS.taken,
+          channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
+          task_type: query.task_type ? Number(query.task_type) : 1,
+          team_id: teamUser ? teamUser.team_id : null,
+          publisher_id: currentUser._id,
+          publish_time: new Date(),
+          taker_id: currentUser._id,
+          take_time: new Date(),
+          creator_id: currentUser._id,
+          daren_id: currentUser._id,
+          daren_time: new Date(),
+          project_id: query.project_id || undefined,
+          current_approvers: approvers[0],
+          approvers: approvers,
+        },
+        callback: (result) => {
+          console.log(result);
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/handin',
+              payload: { _id: result.task._id, user_id: currentUser._id },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
+                }
+              }
+            }); 
+          }
         }
-      },
-    });
+      });
+
+    }
+      
   }
   handleShowAddTeamUserModal = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
