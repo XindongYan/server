@@ -88,7 +88,7 @@ export default class TaskCreate extends PureComponent {
               cover_img: result.task.cover_img,
             },
             haveGoodsTask: { ...result.task.haveGoods },
-            // lifeResearch: result.task.lifeResearch,
+            lifeResearch: result.task.lifeResearch,
           }, () => {
             if (result.task.channel_name === '有好货') {
               this.handleCreatGoodForm();

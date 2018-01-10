@@ -9,6 +9,7 @@ import ApproveLog from '../../components/ApproveLog';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
+import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -47,6 +48,15 @@ export default class TaskView extends PureComponent {
       brand_logo: '', // 商品logo
       approve_notes: [],
     },
+    lifeResearch: {
+      title: '', // '任务标题',
+      sub_title: '', // '副标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      summary: '', // 目标人群
+      approve_notes: [],
+    },
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -70,6 +80,10 @@ export default class TaskView extends PureComponent {
       },
       haveGoodsTask: {
         ...nextProps.formData.haveGoods,
+        approve_notes: nextProps.formData.approve_notes || [],
+      },
+      lifeResearch: {
+        ...nextProps.formData.lifeResearch,
         approve_notes: nextProps.formData.approve_notes || [],
       }
     });
@@ -119,6 +133,13 @@ export default class TaskView extends PureComponent {
                 role="approve"
                 operation={operation}
                 formData={this.state.haveGoodsTask}
+              />
+            }
+            { formData.channel_name === '生活研究所' &&
+              <LifeInstituteForm
+                role="approve"
+                operation={operation}
+                formData={this.state.lifeResearch}
               />
             }
           </div>  

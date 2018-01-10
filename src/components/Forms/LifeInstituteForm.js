@@ -20,23 +20,35 @@ export default class LifeInstituteForm extends PureComponent {
     }
   }
   componentDidMount() {
-    const formData = this.props;
-    const fieldsValue = {
-      title: formData.title, // '任务标题',
-      sub_title: formData.sub_title, // '副标题',
-      summary: formData.summary, // 目标人群
-    };
-    this.props.form.setFieldsValue(fieldsValue);
+    if (this.props.operation !== 'view') {
+      const { formData } = this.props;
+      const fieldsValue = {
+        title: formData.title, // '任务标题',
+        sub_title: formData.sub_title, // '副标题',
+        summary: formData.summary, // 目标人群
+      };
+      this.props.form.setFieldsValue(fieldsValue);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    
+    if (this.props.operation !== 'view') {
+      const { formData } = nextProps;
+      if (!this.props.formData.title && nextProps.formData.title) {
+        const fieldsValue = {
+          title: formData.title, // '任务标题',
+          sub_title: formData.sub_title, // '副标题',
+          summary: formData.summary, // 目标人群
+        };
+        this.props.form.setFieldsValue(fieldsValue);
+      }
+    }
   }
+
   componentWillUnmount() {
 
   }
-  handleTaskChange = () => {
-  }
+
   handleCropCoverImg = (imgs) => {
     if (imgs[0]) {
       this.props.dispatch({
@@ -74,7 +86,11 @@ export default class LifeInstituteForm extends PureComponent {
     if (this.props.onChange) this.props.onChange({ task_desc : value });
   }
   render() {
-    const { style, operation, formData, form: { getFieldDecorator } } = this.props;
+    const { style, operation, formData } = this.props;
+    let getFieldDecorator = null;
+    if (this.props.form) {
+      getFieldDecorator = this.props.form.getFieldDecorator;
+    }
     return (
       <div className={styles.taskBox} style={style}>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
@@ -150,7 +166,7 @@ export default class LifeInstituteForm extends PureComponent {
               <p className={styles.promptGray}>请上传尺寸不小于750x422px的图片</p>
             </div>
             <div style={{ background: '#fff', padding: '20px 10px' }}>
-              <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
+              <CascaderSelect formData={formData} onChange={this.handleChange} />
             </div>
             <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
               <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>
@@ -189,15 +205,28 @@ export default class LifeInstituteForm extends PureComponent {
             <div className={styles.taskList} style={{padding: '30px 0'}}>
               <p style={{ fontSize: 18 }}>{formData.title}</p>
             </div>
-            <div className={styles.taskList} style={{ minHeight: 558 }}>
+            <div className={styles.taskList} style={{ minHeight: 400 }}>
               <div className={styles.descBox} dangerouslySetInnerHTML={{__html: formData.task_desc}}>
               </div>
             </div>
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
+              <p>封面图</p>
               <div style={{ width: 340, height:'176px', textAlign: 'center', lineHeight: '172px' }}>
                 { formData.cover_img &&
                   <img src={formData.cover_img} />
                 }
+              </div>
+            </div>
+            <div style={{ background: '#fff', padding: '20px 10px' }}>
+              <CascaderSelect operation={this.props.operation} formData={formData} />
+            </div>
+            <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
+              <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>
+              内容频道
+            </div>
+            <div className={styles.taskList}>
+              <div className={styles.descBox} style={{ margin: '10px 0 40px'}}>
+                {formData.summary}
               </div>
             </div>
           </div>
