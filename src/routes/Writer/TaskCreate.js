@@ -50,6 +50,14 @@ export default class TaskCreate extends PureComponent {
       brand_introduction: '', // 品牌介绍
       brand_logo: '', // 商品logo
     },
+    lifeResearch: {
+      title: '', // '任务标题',
+      sub_title: '', // '副标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      summary: '', // 目标人群
+    },
     approveModalVisible: false,
     approver_id: {
       first: '',
@@ -79,7 +87,8 @@ export default class TaskCreate extends PureComponent {
               task_desc: result.task.task_desc,
               cover_img: result.task.cover_img,
             },
-            haveGoodsTask: { ...result.task.haveGoods }
+            haveGoodsTask: { ...result.task.haveGoods },
+            // lifeResearch: result.task.lifeResearch,
           }, () => {
             if (result.task.channel_name === '有好货') {
               this.handleCreatGoodForm();
@@ -113,7 +122,7 @@ export default class TaskCreate extends PureComponent {
   }
   validate = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { task, haveGoodsTask } = this.state;
+    const { task, haveGoodsTask, lifeResearch } = this.state;
     if (query.channel_name === '有好货') {
       let bOk = true;
       this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
@@ -141,6 +150,28 @@ export default class TaskCreate extends PureComponent {
             bOk = false;
           } else if (!haveGoodsTask.brand_logo) {
             message.warn('请上传品牌logo');
+            bOk = false;
+          }
+        } else {
+          bOk = false;
+        }
+      })
+      return bOk;
+    } else if (query.channel_name === '生活研究所') {
+      let bOk = true;
+      this.props.form.validateFields(['title','sub_title','summary'], (err, val) => {
+        if (!err) {
+          if (!task.merchant_tag) {
+            message.warn('请填写商家标签');
+            bOk = false;
+          } else if (!lifeResearch.task_desc) {
+            message.warn('请填写内容');
+            bOk = false;
+          } else if (!lifeResearch.crowd || lifeResearch.crowd.length <= 0) {
+            message.warn('请选择目标人群');
+            bOk = false;
+          } else if (!lifeResearch.cover_img) {
+            message.warn('请上传封面图');
             bOk = false;
           }
         } else {
@@ -241,6 +272,9 @@ export default class TaskCreate extends PureComponent {
   handleChangeGoods = (task) => {
     this.setState({ haveGoodsTask: { ...this.state.haveGoodsTask, ...task } });
   }
+  handleChangeLife = (task) => {
+    this.setState({ lifeResearch: { ...this.state.lifeResearch, ...task } });
+  }
   handleModalVisible = (flag) => {
     this.setState({
       approveModalVisible: !!flag,
@@ -250,8 +284,8 @@ export default class TaskCreate extends PureComponent {
   handleSave = (type) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
-    const { task, haveGoodsTask, approver_id } = this.state;
-    if (!task.title && !haveGoodsTask.title) {
+    const { task, haveGoodsTask, approver_id, lifeResearch } = this.state;
+    if (!task.title && !haveGoodsTask.title && !lifeResearch.title) {
       message.warn('请输入标题');
     } else {
       if (query._id) {
@@ -260,8 +294,9 @@ export default class TaskCreate extends PureComponent {
           payload: {
             ...this.state.task,
             haveGoods: this.state.haveGoodsTask,
+            lifeResearch: this.state.lifeResearch,
             _id: query._id,
-            name: task.title || haveGoodsTask.title,
+            name: task.title || haveGoodsTask.title || lifeResearch.title,
           },
           callback: (result) => {
             if (result.error) {
@@ -279,7 +314,8 @@ export default class TaskCreate extends PureComponent {
             payload: {
               ...this.state.task,
               haveGoods: this.state.haveGoodsTask,
-              name: task.title || haveGoodsTask.title,
+              lifeResearch: this.state.lifeResearch,
+              name: task.title || haveGoodsTask.title || lifeResearch.title,
               approve_status: TASK_APPROVE_STATUS.taken,
               channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
               task_type: query.task_type ? Number(query.task_type) : 1,
@@ -311,7 +347,8 @@ export default class TaskCreate extends PureComponent {
             payload: {
               ...this.state.task,
               haveGoods: this.state.haveGoodsTask,
-              name: task.title || haveGoodsTask.title,
+              lifeResearch: this.state.lifeResearch,
+              name: task.title || haveGoodsTask.title || lifeResearch.title,
               approve_status: TASK_APPROVE_STATUS.taken,
               channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
               task_type: query.task_type ? Number(query.task_type) : 1,
@@ -346,7 +383,6 @@ export default class TaskCreate extends PureComponent {
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
-    const { task, haveGoodsTask } = this.state;
     this.props.dispatch({
       type: 'task/update',
       payload: {
@@ -452,8 +488,8 @@ export default class TaskCreate extends PureComponent {
                 form={this.props.form}
                 role="writer"
                 operation="create"
-                formData={haveGoodsTask}
-                onChange={this.handleChangeGoods}
+                formData={this.state.lifeResearch}
+                onChange={this.handleChangeLife}
               />
             }
           </div>
@@ -474,6 +510,10 @@ export default class TaskCreate extends PureComponent {
               :
               <Button onClick={this.handleShowAddTeamUserModal}>提交审核</Button>
             }
+            </Tooltip>
+
+            <Tooltip placement="top" title="创建并完成">
+              <Button onClick={() => this.handleSave('finish')}>完成</Button>
             </Tooltip>
             <Tooltip placement="top" title="保存到待完成列表">
               <Button onClick={() => this.handleSave('save')}>保存</Button>

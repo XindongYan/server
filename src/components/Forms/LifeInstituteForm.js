@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Input, Icon, message } from 'antd';
-import styles from './WeitaoForm.less';
+import { Input, Icon, message, Form } from 'antd';
+import styles from './LifeInstituteForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from '../FormParts/CascaderSelect';
 
+const FormItem = Form.Item;
 @connect(state => ({
 
 }))
@@ -19,21 +20,22 @@ export default class LifeInstituteForm extends PureComponent {
     }
   }
   componentDidMount() {
+    const formData = this.props;
+    const fieldsValue = {
+      title: formData.title, // '任务标题',
+      sub_title: formData.sub_title, // '副标题',
+      summary: formData.summary, // 目标人群
+    };
+    this.props.form.setFieldsValue(fieldsValue);
+  }
 
+  componentWillReceiveProps(nextProps) {
+    
   }
   componentWillUnmount() {
 
   }
-  handleDescChange = (content) => {
-    if (this.props.onChange) this.props.onChange({ task_desc: content });
-  }
-  handleTitleChange = (e) => {
-    if (this.props.onChange) this.props.onChange({ title: e.target.value });
-  }
-  handleTaskChange = (value, key) => {
-    const data = {};
-    data[key] = value;
-    if (this.props.onChange) this.props.onChange(data);
+  handleTaskChange = () => {
   }
   handleCropCoverImg = (imgs) => {
     if (imgs[0]) {
@@ -63,8 +65,16 @@ export default class LifeInstituteForm extends PureComponent {
   deleteCover = () => {
     if (this.props.onChange) this.props.onChange({ cover_img: '' });
   }
+  handleChange = (value, key) => {
+    const data = {};
+    data[key] = value;
+    if (this.props.onChange) this.props.onChange(data);
+  }
+  handleDescChange = (value) => {
+    if (this.props.onChange) this.props.onChange({ task_desc : value });
+  }
   render() {
-    const { style, operation, formData } = this.props;
+    const { style, operation, formData, form: { getFieldDecorator } } = this.props;
     return (
       <div className={styles.taskBox} style={style}>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
@@ -72,34 +82,58 @@ export default class LifeInstituteForm extends PureComponent {
         </div>
         { (operation==='edit' || operation === 'create') &&
           <div className={styles.taskContentBox}>
-            <div className={styles.taskList}>
-              <div className={styles.taskListInp}>
-                <Input type="text" id="task-title" value={formData.title} onChange={this.handleTitleChange} placeholder="请在这里输入标题"/>
-                <span style={{ color: formData.title && formData.title.length > 19 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/19</span>
-              </div>
-              { formData.title && formData.title.length > 19 &&
-                <span className={styles.promptRed}>标题字数不能超过19个字</span>
-              }
+            <div className={styles.taskListInp} style={{ paddingTop: 10 }}>
+              <FormItem>
+                {getFieldDecorator('title', {
+                  rules: [{
+                    required: true, message: '标题不能为空',
+                  }, {
+                    min: 6, message: '文字长度太短, 要求长度最少为6',
+                  }, {
+                    max: 18, message: '文字长度太长, 要求长度最大为18',
+                  }, {
+                    whitespace: true, message: '标题不能为空格'
+                  }],
+                })(
+                  <Input
+                    style={{ fontSize: '16px', border: 'none' }}
+                    onChange={(e) => this.handleChange(e.target.value, 'title')}
+                    placeholder="请在这里输入标题"
+                  />
+                )}
+
+              </FormItem>
+                <span style={{ color: formData.title && formData.title.length > 18 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/18</span>
             </div>
-
-            {
-            //   <div className={styles.taskList}>
-            //   <div className={styles.taskListInp}>
-            //     <Input type="text" id="task-title" value={formData.title} onChange={this.handleTitleChange} placeholder="请在这里输入标题"/>
-            //     <span style={{ color: formData.title && formData.title.length > 19 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/19</span>
-            //   </div>
-            //   { formData.title && formData.title.length > 19 &&
-            //     <span className={styles.promptRed}>标题字数不能超过19个字</span>
-            //   }
-            // </div>
-
-            }
+            <div className={styles.taskListInp}>
+              <FormItem>
+                {getFieldDecorator('sub_title', {
+                  rules: [{
+                    required: true, message: '不能为空',
+                  }, {
+                    min: 6, message: '文字长度太短, 要求长度最少为6',
+                  }, {
+                    max: 18, message: '文字长度太长, 要求长度最大为18',
+                  }, {
+                    whitespace: true, message: '标题不能为空格'
+                  }],
+                })(
+                  <Input
+                    style={{ fontSize: '16px', border: 'none' }}
+                    onChange={(e) => this.handleChange(e.target.value, 'sub_title')}
+                    placeholder="请输入18字内的副标题"
+                  />
+                )}
+              </FormItem>
+              <span style={{ color: formData.sub_title && formData.sub_title.length > 18 ? '#f00' : '#444' }}>{ formData.sub_title ? formData.sub_title.length : 0}/18</span>
+            </div>
+          
             <div className={styles.taskList}>
               <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
 
-            <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
+            <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 10 }}>
               <p>封面图</p>
               <div className={styles.coverPicBox}>
                 <div className={styles.upCover} onClick={this.uploadCoverImg} style={{display: formData.cover_img ? 'none' : 'block'}}>
@@ -115,12 +149,39 @@ export default class LifeInstituteForm extends PureComponent {
               </div>
               <p className={styles.promptGray}>请上传尺寸不小于750x422px的图片</p>
             </div>
-
             <div style={{ background: '#fff', padding: '20px 10px' }}>
               <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
             </div>
-            
-            
+            <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
+              <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>
+              内容频道
+            </div>
+            <div className={styles.taskList}>
+              <div className={styles.textareaBox}>
+                <FormItem>
+                  {getFieldDecorator('summary', {
+                    rules: [{
+                      required: true, message: '不能为空',
+                    }, {
+                      min: 50, message: '文字长度太短, 要求长度最少为50',
+                    }, {
+                      max: 100, message: '文字长度太长, 要求长度最多为100',
+                    }, {
+                      whitespace: true, message: '内容不能为空格'
+                    }],
+                  })(
+                    <textarea
+                      className={styles.textarea}
+                      onChange={(e) => this.handleChange(e.target.value, 'summary')}
+                      placeholder="请输入50-100个字以内的摘要">
+                    </textarea>
+                  )}
+                </FormItem>
+                <span style={{ color: formData.summary.length>100 ? 'red' : '#666' }} className={styles.textareaNum}>
+                  {formData.summary.length}/100
+                </span>
+              </div>
+            </div>
           </div>
         }
         { operation==='view' &&
