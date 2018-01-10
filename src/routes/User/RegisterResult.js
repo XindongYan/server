@@ -8,7 +8,7 @@ const title = <div className={styles.title}>你的账户注册成功</div>;
 
 const actions = (
   <div className={styles.actions}>
-    <Link to="/"><Button size="large">去首页</Button></Link>
+    <Link to="/"><Button size="large">进入</Button></Link>
   </div>
 );
 
