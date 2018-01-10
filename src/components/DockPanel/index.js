@@ -2,8 +2,11 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Button, Spin, Tabs, Breadcrumb, Row, Col } from 'antd';
 import moment from 'moment';
+import DetailPane from './panes/DetailPane';
 import AnalyzePane from './panes/AnalyzePane';
 import OperationPane from './panes/OperationPane';
+import TaskStatusColumn from '../TaskStatusColumn';
+
 
 import styles from './index.less';
 const TabPane = Tabs.TabPane;
@@ -68,9 +71,11 @@ export default class DockPanel extends PureComponent {
 
             <div className={styles['dock-panel-head']}>
               <div className={styles['dock-panel-head-title']}>
-                <Breadcrumb>
-                  <Breadcrumb.Item><span style={{ fontSize: '16px' }}>{formData.id}</span></Breadcrumb.Item>
+                <Breadcrumb separator="  ">
+                  <Breadcrumb.Item><span style={{ fontSize: '16px', color: '#000' }}>{formData.id}</span></Breadcrumb.Item>
+                  <Breadcrumb.Item><TaskStatusColumn status={formData.approve_status}/></Breadcrumb.Item>
                 </Breadcrumb>
+                
                 <div className={styles['dock-panel-head-close']}>
                   <Button shape="circle" icon="close" onClick={this.handleClose} />
                 </div>
@@ -87,6 +92,9 @@ export default class DockPanel extends PureComponent {
             </div>
             <div className={[styles['dock-panel-body'], styles['with-header-extra']].join(' ')}>
               <Tabs activeKey={activeKey} onChange={this.handleActiveKeyChange}>
+                <TabPane tab="详情" key="DetailPane">
+                  <DetailPane task={formData}/>
+                </TabPane>
                 <TabPane tab="动态" key="OperationPane">
                   <OperationPane _id={_id}/>
                 </TabPane>
