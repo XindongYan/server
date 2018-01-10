@@ -203,7 +203,7 @@ export default class TaskEdit extends PureComponent {
       } else if (!task.task_desc) {
         message.warn('请填写内容');
         return false;
-      } else if (!task.cover_img && query.channel_name !== '直播脚本') {
+      } else if (!task.cover_img && this.props.formData.task_type !== 3) {
         message.warn('请选择封面图');
         return false;
       } else {

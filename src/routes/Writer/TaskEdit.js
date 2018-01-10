@@ -102,6 +102,42 @@ export default class TaskEdit extends PureComponent {
     };
     this.props.form.setFieldsValue(fieldsValue);
   }
+  handleSubmit = () => {
+    const { currentUser, formData } = this.props;
+    const { task, haveGoodsTask } = this.state;
+    if (this.validate()) {
+      const query = querystring.parse(this.props.location.search.substr(1));
+      const values = {
+        ...this.state.task,
+        haveGoods: this.state.haveGoodsTask,
+        _id: query._id,
+      }
+      if (!formData.project_id) {
+        values.name = formData.channel_name === '有好货' ? haveGoodsTask.title : task.title;
+      }
+      this.props.dispatch({
+        type: 'task/update',
+        payload: values,
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/handin',
+              payload: { _id: query._id, user_id: currentUser._id },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+  }
   validate = () => {
     const { task, haveGoodsTask } = this.state;
     if (this.props.formData.channel_name === '有好货') {
@@ -244,6 +280,9 @@ export default class TaskEdit extends PureComponent {
                 }
               </dl>
             }
+            <Popconfirm placement="top" title="确认提交审核?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
+              <Button>提交审核</Button>
+            </Popconfirm>
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>
