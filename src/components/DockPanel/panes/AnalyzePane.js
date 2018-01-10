@@ -31,8 +31,6 @@ export default class AnalyzePane extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps.task._id && nextProps.task._id !== this.props.task._id) {
       this.handleGetAnalyzeData(nextProps.task);
-    } else {
-      this.setState({ summary: {} });
     }
   }
   componentWillUnmount() {

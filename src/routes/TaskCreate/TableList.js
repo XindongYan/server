@@ -343,11 +343,12 @@ export default class TableList extends PureComponent {
       payload: { project_id: query.project_id, approve_status: e.target.value, },
     });
   }
-  handleShowDockPanel = (record) => {
+  handleShowDockPanel = (record, activeKey) => {
     this.props.dispatch({
       type: 'task/showDockPanel',
       payload: {
         _id: record._id,
+        activeKey,
       },
     });
   }
@@ -366,7 +367,7 @@ export default class TableList extends PureComponent {
       {
         title: '任务ID',
         dataIndex: 'id',
-        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record)}>{val}</a>,
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'OperationPane')}>{val}</a>,
       },
       {
         title: '内容标题',
@@ -446,7 +447,12 @@ export default class TableList extends PureComponent {
               </p>
             );
           } else {
-            return (''
+            return (
+              <div>
+                <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                  分析
+                </a>
+              </div>
             );
           }
         },

@@ -12,6 +12,7 @@ const TabPane = Tabs.TabPane;
   currentUser: state.user.currentUser,
   visible: state.task.dockPanel.visible,
   _id: state.task.dockPanel._id,
+  activeKey: state.task.dockPanel.activeKey,
   formData: state.task.formData,
 }))
 
@@ -34,7 +35,12 @@ export default class DockPanel extends PureComponent {
       type: 'task/hideDockPanel'
     });
   }
-  
+  handleActiveKeyChange = (activeKey) => {
+    this.props.dispatch({
+      type: 'task/changeDockPanelActiveKey',
+      payload: { activeKey },
+    });
+  }
   renderExtraItem = (label, value, span) => {
     return (
       <Col span={span}>
@@ -47,7 +53,7 @@ export default class DockPanel extends PureComponent {
     );
   }
   render() {
-    const { visible, _id, formData } = this.props;
+    const { visible, _id, formData, activeKey } = this.props;
     const maskClassNames = [styles['dock-panel-mask']];
     const panelClassNames = [styles['dock-panel'], styles['dock-panel-lg']];
     if (!visible) {
@@ -80,12 +86,12 @@ export default class DockPanel extends PureComponent {
               </div>
             </div>
             <div className={[styles['dock-panel-body'], styles['with-header-extra']].join(' ')}>
-              <Tabs>
-                <TabPane tab="分析" key="1">
-                  <AnalyzePane task={formData}/>
-                </TabPane>
-                <TabPane tab="动态" key="2">
+              <Tabs activeKey={activeKey} onChange={this.handleActiveKeyChange}>
+                <TabPane tab="动态" key="OperationPane">
                   <OperationPane _id={_id}/>
+                </TabPane>
+                <TabPane tab="分析" key="AnalyzePane">
+                  <AnalyzePane task={formData}/>
                 </TabPane>
               </Tabs>
             </div>
