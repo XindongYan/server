@@ -511,10 +511,6 @@ export default class TaskCreate extends PureComponent {
               <Button onClick={this.handleShowAddTeamUserModal}>提交审核</Button>
             }
             </Tooltip>
-
-            <Tooltip placement="top" title="创建并完成">
-              <Button onClick={() => this.handleSave('finish')}>完成</Button>
-            </Tooltip>
             <Tooltip placement="top" title="保存到待完成列表">
               <Button onClick={() => this.handleSave('save')}>保存</Button>
             </Tooltip>
