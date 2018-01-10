@@ -332,11 +332,12 @@ export default class TableList extends PureComponent {
       },
     });
   }
-  handleShowDockPanel = (record) => {
+  handleShowDockPanel = (record, activeKey) => {
     this.props.dispatch({
       type: 'task/showDockPanel',
       payload: {
         _id: record._id,
+        activeKey,
       },
     });
   }
@@ -405,7 +406,7 @@ export default class TableList extends PureComponent {
       {
         title: '任务ID',
         dataIndex: 'id',
-        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record)}>{val}</a>,
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'OperationPane')}>{val}</a>,
       },
       {
         title: '名称',
@@ -573,6 +574,10 @@ export default class TableList extends PureComponent {
                 推广
               </a>
               <Divider type="vertical" />
+              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                分析
+              </a>
+              <Divider type="vertical" />
               <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
                 查看
               </a>
@@ -583,6 +588,10 @@ export default class TableList extends PureComponent {
             <div>
               <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
                 推广
+              </a>
+              <Divider type="vertical" />
+              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                分析
               </a>
             </div>
           );

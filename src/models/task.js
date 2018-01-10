@@ -41,6 +41,7 @@ export default {
     dockPanel: {
       visible: false,
       _id: '',
+      activeKey: 'OperationPane',
     },
   },
 
@@ -289,6 +290,15 @@ export default {
           ...state.dockPanel,
           visible: false,
           _id: '',
+        },
+      };
+    },
+    changeDockPanelActiveKey(state, action) {
+      return {
+        ...state,
+        dockPanel: {
+          ...state.dockPanel,
+          activeKey: action.payload.activeKey,
         },
       };
     },

@@ -239,11 +239,12 @@ export default class teamTasks extends PureComponent {
       this.handleSearch(e.target.value, 'search');
     }
   }
-  handleShowDockPanel = (record) => {
+  handleShowDockPanel = (record, activeKey) => {
     this.props.dispatch({
       type: 'task/showDockPanel',
       payload: {
         _id: record._id,
+        activeKey,
       },
     });
   }
@@ -264,7 +265,7 @@ export default class teamTasks extends PureComponent {
         dataIndex: 'id',
         width: 80,
         fixed: 'left',
-        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record)}>{val}</a>,
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'OperationPane')}>{val}</a>,
       },
       {
         title: '内容标题',
@@ -312,7 +313,11 @@ export default class teamTasks extends PureComponent {
         fixed: 'right',
         render: (record) => {
           return (
-            ''
+            <div>
+              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                分析
+              </a>
+            </div>
           );
         },
       },
