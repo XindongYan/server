@@ -116,6 +116,7 @@ export default class AnalyzePane extends PureComponent {
             {summary[item.value] ? summary[item.value].value : 0}
           </h2>
           </Card.Grid>)}
+        {summary.updateTime && <div style={{ float: 'right', color: 'grey', marginTop: 10 }}><span>数据更新时间：</span><span>{moment(new Date(summary.updateTime)).format('YYYY年MM月DD日')}</span></div>}
       </Card>
     );
   }
