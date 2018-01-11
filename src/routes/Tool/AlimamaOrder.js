@@ -180,11 +180,12 @@ export default class AlimamaOrder extends PureComponent {
           <div className={styles.modalOuterBox}>
             <div className={styles.modalBox}>
               <div className={styles.clearFix}>
+                <Icon type="info-circle-o" style={{ float: 'left', fontSize: 36, marginRight: 10, color: '#faad14', marginRight: 10 }} />
                 <span style={{ float: 'left', display: 'inline-block', height: 40, fontSize: 18, lineHeight: '40px' }}>是否已成功登陆阿里妈妈网站</span>
               </div>
               <div className={styles.modalButtonBox}>
                 <Button type="primary" onClick={this.handleLoginOk} style={{ marginRight: 20 }}>否</Button>
-                <Button type="primary" onClick={this.handleLoginOk}>是的</Button>
+                <Button type="primary" onClick={this.handleLoginOk}>是</Button>
               </div>
             </div>
           </div>

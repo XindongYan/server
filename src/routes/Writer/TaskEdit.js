@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
-import { Card, Button, Popconfirm, message, Form } from 'antd';
+import { Card, Button, Popconfirm, message, Form, Tooltip } from 'antd';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import $ from 'jquery';
 import Annotation from '../../components/Annotation';
@@ -326,9 +326,11 @@ export default class TaskEdit extends PureComponent {
                 }
               </dl>
             }
-            <Popconfirm placement="top" title="确认提交审核?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
-              <Button>提交审核</Button>
-            </Popconfirm>
+            <Tooltip placement="top" title="提交到平台审核方进行审核">
+              <Popconfirm overlayStyle={{ width: 200, paddingBottom: 30 }} placement="top" title="确认提交审核?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
+                <Button>提交审核</Button>
+              </Popconfirm>
+            </Tooltip>
             <Button onClick={this.handleSave}>保存</Button>
           </div>
         </div>

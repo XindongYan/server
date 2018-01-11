@@ -188,7 +188,7 @@ export default class TableList extends PureComponent {
     const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
-      if (!err) {
+      if (!err && values.target_user_id.length >= 24) {
         dispatch({
           type: 'project/darenTasks',
           payload: {
@@ -210,6 +210,8 @@ export default class TableList extends PureComponent {
             }
           },
         });
+      } else {
+        message.warn('请选择达人！');
       }
     });
   }

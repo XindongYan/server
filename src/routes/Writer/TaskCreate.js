@@ -554,7 +554,7 @@ export default class TaskCreate extends PureComponent {
           <div className={styles.submitBox}>
             <Tooltip placement="top" title="提交到平台审核方进行审核">
             { query.project_id ?
-              <Popconfirm placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
+              <Popconfirm overlayStyle={{ width: 200, paddingBottom: 30 }} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
                 <Button>提交审核</Button>
               </Popconfirm>
               :

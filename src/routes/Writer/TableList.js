@@ -343,7 +343,6 @@ export default class TableList extends PureComponent {
   }
   validate = (record) => {
     const { haveGoods } = record;
-    console.log(record)
     if (record.channel_name === '有好货') {
       let bOk = true;
       this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
@@ -511,8 +510,8 @@ export default class TableList extends PureComponent {
               }
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
-              {!record.project_id && <Divider type="vertical" />}
-              {!record.project_id &&
+              {!record.creator_id || record.creator_id === currentUser._id && <Divider type="vertical" />}
+              {!record.creator_id || record.creator_id === currentUser._id &&
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
                   <a>删除</a>
                 </Popconfirm>
