@@ -97,9 +97,7 @@ export default class Register extends Component {
             type: `register/${ this.state.exists ? 'oldSubmit' : 'submit'}`,
             payload: { ...values, avatar: this.state.avatars[num] },
             callback: (result) => {
-              if (result.error) {
-                message.error(result.msg);
-              } else {
+              if (!result.error) {
                 this.props.dispatch(routerRedux.push('/user/register-result'));
               }
             }

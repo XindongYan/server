@@ -10,12 +10,13 @@ export default {
   },
 
   effects: {
-    *submit({ payload }, { call, put }) {
+    *submit({ payload, callback }, { call, put }) {
       yield put({
         type: 'changeSubmitting',
         payload: true,
       });
       const response = yield call(fakeRegister, payload);
+      if (callback) callback(response);
       yield put({
         type: 'registerHandle',
         payload: { error: response.error, msg: response.msg },
@@ -25,12 +26,13 @@ export default {
         payload: false,
       });
     },
-    *oldSubmit({ payload }, { call, put }) {
+    *oldSubmit({ payload, callback }, { call, put }) {
       yield put({
         type: 'changeSubmitting',
         payload: true,
       });
       const response = yield call(oldRegister, payload);
+      if (callback) callback(response);
       yield put({
         type: 'registerHandle',
         payload: { msg: response.msg },
