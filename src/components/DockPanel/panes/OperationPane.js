@@ -11,10 +11,12 @@ export default class OperationPane extends PureComponent {
 
   }
   componentDidMount() {
-    this.props.dispatch({
-      type: 'task/fetchOperationRecords',
-      payload: { _id: this.props._id },
-    });
+    if (this.props._id) {
+      this.props.dispatch({
+        type: 'task/fetchOperationRecords',
+        payload: { _id: this.props._id },
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps._id && nextProps._id !== this.props._id) {
