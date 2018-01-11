@@ -279,7 +279,7 @@ export default class TableList extends PureComponent {
           },
         });
       } else {
-        message.warn('请选择写手！')
+        message.warn('请选择写手！');
       }
     });
   }

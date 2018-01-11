@@ -207,7 +207,7 @@ export default class TaskCreate extends PureComponent {
     const { currentUser, teamUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     const payload = {
-      name: this.state.task.title || this.state.haveGoodsTask.title,
+      name: this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title,
       project_id: query.project_id,
       creator_id: currentUser._id,
     };
