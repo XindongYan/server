@@ -75,3 +75,7 @@ export async function queryProject(params) {
 export async function queryTaskSquareProjects(params) {
   return request(`/api/task/projects/taskSquare?${stringify(params)}`);
 }
+
+export async function queryTaskStatisticsByApproveStatus(params) {
+  return request(`/api/task/project/chart/approve_status?${stringify(params)}`);
+}
