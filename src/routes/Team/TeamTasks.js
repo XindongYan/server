@@ -328,6 +328,16 @@ export default class teamTasks extends PureComponent {
       width: 80,
       render: val => val ? val.nickname : '',
     };
+    const pushTime = {
+      title: '发布时间',
+      dataIndex: 'publish_taobao_time',
+      render: val => ( 
+        val ?
+        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+          {moment(val).fromNow()}
+        </Tooltip> : ''
+      ),
+    };
     const gridStyle = {
       width: '32%',
       margin: '5px',
@@ -341,7 +351,7 @@ export default class teamTasks extends PureComponent {
       }),
     };
     if (teamTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
-      columns.push(daren_nickname, opera);
+      columns.push(daren_nickname, pushTime, opera);
     } else {
       columns.push(opera);
     }
