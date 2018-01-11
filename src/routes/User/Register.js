@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
-import { Form, Input, Button, Select, Row, Col, Popover, Progress, Alert } from 'antd';
+import { Form, Input, Button, Select, Row, Col, Popover, Progress, Alert, message } from 'antd';
 import styles from './Register.less';
+
+import { queryUserBySms } from '../../services/user';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -51,13 +53,12 @@ export default class Register extends Component {
       'http://oyufgm5i2.bkt.clouddn.com/avator_18.png',
       'http://oyufgm5i2.bkt.clouddn.com/avator_19.png',
       'http://oyufgm5i2.bkt.clouddn.com/avator_20.png',
-    ]
+    ],
+    exists: false,
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.register.status === 'ok') {
-      this.props.dispatch(routerRedux.push('/user/register-result'));
-    }
+    
   }
 
   componentWillUnmount() {
@@ -93,12 +94,34 @@ export default class Register extends Component {
       (err, values) => {
         if (!err) {
           this.props.dispatch({
-            type: 'register/submit',
+            type: `register/${ this.state.exists ? 'oldSubmit' : 'submit'}`,
             payload: { ...values, avatar: this.state.avatars[num] },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                this.props.dispatch(routerRedux.push('/user/register-result'));
+              }
+            }
           });
         }
       }
     );
+  }
+
+  handleSmsCodeChange = async (e) => {
+    const sms_code = e.target.value;
+    if (sms_code && sms_code.length === 6) {
+      const phone = this.props.form.getFieldValue('phone');
+      const result = await queryUserBySms({ phone, sms_code });
+      if (!result.error && result.user) {
+        this.setState({ exists: true });
+        this.props.form.setFieldsValue({
+          nickname: result.user.nick || result.user.name,
+          name: result.user.name,
+        });
+      }
+    }
   }
 
   renderMessage = (message) => {
@@ -120,31 +143,9 @@ export default class Register extends Component {
         <h3>填写用户信息</h3>
         <Form onSubmit={this.handleSubmit}>
           {
-            register.status === 'error' &&
-            this.renderMessage(register.msg ? register.msg : '')
+            register.msg &&
+            this.renderMessage(register.msg)
           }
-          <FormItem className={styles.formItems}>
-            {getFieldDecorator('nickname', {
-              rules: [{
-                required: true, message: '请输入昵称！',
-              }, {
-                type: 'string', message: '昵称不能为空！',
-              }],
-            })(
-              <Input placeholder="最多10字" maxLength="10" size="large" placeholder="昵称" />
-            )}
-          </FormItem>
-          <FormItem>
-            {getFieldDecorator('name', {
-              rules: [{
-                required: true, message: '请输入姓名！',
-              }, {
-                type: 'string', message: '姓名不能为空！',
-              }],
-            })(
-              <Input placeholder="最多10字" maxLength="10" size="large" placeholder="姓名" />
-            )}
-          </FormItem>
           <FormItem>
             <InputGroup size="large" className={styles.mobileGroup} compact>
               <FormItem style={{ width: '20%' }}>
@@ -181,6 +182,7 @@ export default class Register extends Component {
                   <Input
                     size="large"
                     placeholder="验证码"
+                    onChange={this.handleSmsCodeChange}
                   />
                 )}
               </Col>
@@ -196,8 +198,30 @@ export default class Register extends Component {
               </Col>
             </Row>
           </FormItem>
-
+          <FormItem className={styles.formItems}>
+            {getFieldDecorator('nickname', {
+              rules: [{
+                required: true, message: '请输入昵称！',
+              }, {
+                type: 'string', message: '昵称不能为空！',
+              }],
+            })(
+              <Input placeholder="最多10字" maxLength="10" size="large" placeholder="昵称" />
+            )}
+          </FormItem>
           <FormItem>
+            {getFieldDecorator('name', {
+              rules: [{
+                required: true, message: '请输入姓名！',
+              }, {
+                type: 'string', message: '姓名不能为空！',
+              }],
+            })(
+              <Input placeholder="最多10字" maxLength="10" size="large" placeholder="姓名" />
+            )}
+          </FormItem>
+
+          {!this.state.exists && <FormItem>
             {getFieldDecorator('invitation_code', {
               rules: [{
                 required: true, message: '请输入邀请码！',
@@ -207,7 +231,7 @@ export default class Register extends Component {
             })(
               <Input size="large" placeholder="邀请码" />
             )}
-          </FormItem>
+          </FormItem>}
           <FormItem style={{ marginTop: 30}}>
             <Button size="large" loading={register.submitting} className={styles.submit} type="primary" htmlType="submit">
               确定

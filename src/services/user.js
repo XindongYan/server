@@ -1,3 +1,4 @@
+import { stringify } from 'qs';
 import request from '../utils/request';
 
 export async function queryCurrent() {
@@ -11,4 +12,8 @@ export async function updateUser(params) {
       ...params,
     },
   });
+}
+
+export async function queryUserBySms(params) {
+  return request(`/api/user/by/sms_code?${stringify(params)}`);
 }
