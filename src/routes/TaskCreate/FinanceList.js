@@ -111,35 +111,44 @@ export default class FinanceList extends PureComponent {
         )
       },
       {
-        title: '创建时间',
-        dataIndex: 'create_time',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+        title: '姓名',
+        key: 'username',
+        render: (record) => record.taker_id ? record.taker_id.name : '',
       },
       {
-        title: '渠道',
-        dataIndex: 'channel_name',
+        title: '昵称',
+        key: 'nickname',
+        render: (record) => record.taker_id ? record.taker_id.nickname : '',
       },
-      {
-        title: '商家标签',
-        dataIndex: 'merchant_tag',
-        render: (record) => (
-          <TaskNameColumn text={record} length={10} />
-        )
-      },
-      {
-        title: '接单人',
-        dataIndex: 'taker_id',
-        render: (val) => val ? val.nickname : '',
-      },
-      {
-        title: '接单时间',
-        dataIndex: 'take_time',
-        render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
-      },
+      // {
+      //   title: '分数',
+      //   dataIndex: 'taker_id',
+      //   render: (val) => val ? val.nickname : '',
+      // },
       {
         title: '状态',
         dataIndex: 'approve_status',
         render: val => (<TaskStatusColumn status={val}/>),
+      },
+      {
+        title: '稿费',
+        dataIndex: 'price',
+        render: val => val ? val : '',
+      },
+      {
+        title: '支付宝',
+        key: 'alipay_number',
+        render: (record) => record.taker_id ? record.taker_id.alipay_number : '',
+      },
+      {
+        title: '发放者',
+        dataIndex: 'payoff_id',
+        render: val => val ? val.name : '',
+      },
+      {
+        title: '支付方式',
+        dataIndex: 'payoff_type',
+        render: val => val ? val : '',
       },
       {
         title: '佣金发放状态',

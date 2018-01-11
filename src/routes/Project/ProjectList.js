@@ -355,13 +355,14 @@ export default class ProjectList extends PureComponent {
         <div className={styles.searchBox}>
           <div>
             <RadioGroup value={type} onChange={this.changeType}> 
+              <RadioButton value={-4}>全部</RadioButton>
               <RadioButton value={1}>接单活动</RadioButton>
               <RadioButton value={2}>投稿活动</RadioButton>
             </RadioGroup>
           </div>
           <div>
             <RadioGroup value={status} onChange={this.changeStatus}> 
-              <RadioButton value={1}>已创建</RadioButton>
+              <RadioButton value={-4}>全部</RadioButton>
               <RadioButton value={2}>已上架</RadioButton>
               <RadioButton value={3}>已下架</RadioButton>
             </RadioGroup>

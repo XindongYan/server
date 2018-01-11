@@ -54,6 +54,7 @@ export const PROJECT_LEVELS = [
 ];
 
 export const TASK_APPROVE_STATUS = {
+  all: -4,
   created: -3,
   published: -2,
   taken: -1,

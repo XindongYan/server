@@ -8,8 +8,8 @@ export default {
     data: {
       list: [],
       pagination: {},
-      status: 1,
-      type: 1,
+      status: -4,
+      type: -4,
     },
     loading: true,
     formData: {},

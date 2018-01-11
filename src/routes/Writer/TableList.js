@@ -496,6 +496,11 @@ export default class TableList extends PureComponent {
         </Tooltip> : ''
       ),
     }
+    const status = {
+      title: '状态',
+      dataIndex: 'approve_status',
+      render: val => (<TaskStatusColumn status={val}/>),
+    }
     const opera = {
       title: '操作',
       render: (record) => {
@@ -618,8 +623,10 @@ export default class TableList extends PureComponent {
         disabled: record.disabled,
       }),
     };
-    if (data.approve_status === -1 || data.approve_status === 0) {
-      columns.push(...times, opera);
+    if (true) {
+      columns.push(...times, status, opera);
+    } else if (data.approve_status === -1 || data.approve_status === 0) {
+      columns.push(...times, approveTime, approver, grade, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted
       || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
       columns.push( pushStatusText, daren_nickname, pushTime, opera);
@@ -630,6 +637,7 @@ export default class TableList extends PureComponent {
       <div>
         <div className={styles.searchBox}>
           <RadioGroup value={data.approve_status} onChange={this.changeApproveStatus}>
+            <RadioButton value={TASK_APPROVE_STATUS.all}>全部</RadioButton>
             <Tooltip placement="top" title="待完成/草稿箱">
               <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
             </Tooltip>

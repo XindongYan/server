@@ -557,11 +557,12 @@ export default class TableList extends PureComponent {
         </Card>
         
         <Tabs activeKey={activeKey} onChange={this.handleActiveKeyChange}>
-          <TabPane tab="列表" key="table">
+          <TabPane tab="任务" key="table">
             <div style={{ marginBottom: 12 }}>
               <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
             </div>
             <RadioGroup value={projectTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>
+              <RadioButton value={TASK_APPROVE_STATUS.all}>全部</RadioButton>
               <RadioButton value={TASK_APPROVE_STATUS.created}>已创建</RadioButton>
               <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
               <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>

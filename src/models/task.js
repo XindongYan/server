@@ -15,7 +15,7 @@ export default {
     approveData: [],
     operationRecords: [],
     projectTask: {
-      approve_status: TASK_APPROVE_STATUS.created,
+      approve_status: TASK_APPROVE_STATUS.all,
       list: [],
       pagination: {},
     },
@@ -23,23 +23,22 @@ export default {
     takerTask: {
       list: [],
       pagination: {},
-      approve_status: TASK_APPROVE_STATUS.taken,
+      approve_status: TASK_APPROVE_STATUS.all,
     },
     takerTaskLoading: true,
     approverTask: {
       list: [],
       pagination: {},
-      approve_status: 'waitingForApprove',
+      approve_status: 'all',
     },
     approverTaskLoading: true,
     teamTask: {
-      approve_status: TASK_APPROVE_STATUS.created,
+      approve_status: TASK_APPROVE_STATUS.all,
       list: [],
       pagination: {},
     },
     teamTaskLoading: true,
     projectFinanceTask: {
-      approve_status: TASK_APPROVE_STATUS.created,
       list: [],
       pagination: {},
     },
