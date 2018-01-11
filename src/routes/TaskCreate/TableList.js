@@ -257,7 +257,7 @@ export default class TableList extends PureComponent {
     const { dispatch, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
-      if (!err) {
+      if (!err && values.target_user_id.length >= 24) {
         dispatch({
           type: 'task/specify',
           payload: {
@@ -278,6 +278,8 @@ export default class TableList extends PureComponent {
             }
           },
         });
+      } else {
+        message.warn('请选择写手！')
       }
     });
   }
