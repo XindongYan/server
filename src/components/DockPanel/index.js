@@ -6,8 +6,6 @@ import DetailPane from './panes/DetailPane';
 import AnalyzePane from './panes/AnalyzePane';
 import OperationPane from './panes/OperationPane';
 import TaskStatusColumn from '../TaskStatusColumn';
-
-
 import styles from './index.less';
 const TabPane = Tabs.TabPane;
 

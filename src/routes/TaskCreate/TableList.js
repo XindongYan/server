@@ -4,7 +4,8 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
 import G2 from 'g2';
-import { Table, Card, Button, Input, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, Radio, Tooltip, DatePicker } from 'antd';
+import { Table, Card, Button, Input, Form, Menu, Popconfirm, Modal, Select, Row, Col, Popover,
+  Dropdown, Icon, message, Radio, Tooltip, DatePicker, Tabs } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import styles from './TableList.less';
@@ -21,6 +22,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const TabPane = Tabs.TabPane;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
@@ -41,6 +43,7 @@ export default class TableList extends PureComponent {
     selectedRowKeys: [],
     formValues: {},
     task: {},
+    activeKey: 'table',
   }
 
   componentDidMount() {
@@ -60,7 +63,6 @@ export default class TableList extends PureComponent {
         payload: { team_id: teamUser.team_id },
       });
     }
-    this.renderChart();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.teamUsers.length === 0 && nextProps.teamUser.team_id) {
@@ -75,7 +77,7 @@ export default class TableList extends PureComponent {
     const chart = new G2.Chart({
       container: document.getElementById('chart'),
       forceFit: true,
-      height: 500
+      height: 500,
     });
     const data = await queryTaskStatisticsByApproveStatus({ project_id: query.project_id });
     // console.log(data);
@@ -382,9 +384,16 @@ export default class TableList extends PureComponent {
       },
     });
   }
+  handleActiveKeyChange = (activeKey) => {
+    this.setState({ activeKey }, () => {
+      if (activeKey === 'chart' && !document.getElementById('chart').innerHTML) {
+        this.renderChart();
+      }
+    });
+  }
   render() {
     const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
-    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
+    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible, activeKey } = this.state;
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -546,142 +555,150 @@ export default class TableList extends PureComponent {
             })
           }
         </Card>
-        <div id="chart"></div>
-        <div style={{ marginBottom: 12 }}>
-          <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
-        </div>
         
-        <RadioGroup value={projectTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>
-          <RadioButton value={TASK_APPROVE_STATUS.created}>已创建</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
-          <Tooltip placement="top" title="待发布至阿里创作平台">
-            <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
-              待发布
-            </RadioButton>
-          </Tooltip>
-          <Tooltip placement="top" title="已发布至阿里创作平台">
-            <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
-              已发布
-            </RadioButton>
-          </Tooltip>
-          <Tooltip placement="top" title="阿里创作平台不通过">
-            <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
-              淘宝不通过
-            </RadioButton>
-          </Tooltip>
-          <Tooltip placement="top" title="阿里创作平台通过">
-            <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
-              淘宝通过
-            </RadioButton>
-          </Tooltip>
-        </RadioGroup>
-        <Card bordered={false} bodyStyle={{ padding: 14 }}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
-              <Search
-                style={{ width: 260, float: 'right' }}
-                placeholder="ID／名称／商家标签"
-                onChange={this.handleSearchClear}
-                onSearch={(value) => this.handleSearch(value, 'search')}
-                enterButton
-              />
-              {
-                selectedRows.length > 0 && (
-                  <span>
-                    <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量上架</Button>
-                    <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
-                    {/*<Dropdown overlay={menu}>
-                      <Button>
-                        更多操作 <Icon type="down" />
-                      </Button>
-                    </Dropdown> */}
-                  </span>
-                )
-              }
+        <Tabs activeKey={activeKey} onChange={this.handleActiveKeyChange}>
+          <TabPane tab="列表" key="table">
+            <div style={{ marginBottom: 12 }}>
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
             </div>
-            <Table
-              loading={loading}
-              dataSource={projectTask.list}
-              columns={columns}
-              pagination={{
-                showSizeChanger: true,
-                showQuickJumper: true,
-                ...projectTask.pagination,
-              }}
-              rowSelection={rowSelection}
-              onChange={this.handleStandardTableChange}
-              rowKey="_id"
-            />
-            <DockPanel />
-          </div>
-          {modalVisible && <Modal
-            title="指定写手"
-            visible={modalVisible}
-            onOk={this.handleSpecify}
-            onCancel={() => this.handleModalVisible(false)}
-          >
-            <FormItem
-              label="写手"
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-            >
-              {getFieldDecorator('target_user_id', {
-                initialValue: '',
-                rules: [{ required: true, message: '请选择写手！' }],
-              })(
-                <Select
-                  style={{ width: '100%' }}
-                  mode="combobox"
-                  optionLabelProp="children"
-                  placeholder="搜索昵称指定写手"
-                  notFoundContent=""
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  filterOption={false}
-                  onSearch={this.onSearch}
+            
+            <RadioGroup value={projectTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>
+              <RadioButton value={TASK_APPROVE_STATUS.created}>已创建</RadioButton>
+              <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
+              <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
+              <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
+              <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
+              <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
+              <Tooltip placement="top" title="待发布至阿里创作平台">
+                <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
+                  待发布
+                </RadioButton>
+              </Tooltip>
+              <Tooltip placement="top" title="已发布至阿里创作平台">
+                <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
+                  已发布
+                </RadioButton>
+              </Tooltip>
+              <Tooltip placement="top" title="阿里创作平台不通过">
+                <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
+                  淘宝不通过
+                </RadioButton>
+              </Tooltip>
+              <Tooltip placement="top" title="阿里创作平台通过">
+                <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
+                  淘宝通过
+                </RadioButton>
+              </Tooltip>
+            </RadioGroup>
+            <Card bordered={false} bodyStyle={{ padding: 14 }}>
+              <div className={styles.tableList}>
+                <div className={styles.tableListOperator}>
+                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+                  <Search
+                    style={{ width: 260, float: 'right' }}
+                    placeholder="ID／名称／商家标签"
+                    onChange={this.handleSearchClear}
+                    onSearch={(value) => this.handleSearch(value, 'search')}
+                    enterButton
+                  />
+                  {
+                    selectedRows.length > 0 && (
+                      <span>
+                        <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量上架</Button>
+                        <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
+                        {/*<Dropdown overlay={menu}>
+                          <Button>
+                            更多操作 <Icon type="down" />
+                          </Button>
+                        </Dropdown> */}
+                      </span>
+                    )
+                  }
+                </div>
+                <Table
+                  loading={loading}
+                  dataSource={projectTask.list}
+                  columns={columns}
+                  pagination={{
+                    showSizeChanger: true,
+                    showQuickJumper: true,
+                    ...projectTask.pagination,
+                  }}
+                  rowSelection={rowSelection}
+                  onChange={this.handleStandardTableChange}
+                  rowKey="_id"
+                />
+                <DockPanel />
+              </div>
+              {modalVisible && <Modal
+                title="指定写手"
+                visible={modalVisible}
+                onOk={this.handleSpecify}
+                onCancel={() => this.handleModalVisible(false)}
+              >
+                <FormItem
+                  label="写手"
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 20 }}
                 >
-                  {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-          </Modal>}
-          { darenModalVisible && <Modal
-            title="指定达人"
-            visible={darenModalVisible}
-            onOk={this.handleSpecifyDaren}
-            onCancel={() => this.handleDarenModalVisible(false)}
-          >
-            <FormItem
-              label="达人"
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-            >
-              {getFieldDecorator('target_user_id', {
-                initialValue: '',
-                rules: [{ required: true, message: '请选择达人！' }],
-              })(
-                <Select
-                  style={{ width: '100%' }}
-                  mode="combobox"
-                  optionLabelProp="children"
-                  placeholder="搜索昵称指定达人"
-                  notFoundContent=""
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  filterOption={false}
-                  onSearch={this.onSearch}
+                  {getFieldDecorator('target_user_id', {
+                    initialValue: '',
+                    rules: [{ required: true, message: '请选择写手！' }],
+                  })(
+                    <Select
+                      style={{ width: '100%' }}
+                      mode="combobox"
+                      optionLabelProp="children"
+                      placeholder="搜索昵称指定写手"
+                      notFoundContent=""
+                      defaultActiveFirstOption={false}
+                      showArrow={false}
+                      filterOption={false}
+                      onSearch={this.onSearch}
+                    >
+                      {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
+                    </Select>
+                  )}
+                </FormItem>
+              </Modal>}
+              { darenModalVisible && <Modal
+                title="指定达人"
+                visible={darenModalVisible}
+                onOk={this.handleSpecifyDaren}
+                onCancel={() => this.handleDarenModalVisible(false)}
+              >
+                <FormItem
+                  label="达人"
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 20 }}
                 >
-                  {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-          </Modal>}
-        </Card>
+                  {getFieldDecorator('target_user_id', {
+                    initialValue: '',
+                    rules: [{ required: true, message: '请选择达人！' }],
+                  })(
+                    <Select
+                      style={{ width: '100%' }}
+                      mode="combobox"
+                      optionLabelProp="children"
+                      placeholder="搜索昵称指定达人"
+                      notFoundContent=""
+                      defaultActiveFirstOption={false}
+                      showArrow={false}
+                      filterOption={false}
+                      onSearch={this.onSearch}
+                    >
+                      {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
+                    </Select>
+                  )}
+                </FormItem>
+              </Modal>}
+            </Card>
+          </TabPane>
+          <TabPane tab="统计" key="chart">
+            <div id="chart"></div>
+          </TabPane>
+        </Tabs>
+        
       </div>
     );
   }
