@@ -93,7 +93,6 @@ export default class TaskForm extends PureComponent {
               approve_status: TASK_APPROVE_STATUS.created,
             },
             callback: (result) => {
-                        console.log(result)
               if (result.error) {
                 message.error(result.msg);
               } else {
@@ -101,7 +100,6 @@ export default class TaskForm extends PureComponent {
                 if (type === 'next') {
                   this.props.form.resetFields();
                 } else {
-                  console.log(type)
                   this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${query.project_id}`));
                 }
               }
