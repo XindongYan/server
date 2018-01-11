@@ -304,95 +304,94 @@ class BasicLayout extends React.PureComponent {
     };
     const layout = (
       <Layout>
-        <Header className={styles.header}>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          breakpoint="md"
+          onCollapse={this.onCollapse}
+          width={200}
+          className={styles.sider}
+        >
           <div className={styles.logo}>
             <Link to="/list/task-square">
               { /* <img src="" alt="logo" /> */ }
-              <div style={{ lineHeight: !collapsed ? '40px' : 'inherit', fontSize: '20px', color: '#000', fontWeight: 'bolder' }}>{ collapsed ? '尼采' : '尼采创作平台'}</div>
+              <h1 style={{ width: 200, height: 32, lineHeight: '32px', display: 'block', marginTop: 10, marginLeft: 0 }}>{ collapsed ? '尼采' : '尼采创作平台'}</h1>
               { !collapsed &&
-                <div style={{ lineHeight: '14px', color: '#999' }}>让天下没有埋没的文采</div>
+                <h4 style={{ height: 20, lineHeight: '20px', fontSize: 12, color: '#999', wordWrap: 'break-word' }}>让天下没有埋没的文采</h4>
               }
             </Link>
           </div>
-          <Icon
-            className={styles.trigger}
-            type={collapsed ? 'menu-unfold' : 'menu-fold'}
-            onClick={this.toggle}
-          />
-          <div className={styles.right}>
-            { /* <HeaderSearch
-              className={`${styles.action} ${styles.search}`}
-              placeholder="站内搜索"
-              dataSource={['搜索提示一', '搜索提示二', '搜索提示三']}
-              onSearch={(value) => {
-                console.log('input', value); // eslint-disable-line
-              }}
-              onPressEnter={(value) => {
-                console.log('enter', value); // eslint-disable-line
-              }}
-            /> */ }
-            { /* <NoticeIcon
-              className={styles.action}
-              count={currentUser.notifyCount}
-              onItemClick={(item, tabProps) => {
-                console.log(item, tabProps); // eslint-disable-line
-              }}
-              onClear={this.handleNoticeClear}
-              onPopupVisibleChange={this.handleNoticeVisibleChange}
-              loading={fetchingNotices}
-              popupAlign={{ offset: [20, -16] }}
-            >
-              <NoticeIcon.Tab
-                list={noticeData['通知']}
-                title="通知"
-                emptyText="你已查看所有通知"
-                emptyImage="https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg"
-              />
-              <NoticeIcon.Tab
-                list={noticeData['消息']}
-                title="消息"
-                emptyText="您已读完所有消息"
-                emptyImage="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
-              />
-              <NoticeIcon.Tab
-                list={noticeData['待办']}
-                title="待办"
-                emptyText="你已完成所有待办"
-                emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
-              />
-            </NoticeIcon> */ }
-            {currentUser.nickname ? (
-              <Dropdown overlay={menu}>
-                <span className={`${styles.action} ${styles.account}`}>
-                  <Avatar size="small" className={styles.avatar} src={currentUser.avatar} />
-                  {currentUser.nickname}
-                </span>
-              </Dropdown>
-            ) : <Spin size="small" style={{ marginLeft: 8 }} />}
-          </div>
-        </Header>
-        
-        <Layout>
-          <Sider
-            trigger={null}
-            collapsible
-            collapsed={collapsed}
-            breakpoint="md"
-            onCollapse={this.onCollapse}
-            width={200}
-            className={styles.sider}
+          <Menu
+            theme="light"
+            mode="inline"
+            {...menuProps}
+            onOpenChange={this.handleOpenChange}
+            onClick={this.handleSelect}
+            style={{ margin: '16px 0', width: '100%' }}
           >
-            <Menu
-              theme="light"
-              mode="inline"
-              {...menuProps}
-              onOpenChange={this.handleOpenChange}
-              onClick={this.handleSelect}
-              style={{ margin: '16px 0', width: '100%' }}
-            >
-              {this.getNavMenuItems(this.state.menus)}
-            </Menu>
-          </Sider>
+            {this.getNavMenuItems(this.state.menus)}
+          </Menu>
+        </Sider>
+        <Layout>
+          <Header className={styles.header}>
+            <Icon
+              className={styles.trigger}
+              type={collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
+            <div className={styles.right}>
+              { /* <HeaderSearch
+                className={`${styles.action} ${styles.search}`}
+                placeholder="站内搜索"
+                dataSource={['搜索提示一', '搜索提示二', '搜索提示三']}
+                onSearch={(value) => {
+                  console.log('input', value); // eslint-disable-line
+                }}
+                onPressEnter={(value) => {
+                  console.log('enter', value); // eslint-disable-line
+                }}
+              /> */ }
+              { /* <NoticeIcon
+                className={styles.action}
+                count={currentUser.notifyCount}
+                onItemClick={(item, tabProps) => {
+                  console.log(item, tabProps); // eslint-disable-line
+                }}
+                onClear={this.handleNoticeClear}
+                onPopupVisibleChange={this.handleNoticeVisibleChange}
+                loading={fetchingNotices}
+                popupAlign={{ offset: [20, -16] }}
+              >
+                <NoticeIcon.Tab
+                  list={noticeData['通知']}
+                  title="通知"
+                  emptyText="你已查看所有通知"
+                  emptyImage="https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg"
+                />
+                <NoticeIcon.Tab
+                  list={noticeData['消息']}
+                  title="消息"
+                  emptyText="您已读完所有消息"
+                  emptyImage="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
+                />
+                <NoticeIcon.Tab
+                  list={noticeData['待办']}
+                  title="待办"
+                  emptyText="你已完成所有待办"
+                  emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
+                />
+              </NoticeIcon> */ }
+              {currentUser.nickname ? (
+                <Dropdown overlay={menu}>
+                  <span className={`${styles.action} ${styles.account}`}>
+                    <Avatar size="small" className={styles.avatar} src={currentUser.avatar} />
+                    {currentUser.nickname}
+                  </span>
+                </Dropdown>
+              ) : <Spin size="small" style={{ marginLeft: 8 }} />}
+            </div>
+          </Header>
           <Content style={{ margin: '15px 12px 0', height: '100%' }}>
             <Switch>
               {
@@ -422,20 +421,20 @@ class BasicLayout extends React.PureComponent {
               <Route path="/approver/task/view" component={ApproverTaskView} />
               <Redirect to="/home" />
             </Switch>
+            <GlobalFooter
+              links={[{
+                title: '',
+                href: '',
+                blankTarget: true,
+              }]}
+              copyright={
+                <div>
+                  Copyright <Icon type="copyright" /> 2017 尼采
+                </div>
+              }
+            />
           </Content>
         </Layout>
-        <GlobalFooter
-          links={[{
-            title: '',
-            href: '',
-            blankTarget: true,
-          }]}
-          copyright={
-            <div>
-              Copyright <Icon type="copyright" /> 2017 尼采
-            </div>
-          }
-        />
       </Layout>
     );
 
