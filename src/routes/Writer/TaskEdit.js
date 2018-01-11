@@ -123,7 +123,7 @@ export default class TaskEdit extends PureComponent {
         lifeResearch: this.state.lifeResearch,
         _id: query._id,
       }
-      if (!formData.project_id) {
+      if (!formData.creator_id || formData.creator_id === currentUser._id ) {
         values.name =  task.title || haveGoodsTask.title || lifeResearch.title;
       }
       this.props.dispatch({
