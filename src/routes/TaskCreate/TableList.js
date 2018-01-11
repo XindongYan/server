@@ -695,7 +695,9 @@ export default class TableList extends PureComponent {
             </Card>
           </TabPane>
           <TabPane tab="统计" key="chart">
-            <div id="chart"></div>
+            <Card bodyStyle={{ padding: '30px 10px 0 0' }}>
+              <div id="chart"></div>
+            </Card>
           </TabPane>
            <TabPane tab="财务" key="finance">
             <FinanceList location={this.props.location} />
