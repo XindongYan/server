@@ -4,6 +4,7 @@ export default {
   namespace: 'register',
 
   state: {
+    error: false,
     msg: '',
     submitting: false,
   },
@@ -17,7 +18,7 @@ export default {
       const response = yield call(fakeRegister, payload);
       yield put({
         type: 'registerHandle',
-        payload: { msg: response.msg },
+        payload: { error: response.error, msg: response.msg },
       });
       yield put({
         type: 'changeSubmitting',
@@ -46,6 +47,7 @@ export default {
       return {
         ...state,
         msg: payload.msg,
+        error: payload.error,
       };
     },
     changeSubmitting(state, { payload }) {

@@ -143,7 +143,7 @@ export default class Register extends Component {
         <h3>填写用户信息</h3>
         <Form onSubmit={this.handleSubmit}>
           {
-            register.msg &&
+            register.error &&
             this.renderMessage(register.msg)
           }
           <FormItem>
