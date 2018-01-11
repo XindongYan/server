@@ -418,28 +418,6 @@ export default class TableList extends PureComponent {
         ),
       },
       {
-        title: '最后修改时间',
-        dataIndex: 'last_update_time',
-        render: (val) =>
-          val ?
-          <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-            {moment(val).fromNow()}
-          </Tooltip>
-          : '',
-        sorter: true,
-      },
-      {
-        title: '截止时间',
-        dataIndex: 'deadline',
-        render: (val) =>
-          val ?
-          <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-            {moment(val).format('MM/DD')}
-          </Tooltip>
-          : '',
-        sorter: true,
-      },
-      {
         title: '发布渠道',
         dataIndex: 'channel_name',
         render: val => val || '',
@@ -452,6 +430,28 @@ export default class TableList extends PureComponent {
         )
       },
     ];
+    const times = [{
+      title: '最后修改时间',
+      dataIndex: 'last_update_time',
+      render: (val) =>
+        val ?
+        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+          {moment(val).fromNow()}
+        </Tooltip>
+        : '',
+      sorter: true,
+    },
+    {
+      title: '截止时间',
+      dataIndex: 'deadline',
+      render: (val) =>
+        val ?
+        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+          {moment(val).format('MM/DD')}
+        </Tooltip>
+        : '',
+      sorter: true,
+    }]
     const approver = {
       title: '审核人',
       dataIndex: 'approver_id',
@@ -606,12 +606,12 @@ export default class TableList extends PureComponent {
       }),
     };
     if (data.approve_status === -1 || data.approve_status === 0) {
-      columns.push(opera);
+      columns.push(...times, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted
       || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
       columns.push( pushStatusText, opera);
     } else {
-      columns.push( approver, grade, approveTime, opera);
+      columns.push(...times, approver, grade, approveTime, opera);
     }
     return (
       <div>

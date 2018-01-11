@@ -23,15 +23,16 @@ export default class Login extends Component {
             <Icon type="taobao-circle"  className={styles.iconTaobao}/>
           </a>
         </div>
-        <div style={{ marginTop: 60 }}>
+        <div style={{ margin: '60px 0 10px' }}>
           <a href={`${ORIGIN}/nicaiCrx.crx`} download="尼采插件_v1.0.4.crx">
             尼采插件下载
           </a>
           <span>(chrome浏览器版本 >= 59.0)</span>
         </div>
-        <p style={{ marginTop: 5 }}>
-          <a style={{ marginRight: 15 }} href={`${ORIGIN}/nicaiTeach.pdf`} target="_blank">插件安装步骤</a>
-          <a href={`${ORIGIN}/chromeVersion.pdf`} target="_blank">chrome浏览器版本号</a>
+        <p>
+          <a style={{ marginRight: 15 }} href={`${ORIGIN}/nicaiTeach.pdf`} target="_blank">插件安装说明</a>
+          <a style={{ marginRight: 15 }} href={`${ORIGIN}/chromeVersion.pdf`} target="_blank">查看浏览器版本</a>
+          <a href={`${ORIGIN}/userRegister.pdf`} target="_blank">用户注册说明</a>
         </p>
       </div>
     );
