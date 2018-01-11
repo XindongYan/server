@@ -38,6 +38,11 @@ export default class Comment extends PureComponent {
         onMouseMove={this.dragMove}
         onMouseUp={this.dragEnd}
       >
+      {/*
+        <div className={styles.commentLeft}></div>
+        
+        <div className={styles.commentRight}></div>
+      */}
         {msg.message}
       </div>
     );

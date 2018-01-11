@@ -71,7 +71,7 @@ export default class Annotation extends PureComponent {
         direction: {...this.state.direction, visible: 'none'},
         signContent: {},
       },() => {
-        this.setState({signVisible: true})
+        this.setState({signVisible: true});
       })
     } else if (value==='edit') {
       const { editIndex } = this.state;

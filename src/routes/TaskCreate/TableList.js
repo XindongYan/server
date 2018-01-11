@@ -8,6 +8,7 @@ import { Table, Card, Button, Input, Form, Menu, Popconfirm, Modal, Select, Row,
   Dropdown, Icon, message, Radio, Tooltip, DatePicker, Tabs } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
+import FinanceList from './FinanceList.js';
 import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -161,27 +162,26 @@ export default class TableList extends PureComponent {
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     this.setState({ selectedRowKeys, selectedRows });
   }
-  handleSearch = (e) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'task/fetch',
-        payload: values,
-      });
+  handleSearch = (value, name) => {
+    const { dispatch, projectTask: { pagination, approve_status }, } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const values = {
+      project_id: query.project_id,
+      ...pagination,
+      approve_status,
+    };
+    if(name === 'time') {
+      values['create_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
+      values['create_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+    } else {
+      values[name] = value;
+    }
+    dispatch({
+      type: 'task/fetchProjectTasks',
+      payload: {
+        currentPage: 1,
+        ...values, 
+      }
     });
   }
 
@@ -561,7 +561,6 @@ export default class TableList extends PureComponent {
             <div style={{ marginBottom: 12 }}>
               <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
             </div>
-            
             <RadioGroup value={projectTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>
               <RadioButton value={TASK_APPROVE_STATUS.created}>已创建</RadioButton>
               <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
@@ -696,6 +695,9 @@ export default class TableList extends PureComponent {
           </TabPane>
           <TabPane tab="统计" key="chart">
             <div id="chart"></div>
+          </TabPane>
+           <TabPane tab="财务" key="finance">
+            <FinanceList location={this.props.location} />
           </TabPane>
         </Tabs>
         
