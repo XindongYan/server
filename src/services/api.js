@@ -76,6 +76,13 @@ export async function fakeRegister(params) {
   });
 }
 
+export async function oldRegister(params) {
+  return request('/api/user/signup/old', {
+    method: 'POST',
+    body: params,
+  });
+}
+
 // export async function queryNotices() {
 //   return request('/api/notices');
 // }

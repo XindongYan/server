@@ -1,11 +1,11 @@
-import { fakeRegister } from '../services/api';
+import { fakeRegister, oldRegister } from '../services/api';
 
 export default {
   namespace: 'register',
 
   state: {
-    status: undefined,
     msg: '',
+    submitting: false,
   },
 
   effects: {
@@ -15,16 +15,24 @@ export default {
         payload: true,
       });
       const response = yield call(fakeRegister, payload);
-      console.log(response);
-      let status = '';
-      if (!response.error) {
-        status = 'ok';
-      } else {
-        status = 'error';
-      }
       yield put({
         type: 'registerHandle',
-        payload: { status, msg: response.msg },
+        payload: { msg: response.msg },
+      });
+      yield put({
+        type: 'changeSubmitting',
+        payload: false,
+      });
+    },
+    *oldSubmit({ payload }, { call, put }) {
+      yield put({
+        type: 'changeSubmitting',
+        payload: true,
+      });
+      const response = yield call(oldRegister, payload);
+      yield put({
+        type: 'registerHandle',
+        payload: { msg: response.msg },
       });
       yield put({
         type: 'changeSubmitting',
@@ -37,7 +45,6 @@ export default {
     registerHandle(state, { payload }) {
       return {
         ...state,
-        status: payload.status,
         msg: payload.msg,
       };
     },
