@@ -123,7 +123,7 @@ export default class Register extends Component {
             register.status === 'error' &&
             this.renderMessage(register.msg ? register.msg : '')
           }
-          <FormItem>
+          <FormItem className={styles.formItems}>
             {getFieldDecorator('nickname', {
               rules: [{
                 required: true, message: '请输入昵称！',
@@ -208,7 +208,7 @@ export default class Register extends Component {
               <Input size="large" placeholder="邀请码" />
             )}
           </FormItem>
-          <FormItem>
+          <FormItem style={{ marginTop: 30}}>
             <Button size="large" loading={register.submitting} className={styles.submit} type="primary" htmlType="submit">
               确定
             </Button>

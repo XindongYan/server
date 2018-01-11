@@ -23,7 +23,7 @@ export default class Login extends Component {
             <Icon type="taobao-circle"  className={styles.iconTaobao}/>
           </a>
         </div>
-        <div style={{ marginTop: 45 }}>
+        <div style={{ marginTop: 60 }}>
           <a href={`${ORIGIN}/nicaiCrx.crx`} download="尼采插件_v1.0.4.crx">
             尼采插件下载
           </a>
