@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
+import G2 from 'g2';
 import { Table, Card, Button, Input, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, Radio, Tooltip, DatePicker } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
@@ -11,6 +12,8 @@ import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
 import DockPanel from '../../components/DockPanel';
+
+import { queryTaskStatisticsByApproveStatus } from '../../services/project';
 
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
@@ -38,7 +41,7 @@ export default class TableList extends PureComponent {
     selectedRowKeys: [],
     formValues: {},
     task: {},
-  };
+  }
 
   componentDidMount() {
     const { dispatch, teamUser, projectTask: { pagination, approve_status } } = this.props;
@@ -57,6 +60,7 @@ export default class TableList extends PureComponent {
         payload: { team_id: teamUser.team_id },
       });
     }
+    this.renderChart();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.teamUsers.length === 0 && nextProps.teamUser.team_id) {
@@ -65,6 +69,28 @@ export default class TableList extends PureComponent {
         payload: { team_id: nextProps.teamUser.team_id },
       });
     }
+  }
+  renderChart = async () => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const chart = new G2.Chart({
+      container: document.getElementById('chart'),
+      forceFit: true,
+      height: 500
+    });
+    const data = await queryTaskStatisticsByApproveStatus({ project_id: query.project_id });
+    // console.log(data);
+    // const data = [
+    //   { genre: 'Sports', sold: 275 },
+    //   { genre: 'Strategy', sold: 115 },
+    //   { genre: 'Action', sold: 120 },
+    //   { genre: 'Shooter', sold: 350 },
+    //   { genre: 'Other', sold: 150 }
+    // ];
+    chart.source(data.list);
+    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+    chart.interval().position('text*value').color('text')
+    // Step 4: 渲染图表
+    chart.render();
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, projectTask: { approve_status } } = this.props;
@@ -520,6 +546,7 @@ export default class TableList extends PureComponent {
             })
           }
         </Card>
+        <div id="chart"></div>
         <div style={{ marginBottom: 12 }}>
           <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
         </div>
