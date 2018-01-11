@@ -226,6 +226,7 @@ export default class TaskCreate extends PureComponent {
             payload: {
               ...this.state.task,
               haveGoods: this.state.haveGoodsTask,
+              lifeResearch: this.state.lifeResearch,
               _id: result.task._id,
               approve_status: TASK_APPROVE_STATUS.taken,
               publisher_id: currentUser._id,
