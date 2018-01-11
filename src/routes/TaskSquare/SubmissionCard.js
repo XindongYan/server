@@ -49,6 +49,9 @@ export default class SubmissionCard extends PureComponent {
     } else if (project.channel_name === '微淘') {
       color = 'orange';
       borderColor = '#ffe58f';
+    } else if (project.channel_name === '生活研究所') {
+      borderColor = '#eb5f96';
+      color = 'magenta';
     } else {
       color = 'blue';
       borderColor = '#6AF';

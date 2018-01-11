@@ -67,6 +67,7 @@ export default class TaskCreate extends PureComponent {
       first: [],
       second: [],
     },
+    saveLoading: false,
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -338,7 +339,7 @@ export default class TaskCreate extends PureComponent {
               if (result.error) {
                 message.error(result.msg);
               } else {
-                message.success(result.msg);
+                message.success('保存成功');
                 query._id = result.task._id;
                 if (type === 'finish') {
                   this.props.dispatch(routerRedux.push('/creation/writer-list'));
@@ -373,7 +374,7 @@ export default class TaskCreate extends PureComponent {
               if (result.error) {
                 message.error(result.msg);
               } else {
-                message.success(result.msg);
+                message.success('保存成功');
                 query._id = result.task._id;
                 this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
               }

@@ -36,7 +36,7 @@ export default class WeTaobao extends PureComponent {
           data: result.data,
         })
       } else {
-        message.error('未找到！');
+        message.error('请输入正确的商品链接');
       }
     } else {
       message.warn('请输入要查询的宝贝');

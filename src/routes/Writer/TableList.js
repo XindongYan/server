@@ -13,7 +13,6 @@ import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
 import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
 import styles from './TableList.less';
-
 import { queryConvertedTasks } from '../../services/task';
 
 const FormItem = Form.Item;
@@ -467,7 +466,7 @@ export default class TableList extends PureComponent {
       render: val => ( 
         val ?
         <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).fromNow()}
+          {moment(val).format('MM/DD')}
         </Tooltip> : ''
       ),
     };
@@ -482,6 +481,16 @@ export default class TableList extends PureComponent {
         return <span>{pushStatusTextTags}</span>
       },
     };
+    const pushTime = {
+      title: '发布时间',
+      dataIndex: 'publish_taobao_time',
+      render: val => ( 
+        val ?
+        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+          {moment(val).fromNow()}
+        </Tooltip> : ''
+      ),
+    }
     const opera = {
       title: '操作',
       render: (record) => {
@@ -608,7 +617,7 @@ export default class TableList extends PureComponent {
       columns.push(...times, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted
       || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
-      columns.push( pushStatusText, opera);
+      columns.push( pushStatusText, pushTime, opera);
     } else {
       columns.push(...times, approver, grade, approveTime, opera);
     }
