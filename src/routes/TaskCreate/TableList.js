@@ -439,55 +439,71 @@ export default class TableList extends PureComponent {
         dataIndex: 'approve_status',
         render: val => (<TaskStatusColumn status={val}/>),
       },
-      {
-        title: '操作',
-        render: (record) => {
-          if (record.approve_status === TASK_APPROVE_STATUS.created) {
-            return (
-              <p>
-                <a onClick={() => this.handleEdit(record)}>修改</a>
-                <span className={styles.splitLine} />
-                <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                  <a>上架</a>
-                </Popconfirm>
-                <span className={styles.splitLine} />
-                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
-                  <a>删除</a>
-                </Popconfirm>
-                <span className={styles.splitLine} />
-                <a onClick={() => this.handleShowSpecifyModal(record)}>指定</a>
-              </p>
-            );
-          } else if (record.approve_status === TASK_APPROVE_STATUS.published) {
-            return (
-              <p>
-                <a onClick={() => this.handleEdit(record)}>修改</a>
-                <span className={styles.splitLine} />
-                <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
-                  <a>撤回</a>
-                </Popconfirm>
-              </p>
-            );
-          } else if (record.approve_status === TASK_APPROVE_STATUS.taken) {
-            return (
-              <p>
-                <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
-                  <a>撤回</a>
-                </Popconfirm>
-              </p>
-            );
-          } else {
-            return (
-              <div>
-                <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
-                  分析
-                </a>
-              </div>
-            );
-          }
-        },
-      },
     ];
+    const opera = {
+      title: '操作',
+      render: (record) => {
+        if (record.approve_status === TASK_APPROVE_STATUS.created) {
+          return (
+            <p>
+              <a onClick={() => this.handleEdit(record)}>修改</a>
+              <span className={styles.splitLine} />
+              <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                <a>上架</a>
+              </Popconfirm>
+              <span className={styles.splitLine} />
+              <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
+                <a>删除</a>
+              </Popconfirm>
+              <span className={styles.splitLine} />
+              <a onClick={() => this.handleShowSpecifyModal(record)}>指定</a>
+            </p>
+          );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.published) {
+          return (
+            <p>
+              <a onClick={() => this.handleEdit(record)}>修改</a>
+              <span className={styles.splitLine} />
+              <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
+                <a>撤回</a>
+              </Popconfirm>
+            </p>
+          );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.taken) {
+          return (
+            <p>
+              <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
+                <a>撤回</a>
+              </Popconfirm>
+            </p>
+          );
+        } else {
+          return (
+            <div>
+              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                分析
+              </a>
+            </div>
+          );
+        }
+      },
+    };
+    const daren_nickname = {
+      title: '发布人',
+      dataIndex: 'daren_id',
+      width: 80,
+      render: val => val ? val.nickname : '',
+    };
+    const pushTime = {
+      title: '发布时间',
+      dataIndex: 'publish_taobao_time',
+      render: val => ( 
+        val ?
+        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+          {moment(val).fromNow()}
+        </Tooltip> : ''
+      ),
+    };
     const gridStyle = {
       width: '32%',
       margin: '5px',
@@ -500,7 +516,11 @@ export default class TableList extends PureComponent {
         disabled: record.disabled,
       }),
     };
-
+    if (projectTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || projectTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || projectTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
+      columns.push(daren_nickname, pushTime, opera);
+    } else {
+      columns.push(opera);
+    }
     return (
       <div>
         <ProjectDetail project={formData} />

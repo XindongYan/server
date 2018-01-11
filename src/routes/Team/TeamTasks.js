@@ -307,21 +307,37 @@ export default class teamTasks extends PureComponent {
         dataIndex: 'approve_status',
         render: val => (<TaskStatusColumn status={val}/>),
       },
-      {
-        title: '操作',
-        width: 80,
-        fixed: 'right',
-        render: (record) => {
-          return (
-            <div>
-              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
-                分析
-              </a>
-            </div>
-          );
-        },
-      },
     ];
+    const opera = {
+      title: '操作',
+      width: 80,
+      fixed: 'right',
+      render: (record) => {
+        return (
+          <div>
+            <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+              分析
+            </a>
+          </div>
+        );
+      },
+    };
+    const daren_nickname = {
+      title: '发布人',
+      dataIndex: 'daren_id',
+      width: 80,
+      render: val => val ? val.nickname : '',
+    };
+    const pushTime = {
+      title: '发布时间',
+      dataIndex: 'publish_taobao_time',
+      render: val => ( 
+        val ?
+        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+          {moment(val).fromNow()}
+        </Tooltip> : ''
+      ),
+    };
     const gridStyle = {
       width: '32%',
       margin: '5px',
@@ -334,6 +350,11 @@ export default class teamTasks extends PureComponent {
         disabled: record.disabled,
       }),
     };
+    if (teamTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
+      columns.push(daren_nickname, pushTime, opera);
+    } else {
+      columns.push(opera);
+    }
     return (
       <div>
         <RadioGroup value={teamTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>

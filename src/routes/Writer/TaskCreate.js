@@ -67,6 +67,7 @@ export default class TaskCreate extends PureComponent {
       first: [],
       second: [],
     },
+    saveLoading: false,
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -295,6 +296,9 @@ export default class TaskCreate extends PureComponent {
     if (!task.title && !haveGoodsTask.title && !lifeResearch.title) {
       message.warn('请输入标题');
     } else {
+      this.setState({
+        saveLoading: true,
+      })
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
@@ -309,6 +313,9 @@ export default class TaskCreate extends PureComponent {
             if (result.error) {
               message.error(result.msg);
             } else {
+              this.setState({
+                saveLoading: false,
+              })
               message.success(result.msg);
               if (type === 'finish') { this.props.dispatch(routerRedux.push('/creation/writer-list')); }
             }
@@ -338,7 +345,10 @@ export default class TaskCreate extends PureComponent {
               if (result.error) {
                 message.error(result.msg);
               } else {
-                message.success(result.msg);
+                this.setState({
+                  saveLoading: false,
+                })
+                message.success('保存成功');
                 query._id = result.task._id;
                 if (type === 'finish') {
                   this.props.dispatch(routerRedux.push('/creation/writer-list'));
@@ -373,7 +383,10 @@ export default class TaskCreate extends PureComponent {
               if (result.error) {
                 message.error(result.msg);
               } else {
-                message.success(result.msg);
+                this.setState({
+                  saveLoading: false,
+                })
+                message.success('保存成功');
                 query._id = result.task._id;
                 this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(query)}`));
               }
@@ -552,17 +565,19 @@ export default class TaskCreate extends PureComponent {
             </ul>
           </div>
           <div className={styles.submitBox}>
-            <Tooltip placement="top" title="提交到平台审核方进行审核">
             { query.project_id ?
-              <Popconfirm overlayStyle={{ width: 200, paddingBottom: 30 }} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
-                <Button>提交审核</Button>
-              </Popconfirm>
+              <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton')}>
+                <Popconfirm overlayClassName={styles.popConfirm} getPopupContainer={() => document.getElementById('subButton')} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleShowAddTeamUserModal}>
+                  <Button id="subButton">提交审核</Button>
+                </Popconfirm>
+              </Tooltip>
               :
-              <Button onClick={this.handleShowAddTeamUserModal}>提交审核</Button>
+              <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton1')}>
+                <Button id="subButton1" onClick={this.handleShowAddTeamUserModal}>提交审核</Button>
+              </Tooltip>
             }
-            </Tooltip>
             <Tooltip placement="top" title="保存到待完成列表">
-              <Button onClick={() => this.handleSave('save')}>保存</Button>
+              <Button onClick={() => this.handleSave('save')} loading={this.state.saveLoading}>保存</Button>
             </Tooltip>
           </div>
         </div>

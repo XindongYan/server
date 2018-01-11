@@ -326,9 +326,9 @@ export default class TaskEdit extends PureComponent {
                 }
               </dl>
             }
-            <Tooltip placement="top" title="提交到平台审核方进行审核">
-              <Popconfirm overlayStyle={{ width: 200, paddingBottom: 30 }} placement="top" title="确认提交审核?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
-                <Button>提交审核</Button>
+            <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('submitButton')}>
+              <Popconfirm overlayClassName={styles.popConfirm} getPopupContainer={() => document.getElementById('submitButton')} placement="top" title="确认提交审核?" onConfirm={this.handleSubmit} okText="确认" cancelText="取消">
+                <Button id="submitButton">提交审核</Button>
               </Popconfirm>
             </Tooltip>
             <Button onClick={this.handleSave}>保存</Button>
