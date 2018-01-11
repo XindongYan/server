@@ -1,5 +1,6 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
-queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, removeTask, queryTaskOperationRecords, queryTeamTasks } from '../services/task';
+queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, removeTask, queryTaskOperationRecords, queryTeamTasks,
+payoffTask, queryProjectFinanceTasks } from '../services/task';
 import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
@@ -37,6 +38,12 @@ export default {
       pagination: {},
     },
     teamTaskLoading: true,
+    projectFinanceTask: {
+      approve_status: TASK_APPROVE_STATUS.created,
+      list: [],
+      pagination: {},
+    },
+    projectFinanceTaskLoading: true,
 
     dockPanel: {
       visible: false,
@@ -118,6 +125,10 @@ export default {
       const result = yield call(removeTask, payload);
       if (callback) callback(result);
     },
+    *payoff({ payload, callback }, { call, put }) {
+      const result = yield call(payoffTask, payload);
+      if (callback) callback(result);
+    },
     *fetchProjectTasks({ payload }, { call, put }) {
       yield put({
         type: 'changeProjectTasksLoading',
@@ -183,6 +194,23 @@ export default {
       }
       yield put({
         type: 'changeTeamTasksLoading',
+        payload: false,
+      });
+    },
+    *fetchProjectFinanceTasks({ payload }, { call, put }) {
+      yield put({
+        type: 'changeProjectFinanceTasksLoading',
+        payload: true,
+      });
+      const response = yield call(queryProjectFinanceTasks, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveProjectFinanceTasks',
+          payload: {...response, approve_status: payload.approve_status},
+        });
+      }
+      yield put({
+        type: 'changeProjectFinanceTasksLoading',
         payload: false,
       });
     },
@@ -271,6 +299,18 @@ export default {
       return {
         ...state,
         teamTaskLoading: action.payload,
+      };
+    },
+    saveProjectFinanceTasks(state, action) {
+      return {
+        ...state,
+        projectFinanceTask: action.payload,
+      };
+    },
+    changeProjectFinanceTasksLoading(state, action) {
+      return {
+        ...state,
+        projectFinanceTaskLoading: action.payload,
       };
     },
     showDockPanel(state, action) {

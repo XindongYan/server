@@ -121,6 +121,15 @@ export async function removeTask(params) {
   });
 }
 
+export async function payoffTask(params) {
+  return request('/api/task/payoff', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }
@@ -135,4 +144,8 @@ export async function queryConvertedTasks(params) {
 
 export async function queryTeamTasks(params) {
   return request(`/api/task/list/team?${stringify(params)}`);
+}
+
+export async function queryProjectFinanceTasks(params) {
+  return request(`/api/task/list/project/finance?${stringify(params)}`);
 }
