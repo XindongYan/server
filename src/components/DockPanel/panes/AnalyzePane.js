@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, message } from 'antd';
+import { Card, Row, Col, Divider, message } from 'antd';
 import moment from 'moment';
 
 export default class AnalyzePane extends PureComponent {
@@ -114,7 +114,11 @@ export default class AnalyzePane extends PureComponent {
             {summary[item.value] ? summary[item.value].value : 0}
           </h2>
           </Card.Grid>)}
-        {summary.updateTime && <div style={{ float: 'right', color: 'grey', marginTop: 10 }}><span>数据更新时间：</span><span>{moment(new Date(summary.updateTime)).format('YYYY年MM月DD日')}</span></div>}
+        <div style={{ float: 'right', color: 'grey', marginTop: 10 }}>
+          {task.taobao.user && <span><span>数据来源于：</span><span>{task.taobao.user.name}</span></span>}
+          {summary.updateTime && <Divider type="vertical" />}
+          {summary.updateTime && <span><span>数据更新时间：</span><span>{moment(new Date(summary.updateTime)).format('YYYY年MM月DD日')}</span></span>}
+        </div>
       </Card>
     );
   }
