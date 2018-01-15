@@ -101,25 +101,42 @@ export default class WeTaobao extends PureComponent {
       {
         title: '商品',
         dataIndex: 'raw_title',
+        width: 600,
         render: (value, row) => <a target="_blank" href={row.detail_url} dangerouslySetInnerHTML={{__html: value}}></a>
       },
       {
         title: '新七条',
-        width: 150,
+        width: 80,
         dataIndex: 'icon',
         render: (value) => {
           const str = value.find(item => /新7条/.test(item.innerText));
           return str ? '符合' : '不符合';
-        }
+        },
       },
-    ]
+    ];
     const score = {
       title: '品质档',
-      width: 150,
+      width: 80,
       dataIndex: 'q_score',
-    }
+    };
+    const tk_rate_suf = {
+      title: '淘客佣金',
+      dataIndex: 'tk_rate_suf',
+      width: 80,
+      render: (value, record) => `${record.tk_rate_pre}${value}`,
+    };
+    const view_price = {
+      title: '售价',
+      dataIndex: 'view_price',
+      width: 80,
+    };
+    const comment_count = {
+      title: '评论数',
+      dataIndex: 'comment_count',
+      width: 80,
+    };
     if (qualitList[0] && qualitList[0].q_score) {
-      columns.push(score);
+      columns.push(score, tk_rate_suf, view_price, comment_count);
     }
     return (
       <Card bordered={false}>
@@ -168,7 +185,8 @@ export default class WeTaobao extends PureComponent {
           </div>
           <div className={styles.dataList}>
             <Table
-              pagination={false}
+              pagination={{ pageSize: 15 }}
+              scroll={{ y: 500 }} 
               dataSource={qualitList}
               size="small"
               columns={columns}

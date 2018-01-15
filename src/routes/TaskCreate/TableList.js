@@ -90,6 +90,15 @@ export default class TableList extends PureComponent {
     //   { genre: 'Other', sold: 150 }
     // ];
     chart.source(data.list);
+    chart.legend('text', {
+      offsetX: 30,
+    });
+    chart.axis('value', {
+      title: null,
+    });
+    chart.axis('text', {
+      title: null,
+    });
     // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
     chart.interval().position('text*value').color('text')
     // Step 4: 渲染图表

@@ -8,7 +8,6 @@ const TabPane = Tabs.TabPane;
 @connect(state => ({
   visible: state.album.cropperModal.visible,
   src: state.album.cropperModal.src,
-  aspectRatio: state.album.cropperModal.aspectRatio,
   data: state.album.cropperModal.data,
   width: state.album.cropperModal.width,
   height: state.album.cropperModal.height,
@@ -103,7 +102,7 @@ export default class CropperModal extends PureComponent {
     this.setState({ dataUrl: dataUrl });
   }
   render() {
-    const { visible, minSize, src, aspectRatio, data, width, height, picWidth, picHeight, cropperKey } = this.props;
+    const { visible, src, width, height, picWidth, picHeight, cropperKey } = this.props;
     const { dataUrl, confirmLoading } = this.state;
     let rate = 1;
     // const frameWidth = (992-40) * 0.62;
