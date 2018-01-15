@@ -258,6 +258,7 @@ class BasicLayout extends React.PureComponent {
       type: 'global/changeSelectedKeys',
       payload: [e.key],
     });
+    window.scrollTo(0, 0);
   }
   toggle = () => {
     const { collapsed } = this.props;
