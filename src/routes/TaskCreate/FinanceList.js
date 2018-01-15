@@ -6,6 +6,7 @@ import querystring from 'querystring';
 import { Table, Card, Button, Input, Form, Menu, Modal, Icon, message, Radio, Popconfirm, DatePicker } from 'antd';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
+import DockPanel from '../../components/DockPanel';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -219,6 +220,7 @@ export default class FinanceList extends PureComponent {
               onChange={this.handleStandardTableChange}
               rowKey="_id"
             />
+            <DockPanel />
           </div>
         </Card>
       </div>
