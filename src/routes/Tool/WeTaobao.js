@@ -110,19 +110,28 @@ export default class WeTaobao extends PureComponent {
         render: (value) => {
           const str = value.find(item => /新7条/.test(item.innerText));
           return str ? '符合' : '不符合';
-        }
+        },
       },
-    ]
+    ];
     const score = {
       title: '品质档',
       width: 150,
       dataIndex: 'q_score',
-    }
+    };
+    const tk_rate_suf = {
+      title: '淘客佣金',
+      dataIndex: 'tk_rate_suf',
+      render: (value, record) => `${record.tk_rate_pre}${value}`,
+    };
+    const view_price = {
+      title: '售价',
+      dataIndex: 'view_price',
+    };
     if (qualitList[0] && qualitList[0].q_score) {
-      columns.push(score);
+      columns.push(score, tk_rate_suf, view_price);
     }
     return (
-      <Card bordered={false}>
+      <Card bordered={false} bodyStyle={{ padding: 10 }}>
         {/*
           <div>
             <p className={styles.tbSearchTit}>查询淘宝商品是否符合新七条</p>
@@ -168,7 +177,8 @@ export default class WeTaobao extends PureComponent {
           </div>
           <div className={styles.dataList}>
             <Table
-              pagination={false}
+              pagination={{ pageSize: 15 }}
+              scroll={{ y: 500 }} 
               dataSource={qualitList}
               size="small"
               columns={columns}

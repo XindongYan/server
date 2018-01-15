@@ -137,11 +137,11 @@ const tool = {
     component: Tool.ShopPool,
   }, {
     name: '查询新七条',
-    path: '/new7',
+    path: 'new7',
     component: Tool.WeTaobao,
   }, {
     name: '天猫品牌库',
-    path: `/clothes`,
+    path: `clothes`,
     component: Tool.Clothes,
   }, {
     name: '查询每日好店',
@@ -149,11 +149,11 @@ const tool = {
     target: '_blank',
   }, {
     name: '淘客订单明细',
-    path: '/alimamaOrders',
+    path: 'alimamaOrders',
     component: Tool.AlimamaOrder,
   }, {
     name: '有好货查重',
-    path: '/qumai',
+    path: 'qumai',
     component: Tool.Qumai,
   }],
 };

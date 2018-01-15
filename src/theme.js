@@ -7,4 +7,5 @@ module.exports = {
   'link-decoration': 'none',
   'link-hover-decoration': 'none',
   'card-actions-background': '#f5f8fa',
+  'layout-trigger-background': '#00b395',
 };
