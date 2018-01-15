@@ -66,6 +66,9 @@ export default class TaskView extends PureComponent {
       type: 'global/changeLayoutCollapsed',
       payload: true,
     });
+    this.props.dispatch({
+      type: 'task/clearFormData'
+    });
   }
   componentWillReceiveProps(nextProps) {
     this.setState({

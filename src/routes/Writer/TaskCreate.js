@@ -333,7 +333,7 @@ export default class TaskCreate extends PureComponent {
               name: task.title || haveGoodsTask.title || lifeResearch.title,
               approve_status: TASK_APPROVE_STATUS.taken,
               channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
-              task_type: query.task_type ? Number(query.task_type) : 1,
+              task_type: query.channel_name === '直播脚本' ? 3 : 1,
               team_id: teamUser ? teamUser.team_id : null,
               publisher_id: currentUser._id,
               publish_time: new Date(),
@@ -369,7 +369,7 @@ export default class TaskCreate extends PureComponent {
               name: task.title || haveGoodsTask.title || lifeResearch.title,
               approve_status: TASK_APPROVE_STATUS.taken,
               channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
-              task_type: query.task_type ? Number(query.task_type) : 1,
+              task_type: query.channel_name === '直播脚本' ? 3 : 1,
               team_id: teamUser ? teamUser.team_id : null,
               publisher_id: currentUser._id,
               publish_time: new Date(),
@@ -452,7 +452,6 @@ export default class TaskCreate extends PureComponent {
           approvers: approvers,
         },
         callback: (result) => {
-          console.log(result);
           if (result.error) {
             message.error(result.msg);
           } else {

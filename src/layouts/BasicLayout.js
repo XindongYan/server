@@ -22,6 +22,7 @@ import SubmissionDetails from '../routes/TaskSquare/SubmissionDetails';
 import WriterTaskEdit from '../routes/Writer/TaskEdit';
 import WriterTaskView from '../routes/Writer/TaskView';
 import WriterTaskCreate from '../routes/Writer/TaskCreate';
+import TaskChannel from '../routes/Writer/TaskChannel';
 import WriterTaskSuccess from '../routes/Result/Success';
 
 import ApproverTaskEdit from '../routes/Approver/TaskEdit';
@@ -416,6 +417,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/writer/task/edit" component={WriterTaskEdit} />
               <Route path="/writer/task/view" component={WriterTaskView} />
               <Route path="/writer/task/create" component={WriterTaskCreate} />
+              <Route path="/writer/task/channel" component={TaskChannel} />
               <Route path="/writer/task/handin/success" component={WriterTaskSuccess} />
               <Route path="/approver/task/edit" component={ApproverTaskEdit} />
               <Route path="/approver/task/view" component={ApproverTaskView} />

@@ -507,7 +507,7 @@ export default class TableList extends PureComponent {
         if (record.approve_status === TASK_APPROVE_STATUS.taken) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -623,9 +623,7 @@ export default class TableList extends PureComponent {
         disabled: record.disabled,
       }),
     };
-    if (true) {
-      columns.push(...times, status, opera);
-    } else if (data.approve_status === -1 || data.approve_status === 0) {
+    if (data.approve_status === -1 || data.approve_status === 0) {
       columns.push(...times, approveTime, approver, grade, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted
       || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {

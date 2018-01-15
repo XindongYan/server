@@ -6,7 +6,7 @@ import styles from './index.less';
 
 
 function fnDragStart(e) {
-  console.log(this)
+  console.log(e)
 }
 export default class Comment extends PureComponent {
   state = {
@@ -19,7 +19,7 @@ export default class Comment extends PureComponent {
 
   }
   dragStart = (e) => {
-    fnDragStart()
+    fnDragStart(e);
   }
   render() {
     const { msg, editComment, boxSize } = this.props;
@@ -34,15 +34,17 @@ export default class Comment extends PureComponent {
         }}
         alte={msg.message}
         onContextMenu={editComment}
-        onMouseDown={this.dragStart}
-        onMouseMove={this.dragMove}
-        onMouseUp={this.dragEnd}
       >
-      {/*
-        <div className={styles.commentLeft}></div>
-        
+        {/*
+          <div className={styles.commentLeft}></div>
+        <div
+          className={styles.commentMiddle}
+          onMouseDown={this.dragStart}
+          onMouseMove={this.dragMove}
+          onMouseUp={this.dragEnd}
+        ></div>
         <div className={styles.commentRight}></div>
-      */}
+        */}
         {msg.message}
       </div>
     );
