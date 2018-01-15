@@ -65,7 +65,7 @@ export default class TaskOption extends PureComponent {
     {
       name: '直播脚本',
       box_text: '直播脚本',
-      img: 'https://img.alicdn.com/tfs/TB1ahIzRVXXXXb4XXXXXXXXXXXX-200-200.png',
+      img: '',
       detail: ''
     }];
     return (
@@ -75,7 +75,7 @@ export default class TaskOption extends PureComponent {
             <Card key={index} bodyStyle={{ background: '#fff', padding: 20 }} style={{ marginBottom: 20 }}>
               <div className={styles.option_box_top}>
                 <div className={styles.option_box_img}>
-                  <img src={item.img} />
+                  <img src={item.img} alt={item.name} />
                 </div>
                 <div className={styles.option_box_detail}>
                   <h3>{item.name}</h3>

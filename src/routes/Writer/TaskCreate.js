@@ -207,54 +207,90 @@ export default class TaskCreate extends PureComponent {
   handleSubmitTask = () => {
     const { currentUser, teamUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const payload = {
-      name: this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title,
-      project_id: query.project_id,
-      creator_id: currentUser._id,
-    };
-    this.props.dispatch({
-      type: 'task/add',
-      payload: {
-        ...payload,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          this.props.dispatch({
-            type: 'task/update',
-            payload: {
-              ...this.state.task,
-              haveGoods: this.state.haveGoodsTask,
-              lifeResearch: this.state.lifeResearch,
-              _id: result.task._id,
-              approve_status: TASK_APPROVE_STATUS.taken,
-              publisher_id: currentUser._id,
-              taker_id: currentUser._id,
-              take_time: new Date(),
-            },
-            callback: (result1) => {
-              if (result1.error) {
-                message.error(result1.msg);
-              } else {
-                this.props.dispatch({
-                  type: 'task/handin',
-                  payload: { _id: result.task._id, user_id: currentUser._id },
-                  callback: (result2) => {
-                    if (result2.error) {
-                      message.error(result2.msg);
-                    } else {
-                      message.success(result2.msg);
-                      this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
-                    }
-                  }
-                });
+    if (query._id) {
+      this.props.dispatch({
+        type: 'task/update',
+        payload: {
+          ...this.state.task,
+          haveGoods: this.state.haveGoodsTask,
+          lifeResearch: this.state.lifeResearch,
+          _id: query._id,
+          approve_status: TASK_APPROVE_STATUS.taken,
+          publisher_id: currentUser._id,
+          taker_id: currentUser._id,
+          take_time: new Date(),
+          name: this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title,
+        },
+        callback: (result1) => {
+          if (result1.error) {
+            message.error(result1.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/handin',
+              payload: { _id: query._id, user_id: currentUser._id },
+              callback: (result2) => {
+                if (result2.error) {
+                  message.error(result2.msg);
+                } else {
+                  message.success(result2.msg);
+                  this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${query._id}`));
+                }
               }
-            }
-          });
+            });
+          }
         }
-      },
-    });
+      });
+    } else {
+      const payload = {
+        name: this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title,
+        project_id: query.project_id,
+        creator_id: currentUser._id,
+      };
+      this.props.dispatch({
+        type: 'task/add',
+        payload: {
+          ...payload,
+        },
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            this.props.dispatch({
+              type: 'task/update',
+              payload: {
+                ...this.state.task,
+                haveGoods: this.state.haveGoodsTask,
+                lifeResearch: this.state.lifeResearch,
+                _id: result.task._id,
+                approve_status: TASK_APPROVE_STATUS.taken,
+                publisher_id: currentUser._id,
+                taker_id: currentUser._id,
+                take_time: new Date(),
+              },
+              callback: (result1) => {
+                if (result1.error) {
+                  message.error(result1.msg);
+                } else {
+                  this.props.dispatch({
+                    type: 'task/handin',
+                    payload: { _id: result.task._id, user_id: currentUser._id },
+                    callback: (result2) => {
+                      if (result2.error) {
+                        message.error(result2.msg);
+                      } else {
+                        message.success(result2.msg);
+                        this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${result.task._id}`));
+                      }
+                    }
+                  });
+                }
+              }
+            });
+          }
+        },
+      });
+    }
+      
   }
   
   handleSpecifyApprover = () => {
