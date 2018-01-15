@@ -169,10 +169,10 @@ class BasicLayout extends React.PureComponent {
     }
     return currentMenuSelectedKeys;
   }
-  getCurrentMenuSelectedKeys(props) {
+  getCurrentMenuSelectedKeys = (props) => {
     const { location: { pathname } } = props || this.props;
     const keys = pathname.split('/').slice(1);
-    if (keys.length === 1 && keys[0] === '') {
+    if (keys.length === 1 && keys[0] === '' && this.state) {
       return [this.state.menus[0].key];
     }
     return keys;
