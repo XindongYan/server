@@ -38,6 +38,23 @@
   }
 }
 
+.trigger {
+  font-size: 20px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: all .3s;
+  padding: 0 24px;
+  &:hover {
+    background: @primary-1;
+  }
+}
+
+@media screen and (max-width: @screen-xs) {
+  .trigger {
+    display: none;
+  }
+}
+
 .right {
   float: right;
   height: 100%;
@@ -89,13 +106,11 @@
 }
 
 .sider {
-  /*min-height: 100vh;*/
+  min-height: 100vh;
   box-shadow: 2px 0 6px rgba(0, 21, 41, .35);
-/*  position: relative;*/
+  position: relative;
   z-index: 100;
   background-color: #fff;
-
-  overflow: auto; height: 100vh; position: fixed; left: 0;
 }
 .sider *{
   z-index: 10;

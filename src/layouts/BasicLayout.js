@@ -22,6 +22,7 @@ import SubmissionDetails from '../routes/TaskSquare/SubmissionDetails';
 import WriterTaskEdit from '../routes/Writer/TaskEdit';
 import WriterTaskView from '../routes/Writer/TaskView';
 import WriterTaskCreate from '../routes/Writer/TaskCreate';
+import TaskChannel from '../routes/Writer/TaskChannel';
 import WriterTaskSuccess from '../routes/Result/Success';
 
 import ApproverTaskEdit from '../routes/Approver/TaskEdit';
@@ -106,23 +107,6 @@ class BasicLayout extends React.PureComponent {
       type: 'global/changeLayoutCollapsed',
       payload: collapsed,
     });
-    this.resizeTimeout = setTimeout(() => {
-      const event = document.createEvent('HTMLEvents');
-      event.initEvent('resize', true, false);
-      window.dispatchEvent(event);
-    }, 600);
-  }
-  toggle = () => {
-    const { collapsed } = this.props;
-    this.props.dispatch({
-      type: 'global/changeLayoutCollapsed',
-      payload: !collapsed,
-    });
-    this.resizeTimeout = setTimeout(() => {
-      const event = document.createEvent('HTMLEvents');
-      event.initEvent('resize', true, false);
-      window.dispatchEvent(event);
-    }, 600);
   }
   onMenuClick = ({ key }) => {
     const { dispatch, teamUser, team } = this.props;
@@ -161,22 +145,21 @@ class BasicLayout extends React.PureComponent {
     }
   }
   getDefaultCollapsedSubMenus(props) {
-    const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
-    currentMenuSelectedKeys.splice(-1, 1);
-    if (currentMenuSelectedKeys.length === 0) {
-      // return ['square', 'creation', 'project', 'approve', 'team', 'album', 'tool'];
-      return ['square'];
-    }
-    return currentMenuSelectedKeys;
+    // const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
+    // currentMenuSelectedKeys.splice(-1, 1);
+    // if (currentMenuSelectedKeys.length === 0) {
+      return ['square', 'creation', 'project', 'approve', 'team', 'album', 'tool'];
+    // }
+    // return currentMenuSelectedKeys;
   }
-  getCurrentMenuSelectedKeys = (props) => {
-    const { location: { pathname } } = props || this.props;
-    const keys = pathname.split('/').slice(1);
-    if (keys.length === 1 && keys[0] === '' && this.state) {
-      return [this.state.menus[0].key];
-    }
-    return keys;
-  }
+  // getCurrentMenuSelectedKeys(props) {
+  //   const { location: { pathname } } = props || this.props;
+  //   const keys = pathname.split('/').slice(1);
+  //   if (keys.length === 1 && keys[0] === '') {
+  //     return [this.state.menus[0].key];
+  //   }
+  //   return keys;
+  // }
   getNavMenuItems(menusData, parentPath = '') {
     if (!menusData) {
       return [];
@@ -265,9 +248,9 @@ class BasicLayout extends React.PureComponent {
     return groupBy(newNotices, 'type');
   }
   handleOpenChange = (openKeys) => {
-    const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
+    // const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
     this.setState({
-      openKeys: latestOpenKey ? [latestOpenKey] : [],
+      openKeys,
     });
   }
   handleSelect = (e) => {
@@ -275,6 +258,18 @@ class BasicLayout extends React.PureComponent {
       type: 'global/changeSelectedKeys',
       payload: [e.key],
     });
+  }
+  toggle = () => {
+    const { collapsed } = this.props;
+    this.props.dispatch({
+      type: 'global/changeLayoutCollapsed',
+      payload: !collapsed,
+    });
+    this.resizeTimeout = setTimeout(() => {
+      const event = document.createEvent('HTMLEvents');
+      event.initEvent('resize', true, false);
+      window.dispatchEvent(event);
+    }, 600);
   }
   handleNoticeClear = (type) => {
     message.success(`清空了${type}`);
@@ -309,9 +304,9 @@ class BasicLayout extends React.PureComponent {
       selectedKeys: [...selectedKeys],
     };
     const layout = (
-      <Layout style={{ height: '100%' }}>
+      <Layout>
         <Sider
-
+          trigger={null}
           collapsible
           collapsed={collapsed}
           breakpoint="md"
@@ -334,13 +329,18 @@ class BasicLayout extends React.PureComponent {
             {...menuProps}
             onOpenChange={this.handleOpenChange}
             onClick={this.handleSelect}
-            style={{ margin: '16px 0 60px', width: '100%' }}
+            style={{ margin: '16px 0', width: '100%' }}
           >
             {this.getNavMenuItems(this.state.menus)}
           </Menu>
         </Sider>
-        <Layout style={{ marginLeft: collapsed ? 80 : 200, height: '100%' }}>
+        <Layout>
           <Header className={styles.header}>
+            <Icon
+              className={styles.trigger}
+              type={collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
             <div className={styles.right}>
               { /* <HeaderSearch
                 className={`${styles.action} ${styles.search}`}
@@ -393,7 +393,7 @@ class BasicLayout extends React.PureComponent {
               ) : <Spin size="small" style={{ marginLeft: 8 }} />}
             </div>
           </Header>
-          <Content style={{ margin: '15px 12px 0', height: '100%', minHeight: 700 }}>
+          <Content style={{ margin: '15px 12px 0', height: '100%' }}>
             <Switch>
               {
                 getRouteData('BasicLayout').map(item =>
@@ -417,6 +417,7 @@ class BasicLayout extends React.PureComponent {
               <Route path="/writer/task/edit" component={WriterTaskEdit} />
               <Route path="/writer/task/view" component={WriterTaskView} />
               <Route path="/writer/task/create" component={WriterTaskCreate} />
+              <Route path="/writer/task/channel" component={TaskChannel} />
               <Route path="/writer/task/handin/success" component={WriterTaskSuccess} />
               <Route path="/approver/task/edit" component={ApproverTaskEdit} />
               <Route path="/approver/task/view" component={ApproverTaskView} />
@@ -442,7 +443,7 @@ class BasicLayout extends React.PureComponent {
     return (
       <DocumentTitle title={this.getPageTitle()}>
         <ContainerQuery query={query}>
-          {params => <div className={classNames(params)} style={{ height: '100%' }}>{layout}</div>}
+          {params => <div className={classNames(params)}>{layout}</div>}
         </ContainerQuery>
       </DocumentTitle>
     );
