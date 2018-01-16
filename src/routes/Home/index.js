@@ -25,14 +25,14 @@ export default class Home extends PureComponent {
       <Card bordered={false} bodyStyle={{ padding: '50px 100px' }}>
         <div>
           尼采插件：
-          <a href={`${ORIGIN}/nicaiCrx.crx`} download="尼采插件.crx">
+          <a href={`${ORIGIN}/nicai.crx`} download="尼采插件.crx">
             点击下载
           </a>
           (要求:运行插件的chrome浏览器版本必须 >= 59.0)
         </div>
         <div>
           尼采插件(测试版)：
-          <a href={`${ORIGIN}/test.nicaiCrx.zip`} download="尼采插件测试版.zip">
+          <a href={`${ORIGIN}/test.nicai.zip`} download="尼采插件测试版.zip">
             点击下载
           </a>
           (要求:运行插件的chrome浏览器版本必须 >= 59.0)

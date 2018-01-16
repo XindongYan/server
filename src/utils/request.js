@@ -40,11 +40,11 @@ export default function request(url, options) {
     .then(checkStatus)
     .then(response => {
       const promise = response.json();
-      promise.then(result => {
-        if (result.error && result.errorCode === 10000 && window.location.hash !== '#/user/login') {
-          window.location.href = `${window.location.origin}/index.html#/user/login`;
-        }
-      });
+      // promise.then(result => {
+      //   if (result.error && result.errorCode === 10000 && window.location.hash !== '#/user/login') {
+      //     window.location.href = `${window.location.origin}/index.html#/user/login`;
+      //   }
+      // });
       return promise;
     })
     .catch((error) => {
