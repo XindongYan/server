@@ -155,10 +155,10 @@ const tool = {
     name: '有好货查重',
     path: 'qumai',
     component: Tool.Qumai,
-  }, {
-    name: '商家资质',
-    path: '/Aptitude',
-    component: Tool.Aptitude,
+  // }, {
+  //   name: '商家资质',
+  //   path: '/Aptitude',
+  //   component: Tool.Aptitude,
   }],
 };
 
