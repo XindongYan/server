@@ -38,7 +38,15 @@ export default function request(url, options) {
   const origin = ORIGIN;
   return fetch(/^http/.test(url) ? url : `${origin}${url}`, newOptions)
     .then(checkStatus)
-    .then(response => response.json())
+    .then(response => {
+      const promise = response.json();
+      promise.then(result => {
+        if (result.error && result.errorCode === 10000 && window.location.hash !== '#/user/login') {
+          window.location.href = `${window.location.origin}/index.html#/user/login`;
+        }
+      });
+      return promise;
+    })
     .catch((error) => {
       if (error.code) {
         notification.error({
