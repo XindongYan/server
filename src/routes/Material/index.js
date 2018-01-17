@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress, Tabs } from 'antd';
 import Album from './Album.js';
 import AuctionModal from '../../components/AuctionModal';
 import styles from './index.less';
 
 const TabPane = Tabs.TabPane;
+@connect(state => ({
 
+}))
 export default class Material extends PureComponent {
   state = {
     version: '',
@@ -16,7 +19,6 @@ export default class Material extends PureComponent {
     url: '',
     choose: '',
     itemList: [],
-    visible: false,
     pagination: {
       pageSize: 18,
       current: 2,
@@ -141,20 +143,13 @@ export default class Material extends PureComponent {
   }
   handleAddProduct = () => {
     const { pagination } = this.state;
-    this.setState({
-      visible: false,
-    })
     this.handleGetAuction({ pageSize: pagination.pageSize, current: 1 });
   }
   handleShowModal = () => {
-    this.setState({
-      visible: true,
-    })
-  }
-  handleAuctionHide = () => {
-    this.setState({
-      visible: false,
-    })
+    this.props.dispatch({
+      type: 'auction/show',
+      payload: { currentKey: 'material' }
+    });
   }
   render() {
     const { ProgressPercent, itemList, pagination, loading } = this.state;
@@ -180,7 +175,7 @@ export default class Material extends PureComponent {
                   onShowSizeChange={this.changeAuctionPage}
                   style={{float: 'right', margin: '10px 20px'}}
                 />
-                <AuctionModal k="Material" visible={this.state.visible} onOk={this.handleAddProduct} onCancel={this.handleAuctionHide} />
+                <AuctionModal k="material" onOk={this.handleAddProduct} />
               </div>
             </TabPane>
             <TabPane tab="我的图片" key="2">
