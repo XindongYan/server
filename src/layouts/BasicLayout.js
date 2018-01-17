@@ -344,7 +344,7 @@ class BasicLayout extends React.PureComponent {
             />
             <Link target='_blank' to="/daren/list">
               <div className={styles.daren}>
-                <Icon type="area-chart" style={{ lineHeight: 'inherit' }} />榜单
+                <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>榜单</span>
               </div>
             </Link>
             <div className={styles.right}>

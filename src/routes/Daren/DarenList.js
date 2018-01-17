@@ -110,18 +110,8 @@ export default class DarenList extends PureComponent {
       sorter: true,
       width: 100,
     }, {
-      title: '历史任务均价',
-      dataIndex: 'darenMissionData.avgFee',
-      sorter: true,
-      width: 100,
-    }, {
       title: '累计任务数',
       dataIndex: 'darenMissionData.completeMission',
-      sorter: true,
-      width: 100,
-    }, {
-      title: '评价',
-      dataIndex: 'darenMissionData.score',
       sorter: true,
       width: 100,
     }, {
