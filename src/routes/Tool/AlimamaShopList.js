@@ -9,7 +9,7 @@ const { RangePicker } = DatePicker;
 
 @connect(state => ({
   alimamaShops: state.tool.alimamaShops,
-  loading: state.tool.alimamaShopsloading,
+  loading: state.tool.alimamaShopsLoading,
   currentUser: state.user.currentUser,
 }))
 

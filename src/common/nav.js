@@ -153,6 +153,10 @@ const tool = {
     name: '有好货查重',
     path: 'qumai',
     component: Tool.Qumai,
+  }, {
+    name: '榜单',
+    path: 'daren',
+    component: Tool.DarenList,
   // }, {
   //   name: '商家资质',
   //   path: '/Aptitude',

@@ -1,4 +1,4 @@
-import { queryAlimamaOrders, queryAlimamaShops } from '../services/tool';
+import { queryAlimamaOrders, queryAlimamaShops, queryDarens } from '../services/tool';
 
 export default {
   namespace: 'tool',
@@ -8,12 +8,17 @@ export default {
       list: [],
       pagination: {},
     },
-    alimamaOrdersloading: true,
+    alimamaOrdersLoading: true,
     alimamaShops: {
       list: [],
       pagination: {},
     },
-    alimamaShopsloading: true,
+    alimamaShopsLoading: true,
+    darens: {
+      list: [],
+      pagination: {},
+    },
+    darensLoading: true,
   },
 
   effects: {
@@ -51,6 +56,23 @@ export default {
         payload: false,
       });
     },
+    *fetchDarens({ payload }, { call, put }) {
+      yield put({
+        type: 'changeDarensLoading',
+        payload: true,
+      });
+      const response = yield call(queryDarens, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveDarens',
+          payload: response,
+        });
+      }
+      yield put({
+        type: 'changeDarensLoading',
+        payload: false,
+      });
+    },
   },
 
   reducers: {
@@ -63,7 +85,7 @@ export default {
     changeAlimamaOrdersLoading(state, action) {
       return {
         ...state,
-        alimamaOrdersloading: action.payload,
+        alimamaOrdersLoading: action.payload,
       };
     },
     saveAlimamaShops(state, action) {
@@ -75,7 +97,19 @@ export default {
     changeAlimamaShopsLoading(state, action) {
       return {
         ...state,
-        alimamaShopsloading: action.payload,
+        alimamaShopsLoading: action.payload,
+      };
+    },
+    saveDarens(state, action) {
+      return {
+        ...state,
+        darens: action.payload,
+      };
+    },
+    changeDarensLoading(state, action) {
+      return {
+        ...state,
+        darensLoading: action.payload,
       };
     },
   },
