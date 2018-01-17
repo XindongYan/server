@@ -34,7 +34,7 @@ export default class AuctionModal extends PureComponent {
     if (nextProps.k === nextProps.currentKey) {
       if (!this.props.visible && nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
-        if (nextProps.k !== 'Material') {
+        if (nextProps.k !== 'material') {
           nicaiCrx.addEventListener('setVersion', this.setVersion);
           nicaiCrx.addEventListener('setAuction', this.setAuction);
           nicaiCrx.addEventListener('resultAuction', this.resultAuction);
@@ -224,12 +224,12 @@ export default class AuctionModal extends PureComponent {
             <p>{auctionChoose.title}</p>
             <p>价格：¥ {auctionChoose.item.finalPrice}</p>
             <p>{auctionChoose.item.taoKeDisplayPrice}</p>
-            { k !== 'Material' &&
+            { k !== 'material' &&
               <p>选择商品主图：</p>
             }
           </div>
           <div className={styles.showBox}>
-            { k !== 'Material' ?
+            { k !== 'material' ?
                auctionChoose.images.map((item, index) => <div className={styles.imgBox} key={index} onClick={() => this.handleChooseImg(item)}>
                   <img src={item} />
                   { item === this.state.choose &&
@@ -251,7 +251,7 @@ export default class AuctionModal extends PureComponent {
   render() {
     const { visible, k, currentKey } = this.props;
     const { itemList, pagination, loading } = this.state;
-    const activeKey = k === 'Material' ? 'add' : 'commodities';
+    const activeKey = k === 'material' ? 'add' : 'commodities';
     return (
       <Modal
         title="添加宝贝"
@@ -261,7 +261,7 @@ export default class AuctionModal extends PureComponent {
         onCancel={this.handleCancel}
         bodyStyle={{ padding: '5px 20px' }}
       >
-        { k !== 'Material' ?
+        { k !== 'material' ?
           <Tabs defaultActiveKey={activeKey} onChange={this.handleChangeTab}>
             <TabPane tab={<span>素材库</span>} key="commodities">
               <div>
