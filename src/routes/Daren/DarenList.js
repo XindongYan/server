@@ -17,6 +17,7 @@ const Search = Input.Search;
 export default class DarenList extends PureComponent {
   state = {
     searchValue: '',
+    y: document.body.clientHeight - 220,
   }
   componentDidMount() {
     const { darens: { pagination } } = this.props;
@@ -24,6 +25,9 @@ export default class DarenList extends PureComponent {
       type: 'daren/fetchDarens',
       payload: { ...pagination },
     });
+    document.body.onresize = () => {
+      this.setState({ y: document.body.clientHeight - 200 });
+    }
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -161,7 +165,7 @@ export default class DarenList extends PureComponent {
             }}
             onChange={this.handleStandardTableChange}
             rowKey="_id"
-            scroll={{ y: 680 }}
+            scroll={{ y: this.state.y }}
           />
         </div>
       </Card>
