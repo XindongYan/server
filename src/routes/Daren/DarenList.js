@@ -139,7 +139,7 @@ export default class DarenList extends PureComponent {
       },
     }];
     return (
-      <Card bordered={false} bodyStyle={{ padding: '5px 0px 0px 0px' }}>
+      <Card bordered={false} bodyStyle={{ padding: '5px 2px 2px 0px', height: '100%' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator} align="right">
             <Search
@@ -161,6 +161,7 @@ export default class DarenList extends PureComponent {
             }}
             onChange={this.handleStandardTableChange}
             rowKey="_id"
+            scroll={{ y: 680 }}
           />
         </div>
       </Card>
