@@ -90,17 +90,9 @@ export default class TaskCreate extends PureComponent {
             },
             haveGoodsTask: { ...result.task.haveGoods },
             lifeResearch: result.task.lifeResearch,
-          }, () => {
-            if (result.task.channel_name === '有好货') {
-              this.handleCreatGoodForm();
-            }
           });
         }
       });
-    } else {
-      if (query.channel_name === '有好货') {
-        this.handleCreatGoodForm();
-      }
     }
   }
   componentWillUnmount() {
@@ -113,17 +105,6 @@ export default class TaskCreate extends PureComponent {
     });
   }
 
-  handleCreatGoodForm = () => {
-    const fieldsValue = {
-      title: this.state.haveGoodsTask.title,
-      task_desc: this.state.haveGoodsTask.task_desc,
-      industry_title: this.state.haveGoodsTask.industry_title,
-      industry_introduction: this.state.haveGoodsTask.industry_introduction,
-      brand_name: this.state.haveGoodsTask.brand_name,
-      brand_introduction: this.state.haveGoodsTask.brand_introduction,
-    };
-    this.props.form.setFieldsValue(fieldsValue);
-  }
   validate = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { task, haveGoodsTask, lifeResearch } = this.state;

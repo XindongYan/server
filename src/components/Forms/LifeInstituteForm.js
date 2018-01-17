@@ -117,9 +117,8 @@ export default class LifeInstituteForm extends PureComponent {
                     placeholder="请在这里输入标题"
                   />
                 )}
-
               </FormItem>
-                <span style={{ color: formData.title && formData.title.length > 18 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/18</span>
+              <span style={{ color: formData.title && formData.title.length > 18 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/18</span>
             </div>
             <div className={styles.taskListInp}>
               <FormItem>

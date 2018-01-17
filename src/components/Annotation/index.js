@@ -156,7 +156,7 @@ export default class Annotation extends PureComponent {
           批注
           { viewStatus !== 'view' &&
             <Popconfirm placement="top" title="确认清空批注?" onConfirm={this.handleClear} okText="确认" cancelText="取消">
-              <a style={{ float: 'right', marginRight: 10 }}>清空批注</a>
+              <a style={{ float: 'right', marginRight: 10, color: '#00b395' }}>清空批注</a>
             </Popconfirm>
           }
         </div>

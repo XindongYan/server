@@ -98,9 +98,16 @@ export default class AlbumModal extends PureComponent {
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
     const { pagination } = this.state;
-    this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+    if (data.error) {
+      message.warn(data.msg);
+      this.setState({
+        loading: false,
+      });
+    } else {
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+    }
     this.setState({
-      version: data,
+      version: data.version,
     })
   }
   handleLoadAlbum = (params) => {

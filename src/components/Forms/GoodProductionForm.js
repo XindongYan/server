@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Input, Icon, message, Tag, Tooltip, Form } from 'antd';
 import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
-import TaobaoAuction from '../TaobaoAuction';
+import AuctionModal from '../AuctionModal';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from '../FormParts/CascaderSelect';
 
@@ -21,22 +21,45 @@ export default class GoodProductionForm extends PureComponent {
       height: 0,
     },
     k: '',
-    auctionVisible: false,
   }
   componentDidMount() {
-    
+    if (this.props.operation !== 'view') {
+      const { formData } = this.props;
+      const fieldsValue = {
+        title: formData.title,
+        task_desc: formData.task_desc,
+        industry_title: formData.industry_title,
+        industry_introduction: formData.industry_introduction,
+        brand_name: formData.brand_name,
+        brand_introduction: formData.brand_introduction,
+      };
+      this.props.form.setFieldsValue(fieldsValue);
+    }
   }
   componentWillReceiveProps(nextProps) {
-    
+    if (this.props.operation !== 'view') {
+      const { formData } = nextProps;
+      if (!this.props.formData.title && nextProps.formData.title) {
+        const fieldsValue = {
+          title: formData.title,
+          task_desc: formData.task_desc,
+          industry_title: formData.industry_title,
+          industry_introduction: formData.industry_introduction,
+          brand_name: formData.brand_name,
+          brand_introduction: formData.brand_introduction,
+        };
+        this.props.form.setFieldsValue(fieldsValue);
+      }
+    }
   }
   componentWillUnmount() {
     
   }
-
-  handleAuctionHide = () => {
-    this.setState({
-      auctionVisible: false,
-    })
+  handleAuctionShow = () => {
+    this.props.dispatch({
+      type: 'auction/show',
+      payload: { currentKey: 'havegoods' }
+    });
   }
   handlePointClose = (e, removedTag, key) => {
     e.preventDefault();
@@ -139,9 +162,9 @@ export default class GoodProductionForm extends PureComponent {
       }
     }
   }
-  handleAddProduct = (url, img) => {
+  handleAddProduct = (auction, img) => {
     if (this.props.onChange) this.props.onChange({
-      product_url: url,
+      product_url: auction.item.itemUrl,
       product_img: img,
     });
   }
@@ -192,7 +215,7 @@ export default class GoodProductionForm extends PureComponent {
                 </p>
                 <div>
                   { !formData.product_img &&
-                    <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={() => {this.setState({ auctionVisible: true })}}>
+                    <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
                       <div>
                         <Icon type="plus" className={styles.uploadIcon} />
                         <p>上传宝贝</p>
@@ -210,54 +233,52 @@ export default class GoodProductionForm extends PureComponent {
                 </div>
               </div>
               <div>
-                <FormItem>
-                  {getFieldDecorator('title', {
-                    rules: [{
-                      required: true, message: '标题不能为空',
-                    }, {
-                      max: 18, message: '文字长度太长, 要求长度最大为18',
-                    }, {
-                      whitespace: true, message: '标题不能为空格'
-                    }],
-                  })(
-                    <div className={styles.InputBox} style={{ border: 'none' }}>
+                <div className={styles.InputBox} style={{ border: 'none' }}>
+                  <FormItem>
+                    {getFieldDecorator('title', {
+                      rules: [{
+                        required: true, message: '标题不能为空',
+                      }, {
+                        max: 18, message: '文字长度太长, 要求长度最大为18',
+                      }, {
+                        whitespace: true, message: '标题不能为空格'
+                      }],
+                    })(
                       <Input
                         style={{ fontSize: '18px', border: 'none', outline: 'none' }}
-                        value={formData.title}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'title')}
                         placeholder="请在这里输入标题"
                       />
-                      <span style={{ color: formData.title.length>18 ? 'red' : '#666' }} className={styles.inputNum}>
-                        {formData.title.length}/18
-                      </span>
-                    </div>
-                  )}
-                </FormItem>
+                    )}
+                  </FormItem>
+                  <span style={{ color: formData.title.length>18 ? 'red' : '#666' }} className={styles.inputNum}>
+                    {formData.title.length}/18
+                  </span>
+                </div>
               </div>
               <div>
-                <FormItem>
-                  {getFieldDecorator('task_desc', {
-                    rules: [{
-                      required: true, message: '不能为空',
-                    }, {
-                      max: 30, message: '文字长度太长, 要求长度最多为30',
-                    }, {
-                      whitespace: true, message: '内容不能为空格'
-                    }],
-                  })(
-                    <div className={styles.textareaBox}>
+                <div className={styles.textareaBox} style={{ border: 'none' }}>
+                  <FormItem>
+                    {getFieldDecorator('task_desc', {
+                      rules: [{
+                        required: true, message: '不能为空',
+                      }, {
+                        max: 30, message: '文字长度太长, 要求长度最多为30',
+                      }, {
+                        whitespace: true, message: '内容不能为空格'
+                      }],
+                    })(
                       <textarea
                         className={styles.textarea}
-                        value={formData.task_desc}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'task_desc')}
                         placeholder="用一句话概括商品亮点，最多30个字，用于在有好货列表中显示">
                       </textarea>
-                      <span style={{ color: formData.task_desc.length>30 ? 'red' : '#666' }} className={styles.textareaNum}>
-                        {formData.task_desc.length}/30
-                      </span>
-                    </div>
-                  )}
-                </FormItem>
+                    )}
+                  </FormItem>
+                  <span style={{ color: formData.task_desc.length>30 ? 'red' : '#666' }} className={styles.textareaNum}>
+                    {formData.task_desc.length}/30
+                  </span>
+                </div>
                 <p className={styles.promptText}>提示：用一句话概括商品亮点，最多30个字，用于在有好货列表中显示</p>
               </div>
               <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
@@ -391,36 +412,33 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.promptText}>提示：敲击【回车键】添加【宝贝短亮点】, 【宝贝短亮点】数量2-3个，每个【宝贝短亮点】字数6-12个字</p>
               </div>
             </article>
-          
-          
             <article className={styles.goodsArticle}>  
               <p className={styles.lineTitleBlue}>行业补充</p>
               <div>
                 <p className={styles.lineTitleDefult}>
                   标题
                 </p>
-                <FormItem>
-                  {getFieldDecorator('industry_title', {
-                    rules: [{
-                      required: true, message: '不能为空',
-                    }, {
-                      max: 6, message: '文字长度太长, 要求长度最多为6',
-                    }, {
-                      whitespace: true, message: '内容不能为空格'
-                    }],
-                  })(
-                    <div className={styles.InputBox}>
+                <div className={styles.InputBox}>
+                  <FormItem>
+                    {getFieldDecorator('industry_title', {
+                      rules: [{
+                        required: true, message: '不能为空',
+                      }, {
+                        max: 6, message: '文字长度太长, 要求长度最多为6',
+                      }, {
+                        whitespace: true, message: '内容不能为空格'
+                      }],
+                    })(
                       <Input
-                        value={formData.industry_title}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'industry_title')}
                         placeholder="请围绕商品的其中一个行业特征填写标题"
                       />
-                      <span style={{ color: formData.industry_title.length>6 ? 'red' : '#666' }} className={styles.inputNum}>
-                        {formData.industry_title.length}/6
-                      </span>
-                    </div>
-                  )}
-                </FormItem>
+                    )}
+                  </FormItem>
+                  <span style={{ color: formData.industry_title.length>6 ? 'red' : '#666' }} className={styles.inputNum}>
+                    {formData.industry_title.length}/6
+                  </span>
+                </div>
                 <p className={styles.promptTextRed}></p>
                 <p className={styles.promptText}>举例：设计亮点，搭配指南，材质解析，功能/性能优势，功能效果，试用展示，使用技巧，选购技巧等。</p>
               </div>
@@ -428,30 +446,29 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   介绍
                 </p>
-                <FormItem>
-                  {getFieldDecorator('industry_introduction', {
-                    rules: [{
-                      required: true, message: '不能为空',
-                    }, {
-                      min: 60, message: '文字长度太短, 要求长度最少为60',
-                    }, {
-                      max: 200, message: '文字长度太长, 要求长度最多为200',
-                    }, {
-                      whitespace: true, message: '内容不能为空格'
-                    }],
-                  })(
-                    <div className={styles.textareaBox}>
+                <div className={styles.textareaBox}>
+                  <FormItem>
+                    {getFieldDecorator('industry_introduction', {
+                      rules: [{
+                        required: true, message: '不能为空',
+                      }, {
+                        min: 60, message: '文字长度太短, 要求长度最少为60',
+                      }, {
+                        max: 200, message: '文字长度太长, 要求长度最多为200',
+                      }, {
+                        whitespace: true, message: '内容不能为空格'
+                      }],
+                    })(
                       <textarea
-                        value={formData.industry_introduction}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'industry_introduction')}
                         placeholder="根据你选择的标题，针对这个商品在该方面的特色和优势进行补充说明，限200字">
                       </textarea>
-                      <span style={{ color: formData.industry_introduction.length>200 ? 'red' : '#666' }} className={styles.textareaNum}>
-                        {formData.industry_introduction.length}/200
-                      </span>
-                    </div>
-                  )}
-                </FormItem>
+                    )}
+                  </FormItem>
+                  <span style={{ color: formData.industry_introduction.length>200 ? 'red' : '#666' }} className={styles.textareaNum}>
+                    {formData.industry_introduction.length}/200
+                  </span>
+                </div>
               </div>
               <div>
                 <p className={styles.lineTitleDefult}>
@@ -483,56 +500,54 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.lineTitleDefult}>
                   品牌名称
                 </p>
-                <FormItem>
-                  {getFieldDecorator('brand_name', {
-                    rules: [{
-                      required: true, message: '不能为空',
-                    }, {
-                      max: 30, message: '文字长度太长, 要求长度最多为30',
-                    }, {
-                      whitespace: true, message: '内容不能为空格'
-                    }],
-                  })(
-                    <div className={styles.InputBox}>
-                      <input
-                        value={formData.brand_name}
+                  <div className={styles.InputBox}>
+                  <FormItem>
+                    {getFieldDecorator('brand_name', {
+                      rules: [{
+                        required: true, message: '不能为空',
+                      }, {
+                        max: 30, message: '文字长度太长, 要求长度最多为30',
+                      }, {
+                        whitespace: true, message: '内容不能为空格'
+                      }],
+                    })(
+                      <Input
                         onChange={(e) => this.handleTaskChange(e.target.value, 'brand_name')}
                         placeholder="限30个字"
                       />
-                      <span style={{ color: formData.brand_name.length>30 ? 'red' : '#666' }} className={styles.inputNum}>
-                        {formData.brand_name.length}/30
-                      </span>
-                    </div>
-                  )}
-                </FormItem>
+                    )}
+                  </FormItem>
+                  <span style={{ color: formData.brand_name.length>30 ? 'red' : '#666' }} className={styles.inputNum}>
+                    {formData.brand_name.length}/30
+                  </span>
+                </div>
                 <p className={styles.promptTextRed}></p>
               </div>
                <div>
                 <p className={styles.lineTitleDefult}>
                   介绍
                 </p>
-                <FormItem>
-                  {getFieldDecorator('brand_introduction', {
-                    rules: [{
-                      required: true, message: '不能为空',
-                    }, {
-                      max: 200, message: '文字长度太长, 要求长度最多为200',
-                    }, {
-                      whitespace: true, message: '内容不能为空格'
-                    }],
-                  })(
-                    <div className={styles.textareaBox}>
+                <div className={styles.textareaBox}>
+                  <FormItem>
+                    {getFieldDecorator('brand_introduction', {
+                      rules: [{
+                        required: true, message: '不能为空',
+                      }, {
+                        max: 200, message: '文字长度太长, 要求长度最多为200',
+                      }, {
+                        whitespace: true, message: '内容不能为空格'
+                      }],
+                    })(
                       <textarea
-                        value={formData.brand_introduction}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'brand_introduction')}
                         placeholder="根据你选择的标题，针对这个商品在该方面的特色和优势进行补充说明，限200字">
                       </textarea>
-                      <span style={{ color: formData.brand_name.length>200 ? 'red' : '#666' }} className={styles.textareaNum}>
-                        {formData.brand_introduction.length}/200
-                      </span>
-                    </div>
-                  )}
-                </FormItem>
+                    )}
+                  </FormItem>
+                  <span style={{ color: formData.brand_name.length>200 ? 'red' : '#666' }} className={styles.textareaNum}>
+                    {formData.brand_introduction.length}/200
+                  </span>
+                </div>
                 <p className={styles.promptTextRed}></p>
                 <p className={styles.promptText}>请填写品牌特色和故事，限200字</p>
               </div>
@@ -723,7 +738,7 @@ export default class GoodProductionForm extends PureComponent {
           </section>
         }
         <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
-        <TaobaoAuction visible={this.state.auctionVisible} onOk={this.handleAddProduct} onCancel={this.handleAuctionHide} />
+        <AuctionModal k="havegoods" onOk={this.handleAddProduct} />
         <CropperModal onOk={this.handleAddCoverImg}/>
       </div>
     );

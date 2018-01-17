@@ -1,26 +1,29 @@
 import React, { PureComponent } from 'react';
 import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
 import styles from './index.less';
+import AuctionModal from '../../components/AuctionModal';
 
-export default class Album extends PureComponent {
+export default class Auction extends PureComponent {
   state = {
-    previewVisible: false,
-    previewImage: '',
-    ProgressVisible: false,
-    ProgressPercent: 10,
     nicaiCrx: null,
+    version: '',
+    search: '',
+    images: [],
+    data: null,
+    url: '',
+    choose: '',
     itemList: [],
+    visible: false,
     pagination: {
       pageSize: 20,
       current: 1,
       total: 0,
     },
     loading: true,
-    version: '',
   }
   componentDidMount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.addEventListener('setAlbum', this.setAlbum);
+    nicaiCrx.addEventListener('setAuction', this.setAuction);
     nicaiCrx.addEventListener('uploadResult', this.uploadResult);
     nicaiCrx.addEventListener('setVersion', this.setVersion);
     setTimeout(() => {
@@ -42,11 +45,11 @@ export default class Album extends PureComponent {
   }
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
+    nicaiCrx.removeEventListener('setAuction', this.setAuction);
     nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
     nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
-  setAlbum = (e) => {
+  setAuction = (e) => {
     const data = JSON.parse(e.target.innerText);
     if (!data.error) {
       this.setState({
@@ -71,7 +74,7 @@ export default class Album extends PureComponent {
     const { pagination } = this.state;
     if (!data.errorCode) {
       message.success('上传成功');
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+      this.handleGetAuction({ pageSize: pagination.pageSize, current: 1 });
     } else {
       message.error(data.message);
     }
@@ -85,16 +88,17 @@ export default class Album extends PureComponent {
         loading: false,
       });
     } else {
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+      this.handleGetAuction({ pageSize: pagination.pageSize, current: 1 });
     }
     this.setState({
       version: data.version,
     })
   }
-  handleLoadAlbum = (params) => {
+
+  handleGetAuction = (params) => {
     this.state.nicaiCrx.innerText = JSON.stringify(params);
     const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getAlbum', true, true);
+    customEvent.initEvent('getAuction', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleGetVersion = () => {
@@ -147,43 +151,27 @@ export default class Album extends PureComponent {
     })
     if (this.state.nicaiCrx) {
       this.setState({ loading: true });
-      this.handleLoadAlbum({
+      this.handleGetAuction({
         pageSize,
         current,
       });
     }
   }
-  beforeUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size / 1024 / 1024 >= 3) {
-        message.warn('上传图片最大3M');
-      } else {
-        console.log(file.size)
-        const reader = new FileReader();   
-        reader.readAsDataURL(file);   
-        reader.onload = (e) => {
-          // console.log(e.target.result); //就是base64  
-          this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
-          const customEvent = document.createEvent('Event');
-          customEvent.initEvent('uploadImg', true, true);
-          this.state.nicaiCrx.dispatchEvent(customEvent);
-        }
-      }
-    }
+  handleAddProduct = () => {
+
   }
   render() {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
     const extra = (
       <div className={styles.fileInpBox}>
-        <label htmlFor="upload">添加图片</label>
+        <label htmlFor="upload">添加商品</label>
         <input id="upload" className={styles.fileInp} type="file" onChange={this.beforeUpload} />
       </div>
     );
     return (
       <div>
         <Card
-          title="图片"
+          title="商品"
           bodyStyle={{ padding: 15 }}
           extra={extra}
         >
@@ -209,6 +197,7 @@ export default class Album extends PureComponent {
         <Modal closable={false} footer={null} visible={ProgressVisible} onCancel={this.handleProCancel}>
           <Progress percent={ProgressPercent} status="active" />
         </Modal>
+        <AuctionModal visible={this.state.visible} onOk={this.handleAddProduct} onCancel={this.handleAuctionHide} />
       </div>
     );
   }

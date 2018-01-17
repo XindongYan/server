@@ -86,10 +86,6 @@ export default class TaskEdit extends PureComponent {
             grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
             approve_status: result.task.approve_status,
             approve_notes: result.task.approve_notes || [],
-          }, () => {
-            if (result.task.channel_name === '有好货') {
-              this.handleCreatGoodForm();
-            }
           });
         }
       }
@@ -126,17 +122,6 @@ export default class TaskEdit extends PureComponent {
     this.setState({
       approve_notes: [...commentContent],
     })
-  }
-  handleCreatGoodForm = () => {
-    const fieldsValue = {
-      title: this.state.haveGoodsTask.title,
-      task_desc: this.state.haveGoodsTask.task_desc,
-      industry_title: this.state.haveGoodsTask.industry_title,
-      industry_introduction: this.state.haveGoodsTask.industry_introduction,
-      brand_name: this.state.haveGoodsTask.brand_name,
-      brand_introduction: this.state.haveGoodsTask.brand_introduction,
-    };
-    this.props.form.setFieldsValue(fieldsValue);
   }
   handleChange = (task) => {
     this.setState({ task: { ...this.state.task, ...task } });

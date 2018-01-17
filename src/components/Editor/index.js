@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import AlbumModal from '../AlbumModal';
+import AuctionModal from '../AuctionModal';
 import styles from './index.less';
 @connect(() => ({
 
@@ -21,7 +22,7 @@ export default class Editor extends PureComponent {
         if (!document.getElementById('ueditor')) {
           script = document.createElement('script');
           script.id = 'ueditor';
-          script.src = '/ueditor/ueditor.all.min.js';
+          script.src = '/ueditor/ueditor.all.js';
           script.async = true;
           document.body.appendChild(script);
           script.onload = () => {
@@ -56,7 +57,7 @@ export default class Editor extends PureComponent {
           'justifycenter', // 居中对齐
           'justifyjustify', // 两端对齐
           'picture',
-          // 'taobao',
+          'taobao',
           'drafts', // 从草稿箱加载
           forecolor,
           backcolor,
@@ -75,10 +76,20 @@ export default class Editor extends PureComponent {
         });
       }
     };
+    ue.commands.taobao = {
+      execCommand: () => {
+        this.props.dispatch({
+          type: 'auction/show',
+          payload: {
+            currentKey: 'editor',
+          }
+        });
+      }
+    };
     ue.addListener('contentChange', this.handleChange);
     ue.addListener('ready', () => {
       setTimeout(() => {
-        ue.setContent(this.props.value);
+        ue.execCommand('inserthtml', this.props.value, true);
       }, 200);
     });
     this.setState({ ue });
@@ -93,6 +104,10 @@ export default class Editor extends PureComponent {
     });
     // this.state.ue.execCommand('inserthtml', html);
   }
+  handleAddProduct = (auction, src) => {
+    const html = `<a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}"><img style="width: 200px;" src="${src}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a>`;
+    this.state.ue.execCommand('inserthtml', html, true);
+  }
   handleChange = () => {
     if (this.state.ue) {
       const content = this.state.ue.getContent();
@@ -105,6 +120,7 @@ export default class Editor extends PureComponent {
       <div style={style}>
         <div id="editor" className={styles.editor} />
         <AlbumModal k="editor" onOk={this.handleAddImg} />
+        <AuctionModal k="editor" onOk={this.handleAddProduct} />
       </div>
     );
   }

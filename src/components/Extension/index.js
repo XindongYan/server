@@ -19,17 +19,19 @@ export default class Extension extends PureComponent {
   componentWillReceiveProps(nextProps) {
     const { url, visible } = nextProps;
     const show = visible || this.state.visible;
-    const qr = qrcode.qrcode(6, 'M');
-    qr.addData(url);  // 解决中文乱码
-    qr.make();
-    const tag = qr.createImgTag(5, 10);  // 获取base64编码图片字符串
-    const base64 = tag.match(/src="([^"]*)"/)[1];  // 获取图片src数据
-    // base64 = base64.replace(/^data:image\/\w+;base64,/, '');  // 获取base64编码
-    // base64 = new Buffer(base64, 'base64');  // 新建base64图片缓存
-    const publicQRcodeUrl = base64;
-    this.setState({
-      publicQRcodeUrl,
-    });
+    if (url) {
+      const qr = qrcode.qrcode(6, 'M');
+      qr.addData(url);  // 解决中文乱码
+      qr.make();
+      const tag = qr.createImgTag(5, 10);  // 获取base64编码图片字符串
+      const base64 = tag.match(/src="([^"]*)"/)[1];  // 获取图片src数据
+      // base64 = base64.replace(/^data:image\/\w+;base64,/, '');  // 获取base64编码
+      // base64 = new Buffer(base64, 'base64');  // 新建base64图片缓存
+      const publicQRcodeUrl = base64;
+      this.setState({
+        publicQRcodeUrl,
+      });
+    }
   }
   componentWillUnmount() {
     document.removeEventListener('copy', this.handelCopy);
@@ -43,7 +45,7 @@ export default class Extension extends PureComponent {
   handelCopy = (ev) => {
     if (this.props.visible) {
       ev.preventDefault();
-      ev.clipboardData.setData('text/plain', this.props.url);
+      ev.clipboardData.setData('text/plain', this.props.url || '');
       message.success('复制成功', 3);
     }
   }
