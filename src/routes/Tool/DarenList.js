@@ -156,7 +156,7 @@ export default class DarenList extends PureComponent {
           <div className={styles.tableListOperator} align="right">
             <Search
               style={{ width: 260}}
-              placeholder="店铺名称"
+              placeholder="昵称"
               onChange={this.handleChange}
               onSearch={(value) => this.handleSearch(value, 'search')}
               enterButton
