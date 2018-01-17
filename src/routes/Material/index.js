@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress, Tabs } from 'antd';
 import Album from './Album.js';
-// import Auction from './Auction.js'
 import AuctionModal from '../../components/AuctionModal';
 import styles from './index.less';
 
