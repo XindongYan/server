@@ -4,3 +4,4 @@ export WeTaobao from './WeTaobao';
 export AlimamaOrder from './AlimamaOrder';
 export Qumai from './Qumai';
 export Aptitude from './Aptitude';
+export DarenList from './DarenList';
