@@ -9,8 +9,8 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const Search = Input.Search;
 
 @connect(state => ({
-  darens: state.tool.darens,
-  loading: state.tool.darensLoading,
+  darens: state.daren.darens,
+  loading: state.daren.darensLoading,
   currentUser: state.user.currentUser,
 }))
 
@@ -21,7 +21,7 @@ export default class DarenList extends PureComponent {
   componentDidMount() {
     const { darens: { pagination } } = this.props;
     this.props.dispatch({
-      type: 'tool/fetchDarens',
+      type: 'daren/fetchDarens',
       payload: { ...pagination },
     });
   }
@@ -43,7 +43,7 @@ export default class DarenList extends PureComponent {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
     dispatch({
-      type: 'tool/fetchDarens',
+      type: 'daren/fetchDarens',
       payload: params,
     });
   }
@@ -66,7 +66,7 @@ export default class DarenList extends PureComponent {
 
     values[name] = value;
     dispatch({
-      type: 'tool/fetchDarens',
+      type: 'daren/fetchDarens',
       payload: values,
     });
   }
@@ -77,14 +77,13 @@ export default class DarenList extends PureComponent {
     const columns = [{
       title: '达人账号',
       dataIndex: 'headFullUrl',
-      width: 280,
-      fixed: 'left',
+      width: 250,
       render: (val, record) =>
         <Row>
-          <Col span={4}>
+          <Col span={5}>
             <Avatar shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={val}/>
           </Col>
-          <Col span={20}>
+          <Col span={19}>
             <Row><strong>{record.nick}</strong></Row>
             <Row>{record.attributes.role}</Row>
             <Row>{record.attributes.creator_type}</Row>
@@ -137,10 +136,9 @@ export default class DarenList extends PureComponent {
       width: 100,
     }, {
       title: '合作渠道数',
-      key: 'channelAbilitys.lenght',
+      key: 'channelAbilitysLength',
+      sorter: true,
       width: 100,
-      // fixed: 'right',
-      render: (record) => record.channelAbilitys.length,
     }, {
       title: '合作渠道',
       dataIndex: 'channelAbilitys',
@@ -151,11 +149,11 @@ export default class DarenList extends PureComponent {
       },
     }];
     return (
-      <Card bordered={false} bodyStyle={{ padding: 14 }}>
+      <Card bordered={false} bodyStyle={{ padding: '5px 0px 0px 0px' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator} align="right">
             <Search
-              style={{ width: 260}}
+              style={{ width: 400}}
               placeholder="昵称"
               onChange={this.handleChange}
               onSearch={(value) => this.handleSearch(value, 'search')}
@@ -173,7 +171,6 @@ export default class DarenList extends PureComponent {
             }}
             onChange={this.handleStandardTableChange}
             rowKey="_id"
-            scroll={{ x: columns.map(item => item.width).reduce((a, b) => a + b, 0) }}
           />
         </div>
       </Card>
