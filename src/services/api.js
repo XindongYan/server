@@ -63,7 +63,7 @@ export async function accountLogout() {
 }
 
 export async function getSmsCode(params) {
-  return request('/api/sms/send', {
+  return request('/api/alicloud/sms/send', {
     method: 'POST',
     body: params,
   });

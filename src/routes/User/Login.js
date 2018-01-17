@@ -24,7 +24,7 @@ export default class Login extends Component {
           </a>
         </div>
         <div style={{ width: 300, textAlign: 'left', margin: '60px auto 10px' }}>
-          <a href={`${ORIGIN}/nicaiCrx.crx`} download="尼采插件_v1.0.4.crx">
+          <a href={`${ORIGIN}/nicai.crx`} download="尼采插件.crx">
             尼采插件下载
           </a>
           <span>(chrome浏览器版本 >= 59.0)</span>

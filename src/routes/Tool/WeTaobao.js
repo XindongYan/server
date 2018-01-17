@@ -186,7 +186,6 @@ export default class WeTaobao extends PureComponent {
           <div className={styles.dataList}>
             <Table
               pagination={{ pageSize: 15 }}
-              scroll={{ y: 500 }} 
               dataSource={qualitList}
               size="small"
               columns={columns}

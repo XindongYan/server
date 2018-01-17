@@ -66,7 +66,7 @@ export default class TaskOption extends PureComponent {
     {
       name: '直播脚本',
       box_text: '直播脚本',
-      img: 'https://img.alicdn.com/imgextra/i1/2597324045/TB2kNxZm4TI8KJjSspiXXbM4FXa_!!2597324045-2-daren.png_294x430q90.jpg',
+      img: '//img.alicdn.com/imgextra/i1/2597324045/TB2SYu2m3vD8KJjSsplXXaIEFXa_!!2597324045-2-daren.png_294x430q90.jpg',
       detail: ''
     }];
     return (
