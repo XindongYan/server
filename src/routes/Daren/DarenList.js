@@ -126,7 +126,7 @@ export default class DarenList extends PureComponent {
       width: 100,
     }, {
       title: '合作渠道数',
-      key: 'channelAbilitysLength',
+      dataIndex: 'channelAbilitysLength',
       sorter: true,
       width: 100,
     }, {
