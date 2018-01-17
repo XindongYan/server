@@ -105,7 +105,7 @@ export default class Editor extends PureComponent {
     // this.state.ue.execCommand('inserthtml', html);
   }
   handleAddProduct = (auction, src) => {
-    const html = `<a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}"><img style="width: 200px;" src="${src}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a>`;
+    const html = `<a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}"><img src="${src}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a>`;
     this.state.ue.execCommand('inserthtml', html, true);
   }
   handleChange = () => {

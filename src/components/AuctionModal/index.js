@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination } from 'antd';
+import $ from 'jquery';
+import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag } from 'antd';
 import styles from './index.less';
+import { searchStatistic, searchNew7 } from '../../services/tool';
 
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
@@ -26,6 +28,8 @@ export default class AuctionModal extends PureComponent {
       total: 0,
     },
     auctionChoose: null,
+    q_score: '',
+    new7: '',
   }
   componentDidMount() {
     
@@ -137,6 +141,8 @@ export default class AuctionModal extends PureComponent {
       search: '',
       choose: '',
       auctionChoose: null,
+      new7: '',
+      q_score: '',
     })
   }
   handleAddAuction = (value) => {
@@ -186,16 +192,29 @@ export default class AuctionModal extends PureComponent {
       });
     }
   }
-  resultAuction = (e) => {
+  resultAuction = async (e) => {
     const result = JSON.parse(e.target.innerText);
     if (this.props.k === this.props.currentKey) {
       if (result.error) {
         message.error(result.msg)
       } else {
-        this.setState({
-          choose: result.data.images && result.data.images.length > 0 ? result.data.images[0] : '',
-          auctionChoose: result.data,
-        })
+
+        const result1 = await searchNew7({text: `https:${result.data.item.itemUrl}`});
+        if(result1.data && result1.data.length > 0 ){
+          const new7 = result1.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
+          console.log(new7)
+          this.setState({
+            q_score: result1.data[0].q_score,
+            new7: new7,
+            choose: result.data.images && result.data.images.length > 0 ? result.data.images[0] : '',
+            auctionChoose: result.data,
+          });
+        } else {
+          this.setState({
+            choose: result.data.images && result.data.images.length > 0 ? result.data.images[0] : '',
+            auctionChoose: result.data,
+          });
+        }
       }
     }
   }
@@ -217,13 +236,15 @@ export default class AuctionModal extends PureComponent {
   handleChooseAuction = (auction) => {
     // auctionChoose
     this.setState({
+      new7: '',
+      q_score: '',
       auctionChoose: auction,
       choose: auction.images && auction.images.length > 0 ? auction.images[0] : auction.coverUrl,
     })
   }
   addAuction = () => {
     const { visible, k } = this.props;
-    const { search, itemList, pagination, loading, auctionChoose } = this.state;
+    const { search, itemList, pagination, loading, auctionChoose, q_score, new7 } = this.state;
     return (<div style={{ padding: 10, height: 300 }}>
       <div style={{ position: 'relative' }}>
         <Search
@@ -243,8 +264,16 @@ export default class AuctionModal extends PureComponent {
         <div>
           <div style={{ margin: '10px 0' }}>
             <p>{auctionChoose.title}</p>
-            <p>价格：¥ {auctionChoose.item.finalPrice}</p>
-            <p>{auctionChoose.item.taoKeDisplayPrice}</p>
+            <div style={{ margin: '5px 0' }}>
+              <Tag color="red">售价¥{auctionChoose.item.finalPrice}</Tag>
+              <Tag color="orange">{auctionChoose.item.taoKeDisplayPrice}</Tag>
+              { new7 &&
+                <Tag color="blue">{new7}</Tag>
+              }
+              { q_score &&
+                <Tag color="volcano">{q_score}</Tag>
+              }
+            </div>
             { k !== 'material' &&
               <p>选择商品主图：</p>
             }

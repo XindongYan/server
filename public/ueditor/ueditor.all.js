@@ -14239,13 +14239,14 @@ UE.plugins['undo'] = function () {
         this.restore = function () {
             var me = this.editor;
             var scene = this.list[this.index];
+            // console.log(scene.content.replace(fillchar, ''))
             var root = UE.htmlparser(scene.content.replace(fillchar, ''));
             me.options.autoClearEmptyNode = false;
             me.filterInputRule(root);
             me.options.autoClearEmptyNode = orgState;
             //trace:873
             //去掉展位符
-            me.document.body.innerHTML = root.toHtml();
+            me.document.body.innerHTML = scene.content.replace(fillchar, '');
             me.fireEvent('afterscencerestore');
             //处理undo后空格不展位的问题
             if (browser.ie) {
@@ -14279,19 +14280,19 @@ UE.plugins['undo'] = function () {
             var cont = root.toHtml();
             //trace:3461
             //这个会引起回退时导致空格丢失的情况
-//            browser.ie && (cont = cont.replace(/>&nbsp;</g, '><').replace(/\s*</g, '<').replace(/>\s*/g, '>'));
+           // browser.ie && (cont = cont.replace(/>&nbsp;</g, '><').replace(/\s*</g, '<').replace(/>\s*/g, '>'));
             me.fireEvent('aftergetscene');
 
             return {
                 address:rngAddress,
-                content:cont
+                // content:cont,
+                content:me.body.innerHTML,
             }
         };
         this.save = function (notCompareRange,notSetCursor) {
             clearTimeout(saveSceneTimer);
             var currentScene = this.getScene(notSetCursor),
                 lastScene = this.list[this.index];
-
             if(lastScene && lastScene.content != currentScene.content){
                 me.trigger('contentchange')
             }
@@ -14341,8 +14342,8 @@ UE.plugins['undo'] = function () {
         this.undoManger.save.apply(this.undoManger,args);
     });
 
-//    me.addListener('beforeexeccommand', saveScene);
-//    me.addListener('afterexeccommand', saveScene);
+        //    me.addListener('beforeexeccommand', saveScene);
+        //    me.addListener('afterexeccommand', saveScene);
 
     me.addListener('reset', function (type, exclude) {
         if (!exclude) {
