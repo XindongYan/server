@@ -67,8 +67,11 @@ export default class CropperModal extends PureComponent {
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
+    if (data.error) {
+      message.warn(data.msg);
+    }
     this.setState({
-      version: data,
+      version: data.version,
     })
   }
   handleGetVersion = () => {

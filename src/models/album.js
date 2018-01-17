@@ -2,7 +2,6 @@ import { queryPhotos, addPhoto, removePhoto } from '../services/album';
 
 export default {
   namespace: 'album',
-
   state: {
     data: {
       list: [],

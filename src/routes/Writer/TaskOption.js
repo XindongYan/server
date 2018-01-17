@@ -23,6 +23,7 @@ export default class TaskOption extends PureComponent {
   }
   handleDeliver = (value) => {
     const task_type = value === '直播脚本' ? 3 : 1;
+    window.scrollTo(0, 0);
     if (value === '直播脚本') {
       this.props.dispatch(routerRedux.push(`/writer/task/create?channel_name=${value}&task_type=${task_type}`));
     } else {
@@ -65,7 +66,7 @@ export default class TaskOption extends PureComponent {
     {
       name: '直播脚本',
       box_text: '直播脚本',
-      img: '',
+      img: 'https://img.alicdn.com/imgextra/i1/2597324045/TB2kNxZm4TI8KJjSspiXXbM4FXa_!!2597324045-2-daren.png_294x430q90.jpg',
       detail: ''
     }];
     return (

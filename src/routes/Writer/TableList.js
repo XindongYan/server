@@ -98,7 +98,7 @@ export default class TableList extends PureComponent {
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
     this.setState({
-      version: data,
+      version: data.version,
     })
   }
   handleGetVersion = () => {
@@ -588,17 +588,25 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
           return (
             <div>
-              <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
-                推广
-              </a>
-              <Divider type="vertical" />
+              { record.taobao && record.taobao.url &&
+                <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
+                  推广
+                </a>
+              }
+              { record.taobao && record.taobao.url &&
+                <Divider type="vertical" />
+              }
               <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
                 分析
               </a>
-              <Divider type="vertical" />
-              <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-                查看
-              </a>
+              { record.taobao && record.taobao.url &&
+                <Divider type="vertical" />
+              }
+              {record.taobao && record.taobao.url &&
+                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
+                  查看
+                </a>
+              }
             </div>
           );
         } else {
@@ -625,9 +633,10 @@ export default class TableList extends PureComponent {
     };
     if (data.approve_status === -1 || data.approve_status === 0) {
       columns.push(...times, approveTime, approver, grade, opera);
-    } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted
-      || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
+    } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
       columns.push( pushStatusText, daren_nickname, pushTime, opera);
+    } else if (data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
+      columns.push( pushStatusText, daren_nickname, opera);
     } else {
       columns.push(...times, approver, grade, approveTime, opera);
     }

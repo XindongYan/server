@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Modal, message } from 'antd';
+import { Card, Modal, message, Icon } from 'antd';
 import styles from './index.less';
 import $ from 'jquery';
 export default class SignBox extends PureComponent {
@@ -65,7 +65,9 @@ export default class SignBox extends PureComponent {
         ref="signBox"
       >
         <div className={styles.SignTit}>批注
-          <div className={styles.outSignbox} onClick={this.closeBox}>X</div>
+          <div className={styles.outSignbox} onClick={this.closeBox}>
+            <Icon type="close" />
+          </div>
         </div>
         <textarea
           placeholder="在这里输入批注"

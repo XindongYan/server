@@ -4,6 +4,7 @@ import styles from './index.less';
 
 export default class Album extends PureComponent {
   state = {
+    version: '',
     previewVisible: false,
     previewImage: '',
     ProgressVisible: false,
@@ -16,20 +17,12 @@ export default class Album extends PureComponent {
       total: 0,
     },
     loading: true,
-    version: '',
   }
   componentDidMount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.addEventListener('setVersion', this.setVersion);
     nicaiCrx.addEventListener('setAlbum', this.setAlbum);
     nicaiCrx.addEventListener('uploadResult', this.uploadResult);
-    nicaiCrx.addEventListener('setVersion', this.setVersion);
-    setTimeout(() => {
-      if(!this.state.version){
-        message.destroy();
-        message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
-        this.setState({ loading: false });
-      }
-    }, 5000);
     if (!this.state.nicaiCrx) {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
@@ -39,12 +32,34 @@ export default class Album extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
+
   }
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
     nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
     nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+  }
+
+  handleGetVersion = () => {
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getVersion', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
+  setVersion = (e) => {
+    const { pagination } = this.state;
+    const data = JSON.parse(e.target.innerText);
+    if (data.error) {
+      message.warn(data.msg);
+      this.setState({
+        loading: false,
+      });
+    } else {
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+    }
+    this.setState({
+      version: data.version,
+    })
   }
   setAlbum = (e) => {
     const data = JSON.parse(e.target.innerText);
@@ -76,32 +91,14 @@ export default class Album extends PureComponent {
       message.error(data.message);
     }
   }
-  setVersion = (e) => {
-    const data = JSON.parse(e.target.innerText);
-    const { pagination } = this.state;
-    if (data.error) {
-      message.warn(data.msg);
-      this.setState({
-        loading: false,
-      });
-    } else {
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
-    }
-    this.setState({
-      version: data.version,
-    })
-  }
+
   handleLoadAlbum = (params) => {
     this.state.nicaiCrx.innerText = JSON.stringify(params);
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getAlbum', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
-  handleGetVersion = () => {
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getVersion', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
-  }
+
   handleCancel = () => {
     this.setState({
       previewVisible: false,
@@ -120,7 +117,7 @@ export default class Album extends PureComponent {
   }
   renderPhoto = (photo) => {
     return (
-      <Card style={{ width: 160, display: 'inline-block', margin: 10 }} bodyStyle={{ padding: 0 }} key={photo.id} >
+      <Card style={{ width: 146, display: 'inline-block', margin: '5px 15px 5px 0' }} bodyStyle={{ padding: 0 }} key={photo.id} >
         <div className={styles.customImageBox}>
           <img className={styles.customImage} src={photo.url} />
           <div className={styles.customModals}>
@@ -159,7 +156,6 @@ export default class Album extends PureComponent {
       if (file.size / 1024 / 1024 >= 3) {
         message.warn('上传图片最大3M');
       } else {
-        console.log(file.size)
         const reader = new FileReader();   
         reader.readAsDataURL(file);   
         reader.onload = (e) => {
@@ -182,15 +178,10 @@ export default class Album extends PureComponent {
     );
     return (
       <div>
-        <Card
-          title="图片"
-          bodyStyle={{ padding: 15 }}
-          extra={extra}
-        >
-          <Spin spinning={loading}>
-            {itemList.map(this.renderPhoto)}
-          </Spin>
-        </Card>
+        {extra}
+        <Spin spinning={loading}>
+          {itemList.map(this.renderPhoto)}
+        </Spin>
         <Pagination
           {...{
             showSizeChanger: true,

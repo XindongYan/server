@@ -14,7 +14,8 @@ import TaskOption from '../routes/Writer/TaskOption';
 import TaskSquare from '../routes/TaskSquare/ProjectList';
 import SubmissionList from '../routes/TaskSquare/SubmissionList';
 import Invitation from '../routes/Invitation/InvitationList';
-import Album from '../routes/Album';
+import Material from '../routes/Material';
+
 import * as Tool from '../routes/Tool/index';
 
 import Success from '../routes/Result/Success';
@@ -116,11 +117,8 @@ const album = {
   name: '素材中心',
   path: 'album',
   icon: 'picture',
-  children: [{
-    name: '图片',
-    path: 'picture',
-    component: Album,
-  }],
+  children: [],
+  component: Material,
 };
 
 const tool = {
@@ -155,10 +153,10 @@ const tool = {
     name: '有好货查重',
     path: 'qumai',
     component: Tool.Qumai,
-  }, {
-    name: '商家资质',
-    path: '/Aptitude',
-    component: Tool.Aptitude,
+  // }, {
+  //   name: '商家资质',
+  //   path: '/Aptitude',
+  //   component: Tool.Aptitude,
   }],
 };
 
