@@ -89,7 +89,7 @@ export default class Editor extends PureComponent {
     ue.addListener('contentChange', this.handleChange);
     ue.addListener('ready', () => {
       setTimeout(() => {
-        ue.setContent(this.props.value);
+        ue.execCommand('inserthtml', this.props.value, true);
       }, 200);
     });
     this.setState({ ue });
@@ -105,7 +105,7 @@ export default class Editor extends PureComponent {
     // this.state.ue.execCommand('inserthtml', html);
   }
   handleAddProduct = (auction, src) => {
-    const html = `<a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}"><img style="width: 200px;" src="${src}" /><div class="editor_auctions_details">${auction.title}</div></a>`;
+    const html = `<a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}"><img style="width: 200px;" src="${src}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a>`;
     this.state.ue.execCommand('inserthtml', html, true);
   }
   handleChange = () => {

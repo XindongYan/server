@@ -7240,7 +7240,8 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             var root = UE.htmlparser(me.body.innerHTML,ignoreBlank);
             me.filterOutputRule(root);
             me.fireEvent('aftergetcontent', cmd,root);
-            return  root.toHtml(formatter);
+            // return  root.toHtml(formatter);
+            return me.body.innerHTML;
         },
 
         /**
@@ -7339,10 +7340,10 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
         setContent: function (html, isAppendTo, notFireSelectionchange) {
             var me = this;
 
-            me.fireEvent('beforesetcontent', html);
-            var root = UE.htmlparser(html);
-            me.filterInputRule(root);
-            html = root.toHtml();
+            // me.fireEvent('beforesetcontent', html);
+            // var root = UE.htmlparser(html);
+            // me.filterInputRule(root);
+            // html = root.toHtml();
 
             me.body.innerHTML = (isAppendTo ? me.body.innerHTML : '') + html;
 
@@ -7350,7 +7351,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             function isCdataDiv(node){
                 return  node.tagName == 'DIV' && node.getAttribute('cdata_tag');
             }
-            //给文本或者inline节点套p标签
+            // 给文本或者inline节点套p标签
             if (me.options.enterTag == 'p') {
 
                 var child = this.body.firstChild, tmpNode;
