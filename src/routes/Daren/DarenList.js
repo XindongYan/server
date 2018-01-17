@@ -17,7 +17,7 @@ const Search = Input.Search;
 export default class DarenList extends PureComponent {
   state = {
     searchValue: '',
-    y: document.body.clientHeight - 220,
+    y: document.body.clientHeight - 196,
   }
   componentDidMount() {
     const { darens: { pagination } } = this.props;
@@ -26,8 +26,11 @@ export default class DarenList extends PureComponent {
       payload: { ...pagination },
     });
     document.body.onresize = () => {
-      this.setState({ y: document.body.clientHeight - 200 });
+      this.setState({ y: document.body.clientHeight - 196 });
     }
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ y: document.body.clientHeight - 196 });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
