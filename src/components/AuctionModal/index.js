@@ -78,9 +78,6 @@ export default class AuctionModal extends PureComponent {
     if (data.version) {
       this.setState({
         version: data.version,
-      })
-    } else {
-      this.setState({
         innerText: data,
       })
     }
@@ -124,7 +121,24 @@ export default class AuctionModal extends PureComponent {
       type: 'auction/hide',
     });
   }
-
+  handleSearchChange = (e) => {
+    this.setState({
+      search: e.target.value,
+    })
+    if (!e.target.value) {
+      this.setState({
+        choose: '',
+        auctionChoose: null,
+      })
+    }
+  }
+  handleClear = () => {
+    this.setState({
+      search: '',
+      choose: '',
+      auctionChoose: null,
+    })
+  }
   handleAddAuction = (value) => {
     this.setState({
       choose: '',
@@ -209,13 +223,20 @@ export default class AuctionModal extends PureComponent {
   }
   addAuction = () => {
     const { visible, k } = this.props;
-    const { itemList, pagination, loading, auctionChoose } = this.state;
+    const { search, itemList, pagination, loading, auctionChoose } = this.state;
     return (<div style={{ padding: 10, height: 300 }}>
-      <div>
+      <div style={{ position: 'relative' }}>
         <Search
           placeholder="输入商品链接"
+          value={search}
           onSearch={this.handleAddAuction}
+          onChange={this.handleSearchChange}
           enterButton
+        />
+        <Icon
+          onClick={this.handleClear}
+          type="close-circle"
+          style={{ position: 'absolute', right: 55, top: 6, zIndex: 2, fontSize: 18, cursor: 'pointer' }}
         />
       </div>
       { auctionChoose &&

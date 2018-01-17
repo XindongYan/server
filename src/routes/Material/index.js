@@ -11,6 +11,7 @@ const TabPane = Tabs.TabPane;
 }))
 export default class Material extends PureComponent {
   state = {
+    innerText: null,
     version: '',
     nicaiCrx: null,
     search: '',
@@ -32,9 +33,9 @@ export default class Material extends PureComponent {
     nicaiCrx.addEventListener('setAuction', this.setAuction);
     nicaiCrx.addEventListener('uploadResult', this.uploadResult);
     setTimeout(() => {
-      if(!this.state.version){
+      if(!this.state.version && !this.state.innerText){
         message.destroy();
-        message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+        message.warn('请安装尼采创作平台插件！', 60 * 60);
         this.setState({ loading: false });
       }
     }, 7000);
@@ -66,6 +67,7 @@ export default class Material extends PureComponent {
     const data = JSON.parse(e.target.innerText);
     this.setState({
       version: data.version,
+      innerText: data,
     })
     if (data.error) {
       message.warn(data.msg);
@@ -151,13 +153,19 @@ export default class Material extends PureComponent {
       payload: { currentKey: 'material' }
     });
   }
+  handleChange = (e) => {
+    const { pagination } = this.state;
+    if (e === 'auction') {
+      this.handleGetAuction({ pageSize: pagination.pageSize, current: 1 });
+    }
+  }
   render() {
     const { ProgressPercent, itemList, pagination, loading } = this.state;
     return (
       <div>
         <Card>
           <Tabs defaultActiveKey="1" onChange={this.handleChange}>
-            <TabPane tab="我的商品" key="1">
+            <TabPane tab="我的商品" key="auction">
               <div>
                 <div style={{ marginBottom: 20 }}>
                   <Button type="primary" onClick={this.handleShowModal}>添加商品</Button>
@@ -178,7 +186,7 @@ export default class Material extends PureComponent {
                 <AuctionModal k="material" onOk={this.handleAddProduct} />
               </div>
             </TabPane>
-            <TabPane tab="我的图片" key="2">
+            <TabPane tab="我的图片" key="album">
               <Album />
             </TabPane>
           </Tabs>
