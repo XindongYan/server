@@ -86,16 +86,18 @@ export default class DarenList extends PureComponent {
       dataIndex: 'headFullUrl',
       width: 250,
       render: (val, record) =>
-        <Row>
-          <Col span={5}>
-            <Avatar shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={val}/>
-          </Col>
-          <Col span={19}>
-            <Row><strong>{record.nick}</strong></Row>
-            <Row>{record.attributes.role}</Row>
-            <Row>{record.attributes.creator_type}</Row>
-          </Col>
-        </Row>
+        <a href={`https://v.taobao.com/n/author/homepage?&userId=${record.userId}`} target="_blank">
+          <Row>
+            <Col span={5}>
+              <Avatar shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={val}/>
+            </Col>
+            <Col span={19}>
+              <Row><strong>{record.nick}</strong></Row>
+              <Row>{record.attributes.role}</Row>
+              <Row>{record.attributes.creator_type}</Row>
+            </Col>
+          </Row>
+        </a>
       ,
     }, {
       title: '粉丝数',
