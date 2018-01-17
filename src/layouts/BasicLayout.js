@@ -342,6 +342,11 @@ class BasicLayout extends React.PureComponent {
               type={collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />
+            <Link target='_blank' to="/daren/list">
+              <div className={styles.daren}>
+                <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>榜单</span>
+              </div>
+            </Link>
             <div className={styles.right}>
               { /* <HeaderSearch
                 className={`${styles.action} ${styles.search}`}
