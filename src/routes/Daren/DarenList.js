@@ -110,9 +110,19 @@ export default class DarenList extends PureComponent {
     }, {
       title: '最近7天PV',
       width: 100,
+      dataIndex: 'read_data',
+      render: (val) => {
+        if (val && val[0]) return val[0].value;
+        return '';
+      },
     }, {
       title: '直播平均PV',
       width: 100,
+      dataIndex: 'liveVideos',
+      render: (val) => {
+        if (val && val.length > 0) return Math.ceil(val.map(item => item.totalJoinCount).reduce((a, b) => a + b, 0) / val.length);
+        return '';
+      },
     }, {
       title: '合作商家数',
       dataIndex: 'darenMissionData.cooperateSellerCount',
