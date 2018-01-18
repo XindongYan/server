@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, Route, Switch, Redirect } from 'dva/router';
+import { Link, Route, Switch, Redirect, routerRedux } from 'dva/router';
 import DocumentTitle from 'react-document-title';
+import { connect } from 'dva';
 import styles from './DarenLayout.less';
 import DarenList from '../routes/Daren/DarenList';
 
@@ -19,6 +20,14 @@ class DarenLayout extends React.PureComponent {
   }
 
   componentDidMount() {
+    this.props.dispatch({
+      type: 'user/fetchCurrent',
+      callback: (result) => {
+        if (result.error) {
+          this.props.dispatch(routerRedux.push('/user/login'));
+        }
+      },
+    });
   }
   render() {
     return (
@@ -34,4 +43,11 @@ class DarenLayout extends React.PureComponent {
   }
 }
 
-export default DarenLayout;
+export default connect(state => ({
+  currentUser: state.user.currentUser,
+  collapsed: state.global.collapsed,
+  fetchingNotices: state.global.fetchingNotices,
+  notices: state.global.notices,
+  team: state.user.team,
+  teamUser: state.user.teamUser,
+}))(DarenLayout);
