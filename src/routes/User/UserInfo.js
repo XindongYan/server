@@ -142,7 +142,7 @@ export default class UserInfo extends Component {
                 placeholder="最多10字"
                 maxLength="10"
                 value={currentUser.name}
-                onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value } })}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value.trim() } })}
               />
             </Col>
             <Col span={4} style={{ textAlign: 'right'}}>
@@ -159,7 +159,7 @@ export default class UserInfo extends Component {
                 placeholder="最多10字"
                 maxLength="10"
                 value={currentUser.nickname}
-                onChange={(e) => this.setState({ currentUser: { ...currentUser, nickname: e.target.value } })}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, nickname: e.target.value.trim() } })}
               />
             </Col>
             <Col span={4} style={{ textAlign: 'right'}}>
