@@ -388,7 +388,7 @@ export default class TableList extends PureComponent {
               onChange={this.handleChangeTeamUser}
               onSelect={this.handleSelectTeamUser}
             >
-              {teamUsers.filter(item => item.user_id.rights.indexOf(RIGHT.approver) >= 0)
+              {teamUsers.filter(item => item.user_id && item.user_id.rights.indexOf(RIGHT.approver) >= 0)
                 .map(item => <Option value={item.user_id._id} key={item.user_id._id}>{item.user_id.nickname}</Option>)}
             </Select>
           }

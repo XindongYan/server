@@ -236,7 +236,7 @@ export default class TableList extends PureComponent {
         title: '角色',
         dataIndex: 'user_id.rights',
         render(val) {
-          return val.map(item => RIGHTS.find(item1 => item1.value === item).label).join(',');
+          return val ? val.map(item => RIGHTS.find(item1 => item1.value === item).label).join(',') : '';
         },
       },
       {
@@ -268,7 +268,7 @@ export default class TableList extends PureComponent {
         render: (record) => (
           <p>
             <a onClick={() => this.handleEdit(record)}>修改</a>
-            {record.user_id._id !== currentUser._id &&
+            {(!record.user_id || record.user_id._id !== currentUser._id) &&
               <span><span className={styles.splitLine} />
               <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="否">
                 <a>删除</a>
