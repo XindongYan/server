@@ -38,7 +38,7 @@ export default class ChartPopover extends PureComponent {
       height: 400,
     });
     const total = data.list.map(item => item.value).reduce((a, b) => a + b, 0);
-    const list = data.list.map(item => ({...item, percent: item.value / total}));
+    const list = data.list.map(item => ({...item, percent: item.value / total }));
     chart.source(list);
     chart.coord('theta', {
       radius: 0.8 // 设置饼图的大小
@@ -58,7 +58,7 @@ export default class ChartPopover extends PureComponent {
     .color('title')
     .label('percent', {
       formatter: (val, item) => {
-        return item.point.title + ': ' + Number(val).toFixed(2) + '%';
+        return item.point.title + ': ' + ( val * 100).toFixed(2) + '%';
       }
     });
     // Step 4: 渲染图表
