@@ -224,7 +224,7 @@ export default class GoodProductionForm extends PureComponent {
                   商品宝贝
                 </p>
                 <div>
-                  { !formData.auction &&
+                  { !(formData.auction && formData.auction.itemId) &&
                     <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
                       <div>
                         <Icon type="plus" className={styles.uploadIcon} />
