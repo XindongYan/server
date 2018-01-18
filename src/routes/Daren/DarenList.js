@@ -128,11 +128,13 @@ export default class DarenList extends PureComponent {
       dataIndex: 'darenMissionData.receiveRate',
       sorter: true,
       width: 100,
+      render: (val) => val ? `${val}%` : '',
     }, {
       title: '平均完成率',
       dataIndex: 'darenMissionData.completeRate',
       sorter: true,
       width: 100,
+      render: (val) => val ? `${val}%` : '',
     }, {
       title: '合作渠道数',
       dataIndex: 'channelAbilitysLength',
