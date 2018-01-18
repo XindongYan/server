@@ -6,6 +6,7 @@ import { Card, Button, Popconfirm, message, Modal, Form, Select, Input, Tooltip 
 import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
+import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
 
@@ -37,8 +38,7 @@ export default class TaskCreate extends PureComponent {
       crowd: [],
       title: '',
       task_desc: '',
-      product_url: '', // 商品图片
-      product_img: '', // 商品图片
+      auction: {}, // 商品
       cover_imgs: [], // 封面图
       white_bg_img: '', // 白底图
       long_advantage: [], // 亮点
@@ -56,7 +56,14 @@ export default class TaskCreate extends PureComponent {
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
       crowd: [], // 目标人群
-      summary: '', // 目标人群
+      summary: '', // 摘要
+    },
+    globalFashion: {
+      title: '', // '任务标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      classification: '', // 分类
     },
     approveModalVisible: false,
     approver_id: {
@@ -115,7 +122,7 @@ export default class TaskCreate extends PureComponent {
           if (!task.merchant_tag) {
             message.warn('请填写商家标签');
             bOk = false;
-          } else if (!haveGoodsTask.product_url) {
+          } else if (!haveGoodsTask.auction) {
             message.warn('请选择商品宝贝');
             bOk = false;
           } else if (!haveGoodsTask.cover_imgs || haveGoodsTask.cover_imgs.length < 3) {
@@ -570,6 +577,15 @@ export default class TaskCreate extends PureComponent {
                 operation="create"
                 formData={this.state.lifeResearch}
                 onChange={this.handleChangeLife}
+              />
+            }
+            { query.channel_name === '全球时尚' &&
+              <GlobalFashionForm
+                form={this.props.form}
+                role="writer"
+                operation="create"
+                formData={this.state.globalFashion}
+                onChange={this.handleChangeGlobal}
               />
             }
           </div>

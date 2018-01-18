@@ -12,7 +12,7 @@ import CoverImage from './FormParts/CoverImage';
 
 }))
 
-export default class WeitaoForm extends PureComponent {
+export default class GlobalFashionForm extends PureComponent {
   state = {
     minSize: {
       width: 750,

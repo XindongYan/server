@@ -202,6 +202,8 @@ export default class Register extends Component {
                 required: true, message: '请输入昵称！',
               }, {
                 type: 'string', message: '昵称不能为空！',
+              }, {
+                whitespace: true, message: '昵称不能为空格！',
               }],
             })(
               <Input placeholder="最多10字" maxLength="10" size="large" placeholder="昵称" />
@@ -213,6 +215,8 @@ export default class Register extends Component {
                 required: true, message: '请输入姓名！',
               }, {
                 type: 'string', message: '姓名不能为空！',
+              }, {
+                whitespace: true, message: '昵称不能为空格！',
               }],
             })(
               <Input placeholder="最多10字" maxLength="10" size="large" placeholder="姓名" />

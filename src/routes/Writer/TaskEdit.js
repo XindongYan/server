@@ -34,8 +34,7 @@ export default class TaskEdit extends PureComponent {
       crowd: [],
       title: '',
       task_desc: '',
-      product_url: '', // 商品图片
-      product_img: '', // 商品图片
+      auction: {}, // 商品
       cover_imgs: [], // 封面图
       white_bg_img: '', // 白底图
       long_advantage: [], // 亮点
@@ -167,7 +166,7 @@ export default class TaskEdit extends PureComponent {
       let bOk = true;
       this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
         if (!err) {
-          if (!haveGoodsTask.product_url) {
+          if (!haveGoodsTask.auction) {
             message.warn('请选择商品宝贝');
             bOk = false;
           } else if (!haveGoodsTask.cover_imgs || haveGoodsTask.cover_imgs.length < 3) {

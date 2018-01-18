@@ -5,7 +5,7 @@ import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from '../FormParts/CascaderSelect';
+import CascaderSelect from './FormParts/CascaderSelect';
 
 const FormItem = Form.Item;
 @connect(state => ({
@@ -164,14 +164,24 @@ export default class GoodProductionForm extends PureComponent {
   }
   handleAddProduct = (auction, img) => {
     if (this.props.onChange) this.props.onChange({
-      product_url: auction.item.itemUrl,
-      product_img: img,
+      auction: {
+        checked: false,
+        coverUrl: img,
+        finalPricePc:0,
+        finalPriceWap:0,
+        images: auction.images,
+        itemId: auction.item.itemId,
+        materialId: auction.materialId,
+        price: auction.item.finalPrice,
+        rawTitle: auction.title,
+        resourceUrl: auction.item.itemUrl,
+        title: auction.title,
+      }
     });
   }
   handleClearProduct = () => {
     if (this.props.onChange) this.props.onChange({
-      product_url: '',
-      product_img: '',
+      auction: {},
     });
   }
   handleRemoveImg = (key, index) => {
@@ -214,7 +224,7 @@ export default class GoodProductionForm extends PureComponent {
                   商品宝贝
                 </p>
                 <div>
-                  { !formData.product_img &&
+                  { !(formData.auction && formData.auction.itemId) &&
                     <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
                       <div>
                         <Icon type="plus" className={styles.uploadIcon} />
@@ -222,9 +232,9 @@ export default class GoodProductionForm extends PureComponent {
                       </div>
                     </label>
                   }
-                  { formData.product_img &&
+                  { formData.auction && formData.auction.itemId &&
                     <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
-                      <img src={formData.product_img} />
+                      <img src={formData.auction.coverUrl} />
                       <div className={styles.clearImg} onClick={this.handleClearProduct}>
                         <Icon type="delete" />
                       </div>
@@ -585,10 +595,10 @@ export default class GoodProductionForm extends PureComponent {
                   商品宝贝
                 </p>
                 <div>
-                  { formData.product_img &&
+                  { formData.auction && formData.auction.itemId &&
                     <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
-                      <a href={formData.product_url}>
-                        <img src={formData.product_img} />
+                      <a href={formData.auction.resourceUrl}>
+                        <img src={formData.auction.coverUrl} />
                       </a>
                     </div>
                   }

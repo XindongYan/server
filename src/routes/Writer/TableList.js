@@ -13,7 +13,7 @@ import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
 import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
 import styles from './TableList.less';
-import { queryConvertedTasks } from '../../services/task';
+import { queryConvertedTasks, queryTask } from '../../services/task';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -145,7 +145,16 @@ export default class TableList extends PureComponent {
       const tasks = await queryConvertedTasks({
         _ids: JSON.stringify([record._id]),
       });
-      this.state.nicaiCrx.innerText = JSON.stringify({...tasks, user: currentUser});
+      let task = {};
+      if (record.channel_name === '微淘' || record.channel_name === '淘宝头条') {
+        task = tasks.list[0];
+      } else if (record.channel_name === '有好货') {
+        const result = await queryTask({
+          _id: record._id,
+        });
+        task = { ...result.task.haveGoods, _id: record._id };
+      }
+      this.state.nicaiCrx.innerText = JSON.stringify({ task, user: currentUser, channel_name: record.channel_name });
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('publishToTaobao', true, true);
       this.state.nicaiCrx.dispatchEvent(customEvent);
@@ -349,7 +358,7 @@ export default class TableList extends PureComponent {
           if (!record.merchant_tag) {
             message.warn('请填写商家标签');
             bOk = false;
-          } else if (!haveGoods.product_url) {
+          } else if (!haveGoods.auction) {
             message.warn('请选择商品宝贝');
             bOk = false;
           } else if (!haveGoods.cover_imgs || haveGoods.cover_imgs.length < 3) {

@@ -5,7 +5,7 @@ import styles from './LifeInstituteForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from '../FormParts/CascaderSelect';
+import CascaderSelect from './FormParts/CascaderSelect';
 
 const FormItem = Form.Item;
 @connect(state => ({
