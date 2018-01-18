@@ -30,6 +30,7 @@ export default class AuctionModal extends PureComponent {
     auctionChoose: null,
     q_score: '',
     new7: '',
+    search: '',
   }
   componentDidMount() {
     
@@ -202,7 +203,6 @@ export default class AuctionModal extends PureComponent {
         const result1 = await searchNew7({text: `https:${result.data.item.itemUrl}`});
         if(result1.data && result1.data.length > 0 ){
           const new7 = result1.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
-          console.log(new7)
           this.setState({
             q_score: result1.data[0].q_score,
             new7: new7,
@@ -227,6 +227,11 @@ export default class AuctionModal extends PureComponent {
     if (this.state.auctionChoose) {
       const img = this.state.choose || this.state.auctionChoose.coverUrl;
       if (this.props.onOk) this.props.onOk(this.state.auctionChoose, img);
+      this.setState({
+        choose: '',
+        auctionChoose: null,
+        search: '',
+      })
     }
     this.props.dispatch({
       type: 'auction/hide',
@@ -240,6 +245,7 @@ export default class AuctionModal extends PureComponent {
       q_score: '',
       auctionChoose: auction,
       choose: auction.images && auction.images.length > 0 ? auction.images[0] : auction.coverUrl,
+      search: auction.item ? auction.item.itemUrl : '',
     })
   }
   addAuction = () => {

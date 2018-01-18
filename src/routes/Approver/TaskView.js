@@ -34,8 +34,7 @@ export default class TaskView extends PureComponent {
       crowd: [],
       title: '',
       task_desc: '',
-      product_url: '', // 商品图片
-      product_img: '', // 商品图片
+      auction: {}, // 商品
       cover_imgs: [], // 封面图
       white_bg_img: '', // 白底图
       long_advantage: [], // 亮点

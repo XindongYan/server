@@ -37,8 +37,7 @@ export default class TaskCreate extends PureComponent {
       crowd: [],
       title: '',
       task_desc: '',
-      product_url: '', // 商品图片
-      product_img: '', // 商品图片
+      auction: {}, // 商品
       cover_imgs: [], // 封面图
       white_bg_img: '', // 白底图
       long_advantage: [], // 亮点
@@ -115,7 +114,7 @@ export default class TaskCreate extends PureComponent {
           if (!task.merchant_tag) {
             message.warn('请填写商家标签');
             bOk = false;
-          } else if (!haveGoodsTask.product_url) {
+          } else if (!haveGoodsTask.auction) {
             message.warn('请选择商品宝贝');
             bOk = false;
           } else if (!haveGoodsTask.cover_imgs || haveGoodsTask.cover_imgs.length < 3) {
