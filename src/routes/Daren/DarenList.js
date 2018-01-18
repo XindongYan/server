@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Table, Button, Tag, Card, Select, Input, message, Avatar, Row, Col } from 'antd';
 import styles from './DarenList.less';
+import ChartPopover from './ChartPopover';
 
 const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
@@ -99,6 +100,43 @@ export default class DarenList extends PureComponent {
           </Row>
         </a>
       ,
+    }, {
+      title: '粉丝分析',
+      dataIndex: 'fans_data',
+      width: 100,
+      render: (val, record) => {
+        if (val) {
+          return (
+            <div>
+              {val.gender && val.gender.length > 0 &&
+                <ChartPopover data={{ list: val.gender, field: 'gender', title: '性别比例', _id: record._id }}>
+                  <p><a>性别比例</a></p>
+                </ChartPopover>}
+              {val.age && val.age.length > 0 &&
+                <ChartPopover data={{ list: val.age, field: 'age', title: '年龄比例', _id: record._id }}>
+                  <p><a>年龄比例</a></p>
+                </ChartPopover>}
+              {val.interest && val.interest.length > 0 &&
+                <ChartPopover data={{ list: val.interest, field: 'interest', title: '生活偏好', _id: record._id }}>
+                  <p><a>生活偏好</a></p>
+                </ChartPopover>}
+              {val.cate && val.cate.length > 0 &&
+                <ChartPopover data={{ list: val.cate, field: 'cate', title: '类目偏好', _id: record._id }}>
+                  <p><a>类目偏好</a></p>
+                </ChartPopover>}
+              {val.women && val.women.length > 0 &&
+                <ChartPopover data={{ list: val.women, field: 'women', title: '女装风格偏好', _id: record._id }}>
+                  <p><a>女装风格偏好</a></p>
+                </ChartPopover>}
+              {val.area && val.area.length > 0 &&
+                <ChartPopover data={{ list: val.area, field: 'area', title: '粉丝地域分布', _id: record._id }}>
+                  <p><a>粉丝地域分布</a></p>
+                </ChartPopover>}
+            </div>
+          );
+        }
+        return '';
+      },
     }, {
       title: '粉丝数',
       dataIndex: 'darenMissionData.fansCount',

@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import G2 from 'g2';
+import G2 from '@antv/g2';
 import { Table, Card, Button, Input, Form, Menu, Popconfirm, Modal, Select, Row, Col, Popover,
   Dropdown, Icon, message, Radio, Tooltip, DatePicker, Tabs } from 'antd';
 import { Link } from 'dva/router';
