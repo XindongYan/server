@@ -185,14 +185,14 @@ export default class DarenList extends PureComponent {
     const columns = [{
       title: '达人账号',
       dataIndex: 'attributes',
-      width: 250,
+      width: 240,
       render: (val, record) =>
         <a href={`https://v.taobao.com/n/author/homepage?&userId=${record.userId}`} target="_blank">
           <Row>
-            <Col span={5}>
-              <Avatar shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
+            <Col span={6}>
+              <Avatar size="large" shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
             </Col>
-            <Col span={19}>
+            <Col span={18}>
               <Row><strong>{record.nick}</strong></Row>
               <Row>{record.area}</Row>
               { val && <Row>{val.creator_type}</Row> }
