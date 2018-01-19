@@ -6,8 +6,106 @@ import styles from './DarenList.less';
 import ChartPopover from './ChartPopover';
 
 const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
+const AREAS = [{
+  "text": "全部领域", "value": ""
+}, {
+  "text": "时尚车主", "value": "时尚车主"
+}, {
+  "text": "居家巧匠", "value": "居家巧匠"
+}, {
+  "text": "户外行者", "value": "户外行者"
+}, {
+  "text": "数码极客", "value": "数码极客"
+}, {
+  "text": "文娱先锋", "value": "文娱先锋"
+}, {
+  "text": "潮女搭配师", "value": "潮女搭配师"
+}, {
+  "text": "型男塑造师", "value": "型男塑造师"
+}, {
+  "text": "美食专家", "value": "美食专家"
+}, {
+  "text": "美妆老师", "value": "美妆老师"
+}, {
+  "text": "母婴顾问", "value": "母婴顾问"
+}, {
+  "text": "其他", "value": "其他"
+}];
+const CREATOR_TYPES = [{
+  "text": "全部身份",
+  "value": ""
+}, {
+  "text": "明星",
+  "value": "明星"
+}, {
+  "text": "红人",
+  "value": "红人"
+}, {
+  "text": "二次元大神",
+  "value": "二次元大神"
+}, {
+  "text": "网站App",
+  "value": "网站App"
+}, {
+  "text": "文创先锋",
+  "value": "文创先锋"
+}, {
+  "text": "数码极客",
+  "value": "数码极客"
+}, {
+  "text": "媒体",
+  "value": "媒体"
+}, {
+  "text": "美妆专家",
+  "value": "美妆专家"
+}, {
+  "text": "居家美学家",
+  "value": "居家美学家"
+}, {
+  "text": "其他",
+  "value": "其他"
+}, {
+  "text": "淘女郎",
+  "value": "淘女郎"
+}, {
+  "text": "美食家",
+  "value": "美食家"
+}, {
+  "text": "时尚咖",
+  "value": "时尚咖"
+}, {
+  "text": "母婴顾问",
+  "value": "母婴顾问"
+}, {
+  "text": "汽车专家",
+  "value": "汽车专家"
+}, {
+  "text": "自媒体",
+  "value": "自媒体"
+}, {
+  "text": "户外运动玩家",
+  "value": "户外运动玩家"
+}];
+const CHANNELS = [{
+  "text": "全部渠道", "value": ""
+}, {
+  "text": "直播", "value": "4"
+}, {
+  "text": "中国质造","value": "65536"
+}, {
+  "text": "极有家", "value": "512"
+}, {
+  "text": "全球购", "value": "32768"
+}, {
+  "text": "亲宝贝", "value": "16384"
+}, {
+  "text": "珠峰计划", "value": "zhufeng"
+}, {
+  "text": "爱逛街大牌种草", "value": "mediaApp"
+}];
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const Search = Input.Search;
+const { Option } = Select;
 
 @connect(state => ({
   darens: state.daren.darens,
@@ -21,10 +119,10 @@ export default class DarenList extends PureComponent {
     y: document.body.clientHeight - 196,
   }
   componentDidMount() {
-    const { darens: { pagination } } = this.props;
+    const { darens: { pagination, creator_type, area, channel } } = this.props;
     this.props.dispatch({
       type: 'daren/fetchDarens',
-      payload: { ...pagination },
+      payload: { ...pagination, creator_type, area, channel },
     });
     document.body.onresize = () => {
       this.setState({ y: document.body.clientHeight - 196 });
@@ -34,14 +132,14 @@ export default class DarenList extends PureComponent {
     this.setState({ y: document.body.clientHeight - 196 });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
+    const { dispatch, darens: { creator_type, area, channel } } = this.props;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
-
     const params = {
+      creator_type, area, channel,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...filters,
@@ -63,10 +161,12 @@ export default class DarenList extends PureComponent {
     if (!e.target.value) {
       this.handleSearch(e.target.value, 'search')
     }
+    this.setState({ searchValue: e.target.value });
   }
   handleSearch = (value, name) => {
-    const { dispatch, currentUser, darens: { pagination } } = this.props;
+    const { dispatch, currentUser, darens: { pagination, creator_type, area, channel } } = this.props;
     const values = {
+      creator_type, area, channel,
       currentPage: 1,
       pageSize: pagination.pageSize,
       search: this.state.searchValue,
@@ -84,18 +184,18 @@ export default class DarenList extends PureComponent {
 
     const columns = [{
       title: '达人账号',
-      dataIndex: 'headFullUrl',
+      dataIndex: 'attributes',
       width: 250,
       render: (val, record) =>
         <a href={`https://v.taobao.com/n/author/homepage?&userId=${record.userId}`} target="_blank">
           <Row>
             <Col span={5}>
-              <Avatar shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={val}/>
+              <Avatar shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
             </Col>
             <Col span={19}>
               <Row><strong>{record.nick}</strong></Row>
-              <Row>{record.attributes.role}</Row>
-              <Row>{record.attributes.creator_type}</Row>
+              { val && <Row>{record.area}</Row> }
+              { val && <Row>{val.creator_type}</Row> }
             </Col>
           </Row>
         </a>
@@ -200,10 +300,47 @@ export default class DarenList extends PureComponent {
     return (
       <Card bordered={false} bodyStyle={{ padding: '5px 2px 2px 0px', height: '100%' }}>
         <div className={styles.tableList}>
-          <div className={styles.tableListOperator} align="right">
+          <div className={styles.tableListOperator}>
+            <Select
+              allowClear
+              showSearch
+              style={{ width: 160, margin: 8 }}
+              placeholder="身份"
+              value={darens.creator_type}
+              onChange={(value) => this.handleSearch(value,'creator_type')}
+              optionFilterProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              { CREATOR_TYPES.map(item => <Option key={item.value} value={item.value}>{item.text}</Option>) }
+            </Select>
+            <Select
+              allowClear
+              showSearch
+              style={{ width: 160, margin: 8 }}
+              placeholder="领域"
+              value={darens.area}
+              onChange={(value) => this.handleSearch(value,'area')}
+              optionFilterProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              { AREAS.map(item => <Option key={item.value} value={item.value}>{item.text}</Option>) }
+            </Select>
+            <Select
+              allowClear
+              showSearch
+              style={{ width: 160, margin: 8 }}
+              placeholder="渠道"
+              value={darens.channel}
+              onChange={(value) => this.handleSearch(value,'channel')}
+              optionFilterProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              { CHANNELS.map(item => <Option key={item.value} value={item.value}>{item.text}</Option>) }
+            </Select>
             <Search
-              style={{ width: 400}}
+              style={{ width: 400, float: 'right' }}
               placeholder="昵称"
+              value={this.state.searchValue}
               onChange={this.handleChange}
               onSearch={(value) => this.handleSearch(value, 'search')}
               enterButton
