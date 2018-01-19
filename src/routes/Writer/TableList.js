@@ -253,18 +253,6 @@ export default class TableList extends PureComponent {
     this.setState({ extensionVisible: false });
   }
 
-  handleShowAddTeamUserModal = (record) => {
-    if (this.validate(record)) {
-      if (record.project_id) {
-        this.handleEditSubmit(record);
-      } else {
-        this.setState({
-          approveModalVisible: true,
-          task_id: record._id,
-        });
-      }
-    }
-  }
   handleSpecifyApprover = () => {
     const { dispatch } = this.props;
     const { approver_id } = this.state;
@@ -349,63 +337,7 @@ export default class TableList extends PureComponent {
       },
     });
   }
-  validate = (record) => {
-    const { haveGoods } = record;
-    if (record.channel_name === '有好货') {
-      let bOk = true;
-      this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
-        if (!err) {
-          if (!record.merchant_tag) {
-            message.warn('请填写商家标签');
-            bOk = false;
-          } else if (!haveGoods.auction) {
-            message.warn('请选择商品宝贝');
-            bOk = false;
-          } else if (!haveGoods.cover_imgs || haveGoods.cover_imgs.length < 3) {
-            message.warn('请选择至少三张封面图');
-            bOk = false;
-          } else if (!haveGoods.white_bg_img) {
-            message.warn('请选择一张白底图');
-            bOk = false;
-          } else if (!haveGoods.long_advantage || haveGoods.long_advantage.length < 2) {
-            message.warn('请输入至少2条长亮点');
-            bOk = false;
-          } else if (!haveGoods.short_advantage || haveGoods.short_advantage.length < 2) {
-            message.warn('请输入至少2条短亮点');
-            bOk = false;
-          } else if (!haveGoods.industry_img) {
-            message.warn('请选择一张行业配图');
-            bOk = false;
-          } else if (!haveGoods.brand_logo) {
-            message.warn('请上传品牌logo');
-            bOk = false;
-          }
-        } else {
-          bOk = false;
-        }
-      })
-      return bOk;
-    } else {
-      if (!record.merchant_tag) {
-        message.warn('请填写商家标签');
-        return false;
-      } else if (!record.title || !record.title.replace(/\s+/g, '')) {
-        message.warn('请填写标题');
-        return false;
-      } else if (record.title && record.title.length > 19) {
-        message.warn('标题字数不符合要求');
-        return false;
-      } else if (!record.task_desc) {
-        message.warn('请填写内容');
-        return false;
-      } else if (!record.cover_img && record.channel_name !== '直播脚本') {
-        message.warn('请选择封面图');
-        return false;
-      } else {
-        return true;
-      }
-    }
-  }
+
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
     const { modalVisible, selectedRowKeys, approveModalVisible, suggestionApproves } = this.state;

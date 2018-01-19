@@ -10,6 +10,7 @@ import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
+import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
@@ -54,6 +55,13 @@ export default class TaskEdit extends PureComponent {
       crowd: [], // 目标人群
       summary: '', // 目标人群
     },
+    globalFashion: {
+      title: '', // '任务标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      classification: [], // 分类
+    },
     grade: 0,
     grades: [],
   }
@@ -74,6 +82,7 @@ export default class TaskEdit extends PureComponent {
             },
             haveGoodsTask: result.task.haveGoods,
             lifeResearch: result.task.lifeResearch,
+            globalFashion: result.task.globalFashion,
             grade: result.task.grade,
             grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
           });
@@ -96,17 +105,19 @@ export default class TaskEdit extends PureComponent {
   }
   handleSubmit = () => {
     const { currentUser, formData } = this.props;
-    const { task, haveGoodsTask, lifeResearch } = this.state;
+    const { task, haveGoodsTask, lifeResearch, globalFashion } = this.state;
+    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title;
     if (this.validate()) {
       const query = querystring.parse(this.props.location.search.substr(1));
       const values = {
         ...this.state.task,
         haveGoods: this.state.haveGoodsTask,
         lifeResearch: this.state.lifeResearch,
+        globalFashion: this.state.globalFashion,
         _id: query._id,
       }
       if (!formData.creator_id || formData.creator_id === currentUser._id ) {
-        values.name =  task.title || haveGoodsTask.title || lifeResearch.title;
+        values.name = name;
       }
       this.props.dispatch({
         type: 'task/update',
@@ -133,8 +144,9 @@ export default class TaskEdit extends PureComponent {
   }
   handleSave = () => {
     const { formData } = this.props;
-    const { task, haveGoodsTask, lifeResearch } = this.state;
-    if (!task.title && !haveGoodsTask.title && !lifeResearch.title) {
+    const { task, haveGoodsTask, lifeResearch, globalFashion } = this.state;
+    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || '';
+    if (!name) {
       message.warn('请输入标题');
     } else {
       const query = querystring.parse(this.props.location.search.substr(1));
@@ -142,10 +154,11 @@ export default class TaskEdit extends PureComponent {
         ...this.state.task,
         haveGoods: this.state.haveGoodsTask,
         lifeResearch: this.state.lifeResearch,
+        globalFashion: this.state.globalFashion,
         _id: query._id,
       }
       if (!formData.project_id) {
-        values.name =  task.title || haveGoodsTask.title || lifeResearch.title;
+        values.name =  name;
       }
       this.props.dispatch({
         type: 'task/update',
@@ -161,7 +174,7 @@ export default class TaskEdit extends PureComponent {
     }
   }
   validate = () => {
-    const { task, haveGoodsTask, lifeResearch } = this.state;
+    const { task, haveGoodsTask, lifeResearch, globalFashion } = this.state;
     if (this.props.formData.channel_name === '有好货') {
       let bOk = true;
       this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
@@ -212,6 +225,28 @@ export default class TaskEdit extends PureComponent {
         }
       })
       return bOk;
+    } else if (this.props.formData.channel_name === '全球时尚') {
+      if (!globalFashion.title || !globalFashion.title.replace(/\s+/g, '')) {
+        message.warn('请填写标题');
+        return false;
+      } else if (globalFashion.title && globalFashion.title.length > 19) {
+        message.warn('标题字数不符合要求');
+        return false;
+      } else if (!globalFashion.task_desc) {
+        message.warn('请填写内容');
+        return false;
+      } else if (!globalFashion.cover_img) {
+        message.warn('请选择封面图');
+        return false;
+      } else if (globalFashion.classification.length <= 0) {
+        message.warn('请选择潮流热点分类');
+        return false;
+      } else if (globalFashion.classification && globalFashion.classification.length > 1) {
+        message.warn('潮流热点只能选择一个');
+        return false;
+      } else {
+        return true;
+      }
     } else {
       if (!task.title || !task.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');
@@ -239,6 +274,9 @@ export default class TaskEdit extends PureComponent {
   }
   handleChangeLife = (task) => {
     this.setState({ lifeResearch: { ...this.state.lifeResearch, ...task } });
+  }
+  handleChangeGlobal = (task) => {
+    this.setState({ globalFashion: { ...this.state.globalFashion, ...task } });
   }
   render() {
     // const taskOuterBoxHeight = $(this.refs.taskOuterBox).outerHeight() || 0;
@@ -281,6 +319,15 @@ export default class TaskEdit extends PureComponent {
                 operation="edit"
                 formData={this.state.lifeResearch}
                 onChange={this.handleChangeLife}
+              />
+            }
+            { formData.channel_name === '全球时尚' &&
+              <GlobalFashionForm
+                form={this.props.form}
+                role="writer"
+                operation="edit"
+                formData={this.state.globalFashion}
+                onChange={this.handleChangeGlobal}
               />
             }
           </div>

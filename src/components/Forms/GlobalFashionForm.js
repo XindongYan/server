@@ -3,10 +3,10 @@ import { connect } from 'dva';
 import { Input, Icon, message } from 'antd';
 import styles from './WeitaoForm.less';
 import Editor from '../Editor';
-import $ from 'jquery';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from './FormParts/CascaderSelect';
+import Classification from './FormParts/Classification';
 import CoverImage from './FormParts/CoverImage';
 
 @connect(state => ({
@@ -21,39 +21,9 @@ export default class GlobalFashionForm extends PureComponent {
     },
   }
   componentDidMount() {
-  	console.log(1)
-   //  $.ajax({
-  	// 	url: 'https://cpub.taobao.com/render.json?template=post&activityId=1439',
-  	// 	type: 'GET',
-  	// 	success: (result) => {
-  	// 		console.log(result);
-  	// 	},
-  	// 	error: (result) => {
-  	// 		console.log(result);
-  	// 	}
-  	// })
   }
   componentWillUnmount() {
 
-  }
-
-  getJson = () => {
-  	$.ajax({
-  		url: 'https://cpub.taobao.com/render.json?template=post&activityId=1439',
-  		type: 'GET',
-  		success: (result) => {
-  			console.log(result);
-  		},
-  		error: (result) => {
-  			console.log(result);
-  		}
-  	})
-  // 	return request('/api/task/update', {
-  //   method: 'PUT',
-  //   body: {
-  //     ...params,
-  //   },
-  // });
   }
   handleDescChange = (content) => {
     if (this.props.onChange) this.props.onChange({ task_desc: content });
@@ -61,10 +31,11 @@ export default class GlobalFashionForm extends PureComponent {
   handleTitleChange = (e) => {
     if (this.props.onChange) this.props.onChange({ title: e.target.value });
   }
-  handleTaskChange = (value, key) => {
-    const data = {};
-    data[key] = value;
-    if (this.props.onChange) this.props.onChange(data);
+  handleClassChange = (value) => {
+    if (this.props.onChange) this.props.onChange({ classification: value });
+  }
+  handleCrowdChange = (value) => {
+    if (this.props.onChange) this.props.onChange({ crowd: value });
   }
   handleCropCoverImg = (imgs) => {
     if (imgs[0]) {
@@ -116,12 +87,19 @@ export default class GlobalFashionForm extends PureComponent {
               <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
-            <div style={{ background: '#fff', padding: '20px 10px' }}>
-              <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
-            </div>
-
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
               <CoverImage onChange={this.handleAddCoverImg} formData={{value: formData.cover_img}} />
+            </div>
+            <div style={{ background: '#fff', padding: '20px 10px' }}>
+              <CascaderSelect formData={formData} onChange={this.handleCrowdChange} />
+            </div>
+            <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
+              <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>
+				首页card-全球时尚
+            </div>
+
+            <div className={styles.taskList}>
+            	<Classification formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
         }

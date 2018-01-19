@@ -8,6 +8,7 @@ import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
+import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -41,7 +42,6 @@ export default class TaskView extends PureComponent {
       brand_name: '', // 品牌名称
       brand_introduction: '', // 品牌介绍
       brand_logo: '', // 商品logo
-      approve_notes: [],
     },
     lifeResearch: {
       title: '', // '任务标题',
@@ -50,7 +50,13 @@ export default class TaskView extends PureComponent {
       cover_img: '',//封面
       crowd: [], // 目标人群
       summary: '', // 目标人群
-      approve_notes: [],
+    },
+    globalFashion: {
+      title: '', // '任务标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      classification: [], // 分类
     },
     grade: 0,
     grades: [],
@@ -76,16 +82,10 @@ export default class TaskView extends PureComponent {
         title: nextProps.formData.title,
         task_desc: nextProps.formData.task_desc,
         cover_img: nextProps.formData.cover_img,
-        approve_notes: nextProps.formData.approve_notes || [],
       },
-      haveGoodsTask: {
-        ...nextProps.formData.haveGoods,
-        approve_notes: nextProps.formData.approve_notes || [],
-      },
-      lifeResearch: {
-        ...nextProps.formData.lifeResearch,
-        approve_notes: nextProps.formData.approve_notes || [],
-      },
+      haveGoodsTask: nextProps.formData.haveGoods,
+      lifeResearch: nextProps.formData.lifeResearch,
+      globalFashion: nextProps.formData.globalFashion,
       grade: nextProps.formData.grade,
       grades: nextProps.formData.grades,
     });
@@ -134,6 +134,13 @@ export default class TaskView extends PureComponent {
                 role="writer"
                 operation="view"
                 formData={this.state.lifeResearch}
+              />
+            }
+            { formData.channel_name === '全球时尚' &&
+              <GlobalFashionForm
+                role="writer"
+                operation="view"
+                formData={this.state.globalFashion}
               />
             }
           </div>
