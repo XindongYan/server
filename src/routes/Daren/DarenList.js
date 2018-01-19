@@ -194,7 +194,7 @@ export default class DarenList extends PureComponent {
             </Col>
             <Col span={19}>
               <Row><strong>{record.nick}</strong></Row>
-              { val && <Row>{record.area}</Row> }
+              <Row>{record.area}</Row>
               { val && <Row>{val.creator_type}</Row> }
             </Col>
           </Row>
