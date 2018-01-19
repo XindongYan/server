@@ -7,6 +7,9 @@ export default {
     darens: {
       list: [],
       pagination: {},
+      creator_type: '',
+      area: '',
+      channel: '',
     },
     darensLoading: true,
   },
@@ -21,7 +24,7 @@ export default {
       if (!response.error) {
         yield put({
           type: 'saveDarens',
-          payload: response,
+          payload: {...payload, ...response},
         });
       }
       yield put({
