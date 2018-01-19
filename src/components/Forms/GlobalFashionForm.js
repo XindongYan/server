@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Input, Icon, message } from 'antd';
 import styles from './WeitaoForm.less';
 import Editor from '../Editor';
+import $ from 'jquery';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from './FormParts/CascaderSelect';
@@ -20,10 +21,39 @@ export default class GlobalFashionForm extends PureComponent {
     },
   }
   componentDidMount() {
-
+  	console.log(1)
+   //  $.ajax({
+  	// 	url: 'https://cpub.taobao.com/render.json?template=post&activityId=1439',
+  	// 	type: 'GET',
+  	// 	success: (result) => {
+  	// 		console.log(result);
+  	// 	},
+  	// 	error: (result) => {
+  	// 		console.log(result);
+  	// 	}
+  	// })
   }
   componentWillUnmount() {
 
+  }
+
+  getJson = () => {
+  	$.ajax({
+  		url: 'https://cpub.taobao.com/render.json?template=post&activityId=1439',
+  		type: 'GET',
+  		success: (result) => {
+  			console.log(result);
+  		},
+  		error: (result) => {
+  			console.log(result);
+  		}
+  	})
+  // 	return request('/api/task/update', {
+  //   method: 'PUT',
+  //   body: {
+  //     ...params,
+  //   },
+  // });
   }
   handleDescChange = (content) => {
     if (this.props.onChange) this.props.onChange({ task_desc: content });
