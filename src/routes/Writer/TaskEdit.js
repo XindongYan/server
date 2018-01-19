@@ -117,7 +117,7 @@ export default class TaskEdit extends PureComponent {
         _id: query._id,
       }
       if (!formData.creator_id || formData.creator_id === currentUser._id ) {
-        values.name = name;
+        values.name = name.trim();
       }
       this.props.dispatch({
         type: 'task/update',
@@ -146,7 +146,7 @@ export default class TaskEdit extends PureComponent {
     const { formData } = this.props;
     const { task, haveGoodsTask, lifeResearch, globalFashion } = this.state;
     const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || '';
-    if (!name) {
+    if (!name.trim()) {
       message.warn('请输入标题');
     } else {
       const query = querystring.parse(this.props.location.search.substr(1));
@@ -158,7 +158,7 @@ export default class TaskEdit extends PureComponent {
         _id: query._id,
       }
       if (!formData.project_id) {
-        values.name =  name;
+        values.name =  name.trim();
       }
       this.props.dispatch({
         type: 'task/update',
@@ -248,7 +248,7 @@ export default class TaskEdit extends PureComponent {
         return true;
       }
     } else {
-      if (!task.title || !task.title.replace(/\s+/g, '')) {
+      if (!task.title.trim()) {
         message.warn('请填写标题');
         return false;
       } else if (task.title && task.title.length > 19) {

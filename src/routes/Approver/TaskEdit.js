@@ -147,29 +147,33 @@ export default class TaskEdit extends PureComponent {
     const { formData } = this.props;
     const { grade, grades, approve_status, approve_notes, task, haveGoodsTask, lifeResearch, globalFashion } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title;
-    const values = {
-      ...this.state.task,
-      haveGoods: this.state.haveGoodsTask,
-      lifeResearch: this.state.lifeResearch,
-      globalFashion: this.state.globalFashion,
-      _id: query._id,
-      approve_notes: approve_notes,
-    }
-    if (!formData.project_id) {
-      values.name =  name;
-    }
-    this.props.dispatch({
-      type: 'task/update',
-      payload: values,
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-        }
+    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || '';
+    if (name.trim()) {
+      const values = {
+        ...this.state.task,
+        haveGoods: this.state.haveGoodsTask,
+        lifeResearch: this.state.lifeResearch,
+        globalFashion: this.state.globalFashion,
+        _id: query._id,
+        approve_notes: approve_notes,
       }
-    });
+      if (!formData.project_id) {
+        values.name =  name;
+      }
+      this.props.dispatch({
+        type: 'task/update',
+        payload: values,
+        callback: (result) => {
+          if (result.error) {
+            message.error(result.msg);
+          } else {
+            message.success(result.msg);
+          }
+        }
+      });
+    } else {
+      message.warn('请输入标题');
+    }
   }
   validate = () => {
     const { formData } = this.props;

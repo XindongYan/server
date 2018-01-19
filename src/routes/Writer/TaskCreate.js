@@ -337,7 +337,7 @@ export default class TaskCreate extends PureComponent {
     const { currentUser, teamUser } = this.props;
     const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion } = this.state;
     const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || '';
-    if (!name) {
+    if (!name.trim()) {
       message.warn('请输入标题');
     } else {
       this.setState({
