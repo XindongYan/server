@@ -304,7 +304,7 @@ export default class DarenList extends PureComponent {
             <Select
               allowClear
               showSearch
-              style={{ width: 160, margin: 8 }}
+              style={{ width: 160, marginLeft: 8 }}
               placeholder="身份"
               value={darens.creator_type}
               onChange={(value) => this.handleSearch(value,'creator_type')}
@@ -316,7 +316,7 @@ export default class DarenList extends PureComponent {
             <Select
               allowClear
               showSearch
-              style={{ width: 160, margin: 8 }}
+              style={{ width: 160, marginLeft: 8 }}
               placeholder="领域"
               value={darens.area}
               onChange={(value) => this.handleSearch(value,'area')}
@@ -328,7 +328,7 @@ export default class DarenList extends PureComponent {
             <Select
               allowClear
               showSearch
-              style={{ width: 160, margin: 8 }}
+              style={{ width: 160, marginLeft: 8 }}
               placeholder="渠道"
               value={darens.channel}
               onChange={(value) => this.handleSearch(value,'channel')}
