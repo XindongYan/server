@@ -543,6 +543,8 @@ export default class GoodProductionForm extends PureComponent {
                       rules: [{
                         required: true, message: '不能为空',
                       }, {
+                        min: 60, message: '文字长度太短, 要求长度最少为60',
+                      }, {
                         max: 200, message: '文字长度太长, 要求长度最多为200',
                       }, {
                         whitespace: true, message: '内容不能为空格'

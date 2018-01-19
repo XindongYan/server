@@ -187,7 +187,9 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入项目标题！' }],
+              rules: [{ required: true, message: '请输入项目标题！' }, {
+                whitespace: true, message: '项目标题不能为空格！',
+              }],
             })(
               <Input placeholder="最多20字" maxLength="20" />
             )}
@@ -213,7 +215,9 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('merchant_tag', {
-              rules: [{ required: true, message: '请输入项目标题！' }],
+              rules: [{ required: true, message: '请输入项目标题！' }, {
+                whitespace: true, message: '商家标签不能为空格！',
+              }],
             })(
               <Input maxLength="30" placeholder="最多输入30个字" />
             )}

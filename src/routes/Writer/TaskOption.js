@@ -51,19 +51,17 @@ export default class TaskOption extends PureComponent {
       box_text: '内容频道',
       img: 'https://img.alicdn.com/tfs/TB1ahIzRVXXXXb4XXXXXXXXXXXX-200-200.png',
       detail: '淘宝第一个垂直细分的导购产品，不局限于专业货品的挖掘，引导用户在细分垂直人群领域里获得专业知识进阶。 若你在某个细分领域十分专业，欢迎加入我们这个精准的粉丝运营阵地~ 所需内容类型：单品、图文帖子、优选。'
-    },
-    // {
-    //   name: '全球时尚',
-    //   box_text: '首页card-全球时尚',
-    //   img: 'https://img.alicdn.com/tfs/TB1Cg5QdwoQMeJjy0FnXXb8gFXa-100-100.png',
-    //   detail: '汇集优质的时尚领域内容，以时尚指南、潮流资讯等栏目打造用户所喜爱的女性内容导购频道。',
-    // }, {
+    }, {
+      name: '全球时尚',
+      box_text: '首页card-全球时尚',
+      img: 'https://img.alicdn.com/tfs/TB1Cg5QdwoQMeJjy0FnXXb8gFXa-100-100.png',
+      detail: '汇集优质的时尚领域内容，以时尚指南、潮流资讯等栏目打造用户所喜爱的女性内容导购频道。',
+    }, {
     //   name: 'iFashion',
     //   box_text: '首页card ifashion',
     //   img: 'https://img.alicdn.com/tfs/TB10zj.SFXXXXadXXXXXXXXXXXX-100-100.png',
     //   detail: '汇集优质的时尚领域内容，以时尚指南、潮流资讯等栏目打造用户所喜爱的女性内容导购频道。',
-    // },
-    {
+    // }, {
       name: '直播脚本',
       box_text: '直播脚本',
       img: '//img.alicdn.com/imgextra/i1/2597324045/TB2SYu2m3vD8KJjSsplXXaIEFXa_!!2597324045-2-daren.png_294x430q90.jpg',
@@ -88,7 +86,7 @@ export default class TaskOption extends PureComponent {
               </div>
               <div style={{ display: 'flex' }} onClick={() => this.handleDeliver(item.name)}>
                 <div className={styles.option_choose_box}>
-                  <p style={{ height: 30, lineHeight: '40px' }}>{item.box_text}</p>
+                  <p style={{ height: 40, lineHeight: '40px' }}>{item.box_text}</p>
                 </div>
               </div>
             </Card>

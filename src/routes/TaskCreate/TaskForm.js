@@ -145,7 +145,9 @@ export default class TaskForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入任务名称！' }],
+              rules: [{ required: true, message: '请输入任务名称！' }, {
+                whitespace: true, message: '任务名称不能为空格！',
+              }],
             })(
               <Input placeholder="最多20字" maxLength="20" />
             )}
