@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import $ from 'jquery';
 import { Input, Icon, message } from 'antd';
 import styles from './WeitaoForm.less';
 import Editor from '../Editor';
@@ -8,6 +9,7 @@ import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from './FormParts/CascaderSelect';
 import Classification from './FormParts/Classification';
 import CoverImage from './FormParts/CoverImage';
+import { ORIGIN } from '../../constants';
 
 @connect(state => ({
 
@@ -15,12 +17,19 @@ import CoverImage from './FormParts/CoverImage';
 
 export default class GlobalFashionForm extends PureComponent {
   state = {
+    dataParent: ['潮流热点'],
+    dataSource: [],
     minSize: {
       width: 750,
       height: 422
     },
   }
   componentDidMount() {
+    $.get(`${ORIGIN}/jsons/classification.json`,(result) => {
+      this.setState({
+        dataSource: result.dataSource,
+      })
+    })
   }
   componentWillUnmount() {
 
@@ -37,34 +46,11 @@ export default class GlobalFashionForm extends PureComponent {
   handleCrowdChange = (value) => {
     if (this.props.onChange) this.props.onChange({ crowd: value });
   }
-  handleCropCoverImg = (imgs) => {
-    if (imgs[0]) {
-      this.props.dispatch({
-        type: 'album/showCropper',
-        payload: {
-          visible: true,
-          src: imgs[0].url,
-          width: 750,
-          height: 422,
-          picHeight: imgs[0].picHeight,
-          picWidth: imgs[0].picWidth,
-          cropperKey: 'cover',
-        }
-      });
-    }
-  }
+
   handleAddCoverImg = (url) => {
     if (this.props.onChange) this.props.onChange({ cover_img: url });
   }
-  uploadCoverImg = () => {
-    this.props.dispatch({
-      type: 'album/show',
-      payload: { currentKey: 'cover' }
-    });
-  }
-  deleteCover = () => {
-    if (this.props.onChange) this.props.onChange({ cover_img: '' });
-  }
+
   render() {
     const { style, operation, formData } = this.props;
     return (
@@ -99,7 +85,7 @@ export default class GlobalFashionForm extends PureComponent {
             </div>
 
             <div className={styles.taskList}>
-            	<Classification form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
+            	<Classification dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
         }

@@ -6,9 +6,10 @@ import { Card, Button, Popconfirm, message, Modal, Form, Select, Input, Tooltip 
 import $ from 'jquery';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
 import ZhiboForm from '../../components/Forms/ZhiboForm';
-import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
+import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
+import IfashionForm from '../../components/Forms/IfashionForm';
 
 import MerchantTag from '../../components/Forms/MerchantTag';
 import { TASK_APPROVE_STATUS } from '../../constants';
@@ -63,6 +64,13 @@ export default class TaskCreate extends PureComponent {
       cover_img: '',//封面
       crowd: [], // 目标人群
       classification: [], // 分类
+    },
+    ifashion: {
+      title: '', // '任务标题',
+      summary: '', // '写手提交的稿子内容',
+      crowd: [], // 目标人群
+      classification: [], // 分类
+      tabs: [],
     },
     approveModalVisible: false,
     approver_id: {
@@ -609,6 +617,15 @@ export default class TaskCreate extends PureComponent {
                 operation="create"
                 formData={this.state.globalFashion}
                 onChange={this.handleChangeGlobal}
+              />
+            }
+            { query.channel_name === 'ifashion' &&
+              <IfashionForm
+                form={this.props.form}
+                role="writer"
+                operation="create"
+                formData={this.state.ifashion}
+                onChange={this.handleChangeIfashion}
               />
             }
           </div>

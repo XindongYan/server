@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Input, Icon, message } from 'antd';
-import styles from './WeitaoForm.less';
+import { Input, Icon, message, Form } from 'antd';
+import styles from './IfashionForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
@@ -9,12 +9,14 @@ import CascaderSelect from './FormParts/CascaderSelect';
 import Classification from './FormParts/Classification';
 import CoverImage from './FormParts/CoverImage';
 
+const FormItem = Form.Item;
 @connect(state => ({
 
 }))
 
 export default class IfashionForm extends PureComponent {
   state = {
+    dataSource: [],
     minSize: {
       width: 750,
       height: 422
@@ -82,11 +84,17 @@ export default class IfashionForm extends PureComponent {
       payload: { currentKey: 'cover' }
     });
   }
-  deleteCover = () => {
-    if (this.props.onChange) this.props.onChange({ cover_img: '' });
+  handleChange = (value, key) => {
+    const data = {};
+    data[key] = value;
+    if (this.props.onChange) this.props.onChange(data);
   }
   render() {
     const { style, operation, formData } = this.props;
+    let getFieldDecorator = null;
+    if (this.props.form) {
+      getFieldDecorator = this.props.form.getFieldDecorator;
+    }
     return (
       <div className={styles.taskBox} style={style}>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
@@ -94,25 +102,60 @@ export default class IfashionForm extends PureComponent {
         </div>
         { (operation==='edit' || operation === 'create') &&
           <div className={styles.taskContentBox}>
+            <div className={styles.taskListInp} style={{ paddingTop: 10 }}>
+              <FormItem>
+                {getFieldDecorator('title', {
+                  rules: [{
+                    required: true, message: '标题不能为空',
+                  }, {
+                    max: 11, message: '文字长度太长, 要求长度最大为18',
+                  }, {
+                    whitespace: true, message: '标题不能为空格'
+                  }],
+                })(
+                  <Input
+                    style={{ fontSize: '16px', border: 'none' }}
+                    onChange={(e) => this.handleChange(e.target.value, 'title')}
+                    placeholder="请在这里输入标题"
+                  />
+                )}
+              </FormItem>
+              <span style={{ color: formData.title && formData.title.length > 11 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/18</span>
+            </div>
             <div className={styles.taskList}>
-              <div className={styles.taskListInp}>
-                <Input type="text" id="task-title" value={formData.title} onChange={this.handleTitleChange} placeholder="请在这里输入标题"/>
-                <span style={{ color: formData.title && formData.title.length > 19 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/19</span>
+              <div className={styles.textareaBox} style={{ paddingTop: 10 }}>
+                <FormItem>
+                  {getFieldDecorator('summary', {
+                    rules: [{
+                      required: true, message: '标题不能为空',
+                    }, {
+                      min: 50, message: '文字长度太短, 要求长度最小为50',
+                    }, {
+                      max: 80, message: '文字长度太长, 要求长度最大为80',
+                    }, {
+                      whitespace: true, message: '标题不能为空格'
+                    }],
+                  })(
+                    <textarea
+                      className={styles.textarea}
+                      onChange={(e) => this.handleChange(e.target.value, 'summary')}
+                      placeholder="请输入50-80字的推荐理由">
+                    </textarea>
+                  )}
+                </FormItem>
+                <span style={{ color: formData.summary && formData.summary.length > 18 ? '#f00' : '#444' }} className={styles.textareaNum}>{ formData.summary ? formData.summary.length : 0}/18</span>
               </div>
-              { formData.title && formData.title.length > 19 &&
-                <span className={styles.promptRed}>标题字数不能超过19个字</span>
-              }
             </div>
             <div style={{ background: '#fff', padding: '20px 10px' }}>
               <CascaderSelect formData={formData} onChange={this.handleCrowdChange} />
             </div>
             <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
               <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>
-                  
+              智能搭配- ifashion
             </div>
 
             <div className={styles.taskList}>
-              <Classification formData={formData.classification} onChange={this.handleClassChange} />
+              <Classification dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
         }
