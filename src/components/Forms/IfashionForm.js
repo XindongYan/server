@@ -21,6 +21,26 @@ export default class IfashionForm extends PureComponent {
     },
   }
   componentDidMount() {
+    if (this.props.operation !== 'view') {
+      const { formData } = this.props;
+      const fieldsValue = {
+        title: formData.title, // '任务标题',
+        summary: formData.summary, // 推荐理由
+      };
+      this.props.form.setFieldsValue(fieldsValue);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.operation !== 'view') {
+      if (!this.props.formData.title && nextProps.formData.title) {
+        const { formData } = nextProps;
+        const fieldsValue = {
+          title: formData.title, // '任务标题',
+          summary: formData.summary, // 推荐理由
+        };
+        this.props.form.setFieldsValue(fieldsValue);
+      }
+    }
   }
   componentWillUnmount() {
 

@@ -95,11 +95,11 @@ export default class GlobalFashionForm extends PureComponent {
             </div>
             <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
               <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>
-				首页card-全球时尚
+				      首页card-全球时尚
             </div>
 
             <div className={styles.taskList}>
-            	<Classification formData={formData.classification} onChange={this.handleClassChange} />
+            	<Classification form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
         }
