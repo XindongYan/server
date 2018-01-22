@@ -2,12 +2,15 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Input, Icon, message, Form } from 'antd';
 import styles from './IfashionForm.less';
+import $ from 'jquery';
+import request from '../../utils/request';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from './FormParts/CascaderSelect';
 import Classification from './FormParts/Classification';
 import CoverImage from './FormParts/CoverImage';
+import { ORIGIN } from '../../constants';
 
 const FormItem = Form.Item;
 @connect(state => ({
@@ -16,7 +19,8 @@ const FormItem = Form.Item;
 
 export default class IfashionForm extends PureComponent {
   state = {
-    dataSource: [],
+    dataParent: ['品类','人群','地域/品牌','效果','风格','热门话题','场景'],
+    dataSource: {},
     minSize: {
       width: 750,
       height: 422
@@ -31,6 +35,12 @@ export default class IfashionForm extends PureComponent {
       };
       this.props.form.setFieldsValue(fieldsValue);
     }
+    // $.get(`${ORIGIN}/jsons/classification.json`,(result) => {
+    //   this.setState({
+    //     dataSource: result.dataSource,
+    //   })
+    // })
+    this.handleGet();
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.operation !== 'view') {
@@ -46,6 +56,15 @@ export default class IfashionForm extends PureComponent {
   }
   componentWillUnmount() {
 
+  }
+
+  handleGet = async () => {
+    const result = await request(`${ORIGIN}/jsons/classification.json`, {
+      method: 'GET',
+    });
+    this.setState({
+      dataSource: result.dataSource,
+    })
   }
   handleDescChange = (content) => {
     if (this.props.onChange) this.props.onChange({ task_desc: content });
@@ -155,7 +174,7 @@ export default class IfashionForm extends PureComponent {
             </div>
 
             <div className={styles.taskList}>
-              <Classification dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
+              <Classification dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
         }

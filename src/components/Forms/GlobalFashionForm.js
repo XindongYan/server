@@ -85,7 +85,7 @@ export default class GlobalFashionForm extends PureComponent {
             </div>
 
             <div className={styles.taskList}>
-            	<Classification dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
+            	<Classification dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
         }
