@@ -165,7 +165,7 @@ export default class LifeInstituteForm extends PureComponent {
               <p className={styles.promptGray}>请上传尺寸不小于750x422px的图片</p>
             </div>
             <div style={{ background: '#fff', padding: '20px 10px' }}>
-              <CascaderSelect formData={formData} onChange={this.handleChange} />
+              <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleChange} rules={true} />
             </div>
             <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
               <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>

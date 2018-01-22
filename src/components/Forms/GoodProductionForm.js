@@ -291,7 +291,8 @@ export default class GoodProductionForm extends PureComponent {
                 </div>
                 <p className={styles.promptText}>提示：用一句话概括商品亮点，最多30个字，用于在有好货列表中显示</p>
               </div>
-              <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
+
+              <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
 
               <div>
                 <p className={styles.lineTitleDefult}>

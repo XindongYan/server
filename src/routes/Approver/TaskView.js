@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
-import { Card } from 'antd';
+import { Card, Form } from 'antd';
 import $ from 'jquery';
 import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
@@ -11,6 +11,7 @@ import ZhiboForm from '../../components/Forms/ZhiboForm';
 import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
 import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
+import IfashionForm from '../../components/Forms/IfashionForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -21,6 +22,7 @@ import styles from './TableList.less';
   approveData: state.task.approveData,
   currentUser: state.user.currentUser,
 }))
+@Form.create()
 
 export default class TaskView extends PureComponent {
   state = {
@@ -62,6 +64,14 @@ export default class TaskView extends PureComponent {
       crowd: [], // 目标人群
       classification: [], // 分类
     },
+    ifashion: {
+      title: '', // '任务标题',
+      summary: '', // 推荐理由
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      classification: [], // 分类
+      tags: [], // 标签
+    },
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -86,6 +96,7 @@ export default class TaskView extends PureComponent {
       haveGoodsTask: nextProps.formData.haveGoods,
       lifeResearch: nextProps.formData.lifeResearch,
       globalFashion: nextProps.formData.globalFashion,
+      ifashion: nextProps.formData.ifashion,
     });
   }
   componentWillUnmount() {
@@ -144,9 +155,18 @@ export default class TaskView extends PureComponent {
             }
             { formData.channel_name === '全球时尚' &&
               <GlobalFashionForm
+                form={this.props.form}
                 role="approve"
                 operation={operation}
                 formData={this.state.globalFashion}
+              />
+            }
+            { formData.channel_name === 'ifashion' &&
+              <IfashionForm
+                form={this.props.form}
+                role="approve"
+                operation={operation}
+                formData={this.state.ifashion}
               />
             }
           </div>  

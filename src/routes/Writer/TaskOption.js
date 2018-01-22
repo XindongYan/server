@@ -57,11 +57,11 @@ export default class TaskOption extends PureComponent {
       img: 'https://img.alicdn.com/tfs/TB1Cg5QdwoQMeJjy0FnXXb8gFXa-100-100.png',
       detail: '汇集优质的时尚领域内容，以时尚指南、潮流资讯等栏目打造用户所喜爱的女性内容导购频道。',
     }, {
-    //   name: 'iFashion',
-    //   box_text: '首页card ifashion',
-    //   img: 'https://img.alicdn.com/tfs/TB10zj.SFXXXXadXXXXXXXXXXXX-100-100.png',
-    //   detail: '汇集优质的时尚领域内容，以时尚指南、潮流资讯等栏目打造用户所喜爱的女性内容导购频道。',
-    // }, {
+      name: 'ifashion',
+      box_text: '首页card ifashion',
+      img: 'https://img.alicdn.com/tfs/TB10zj.SFXXXXadXXXXXXXXXXXX-100-100.png',
+      detail: '汇集优质的时尚领域内容，以时尚指南、潮流资讯等栏目打造用户所喜爱的女性内容导购频道。',
+    }, {
       name: '直播脚本',
       box_text: '直播脚本',
       img: '//img.alicdn.com/imgextra/i1/2597324045/TB2SYu2m3vD8KJjSsplXXaIEFXa_!!2597324045-2-daren.png_294x430q90.jpg',

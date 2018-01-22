@@ -16,8 +16,6 @@ export default class Classification extends PureComponent {
   state = {
     tabsKey: '',
     checkData: [],
-    chooseClass: [],
-    chooseValue: [],
   }
   componentDidMount() {
     if (this.props.formData && this.props.formData.length > 0){
@@ -54,37 +52,39 @@ export default class Classification extends PureComponent {
     })
   }
   handleChange = (e) => {
-    const { checkData, chooseValue, chooseClass } = this.state;
-    const arr = [];
-    chooseClass.map((item) => {
-      if (item.parent !== this.state.tabsKey) {
-        arr.push(item);
-      }
-    })
-    e.map((item) => {
-      arr.push(checkData.find((data) => { return data.value === item ? data : '' }));
-    })
-    this.setState({
-      chooseValue: e,
-      chooseClass: arr,
-    })
-    console.log(arr);
+    const { checkData } = this.state;
     if (this.props.onChange) {this.props.onChange(e)}
   }
   handleCheckbox = () => {
     return (<div>
-      <CheckboxGroup options={this.state.checkData} onChange={this.handleChange} className={styles.ificationCheck} />
+      <CheckboxGroup disabled={this.props.disabled} options={this.state.checkData} onChange={this.handleChange} value={this.props.formData} className={styles.ificationCheck} />
     </div>)
   }
-  handleClose = (item) => {
-    console.log(item);
-    const { checkData, chooseValue, chooseClass } = this.state;
-    var arr = chooseClass;
-    arr.findIndex()
+  handleCloseTags = (chooseItem) => {
+    const { checkData } = this.state;
+    var arr = this.props.formData;
+    const index = arr.findIndex((item) => {return item === chooseItem});
+    arr.splice(index, 1);
+    if (this.props.onChange) {this.props.onChange([...arr])}
+  }
+  renderTags = (item) => {
+    const { dataSource, disabled } = this.props;
+    const closable = !disabled ? 'closable' : '';
+    let label = '';
+    Object.keys(dataSource).forEach(key => {
+      const result = dataSource[key].find(item1 => item1.value === item);
+      if (result) label = result.label;
+    });
+    if (disabled) {
+      return (<Tag onClose={() => this.handleCloseTags(item)} style={{ padding: '0 8px'}} key={item}>{label}</Tag>);
+    } else {
+      return (<Tag closable onClose={() => this.handleCloseTags(item)} style={{ padding: '0 8px'}} key={item}>{label}</Tag>)
+    }
+    
   }
   render() {
     const { formData } = this.props;
-    const { chooseClass, chooseValue, tabsKey } = this.state;
+    const { tabsKey } = this.state;
     return (
       <div style={{ padding: '10px 30px 20px'}}>
         <p className={styles.lineTitleDefult}>
@@ -99,11 +99,11 @@ export default class Classification extends PureComponent {
         </div>
 
         <div style={{ marginTop: 10 }}>
-          <p>已选 <a>{chooseClass.length}</a> 个项目</p>
+          <p>已选 <a>{formData.length}</a> 个项目</p>
           <div style={{ padding: '10px 0' }}>
-            {chooseClass.map(item => <Tag closable onClose={() => this.handleClose(item)} style={{ padding: '0 8px'}} key={item.value}>{item.label}</Tag>)}
+            {formData.map(item => this.renderTags(item))}
           </div>
-          <p style={{ color: '#f00' }}>{chooseClass.length > 1 ? '只能选择一个项目' : ''}</p>
+          <p style={{ color: '#f00' }}>{formData.length > 1 ? '只能选择一个项目' : ''}</p>
         </div>
       </div>
     );
