@@ -15,7 +15,6 @@ import MerchantTag from '../../components/Forms/MerchantTag';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
-import { queryConvertedTasks } from '../../services/task';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
