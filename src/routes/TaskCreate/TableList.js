@@ -415,7 +415,7 @@ export default class TableList extends PureComponent {
       {
         title: '任务ID',
         dataIndex: 'id',
-        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'OperationPane')}>{val}</a>,
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
       },
       {
         title: '内容标题',
