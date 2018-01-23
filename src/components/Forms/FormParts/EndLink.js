@@ -125,7 +125,7 @@ export default class EndLink extends PureComponent {
               { this.state.tag &&
                 <Tag closable onClose={this.handleCloseTag} style={{ height: 30, lineHeight: '30px', border: 'none', background: '#ECEEF2' }}>
                   <Icon type="link" style={{ margin: '0 5px' }} />
-                  <a target="_blank" href={formData.endLink_href} style={{ paddingRight: 80, color: '#308CE6' }}>{formData.endLink_name}</a>
+                  <a target="_blank" href={formData.endLink_href} style={{ dispaly: 'block', minWidth: 80, color: '#308CE6', maxWidth: 200, overflow: 'hidden' }}>{formData.endLink_name}</a>
                 </Tag>
               }
             </div>

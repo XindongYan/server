@@ -156,6 +156,15 @@ export default class IfashionForm extends PureComponent {
               <span style={{ color: formData.summary && formData.summary.length > 80 ? '#f00' : '#444' }} className={styles.textareaNum}>{ formData.summary ? formData.summary.length : 0}/80</span>
             </div>
           </div>
+          <div className={styles.taskList}>
+            <p>主图</p>
+            <div style={{ padding: '10px 20px' }}>
+              <div className={styles.upCover} style={{ padding: '60px 0', width: 200, height: 200 }}>
+                <Icon type="plus" />
+                <p style={{ fontSize: 14 }}>添加搭配图</p>
+              </div>
+            </div>
+          </div>
           <div style={{ background: '#fff', padding: '20px 10px' }}>
             <CascaderSelect disabled={disabled} form={this.props.form} formData={formData} onChange={this.handleCrowdChange} rules={false} />
           </div>
