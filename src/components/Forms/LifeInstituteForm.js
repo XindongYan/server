@@ -6,6 +6,7 @@ import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from './FormParts/CascaderSelect';
+import EndLink from './FormParts/EndLink';
 
 const FormItem = Form.Item;
 @connect(state => ({
@@ -67,6 +68,9 @@ export default class LifeInstituteForm extends PureComponent {
   }
   handleAddCoverImg = (url) => {
     if (this.props.onChange) this.props.onChange({ cover_img: url });
+  }
+  handleEndlinkChange = (url, name) => {
+    if (this.props.onChange) this.props.onChange({ endLink_href: url, endLink_name: name });
   }
   uploadCoverImg = () => {
     this.props.dispatch({
@@ -148,6 +152,9 @@ export default class LifeInstituteForm extends PureComponent {
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
 
+            <div>
+              <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
+            </div>
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 10 }}>
               <p>封面图</p>
               <div className={styles.coverPicBox}>

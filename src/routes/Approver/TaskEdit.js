@@ -397,6 +397,7 @@ export default class TaskEdit extends PureComponent {
     let form = '';
     if (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') {
       form = <WeitaoForm
+                form={this.props.form}
                 role="approve"
                 operation={operation}
                 formData={this.state.task}

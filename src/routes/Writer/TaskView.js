@@ -122,6 +122,7 @@ export default class TaskView extends PureComponent {
           <div style={{ width: 650 }}>
             { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
               <WeitaoForm
+                form={this.props.form}
                 role="writer"
                 operation="view"
                 formData={this.state.task}
@@ -136,6 +137,7 @@ export default class TaskView extends PureComponent {
             }
             { formData.channel_name === '有好货' &&
               <GoodProductionForm
+                form={this.props.form}
                 role="writer"
                 operation="view"
                 formData={this.state.haveGoodsTask}
@@ -143,6 +145,7 @@ export default class TaskView extends PureComponent {
             }
             { formData.channel_name === '生活研究所' &&
               <LifeInstituteForm
+                form={this.props.form}
                 role="writer"
                 operation="view"
                 formData={this.state.lifeResearch}

@@ -331,6 +331,7 @@ export default class TaskEdit extends PureComponent {
           <div style={{ width: 650 }}>
             { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
               <WeitaoForm
+                form={this.props.form}
                 role="writer"
                 operation="edit"
                 formData={this.state.task}

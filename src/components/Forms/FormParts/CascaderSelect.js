@@ -14,7 +14,6 @@ const FormItem = Form.Item;
 export default class CascaderSelect extends PureComponent {
   state = {
     residences: [],
-    rules: [],
   }
   componentDidMount() {
     $.get(`${ORIGIN}/jsons/we.taobao.json`,(result) => {
