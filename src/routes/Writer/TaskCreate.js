@@ -512,6 +512,12 @@ export default class TaskCreate extends PureComponent {
           take_time: new Date(),
           current_approvers: approvers[0],
           approvers: approvers,
+          ...this.state.task,
+          haveGoods: this.state.haveGoodsTask,
+          lifeResearch: this.state.lifeResearch,
+          globalFashion: this.state.globalFashion,
+          ifashion: this.state.ifashion,
+          name: name,
         },
         callback: (result) => {
           if (result.error) {
@@ -574,9 +580,7 @@ export default class TaskCreate extends PureComponent {
           }
         }
       });
-
     }
-      
   }
   handleShowAddTeamUserModal = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
