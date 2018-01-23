@@ -37,11 +37,6 @@ export default class CascaderSelect extends PureComponent {
         crowd: formData.crowd,
       };
       this.props.form.setFieldsValue(fieldsValue);
-      if (nextProps.rules) {
-        this.setState({
-          
-        })
-      }
     }
   }
   componentWillUnmount() {
