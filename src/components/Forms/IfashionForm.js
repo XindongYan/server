@@ -7,10 +7,7 @@ import request from '../../utils/request';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from './FormParts/CascaderSelect';
-import TagPicker from './FormParts/TagPicker';
-import CoverImage from './FormParts/CoverImage';
-import * as FormParts from './FormParts';
+import { CascaderSelect, TagPicker, CoverImage, AnchorImageList } from './FormParts';
 import { ORIGIN } from '../../constants';
 
 const FormItem = Form.Item;
@@ -158,7 +155,7 @@ export default class IfashionForm extends PureComponent {
             </div>
           </div>
           <div className={styles.taskList}>
-            <FormParts.AnchorImageList />
+            <AnchorImageList />
           </div>
           <div style={{ background: '#fff', padding: '20px 10px' }}>
             <CascaderSelect disabled={disabled} form={this.props.form} formData={formData} onChange={this.handleCrowdChange} rules={false} />

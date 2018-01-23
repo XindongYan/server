@@ -5,9 +5,9 @@ import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from './FormParts/CascaderSelect';
 
-const FormItem = Form.Item;
+import { CascaderSelect } from './FormParts/index';
+
 @connect(state => ({
 
 }))

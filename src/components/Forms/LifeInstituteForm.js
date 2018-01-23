@@ -5,8 +5,8 @@ import styles from './LifeInstituteForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from './FormParts/CascaderSelect';
-import EndLink from './FormParts/EndLink';
+
+import { CascaderSelect, EndLink } from './FormParts';
 
 const FormItem = Form.Item;
 @connect(state => ({
@@ -70,7 +70,7 @@ export default class LifeInstituteForm extends PureComponent {
     if (this.props.onChange) this.props.onChange({ cover_img: url });
   }
   handleEndlinkChange = (url, name) => {
-    if (this.props.onChange) this.props.onChange({ endLink_href: url, endLink_name: name });
+    if (this.props.onChange) this.props.onChange({ end_link: url, end_text: name });
   }
   uploadCoverImg = () => {
     this.props.dispatch({

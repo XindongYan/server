@@ -146,7 +146,9 @@ export default class TableList extends PureComponent {
         _ids: JSON.stringify([record._id]),
       });
       let task = {};
-      if (record.channel_name === '微淘' || record.channel_name === '淘宝头条') {
+      if (record.channel_name === '微淘' || record.channel_name === '淘宝头条' || record.channel_name === '全球时尚' || record.channel_name === '生活研究所') {
+        console.log(1)
+        console.log(tasks)
         task = tasks.list[0];
       } else if (record.channel_name === '有好货') {
         const result = await queryTask({
