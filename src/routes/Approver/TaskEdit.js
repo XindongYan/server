@@ -427,6 +427,7 @@ export default class TaskEdit extends PureComponent {
               />
     } else if (formData.channel_name === '全球时尚') {
       form = <GlobalFashionForm
+                channel_name={formData.channel_name}
                 form={this.props.form}
                 role="approve"
                 operation={operation}
