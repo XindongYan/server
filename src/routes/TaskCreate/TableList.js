@@ -466,7 +466,7 @@ export default class TableList extends PureComponent {
             <p>
               <a onClick={() => this.handleEdit(record)}>修改</a>
               <span className={styles.splitLine} />
-              <Popconfirm placement="left" title={`确认发布?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+              <Popconfirm placement="left" title={`确认上架?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a>上架</a>
               </Popconfirm>
               <span className={styles.splitLine} />

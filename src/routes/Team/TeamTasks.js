@@ -265,7 +265,7 @@ export default class teamTasks extends PureComponent {
         dataIndex: 'id',
         width: 80,
         fixed: 'left',
-        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'OperationPane')}>{val}</a>,
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
       },
       {
         title: '内容标题',
