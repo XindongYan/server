@@ -161,7 +161,7 @@ export default class IfashionForm extends PureComponent {
           </div>
           <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
             <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>
-            智能搭配- ifashion
+            智能搭配 - ifashion
           </div>
 
           <div className={styles.taskList}>

@@ -72,6 +72,13 @@ export default class TaskCreate extends PureComponent {
       classification: [], // 分类
       tags: [], // 标签
     },
+    buyWorld: {
+      title: '', // '任务标题',
+      sub_title: '', // '副标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      classification: [], // 分类
+    },
     approveModalVisible: false,
     approver_id: {
       first: '',
@@ -156,7 +163,7 @@ export default class TaskCreate extends PureComponent {
       return bOk;
     } else if (query.channel_name === '生活研究所') {
       let bOk = true;
-      this.props.form.validateFields(['title','sub_title','summary'], (err, val) => {
+      this.props.form.validateFields(['title', 'sub_title', 'summary', 'crowd'], (err, val) => {
         if (!err) {
           if (!lifeResearch.task_desc) {
             message.warn('请填写内容');
@@ -363,6 +370,9 @@ export default class TaskCreate extends PureComponent {
   }
   handleChangeGlobal = (task) => {
     this.setState({ globalFashion: { ...this.state.globalFashion, ...task } });
+  }
+  handleChangeBuyWorld = (task) => {
+    this.setState({ buyWorld: { ...this.state.buyWorld, ...task } });
   }
   handleChangeIfashion = (task) => {
     this.setState({ ifashion: { ...this.state.ifashion, ...task } });
@@ -650,11 +660,22 @@ export default class TaskCreate extends PureComponent {
             }
             { query.channel_name === '全球时尚' &&
               <GlobalFashionForm
+                channel_name={query.channel_name}
                 form={this.props.form}
                 role="writer"
                 operation="create"
                 formData={this.state.globalFashion}
                 onChange={this.handleChangeGlobal}
+              />
+            }
+            { query.channel_name === '买遍全球' &&
+              <GlobalFashionForm
+                channel_name={query.channel_name}
+                form={this.props.form}
+                role="writer"
+                operation="create"
+                formData={this.state.buyWorld}
+                onChange={this.handleChangeBuyWorld}
               />
             }
             { query.channel_name === 'ifashion' &&
