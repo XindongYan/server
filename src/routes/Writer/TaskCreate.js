@@ -63,6 +63,8 @@ export default class TaskCreate extends PureComponent {
       cover_img: '',//封面
       crowd: [], // 目标人群
       classification: [], // 分类
+      endLink_href: '', //文末链接
+      endLink_name: '',
     },
     ifashion: {
       title: '', // '任务标题',

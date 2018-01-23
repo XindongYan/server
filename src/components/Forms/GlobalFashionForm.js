@@ -8,6 +8,7 @@ import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from './FormParts/CascaderSelect';
 import Classification from './FormParts/Classification';
+import EndLink from './FormParts/EndLink';
 import CoverImage from './FormParts/CoverImage';
 import { ORIGIN } from '../../constants';
 
@@ -32,6 +33,28 @@ export default class GlobalFashionForm extends PureComponent {
         dataSource: result.dataSource,
       })
     })
+    const { formData } = this.props;
+    if (formData && formData.title) {
+      const fieldsValue = {
+        title: formData.title,
+      };
+      if (this.props.channel_name === '买遍全球') {
+        fieldsValue.sub_title = formData.sub_title;
+      }
+      this.props.form.setFieldsValue(fieldsValue);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.formData.title && nextProps.formData.title) {
+      const { formData } = nextProps;
+      const fieldsValue = {
+        title: formData.title,
+      };
+      if (this.props.channel_name === '买遍全球') {
+        fieldsValue.sub_title = formData.sub_title;
+      }
+      this.props.form.setFieldsValue(fieldsValue);
+    }
   }
   componentWillUnmount() {
 
@@ -55,7 +78,9 @@ export default class GlobalFashionForm extends PureComponent {
   handleAddCoverImg = (url) => {
     if (this.props.onChange) this.props.onChange({ cover_img: url });
   }
-
+  handleEndlinkChange = (url, name) => {
+    if (this.props.onChange) this.props.onChange({ endLink_href: url, endLink_name: name });
+  }
   render() {
     const { style, operation, formData } = this.props;
     const disabled = this.props.operation === 'view' ? true : false;
@@ -124,6 +149,9 @@ export default class GlobalFashionForm extends PureComponent {
                 </div>
               : <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
               }
+            </div>
+            <div>
+              <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
             </div>
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
               <CoverImage onChange={this.handleAddCoverImg} formData={{value: formData.cover_img}} />
