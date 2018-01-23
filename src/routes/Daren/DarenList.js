@@ -89,20 +89,43 @@ const CREATOR_TYPES = [{
 const CHANNELS = [{
   "text": "全部渠道", "value": ""
 }, {
-  "text": "直播", "value": "4"
+  "text": "单身贵族", "value": "单身贵族"
 }, {
-  "text": "中国质造","value": "65536"
+  "text": "科技前沿", "value": "科技前沿"
 }, {
-  "text": "极有家", "value": "512"
+  "text": "装备天地", "value": "装备天地"
 }, {
-  "text": "全球购", "value": "32768"
+  "text": "家有萌娃", "value": "家有萌娃"
 }, {
-  "text": "亲宝贝", "value": "16384"
+  "text": "必买清单", "value": "必买清单"
 }, {
-  "text": "珠峰计划", "value": "zhufeng"
+  "text": "有好货", "value": "有好货"
 }, {
-  "text": "爱逛街大牌种草", "value": "mediaApp"
+  "text": "爱逛街", "value": "爱逛街"
+}, {
+  "text": "淘宝头条", "value": "淘宝头条"
+}, {
+  "text": "生活研究所", "value": "生活研究所"
+}, {
+  "text": "淘宝直播", "value": "淘宝直播"
+}, {
+  "text": "品质好物", "value": "品质好物"
+}, {
+  "text": "淘宝短视频", "value": "淘宝短视频"
+}, {
+  "text": "极有家", "value": "极有家"
+}, {
+  "text": "二人世界", "value": "二人世界"
+}, {
+  "text": "ifashion", "value": "ifashion"
+}, {
+  "text": "潮男养成", "value": "潮男养成"
+}, {
+  "text": "每日好店", "value": "每日好店"
+}, {
+  "text": "新选大赏", "value": "新选大赏"
 }];
+
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const Search = Input.Search;
 const { Option } = Select;
@@ -185,7 +208,7 @@ export default class DarenList extends PureComponent {
     const columns = [{
       title: '达人账号',
       dataIndex: 'attributes',
-      width: 240,
+      width: 200,
       render: (val, record) =>
         <a href={`https://v.taobao.com/n/author/homepage?&userId=${record.userId}`} target="_blank">
           <Row>
@@ -203,7 +226,7 @@ export default class DarenList extends PureComponent {
     }, {
       title: '粉丝分析',
       dataIndex: 'fans_data',
-      width: 100,
+      width: 80,
       render: (val, record) => {
         if (val) {
           return (
@@ -226,11 +249,11 @@ export default class DarenList extends PureComponent {
                 </ChartPopover>}
               {val.women && val.women.length > 0 &&
                 <ChartPopover data={{ list: val.women, field: 'women', title: '女装风格偏好', _id: record._id }}>
-                  <p><a>女装风格偏好</a></p>
+                  <p><a>风格偏好</a></p>
                 </ChartPopover>}
               {val.area && val.area.length > 0 &&
                 <ChartPopover data={{ list: val.area, field: 'area', title: '粉丝地域分布', _id: record._id }}>
-                  <p><a>粉丝地域分布</a></p>
+                  <p><a>地域分布</a></p>
                 </ChartPopover>}
             </div>
           );
