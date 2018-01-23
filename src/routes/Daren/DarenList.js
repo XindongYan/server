@@ -62,9 +62,6 @@ const CREATOR_TYPES = [{
   "text": "居家美学家",
   "value": "居家美学家"
 }, {
-  "text": "其他",
-  "value": "其他"
-}, {
   "text": "淘女郎",
   "value": "淘女郎"
 }, {
@@ -85,6 +82,9 @@ const CREATOR_TYPES = [{
 }, {
   "text": "户外运动玩家",
   "value": "户外运动玩家"
+}, {
+  "text": "其他",
+  "value": "其他"
 }];
 const CHANNELS = [{
   "text": "全部渠道", "value": ""
