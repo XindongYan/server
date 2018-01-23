@@ -150,6 +150,7 @@ export default class TaskView extends PureComponent {
             }
             { formData.channel_name === '全球时尚' &&
               <GlobalFashionForm
+                channel_name={formData.channel_name}
                 form={this.props.form}
                 role="writer"
                 operation="view"
