@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
-import { Card } from 'antd';
+import { Card, Form } from 'antd';
 import $ from 'jquery';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
@@ -10,6 +10,7 @@ import GoodProductionForm from '../../components/Forms/GoodProductionForm';
 import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
 import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
 import TaskChat from '../../components/TaskChat';
+import IfashionForm from '../../components/Forms/IfashionForm';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
 
@@ -18,6 +19,7 @@ import styles from './TableList.less';
   formData: state.task.formData,
 }))
 
+@Form.create()
 export default class TaskView extends PureComponent {
   state = {
     task: {
@@ -58,6 +60,14 @@ export default class TaskView extends PureComponent {
       crowd: [], // 目标人群
       classification: [], // 分类
     },
+    ifashion: {
+      title: '', // '任务标题',
+      summary: '', // 推荐理由
+      cover_img: '',//封面
+      crowd: [], // 目标人群
+      classification: [], // 分类
+      tags: [], // 标签
+    },
     grade: 0,
     grades: [],
   }
@@ -87,6 +97,7 @@ export default class TaskView extends PureComponent {
       haveGoodsTask: nextProps.formData.haveGoods,
       lifeResearch: nextProps.formData.lifeResearch,
       globalFashion: nextProps.formData.globalFashion,
+      ifashion: nextProps.formData.ifashion,
       grade: nextProps.formData.grade,
       grades: nextProps.formData.grades,
     });
@@ -139,9 +150,18 @@ export default class TaskView extends PureComponent {
             }
             { formData.channel_name === '全球时尚' &&
               <GlobalFashionForm
+                form={this.props.form}
                 role="writer"
                 operation="view"
                 formData={this.state.globalFashion}
+              />
+            }
+            { formData.channel_name === 'ifashion' &&
+              <IfashionForm
+                form={this.props.form}
+                role="writer"
+                operation="view"
+                formData={this.state.ifashion}
               />
             }
           </div>

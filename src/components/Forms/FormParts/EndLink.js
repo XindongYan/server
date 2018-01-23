@@ -1,17 +1,15 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import $ from 'jquery';
-import { Input, Icon, message, Cascader, Form } from 'antd';
+import { Input, Icon, message } from 'antd';
 import { ORIGIN } from '../../../constants';
 import styles from './index.less';
-
-const FormItem = Form.Item;
 
 @connect(state => ({
 
 }))
 
-export default class CascaderSelect extends PureComponent {
+export default class EndLink extends PureComponent {
   state = {
     residences: [],
     rules: [],
@@ -55,24 +53,9 @@ export default class CascaderSelect extends PureComponent {
     return (
       <div style={{ padding: '10px 20px 0'}}>
         <p className={styles.lineTitleDefult}>
-          本文目标人群
+          文末链接
         </p>
         <div>
-          <FormItem>
-            {getFieldDecorator('crowd', {
-              rules: [{
-                required: this.props.rules, message: '请选择目标人群',
-              }]
-            })(
-              <Cascader
-                placeholder={'请选择'}
-                style={{ width: '200px' }}
-                onChange={this.handleTaskChange}
-                options={this.state.residences}
-                disabled={this.props.disabled}
-              />
-            )}
-          </FormItem>
           
         </div>
         { this.props.operation !== 'view' &&

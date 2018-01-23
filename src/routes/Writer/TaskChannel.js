@@ -49,7 +49,7 @@ export default class TaskChannel extends PureComponent {
           <p>产品定位：淘内高端时尚内容聚集地的标杆</p>
         </div>
       )
-    } else if (query.channel_name === 'iFashion') {
+    } else if (query.channel_name === 'ifashion') {
       return (
         <span>iFashion定位女性中高端人群的时尚搭配与潮流基地。覆盖类目：女装/女士精品，女鞋，眼镜，女士内衣/家居服，美容护肤/美体/精油，服饰配件/皮带/帽子/围巾，彩妆/香水/美妆工具，珠宝/钻石/翡翠/黄金，饰品/流行首饰/时尚饰品新。</span>
       )
@@ -242,7 +242,7 @@ export default class TaskChannel extends PureComponent {
           </div>
         </div>
       )
-    } else if (query.channel_name === 'iFashion') {
+    } else if (query.channel_name === 'ifashion') {
       return (
         <div className={styles.channel_detail_text}>
           <p>一、基础要求：</p>

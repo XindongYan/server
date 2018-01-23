@@ -66,10 +66,18 @@ export default class TaskCreate extends PureComponent {
     },
     ifashion: {
       title: '', // '任务标题',
-      summary: '', // '写手提交的稿子内容',
+      summary: '', // 推荐理由
+      cover_img: '',//封面
       crowd: [], // 目标人群
       classification: [], // 分类
-      tabs: [],
+      tags: [], // 标签
+    },
+    buyWorld: {
+      title: '', // '任务标题',
+      sub_title: '', // '副标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      classification: [], // 分类
     },
     approveModalVisible: false,
     approver_id: {
@@ -103,6 +111,7 @@ export default class TaskCreate extends PureComponent {
             haveGoodsTask: { ...result.task.haveGoods },
             lifeResearch: result.task.lifeResearch,
             globalFashion: result.task.globalFashion,
+            ifashion: result.task.ifashion,
           });
         }
       });
@@ -120,7 +129,7 @@ export default class TaskCreate extends PureComponent {
 
   validate = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { task, haveGoodsTask, lifeResearch, globalFashion } = this.state;
+    const { task, haveGoodsTask, lifeResearch, globalFashion, ifashion } = this.state;
     if (query.channel_name === '有好货') {
       let bOk = true;
       this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
@@ -154,7 +163,7 @@ export default class TaskCreate extends PureComponent {
       return bOk;
     } else if (query.channel_name === '生活研究所') {
       let bOk = true;
-      this.props.form.validateFields(['title','sub_title','summary'], (err, val) => {
+      this.props.form.validateFields(['title', 'sub_title', 'summary', 'crowd'], (err, val) => {
         if (!err) {
           if (!lifeResearch.task_desc) {
             message.warn('请填写内容');
@@ -193,6 +202,33 @@ export default class TaskCreate extends PureComponent {
       } else {
         return true;
       }
+    } else if (query.channel_name === 'ifashion') {
+      let bOk = true;
+      this.props.form.validateFields(['title','sub_title','summary'], (err, val) => {
+        if (!err) {
+          if (!ifashion.title || !ifashion.title.replace(/\s+/g, '')) {
+            message.warn('请填写标题');
+            bOk = false;
+          } else if (ifashion.title && ifashion.title.length > 11) {
+            message.warn('标题字数不符合要求');
+            bOk = false;
+          } else if (!ifashion.summary) {
+            message.warn('请填写推荐理由');
+            bOk = false;
+          } else if (ifashion.classification.length <= 0) {
+            message.warn('请选择潮流热点分类');
+            bOk = false;
+          } else if (ifashion.classification && ifashion.classification.length > 1) {
+            message.warn('潮流热点只能选择一个');
+            bOk = false;
+          } else {
+            bOk = true;
+          }
+        } else {
+          bOk = false;
+        }
+      });
+      return bOk;
     } else {
       if (!task.title || !task.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');
@@ -214,7 +250,7 @@ export default class TaskCreate extends PureComponent {
   handleSubmitTask = () => {
     const { currentUser, teamUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || '';
+    const name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || '';
     if (query._id) {
       this.props.dispatch({
         type: 'task/update',
@@ -223,6 +259,7 @@ export default class TaskCreate extends PureComponent {
           haveGoods: this.state.haveGoodsTask,
           lifeResearch: this.state.lifeResearch,
           globalFashion: this.state.globalFashion,
+          ifashion: this.state.ifashion,
           _id: query._id,
           approve_status: TASK_APPROVE_STATUS.taken,
           publisher_id: currentUser._id,
@@ -271,6 +308,7 @@ export default class TaskCreate extends PureComponent {
                 haveGoods: this.state.haveGoodsTask,
                 lifeResearch: this.state.lifeResearch,
                 globalFashion: this.state.globalFashion,
+                ifashion: this.state.ifashion,
                 _id: result.task._id,
                 approve_status: TASK_APPROVE_STATUS.taken,
                 publisher_id: currentUser._id,
@@ -333,6 +371,12 @@ export default class TaskCreate extends PureComponent {
   handleChangeGlobal = (task) => {
     this.setState({ globalFashion: { ...this.state.globalFashion, ...task } });
   }
+  handleChangeBuyWorld = (task) => {
+    this.setState({ buyWorld: { ...this.state.buyWorld, ...task } });
+  }
+  handleChangeIfashion = (task) => {
+    this.setState({ ifashion: { ...this.state.ifashion, ...task } });
+  }
   handleModalVisible = (flag) => {
     this.setState({
       approveModalVisible: !!flag,
@@ -342,8 +386,8 @@ export default class TaskCreate extends PureComponent {
   handleSave = (type) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
-    const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion } = this.state;
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || '';
+    const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion } = this.state;
+    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || '';
     if (!name.trim()) {
       message.warn('请输入标题');
     } else {
@@ -358,6 +402,7 @@ export default class TaskCreate extends PureComponent {
             haveGoods: this.state.haveGoodsTask,
             lifeResearch: this.state.lifeResearch,
             globalFashion: this.state.globalFashion,
+            ifashion: this.state.ifashion,
             _id: query._id,
             name: name,
           },
@@ -382,6 +427,7 @@ export default class TaskCreate extends PureComponent {
               haveGoods: this.state.haveGoodsTask,
               lifeResearch: this.state.lifeResearch,
               globalFashion: this.state.globalFashion,
+              ifashion: this.state.ifashion,
               name: name,
               approve_status: TASK_APPROVE_STATUS.taken,
               channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
@@ -419,6 +465,7 @@ export default class TaskCreate extends PureComponent {
               haveGoods: this.state.haveGoodsTask,
               lifeResearch: this.state.lifeResearch,
               globalFashion: this.state.globalFashion,
+              ifashion: this.state.ifashion,
               name: name,
               approve_status: TASK_APPROVE_STATUS.taken,
               channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
@@ -453,8 +500,8 @@ export default class TaskCreate extends PureComponent {
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
-    const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion } = this.state;
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || '';
+    const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion } = this.state;
+    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || '';
     if (query._id) {
       this.props.dispatch({
         type: 'task/update',
@@ -490,6 +537,7 @@ export default class TaskCreate extends PureComponent {
           haveGoods: this.state.haveGoodsTask,
           lifeResearch: this.state.lifeResearch,
           globalFashion: this.state.globalFashion,
+          ifashion: this.state.ifashion,
           name: name,
           approve_status: TASK_APPROVE_STATUS.taken,
           channel_name: query.channel_name === '直播脚本' ? '' : query.channel_name,
@@ -577,6 +625,7 @@ export default class TaskCreate extends PureComponent {
           <div style={{ width: 720 }}>
             { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&
               <WeitaoForm
+                form={this.props.form}
                 role="writer"
                 operation="create"
                 formData={task}
@@ -611,11 +660,22 @@ export default class TaskCreate extends PureComponent {
             }
             { query.channel_name === '全球时尚' &&
               <GlobalFashionForm
+                channel_name={query.channel_name}
                 form={this.props.form}
                 role="writer"
                 operation="create"
                 formData={this.state.globalFashion}
                 onChange={this.handleChangeGlobal}
+              />
+            }
+            { query.channel_name === '买遍全球' &&
+              <GlobalFashionForm
+                channel_name={query.channel_name}
+                form={this.props.form}
+                role="writer"
+                operation="create"
+                formData={this.state.buyWorld}
+                onChange={this.handleChangeBuyWorld}
               />
             }
             { query.channel_name === 'ifashion' &&

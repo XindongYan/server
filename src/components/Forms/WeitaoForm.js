@@ -87,7 +87,7 @@ export default class WeitaoForm extends PureComponent {
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
             <div style={{ background: '#fff', padding: '20px 10px' }}>
-              <CascaderSelect formData={formData} onChange={this.handleTaskChange} />
+              <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
             </div>
 
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
