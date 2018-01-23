@@ -208,7 +208,7 @@ export default class DarenList extends PureComponent {
     const columns = [{
       title: '达人账号',
       dataIndex: 'attributes',
-      width: 240,
+      width: 200,
       render: (val, record) =>
         <a href={`https://v.taobao.com/n/author/homepage?&userId=${record.userId}`} target="_blank">
           <Row>
@@ -226,7 +226,7 @@ export default class DarenList extends PureComponent {
     }, {
       title: '粉丝分析',
       dataIndex: 'fans_data',
-      width: 100,
+      width: 80,
       render: (val, record) => {
         if (val) {
           return (
@@ -249,11 +249,11 @@ export default class DarenList extends PureComponent {
                 </ChartPopover>}
               {val.women && val.women.length > 0 &&
                 <ChartPopover data={{ list: val.women, field: 'women', title: '女装风格偏好', _id: record._id }}>
-                  <p><a>女装风格偏好</a></p>
+                  <p><a>风格偏好</a></p>
                 </ChartPopover>}
               {val.area && val.area.length > 0 &&
                 <ChartPopover data={{ list: val.area, field: 'area', title: '粉丝地域分布', _id: record._id }}>
-                  <p><a>粉丝地域分布</a></p>
+                  <p><a>地域分布</a></p>
                 </ChartPopover>}
             </div>
           );
