@@ -6,16 +6,16 @@ import 'cropperjs/dist/cropper.css';
 const TabPane = Tabs.TabPane;
 
 @connect(state => ({
-  visible: state.album.cropperModal.visible,
-  src: state.album.cropperModal.src,
-  width: state.album.cropperModal.width,
-  height: state.album.cropperModal.height,
-  picWidth: state.album.cropperModal.picWidth,
-  picHeight: state.album.cropperModal.picHeight,
-  cropperKey: state.album.cropperModal.cropperKey,
+  visible: state.album.jigsawModal.visible,
+  src: state.album.jigsawModal.src,
+  width: state.album.jigsawModal.width,
+  height: state.album.jigsawModal.height,
+  picWidth: state.album.jigsawModal.picWidth,
+  picHeight: state.album.jigsawModal.picHeight,
+  cropperKey: state.album.jigsawModal.cropperKey,
 }))
 
-export default class CropperModal extends PureComponent {
+export default class JigsawModal extends PureComponent {
   state = {
     dataUrl: '',
     nicaiCrx: null,
@@ -58,7 +58,7 @@ export default class CropperModal extends PureComponent {
       if (this.props.onOk) this.props.onOk(result.data[0].url);
       this.setState({ dataUrl: '' });
       this.props.dispatch({
-        type: 'album/hideCropper',
+        type: 'album/hideJigsaw',
       });
     } else {
       message.error(result.message);
@@ -92,17 +92,12 @@ export default class CropperModal extends PureComponent {
   handleCancel = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'album/hideCropper',
+      type: 'album/hideJigsaw',
     });
     message.destroy();
     this.setState({ dataUrl: '', confirmLoading: false });
   }
 
-  _crop = () => {
-    const dataUrl = this.refs.cropper.getCroppedCanvas().toDataURL();
-    // console.log(dataUrl);
-    this.setState({ dataUrl: dataUrl });
-  }
   render() {
     const { visible, src, width, height, picWidth, picHeight, cropperKey } = this.props;
     const { dataUrl, confirmLoading } = this.state;
@@ -116,7 +111,7 @@ export default class CropperModal extends PureComponent {
     // }
     return (
       <Modal
-        title="裁切"
+        title="搭配"
         width="992px"
         visible={visible}
         onOk={this.handleOk}
@@ -125,24 +120,8 @@ export default class CropperModal extends PureComponent {
         maskClosable={false}
         confirmLoading={confirmLoading}
       >
-        {visible && <Cropper
-          ref='cropper'
-          src={src}
-          style={{height: 400, display: 'inline-block', verticalAlign: 'middle'}}
-          crossOrigin="anonymous"
-          // Cropper.js options
-          aspectRatio={width / height}
-          minCropBoxWidth={width / rate}
-          minCropBoxHeight={height / rate}
-          zoomable={false}
-          guides={false}
-          crop={this._crop.bind(this)} /> }
-        <div style={{ width: '38%',  display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, paddingTop: 10}}>
-          <img
-            src={dataUrl}
-            style={{ width: '100%'}}
-          />
-        </div>
+        <canvas id="canvas" width="400" height="400">
+        </canvas>
       </Modal>
     );
   }

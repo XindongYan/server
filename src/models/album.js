@@ -22,7 +22,16 @@ export default {
       picHeight: 1,
       picWidth: 1,
       cropperKey: '',
-    }
+    },
+    jigsawModal: {
+      visible: false,
+      src: '',
+      // width: 1,
+      // height: 1,
+      // picHeight: 1,
+      // picWidth: 1,
+      // cropperKey: '',
+    },
   },
 
   effects: {
@@ -73,6 +82,18 @@ export default {
         payload: { visible: false, src: '' },
       });
     },
+    *showJigsaw({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeJigsawVisible',
+        payload: { visible: true, ...payload },
+      });
+    },
+    *hideJigsaw({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeJigsawVisible',
+        payload: { visible: false, src: '' },
+      });
+    },
   },
 
   reducers: {
@@ -99,6 +120,15 @@ export default {
         ...state,
         cropperModal: {
           ...state.cropperModal,
+          ...action.payload,
+        },
+      };
+    },
+    changeJigsawVisible(state, action) {
+      return {
+        ...state,
+        jigsawModal: {
+          ...state.jigsawModal,
           ...action.payload,
         },
       };
