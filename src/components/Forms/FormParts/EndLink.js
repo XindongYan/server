@@ -17,7 +17,7 @@ export default class EndLink extends PureComponent {
   }
   componentDidMount() {
     const { formData } = this.props;
-    if (formData && formData.title) {
+    if (formData && formData.title && this.props.operation !== 'view') {
       if (formData.endLink_href) {
         this.setState({
           tag: true
@@ -31,11 +31,13 @@ export default class EndLink extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.formData.title && nextProps.formData.title) {
+    if (!this.props.formData.title && nextProps.formData.title && this.props.operation !== 'view') {
       const { formData } = nextProps;
+      if (formData.endLink_href) {
         this.setState({
           tag: true
         })
+      }
       const fieldsValue = {
         href: formData.endLink_href,
         name: formData.endLink_name,
@@ -137,7 +139,7 @@ export default class EndLink extends PureComponent {
             文末链接
           </p>
           <div>
-            <Tag closable onClose={this.handleCloseTag} style={{ height: 30, lineHeight: '30px', border: 'none', background: '#ECEEF2' }}>
+            <Tag style={{ height: 30, lineHeight: '30px', border: 'none', background: '#ECEEF2' }}>
               <Icon type="link" style={{ margin: '0 5px' }} />
               <a target="_blank" href={formData.endLink_href} style={{ paddingRight: 80, color: '#308CE6' }}>{formData.endLink_name}</a>
             </Tag>

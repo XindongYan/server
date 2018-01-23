@@ -143,11 +143,14 @@ export default class GlobalFashionForm extends PureComponent {
               </div>
             }
             <div className={styles.taskList}>
-              <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
+              
               { disabled ? 
                 <div className={styles.descBox} dangerouslySetInnerHTML={{__html: formData.task_desc}}>
                 </div>
-              : <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
+              : <div>
+                <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
+                <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
+              </div>
               }
             </div>
             <div>
