@@ -2,11 +2,12 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radio, Popconfirm, DatePicker,
 Tooltip, Divider } from 'antd';
+import { Link } from 'dva/router';
+import moment from 'moment';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN, RIGHT } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
-import { Link } from 'dva/router';
-import moment from 'moment';
+import DockPanel from '../../components/DockPanel';
 import styles from './TableList.less';
 
 const { RangePicker } = DatePicker;
@@ -171,6 +172,15 @@ export default class TableList extends PureComponent {
       payload: { ...pagination, user_id: this.state.user_id || currentUser._id, approve_status: e.target.value, }
     });
   }
+  handleShowDockPanel = (record, activeKey) => {
+    this.props.dispatch({
+      type: 'task/showDockPanel',
+      payload: {
+        _id: record._id,
+        activeKey,
+      },
+    });
+  }
   render() {
     const { data, loading, currentUser, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys } = this.state;
@@ -178,6 +188,7 @@ export default class TableList extends PureComponent {
       {
         title: '任务ID',
         dataIndex: 'id',
+        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
       },
       {
         title: '名称',
@@ -428,6 +439,7 @@ export default class TableList extends PureComponent {
               onChange={this.handleStandardTableChange}
               rowKey="_id"
             />
+            <DockPanel />
           </div>
         </Card>
       </div>
