@@ -8,7 +8,7 @@ import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from './FormParts/CascaderSelect';
-import Classification from './FormParts/Classification';
+import TagPicker from './FormParts/TagPicker';
 import CoverImage from './FormParts/CoverImage';
 import { ORIGIN } from '../../constants';
 
@@ -174,7 +174,7 @@ export default class IfashionForm extends PureComponent {
           </div>
 
           <div className={styles.taskList}>
-            <Classification disabled={disabled} dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
+            <TagPicker disabled={disabled} dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
           </div>
 
           <div className={styles.taskList}>
