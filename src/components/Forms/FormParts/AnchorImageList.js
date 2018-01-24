@@ -64,8 +64,12 @@ export default class AnchorImageList extends PureComponent {
     customEvent.initEvent('getVersion', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
-  handleShowJigsawModal = (e) => {
+  handleCreateJigsaw = (e) => {
     window.open('https://we.taobao.com/mirror/mirror.html?activityId=1437');
+  }
+  handleEditJigsaw = (e) => {
+    const { formData } = this.props;
+    window.open(`https://we.taobao.com/mirror/mirror.html?activityId=1437&dapeiId=${formData.body.id}`);
   }
   render() {
     const { formData } = this.props;
@@ -76,7 +80,7 @@ export default class AnchorImageList extends PureComponent {
         <div style={{ padding: '10px 20px' }}>
           {(url) ?
             <img src={url} style={{ width: 200, height: 200 }}/> :
-            <div className={styles.upCover} style={{ padding: '60px 0', width: 200, height: 200 }} onClick={this.handleShowJigsawModal}>
+            <div className={styles.upCover} style={{ padding: '60px 0', width: 200, height: 200 }} onClick={this.handleCreateJigsaw}>
               <Icon type="plus" />
               <p style={{ fontSize: 14 }}>添加搭配图</p>
             </div>
