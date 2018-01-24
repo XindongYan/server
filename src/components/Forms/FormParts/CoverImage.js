@@ -109,13 +109,11 @@ export default class CoverImage extends PureComponent {
       <div style={{ padding: '10px 20px 0'}}>
         <p className={styles.lineTitleDefult}>{ formData.laybel || '封面图'}</p>
         <div style={{ width: 200, height: 112 }}>
-          { !formData.value &&
+          { !formData.value ?
             <div className={styles.upCover} onClick={this.uploadCoverImg}>
               <Icon type="plus" />
               <p style={{ fontSize: 14 }}>上传封面图</p>
-            </div>
-          }
-          { formData.value &&
+            </div> :
             <div className={styles.coverPic}>
               <img src={formData.value} />
               { this.props.operation !== 'view' &&

@@ -39,7 +39,6 @@ export default class AnchorImageList extends PureComponent {
   setJigsaw = (e) => {
     const result = JSON.parse(e.target.innerText);
     if (!result.errorCode) {
-      console.log(result);
       if (this.props.onChange) this.props.onChange(result);
     } else {
       message.error(result.message);
@@ -51,6 +50,7 @@ export default class AnchorImageList extends PureComponent {
     this.setState({
       version: data.version,
     });
+    console.log(version)
     if (version && version.length > 0) {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
@@ -71,15 +71,24 @@ export default class AnchorImageList extends PureComponent {
     const { formData } = this.props;
     window.open(`https://we.taobao.com/mirror/mirror.html?activityId=1437&dapeiId=${formData.body.id}`);
   }
+  handleDeleteJigsaw = (e) => {
+    if (this.props.onChange) this.props.onChange({});
+  }
   render() {
     const { formData } = this.props;
     const url = formData.body ? formData.body.url : '';
     return (
-      <div>
-        <p>主图</p>
-        <div style={{ padding: '10px 20px' }}>
+      <div style={{ padding: '10px 20px' }}>
+        <p style={{ marginBottom: 10 }}>主图</p>
+        <div style={{ width: 200, height: 200 }}>
           {(url) ?
-            <img src={url} style={{ width: 200, height: 200 }}/> :
+            <div className={styles.showImgBox}>
+              <img src={url}/>
+              <div className={styles.deleteImgBox}>
+                <Icon type="edit" className={styles.editIcon} onClick={this.handleEditJigsaw} />
+                <Icon type="delete" className={styles.deleteIcon} onClick={this.handleDeleteJigsaw} />
+              </div>
+            </div> :
             <div className={styles.upCover} style={{ padding: '60px 0', width: 200, height: 200 }} onClick={this.handleCreateJigsaw}>
               <Icon type="plus" />
               <p style={{ fontSize: 14 }}>添加搭配图</p>
