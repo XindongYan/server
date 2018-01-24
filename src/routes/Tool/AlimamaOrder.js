@@ -86,7 +86,7 @@ export default class AlimamaOrder extends PureComponent {
     const version = data.version;
     this.setState({
       version: data.version,
-    })
+    });
     if (version && version.length > 0) {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);

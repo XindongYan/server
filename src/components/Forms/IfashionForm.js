@@ -67,6 +67,9 @@ export default class IfashionForm extends PureComponent {
   handleCrowdChange = (value) => {
     if (this.props.onChange) this.props.onChange({ crowd: value });
   }
+  handleBodyChange = (value) => {
+    if (this.props.onChange) this.props.onChange({ body: value });
+  }
   handleCropCoverImg = (imgs) => {
     if (imgs[0]) {
       this.props.dispatch({
@@ -158,7 +161,7 @@ export default class IfashionForm extends PureComponent {
             </div>
           </div>
           <div className={styles.taskList}>
-            <FormParts.AnchorImageList />
+            <FormParts.AnchorImageList disabled={disabled} form={this.props.form} formData={formData} onChange={this.handleBodyChange} />
           </div>
           <div style={{ background: '#fff', padding: '20px 10px' }}>
             <CascaderSelect disabled={disabled} form={this.props.form} formData={formData} onChange={this.handleCrowdChange} rules={false} />
