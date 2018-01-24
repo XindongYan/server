@@ -224,7 +224,7 @@ export default class LifeInstituteForm extends PureComponent {
               </div>
             </div>
             <div style={{ background: '#fff', padding: '20px 10px' }}>
-              <CascaderSelect operation={this.props.operation} formData={formData} />
+              <CascaderSelect form={this.props.form} operation={this.props.operation} formData={formData} />
             </div>
             <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '2em', fontSize: 14, color: '#333'}}>
               <span style={{ color: '#999', marginRight: 10 }}>投稿至</span>
