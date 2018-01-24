@@ -4,3 +4,4 @@ export CascaderSelect from './CascaderSelect';
 export AnchorImageList from './AnchorImageList';
 export EndLink from './EndLink';
 export BodyStructContent from './BodyStructContent';
+export AuctionImageModal from './AuctionImageModal';

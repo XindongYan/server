@@ -36,7 +36,7 @@ export default class TaskCreate extends PureComponent {
     haveGoodsTask: {
       body: [],
       title: '', // '任务标题',
-      bodyStruct: [{}],
+      bodyStruct: [],
       bodyStruct0: [],
       duanliangdian: [], // ['']
       crowdId: '',
