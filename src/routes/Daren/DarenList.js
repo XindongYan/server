@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Button, Tag, Card, Select, Input, message, Avatar, Row, Col } from 'antd';
+import { Table, Button, Tag, Card, Select, Input, message, Avatar, Row, Col, Divider } from 'antd';
 import styles from './DarenList.less';
 import ChartPopover from './ChartPopover';
 
@@ -210,18 +210,16 @@ export default class DarenList extends PureComponent {
       dataIndex: 'attributes',
       width: 160,
       render: (val, record) =>
-        <a href={`https://v.taobao.com/n/author/homepage?&userId=${record.userId}`} target="_blank">
-          <Row>
-            <Col span={8}>
-              <Avatar size="large" shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
-            </Col>
-            <Col span={16}>
-              <Row><strong>{record.nick}</strong></Row>
-              <Row>{record.area}</Row>
-              { val && <Row>{val.creator_type}</Row> }
-            </Col>
-          </Row>
-        </a>
+        <Row>
+          <Col span={8}>
+            <Avatar size="large" shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
+          </Col>
+          <Col span={16}>
+            <Row><strong>{record.nick}</strong></Row>
+            <Row>{record.area}</Row>
+            { val && <Row>{val.creator_type}</Row> }
+          </Col>
+        </Row>
       ,
     }, {
       title: '粉丝分析',
@@ -231,30 +229,39 @@ export default class DarenList extends PureComponent {
         if (val) {
           return (
             <div>
+              <p>
               {val.gender && val.gender.length > 0 &&
                 <ChartPopover data={{ list: val.gender, field: 'gender', title: '性别比例', _id: record._id }}>
-                  <p><a>性别比例</a></p>
+                  <a>性别</a>
                 </ChartPopover>}
+              {val.gender && val.gender.length > 0 && val.age && val.age.length > 0 && <Divider type="vertical" />}
               {val.age && val.age.length > 0 &&
                 <ChartPopover data={{ list: val.age, field: 'age', title: '年龄比例', _id: record._id }}>
-                  <p><a>年龄比例</a></p>
+                  <a>年龄</a>
                 </ChartPopover>}
+              </p>
+              <p>
               {val.interest && val.interest.length > 0 &&
                 <ChartPopover data={{ list: val.interest, field: 'interest', title: '生活偏好', _id: record._id }}>
-                  <p><a>生活偏好</a></p>
+                  <a>生活</a>
                 </ChartPopover>}
+              {val.interest && val.interest.length > 0 && val.cate && val.cate.length > 0 &&  <Divider type="vertical" />}
               {val.cate && val.cate.length > 0 &&
                 <ChartPopover data={{ list: val.cate, field: 'cate', title: '类目偏好', _id: record._id }}>
-                  <p><a>类目偏好</a></p>
+                  <a>类目</a>
                 </ChartPopover>}
+              </p>
+              <p>
               {val.women && val.women.length > 0 &&
                 <ChartPopover data={{ list: val.women, field: 'women', title: '女装风格偏好', _id: record._id }}>
-                  <p><a>风格偏好</a></p>
+                  <a>风格</a>
                 </ChartPopover>}
+              {val.women && val.women.length > 0 && val.area && val.area.length > 0 &&  <Divider type="vertical" />}
               {val.area && val.area.length > 0 &&
                 <ChartPopover data={{ list: val.area, field: 'area', title: '粉丝地域分布', _id: record._id }}>
-                  <p><a>地域分布</a></p>
+                  <a>地域</a>
                 </ChartPopover>}
+                </p>
             </div>
           );
         }

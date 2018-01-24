@@ -247,7 +247,7 @@ export default class TaskEdit extends PureComponent {
           if (!lifeResearch.task_desc) {
             message.warn('请填写内容');
             bOk = false;
-          } else if (!lifeResearch.crowd || lifeResearch.crowd.length <= 0) {
+          } else if (!lifeResearch.crowd) {
             message.warn('请选择目标人群');
             bOk = false;
           } else if (!lifeResearch.cover_img) {

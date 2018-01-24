@@ -74,7 +74,11 @@ export default class ChartPopover extends PureComponent {
       <Popover
         placement="right"
         title={this.props.data.title}
-        content={<div id={`chart_${data.field}_${data._id}`} style={{ width: 600 }}></div>}
+        content={
+          <div id={`chart_${data.field}_${data._id}`}
+            style={{ width: 600 }}>
+            {data.list.length === 0 && <div style={{ textAlign: 'center' }}>无数据</div>}
+          </div>}
         visible={this.state.visible}
         onVisibleChange={this.handleVisibleChange}
       >
