@@ -135,7 +135,7 @@ export default class TaskCreate extends PureComponent {
     const { task, haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
     if (query.channel_name === '有好货') {
       let bOk = true;
-      this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
         if (!err) {
           if (!haveGoodsTask.auction) {
             message.warn('请选择商品宝贝');
@@ -166,7 +166,7 @@ export default class TaskCreate extends PureComponent {
       return bOk;
     } else if (query.channel_name === '生活研究所') {
       let bOk = true;
-      this.props.form.validateFields(['title', 'sub_title', 'summary', 'crowd'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'summary', 'crowd'], (err, val) => {
         if (!err) {
           if (!lifeResearch.task_desc) {
             message.warn('请填写内容');
@@ -184,52 +184,54 @@ export default class TaskCreate extends PureComponent {
       })
       return bOk;
     } else if (query.channel_name === '全球时尚') {
-      if (!globalFashion.title || !globalFashion.title.replace(/\s+/g, '')) {
-        message.warn('请填写标题');
-        return false;
-      } else if (globalFashion.title && globalFashion.title.length > 19) {
-        message.warn('标题字数不符合要求');
-        return false;
-      } else if (!globalFashion.task_desc) {
-        message.warn('请填写内容');
-        return false;
-      } else if (!globalFashion.cover_img) {
-        message.warn('请选择封面图');
-        return false;
-      } else if (globalFashion.classification.length <= 0) {
-        message.warn('请选择潮流热点分类');
-        return false;
-      } else if (globalFashion.classification && globalFashion.classification.length > 1) {
-        message.warn('潮流热点只能选择一个');
-        return false;
-      } else {
-        return true;
-      }
+      console.log(2)
+      let bOk = true;
+      this.props.form.validateFieldsAndScroll(['title', 'crowd'], (err, val) => {
+        if (!err) {
+          if (!globalFashion.task_desc) {
+            message.warn('请填写内容');
+            bOk = false;
+          } else if (!globalFashion.cover_img) {
+            message.warn('请选择封面图');
+            bOk = false;
+          } else if (globalFashion.classification.length <= 0) {
+            message.warn('请选择潮流热点分类');
+            bOk = false;
+          } else if (globalFashion.classification && globalFashion.classification.length > 1) {
+            message.warn('潮流热点只能选择一个');
+            bOk = false;
+          }
+        } else {
+          bOk = false;
+        }
+      })
+      return bOk;
     } else if (query.channel_name === '买遍全球') {
-      if (!buyWorld.title || !buyWorld.title.replace(/\s+/g, '')) {
-        message.warn('请填写标题');
-        return false;
-      } else if (buyWorld.title && buyWorld.title.length > 19) {
-        message.warn('标题字数不符合要求');
-        return false;
-      } else if (!buyWorld.task_desc) {
-        message.warn('请填写内容');
-        return false;
-      } else if (!buyWorld.cover_img) {
-        message.warn('请选择封面图');
-        return false;
-      } else if (buyWorld.classification.length <= 0) {
-        message.warn('请选择潮流热点分类');
-        return false;
-      } else if (buyWorld.classification && buyWorld.classification.length > 1) {
-        message.warn('潮流热点只能选择一个');
-        return false;
-      } else {
-        return true;
-      }
+      console.log(1)
+      let bOk = true;
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], (err, val) => {
+        if (!err) {
+          if (!buyWorld.task_desc) {
+            message.warn('请填写内容');
+            bOk = false;
+          } else if (!buyWorld.cover_img) {
+            message.warn('请选择封面图');
+            bOk = false;
+          } else if (buyWorld.classification.length <= 0) {
+            message.warn('请选择分类');
+            bOk = false;
+          } else if (buyWorld.classification && buyWorld.classification.length > 1) {
+            message.warn('只能选择一个分类标签');
+            bOk = false;
+          }
+        } else {
+          bOk = false;
+        }
+      })
+      return bOk;
     } else if (query.channel_name === 'ifashion') {
       let bOk = true;
-      this.props.form.validateFields(['title','sub_title','summary'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title','sub_title','summary'], (err, val) => {
         if (!err) {
           if (!ifashion.title || !ifashion.title.replace(/\s+/g, '')) {
             message.warn('请填写标题');
@@ -413,7 +415,7 @@ export default class TaskCreate extends PureComponent {
       approveModalVisible: !!flag,
     });
   }
-
+  
   handleSave = (type) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;

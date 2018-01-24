@@ -31,6 +31,7 @@ export default class AuctionModal extends PureComponent {
     q_score: '',
     new7: '',
     search: '',
+    activeKey: 'add',
   }
   componentDidMount() {
     
@@ -248,6 +249,23 @@ export default class AuctionModal extends PureComponent {
       search: auction.item ? auction.item.itemUrl : '',
     })
   }
+
+  handleChangeTab = (e) =>{
+    if (e === 'commodities') {
+      this.handleGetAuction({ pageSize: this.state.pagination.pageSize, current: 1 });
+    }
+    this.setState({
+      activeKey: e
+    })
+  }
+  handleChangeTabpane = () =>{
+    
+    this.setState({
+      activeKey: 'add'
+    }, () => {
+      console.log(this.state.activeKey)
+    })
+  }
   addAuction = () => {
     const { visible, k } = this.props;
     const { search, itemList, pagination, loading, auctionChoose, q_score, new7 } = this.state;
@@ -306,8 +324,7 @@ export default class AuctionModal extends PureComponent {
   }
   render() {
     const { visible, k, currentKey } = this.props;
-    const { itemList, pagination, loading } = this.state;
-    const activeKey = k === 'material' ? 'add' : 'commodities';
+    const { itemList, pagination, loading, activeKey } = this.state;
     return (
       <Modal
         title="添加宝贝"
@@ -318,8 +335,15 @@ export default class AuctionModal extends PureComponent {
         bodyStyle={{ padding: '5px 20px' }}
       >
         { k !== 'material' ?
-          <Tabs defaultActiveKey={activeKey} onChange={this.handleChangeTab}>
-            <TabPane tab={<span>素材库</span>} key="commodities">
+          <Tabs
+            tabBarExtraContent={<div style={{ width: 580, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={`https://we.taobao.com/material/square/detail?kxuanParam={"nested":"we","id":${this.props.product}}`}>选品池</a></div>}
+            activeKey={activeKey}
+            onChange={this.handleChangeTab}
+          >
+            <TabPane tab={<span>添加宝贝</span>} key="add">
+              {this.addAuction()}
+            </TabPane>
+            <TabPane tab={<span>商品库</span>} key="commodities">
               <div>
                 <div>
                   <Spin spinning={loading}>
@@ -337,9 +361,6 @@ export default class AuctionModal extends PureComponent {
                   style={{float: 'right', margin: '10px 20px'}}
                 />
               </div>
-            </TabPane>
-            <TabPane tab={<span>添加宝贝</span>} key="add">
-              {this.addAuction()}
             </TabPane>
           </Tabs>
           : this.addAuction()

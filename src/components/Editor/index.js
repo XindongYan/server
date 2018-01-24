@@ -121,7 +121,7 @@ export default class Editor extends PureComponent {
       <div style={style}>
         <div id="editor" className={styles.editor} />
         <AlbumModal k="editor" onOk={this.handleAddImg} />
-        <AuctionModal k="editor" onOk={this.handleAddProduct} />
+        <AuctionModal k="editor" onOk={this.handleAddProduct} product={this.props.product} />
       </div>
     );
   }

@@ -91,7 +91,7 @@ export default class WeitaoForm extends PureComponent {
             </div>
 
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
-              <CoverImage onChange={this.handleAddCoverImg} formData={{value: formData.cover_img}} />
+              <CoverImage operation={this.props.operation} onChange={this.handleAddCoverImg} formData={{value: formData.cover_img}} />
             </div>
           </div>
         }

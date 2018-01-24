@@ -68,6 +68,13 @@ export default class TaskView extends PureComponent {
       classification: [], // 分类
       tags: [], // 标签
     },
+    buyWorld: {
+      title: '', // '任务标题',
+      sub_title: '', // '副标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',//封面
+      classification: [], // 分类
+    },
     grade: 0,
     grades: [],
   }
@@ -98,6 +105,7 @@ export default class TaskView extends PureComponent {
       lifeResearch: nextProps.formData.lifeResearch,
       globalFashion: nextProps.formData.globalFashion,
       ifashion: nextProps.formData.ifashion,
+      buyWorld: nextProps.formData.buyWorld,
       grade: nextProps.formData.grade,
       grades: nextProps.formData.grades,
     });
@@ -106,6 +114,9 @@ export default class TaskView extends PureComponent {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: false,
+    });
+    this.props.dispatch({
+      type: 'task/clearFormData'
     });
   }
   handleChange = () => {
@@ -158,6 +169,15 @@ export default class TaskView extends PureComponent {
                 role="writer"
                 operation="view"
                 formData={this.state.globalFashion}
+              />
+            }
+            { formData.channel_name === '买遍全球' &&
+              <GlobalFashionForm
+                channel_name={formData.channel_name}
+                form={this.props.form}
+                role="writer"
+                operation="view"
+                formData={this.state.buyWorld}
               />
             }
             { formData.channel_name === 'ifashion' &&

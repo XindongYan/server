@@ -118,9 +118,11 @@ export default class CoverImage extends PureComponent {
           { formData.value &&
             <div className={styles.coverPic}>
               <img src={formData.value} />
-              <div className={styles.coverModal} onClick={this.handleDeleteCover}>
-                <Icon type="delete" />
-              </div>
+              { this.props.operation !== 'view' &&
+                <div className={styles.coverModal} onClick={this.handleDeleteCover}>
+                  <Icon type="delete" />
+                </div>
+              }
             </div>
           }
         </div>

@@ -41,8 +41,8 @@ export default class Annotation extends PureComponent {
   }
   fnContextMenu = (e) => {
     e.preventDefault();
-    let oX = e.pageX - $(e.target).offset().left;
-    let oY = e.pageY - $(e.target).offset().top;
+    let oX = e.pageX - $(e.target).offset().left - 1;
+    let oY = e.pageY - $(e.target).offset().top - 1;
     this.setState({
       action: [
         {'name': '添加','value': 'add'},

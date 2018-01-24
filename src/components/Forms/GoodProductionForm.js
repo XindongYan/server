@@ -8,6 +8,7 @@ import CropperModal from '../AlbumModal/CropperModal';
 
 import { CascaderSelect } from './FormParts/index';
 
+const FormItem = Form.Item;
 @connect(state => ({
 
 }))

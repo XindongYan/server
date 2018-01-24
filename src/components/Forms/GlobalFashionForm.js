@@ -86,6 +86,10 @@ export default class GlobalFashionForm extends PureComponent {
     if (this.props.form) {
       getFieldDecorator = this.props.form.getFieldDecorator;
     }
+    let product = 0;
+    if (this.props.channel_name === '全球时尚') {
+      product = 3321;
+    }
     return (
       <div className={styles.taskBox} style={style}>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
@@ -141,13 +145,12 @@ export default class GlobalFashionForm extends PureComponent {
               </div>
             }
             <div className={styles.taskList}>
-              
               { disabled ? 
                 <div className={styles.descBox} dangerouslySetInnerHTML={{__html: formData.task_desc}}>
                 </div>
               : <div>
                 <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
-                <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
+                <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange} product={3321} />
               </div>
               }
             </div>
@@ -155,7 +158,7 @@ export default class GlobalFashionForm extends PureComponent {
               <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
             </div>
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
-              <CoverImage onChange={this.handleAddCoverImg} formData={{value: formData.cover_img}} />
+              <CoverImage onChange={this.handleAddCoverImg} formData={{value: formData.cover_img}} operation={this.props.operation} />
             </div>
             { this.props.channel_name === '全球时尚' &&
               <div style={{ background: '#fff', padding: '20px 10px' }}>
