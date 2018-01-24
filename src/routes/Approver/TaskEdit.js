@@ -29,13 +29,13 @@ const FormItem = Form.Item;
 export default class TaskEdit extends PureComponent {
   state = {
     task: {
-      crowdId: '',
+      crowd: [],
       title: '',
       task_desc: '',
       cover_img: '',
     },
     haveGoodsTask: {
-      crowdId: '',
+      crowd: [],
       title: '',
       task_desc: '',
       auction: {}, // 商品
@@ -55,21 +55,21 @@ export default class TaskEdit extends PureComponent {
       sub_title: '', // '副标题',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       summary: '', // 目标人群
     },
     globalFashion: {
       title: '', // '任务标题',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       classification: [], // 分类
     },
     ifashion: {
       title: '', // '任务标题',
       summary: '', // 推荐理由
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       classification: [], // 分类
       tags: [], // 标签
     },
@@ -98,7 +98,7 @@ export default class TaskEdit extends PureComponent {
         if (!result.error) {
           this.setState({
             task: {
-              crowdId: result.task.crowdId,
+              crowd: result.task.crowd,
               title: result.task.title,
               task_desc: result.task.task_desc,
               cover_img: result.task.cover_img,
@@ -248,7 +248,7 @@ export default class TaskEdit extends PureComponent {
           if (!lifeResearch.task_desc) {
             message.warn('请填写内容');
             bOk = false;
-          } else if (!lifeResearch.crowdId) {
+          } else if (!lifeResearch.crowd) {
             message.warn('请选择目标人群');
             bOk = false;
           } else if (!lifeResearch.cover_img) {
@@ -262,7 +262,7 @@ export default class TaskEdit extends PureComponent {
       return bOk;
     } else if (formData.channel_name === '全球时尚') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowdId'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], (err, val) => {
         if (!err) {
           if (!globalFashion.task_desc) {
             message.warn('请填写内容');
@@ -283,7 +283,7 @@ export default class TaskEdit extends PureComponent {
     } else if (formData.channel_name === '买遍全球') {
       console.log(1)
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowdId'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], (err, val) => {
         if (!err) {
           if (!buyWorld.task_desc) {
             message.warn('请填写内容');

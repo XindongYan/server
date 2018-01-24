@@ -62,7 +62,7 @@ export default class IfashionForm extends PureComponent {
     if (this.props.onChange) this.props.onChange({ classification: value });
   }
   handleCrowdChange = (value) => {
-    if (this.props.onChange) this.props.onChange({ crowdId: value });
+    if (this.props.onChange) this.props.onChange({ crowd: value });
   }
   handleBodyChange = (value) => {
     if (this.props.onChange) this.props.onChange({ body: value });

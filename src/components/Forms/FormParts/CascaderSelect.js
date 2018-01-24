@@ -22,9 +22,9 @@ export default class CascaderSelect extends PureComponent {
       })
     })
     const { formData } = this.props;
-    if (formData && formData.crowdId) {
+    if (formData && formData.crowd) {
       const fieldsValue = {
-        crowdId: formData.crowdId,
+        crowd: formData.crowd,
       };
       this.props.form.setFieldsValue(fieldsValue);
     }
@@ -33,7 +33,7 @@ export default class CascaderSelect extends PureComponent {
     if (!this.props.formData.title && nextProps.formData.title) {
       const { formData } = nextProps;
       const fieldsValue = {
-        crowdId: formData.crowdId,
+        crowd: formData.crowd,
       };
       this.props.form.setFieldsValue(fieldsValue);
     }
@@ -42,7 +42,7 @@ export default class CascaderSelect extends PureComponent {
 
   }
   handleTaskChange = (e) => {
-    if (this.props.onChange) this.props.onChange(e, 'crowdId')
+    if (this.props.onChange) this.props.onChange(e, 'crowd')
   }
   render() {
     const { formData, form: { getFieldDecorator } } = this.props;
@@ -53,7 +53,7 @@ export default class CascaderSelect extends PureComponent {
         </p>
         <div>
           <FormItem>
-            {getFieldDecorator('crowdId', {
+            {getFieldDecorator('crowd', {
               rules: [{
                 required: this.props.rules, message: '请选择目标人群',
               }]

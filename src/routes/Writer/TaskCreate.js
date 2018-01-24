@@ -28,13 +28,13 @@ const Option = Select.Option;
 export default class TaskCreate extends PureComponent {
   state = {
     task: {
-      crowdId: '',
+      crowd: [],
       title: '',
       task_desc: '',
       cover_img: '',
     },
     haveGoodsTask: {
-      crowdId: '',
+      crowd: [],
       title: '',
       task_desc: '',
       auction: {}, // 商品
@@ -54,14 +54,14 @@ export default class TaskCreate extends PureComponent {
       sub_title: '', // '副标题',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       summary: '', // 摘要
     },
     globalFashion: {
       title: '', // '任务标题',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       classification: [], // 分类
       end_link: '', //文末链接
       end_text: '',
@@ -70,7 +70,7 @@ export default class TaskCreate extends PureComponent {
       title: '', // '任务标题',
       summary: '', // 推荐理由
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       classification: [], // 分类
       tags: [], // 标签
     },
@@ -105,7 +105,7 @@ export default class TaskCreate extends PureComponent {
         callback: (result) => {
           this.setState({
             task: {
-              crowdId: result.task.crowdId,
+              crowd: result.task.crowd,
               title: result.task.title,
               task_desc: result.task.task_desc,
               cover_img: result.task.cover_img,
@@ -166,12 +166,12 @@ export default class TaskCreate extends PureComponent {
       return bOk;
     } else if (query.channel_name === '生活研究所') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'summary', 'crowdId'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'summary', 'crowd'], (err, val) => {
         if (!err) {
           if (!lifeResearch.task_desc) {
             message.warn('请填写内容');
             bOk = false;
-          } else if (!lifeResearch.crowdId || lifeResearch.crowdId.length <= 0) {
+          } else if (!lifeResearch.crowd || lifeResearch.crowd.length <= 0) {
             message.warn('请选择目标人群');
             bOk = false;
           } else if (!lifeResearch.cover_img) {
@@ -186,7 +186,7 @@ export default class TaskCreate extends PureComponent {
     } else if (query.channel_name === '全球时尚') {
       console.log(2)
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'crowdId'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'crowd'], (err, val) => {
         if (!err) {
           if (!globalFashion.task_desc) {
             message.warn('请填写内容');
@@ -209,7 +209,7 @@ export default class TaskCreate extends PureComponent {
     } else if (query.channel_name === '买遍全球') {
       console.log(1)
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowdId'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], (err, val) => {
         if (!err) {
           if (!buyWorld.task_desc) {
             message.warn('请填写内容');

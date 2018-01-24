@@ -23,14 +23,14 @@ import styles from './TableList.less';
 export default class TaskView extends PureComponent {
   state = {
     task: {
-      crowdId: '',
+      crowd: [],
       title: '',
       task_desc: '',
       cover_img: '',
       approve_notes: [],
     },
     haveGoodsTask: {
-      crowdId: '',
+      crowd: [],
       title: '',
       task_desc: '',
       auction: {}, // 商品
@@ -50,21 +50,21 @@ export default class TaskView extends PureComponent {
       sub_title: '', // '副标题',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       summary: '', // 目标人群
     },
     globalFashion: {
       title: '', // '任务标题',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       classification: [], // 分类
     },
     ifashion: {
       title: '', // '任务标题',
       summary: '', // 推荐理由
       cover_img: '',//封面
-      crowdId: '', // 目标人群
+      crowd: [], // 目标人群
       classification: [], // 分类
       tags: [], // 标签
     },
@@ -95,7 +95,7 @@ export default class TaskView extends PureComponent {
   componentWillReceiveProps(nextProps) {
     this.setState({
       task: {
-        crowdId: nextProps.formData.crowdId,
+        crowd: nextProps.formData.crowd,
         title: nextProps.formData.title,
         task_desc: nextProps.formData.task_desc,
         cover_img: nextProps.formData.cover_img,
