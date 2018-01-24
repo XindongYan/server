@@ -234,7 +234,7 @@ export default class DarenList extends PureComponent {
                 <ChartPopover data={{ list: val.gender, field: 'gender', title: '性别比例', _id: record._id }}>
                   <a>性别</a>
                 </ChartPopover>}
-                <Divider type="vertical" />
+              {val.gender && val.gender.length > 0 && val.age && val.age.length > 0 && <Divider type="vertical" />}
               {val.age && val.age.length > 0 &&
                 <ChartPopover data={{ list: val.age, field: 'age', title: '年龄比例', _id: record._id }}>
                   <a>年龄</a>
@@ -245,7 +245,7 @@ export default class DarenList extends PureComponent {
                 <ChartPopover data={{ list: val.interest, field: 'interest', title: '生活偏好', _id: record._id }}>
                   <a>生活</a>
                 </ChartPopover>}
-                <Divider type="vertical" />
+              {val.interest && val.interest.length > 0 && val.cate && val.cate.length > 0 &&  <Divider type="vertical" />}
               {val.cate && val.cate.length > 0 &&
                 <ChartPopover data={{ list: val.cate, field: 'cate', title: '类目偏好', _id: record._id }}>
                   <a>类目</a>
@@ -256,7 +256,7 @@ export default class DarenList extends PureComponent {
                 <ChartPopover data={{ list: val.women, field: 'women', title: '女装风格偏好', _id: record._id }}>
                   <a>风格</a>
                 </ChartPopover>}
-                <Divider type="vertical" />
+              {val.women && val.women.length > 0 && val.area && val.area.length > 0 &&  <Divider type="vertical" />}
               {val.area && val.area.length > 0 &&
                 <ChartPopover data={{ list: val.area, field: 'area', title: '粉丝地域分布', _id: record._id }}>
                   <a>地域</a>
