@@ -666,8 +666,8 @@ export default class TaskCreate extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} style={{ width: 942 }} ref="taskOuterBox">
-          <div style={{ width: 720 }}>
+        <div className={styles.taskOuterBox} style={{ width: query.channel_name === '有好货' ? 600 : 942 }} ref="taskOuterBox">
+          <div style={{ width: query.channel_name === '有好货' ? 375 : 720 }}>
             { (query.channel_name === '淘宝头条' || query.channel_name === '微淘') &&
               <WeitaoForm
                 form={this.props.form}

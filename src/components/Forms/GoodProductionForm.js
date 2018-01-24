@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Input, Icon, message, Tag, Tooltip, Form } from 'antd';
+import { Input, Icon, message, Tag, Tooltip, Form, Select } from 'antd';
 import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
@@ -9,6 +9,7 @@ import CropperModal from '../AlbumModal/CropperModal';
 import { CascaderSelect } from './FormParts/index';
 
 const FormItem = Form.Item;
+const { TextArea } = Input;
 @connect(state => ({
 
 }))
@@ -213,7 +214,7 @@ export default class GoodProductionForm extends PureComponent {
       margin: '3px',
     }
     return (
-      <div>
+      <div style={{ width: 375 }}>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
           内容创作
         </div>
@@ -221,15 +222,12 @@ export default class GoodProductionForm extends PureComponent {
           <section className={styles.taskContentBox}>
             <article className={styles.goodsArticle}>
               <div>
-                <p className={styles.lineTitleDefult}>
-                  商品宝贝
-                </p>
-                <div>
+                <div className={styles.task_img_list}>
                   { !(formData.auction && formData.auction.itemId) &&
                     <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
                       <div>
                         <Icon type="plus" className={styles.uploadIcon} />
-                        <p>上传宝贝</p>
+                        <p>添加一个宝贝</p>
                       </div>
                     </label>
                   }
@@ -250,104 +248,26 @@ export default class GoodProductionForm extends PureComponent {
                       rules: [{
                         required: true, message: '标题不能为空',
                       }, {
-                        max: 18, message: '文字长度太长, 要求长度最大为18',
+                        max: 19, message: '文字长度太长, 要求长度最大为19',
                       }, {
                         whitespace: true, message: '标题不能为空格'
                       }],
                     })(
                       <Input
-                        style={{ fontSize: '18px', border: 'none', outline: 'none' }}
+                        style={{ fontSize: '18px' }}
+                        suffix={<span style={{ color: formData.title.length>19 ? 'red' : '#666' }} className={styles.inputNum}>
+                          {formData.title.length}/19
+                        </span>}
                         onChange={(e) => this.handleTaskChange(e.target.value, 'title')}
                         placeholder="请在这里输入标题"
                       />
                     )}
                   </FormItem>
-                  <span style={{ color: formData.title.length>18 ? 'red' : '#666' }} className={styles.inputNum}>
-                    {formData.title.length}/18
-                  </span>
+                  
                 </div>
-              </div>
-              <div>
-                <div className={styles.textareaBox} style={{ border: 'none' }}>
-                  <FormItem>
-                    {getFieldDecorator('task_desc', {
-                      rules: [{
-                        required: true, message: '不能为空',
-                      }, {
-                        max: 30, message: '文字长度太长, 要求长度最多为30',
-                      }, {
-                        whitespace: true, message: '内容不能为空格'
-                      }],
-                    })(
-                      <textarea
-                        className={styles.textarea}
-                        onChange={(e) => this.handleTaskChange(e.target.value, 'task_desc')}
-                        placeholder="用一句话概括商品亮点，最多30个字，用于在有好货列表中显示">
-                      </textarea>
-                    )}
-                  </FormItem>
-                  <span style={{ color: formData.task_desc.length>30 ? 'red' : '#666' }} className={styles.textareaNum}>
-                    {formData.task_desc.length}/30
-                  </span>
-                </div>
-                <p className={styles.promptText}>提示：用一句话概括商品亮点，最多30个字，用于在有好货列表中显示</p>
               </div>
 
               <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
-
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  上传宝贝图
-                </p>
-                <div className={styles.clearFix}>
-                  { formData.cover_imgs && formData.cover_imgs.length > 0 &&
-                    formData.cover_imgs.map((img,index) =>
-                    <div className={styles.imgShowBox} style={{ width: 200, height: 200, float: 'left' }} key={index}>
-                      <img src={img} />
-                      <div className={styles.clearImg} onClick={() => this.handleRemoveImg('cover_imgs',index)}>
-                        <Icon type="delete" />
-                      </div>
-                    </div>)
-                  }
-                  { formData.cover_imgs.length < 5 &&
-                    <label className={styles.uploadImgBox} style={{ width: 200, height: 200, float: 'left' }} onClick={() => this.uploadCoverImg('cover_imgs',500,500)}>
-                      <div>
-                        <Icon type="plus" className={styles.uploadIcon} />
-                        <p>上传封面</p>
-                      </div>
-                    </label>
-                  }
-                </div>
-                <p className={styles.promptTextRed}></p>
-                <p className={styles.promptText}>请上传3-5张商品图片，尺寸不小于500*500，默认选取第一张作为频道首页店铺列表页封面图</p>
-              </div>
-
-              
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  白底图
-                </p>
-                { !formData.white_bg_img &&
-                  <label className={styles.uploadImgBox} style={{ width: 200, height: 200 }} onClick={() => this.uploadCoverImg('white_bg_img',500,500)}>
-                    <div>
-                      <Icon type="plus" className={styles.uploadIcon} />
-                      <p>添加上传图片</p>
-                    </div>
-                  </label>
-                }
-                { formData.white_bg_img &&
-                  <div className={styles.imgShowBox} style={{ width: 200, height: 200 }}>
-                    <img src={formData.white_bg_img} />
-                    <div className={styles.clearImg} onClick={() => this.handleRemoveImg('white_bg_img')}>
-                      <Icon type="delete" />
-                    </div>
-                  </div>
-                }
-                <p className={styles.promptTextRed}></p>
-                <p className={styles.promptText}>请上传1张白底商品图，尺寸不小于500*500，查看
-                  <a href="https://daren.bbs.taobao.com/detail.html?postId=7477203" target="_blank">#图片提交规则#</a>
-                </p>
-              </div>
             </article>
             
             <article className={styles.goodsArticle}> 
@@ -424,169 +344,25 @@ export default class GoodProductionForm extends PureComponent {
                 <p className={styles.promptText}>提示：敲击【回车键】添加【宝贝短亮点】, 【宝贝短亮点】数量2-3个，每个【宝贝短亮点】字数6-12个字</p>
               </div>
             </article>
-            <article className={styles.goodsArticle}>  
-              <p className={styles.lineTitleBlue}>行业补充</p>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  标题
-                </p>
-                <div className={styles.InputBox}>
-                  <FormItem>
-                    {getFieldDecorator('industry_title', {
-                      rules: [{
-                        required: true, message: '不能为空',
-                      }, {
-                        max: 6, message: '文字长度太长, 要求长度最多为6',
-                      }, {
-                        whitespace: true, message: '内容不能为空格'
-                      }],
-                    })(
-                      <Input
-                        onChange={(e) => this.handleTaskChange(e.target.value, 'industry_title')}
-                        placeholder="请围绕商品的其中一个行业特征填写标题"
-                      />
-                    )}
-                  </FormItem>
-                  <span style={{ color: formData.industry_title.length>6 ? 'red' : '#666' }} className={styles.inputNum}>
-                    {formData.industry_title.length}/6
-                  </span>
-                </div>
-                <p className={styles.promptTextRed}></p>
-                <p className={styles.promptText}>举例：设计亮点，搭配指南，材质解析，功能/性能优势，功能效果，试用展示，使用技巧，选购技巧等。</p>
-              </div>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  介绍
-                </p>
-                <div className={styles.textareaBox}>
-                  <FormItem>
-                    {getFieldDecorator('industry_introduction', {
-                      rules: [{
-                        required: true, message: '不能为空',
-                      }, {
-                        min: 60, message: '文字长度太短, 要求长度最少为60',
-                      }, {
-                        max: 200, message: '文字长度太长, 要求长度最多为200',
-                      }, {
-                        whitespace: true, message: '内容不能为空格'
-                      }],
-                    })(
-                      <textarea
-                        onChange={(e) => this.handleTaskChange(e.target.value, 'industry_introduction')}
-                        placeholder="根据你选择的标题，针对这个商品在该方面的特色和优势进行补充说明，限200字">
-                      </textarea>
-                    )}
-                  </FormItem>
-                  <span style={{ color: formData.industry_introduction.length>200 ? 'red' : '#666' }} className={styles.textareaNum}>
-                    {formData.industry_introduction.length}/200
-                  </span>
-                </div>
-              </div>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  配图
-                </p>
-                { !formData.industry_img &&
-                  <label className={styles.uploadImgBox} style={{ width: 130, height: 130 }} onClick={() => this.uploadCoverImg('industry_img',0,0)}>
-                    <div>
-                      <Icon type="plus" className={styles.uploadIcon} />
-                      <p>添加上传图片</p>
-                    </div>
-                  </label>
-                }
-                { formData.industry_img &&
-                  <div className={styles.imgShowBox} style={{ width: 130, height: 130, lineHeight: '126px', textAlign: 'center' }}>
-                    <img src={formData.industry_img} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} />
-                    <div className={styles.clearImg} onClick={() => this.handleRemoveImg('industry_img')}>
-                      <Icon type="delete" />
-                    </div>
-                  </div>
-                } 
-                <p className={styles.promptTextRed}></p>
-                <p className={styles.promptText}>宽度702px以上，无文字、清晰有质感</p>
-              </div>
-            </article>
-            <article className={styles.goodsArticle}> 
-              <p className={styles.lineTitleBlue}>品牌故事</p>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  品牌名称
-                </p>
-                  <div className={styles.InputBox}>
-                  <FormItem>
-                    {getFieldDecorator('brand_name', {
-                      rules: [{
-                        required: true, message: '不能为空',
-                      }, {
-                        max: 30, message: '文字长度太长, 要求长度最多为30',
-                      }, {
-                        whitespace: true, message: '内容不能为空格'
-                      }],
-                    })(
-                      <Input
-                        onChange={(e) => this.handleTaskChange(e.target.value, 'brand_name')}
-                        placeholder="限30个字"
-                      />
-                    )}
-                  </FormItem>
-                  <span style={{ color: formData.brand_name.length>30 ? 'red' : '#666' }} className={styles.inputNum}>
-                    {formData.brand_name.length}/30
-                  </span>
-                </div>
-                <p className={styles.promptTextRed}></p>
-              </div>
-               <div>
-                <p className={styles.lineTitleDefult}>
-                  介绍
-                </p>
-                <div className={styles.textareaBox}>
-                  <FormItem>
-                    {getFieldDecorator('brand_introduction', {
-                      rules: [{
-                        required: true, message: '不能为空',
-                      }, {
-                        min: 60, message: '文字长度太短, 要求长度最少为60',
-                      }, {
-                        max: 200, message: '文字长度太长, 要求长度最多为200',
-                      }, {
-                        whitespace: true, message: '内容不能为空格'
-                      }],
-                    })(
-                      <textarea
-                        onChange={(e) => this.handleTaskChange(e.target.value, 'brand_introduction')}
-                        placeholder="根据你选择的标题，针对这个商品在该方面的特色和优势进行补充说明，限200字">
-                      </textarea>
-                    )}
-                  </FormItem>
-                  <span style={{ color: formData.brand_name.length>200 ? 'red' : '#666' }} className={styles.textareaNum}>
-                    {formData.brand_introduction.length}/200
-                  </span>
-                </div>
-                <p className={styles.promptTextRed}></p>
-                <p className={styles.promptText}>请填写品牌特色和故事，限200字</p>
-              </div>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  品牌logo
-                </p>
-                { !formData.brand_logo &&
-                  <label className={styles.uploadImgBox} style={{ width: 200, height: 83 }} onClick={() => this.uploadCoverImg('brand_logo',360,150)}>
-                    <div>
-                      <Icon type="plus" className={styles.uploadIcon} />
-                      <p>添加上传图片</p>
-                    </div>
-                  </label>
-                }
-                { formData.brand_logo &&
-                  <div className={styles.imgShowBox} style={{ width: 200, height: 83 }}>
-                    <img src={formData.brand_logo} />
-                    <div className={styles.clearImg} onClick={() => this.handleRemoveImg('brand_logo')}>
-                      <Icon type="delete" />
-                    </div>
-                  </div>
-                }
-                <p className={styles.promptTextRed}></p>
-                <p className={styles.promptText}>固定360*150，无文字、清晰、有质感</p>
+            
+            <article>
+              <div className={styles.taskList}>
+                <FormItem>
+                  {getFieldDecorator('duanliangdian', {
+
+                  })(
+                    <Select
+                      mode="tags"
+                      disabled={false}
+                      style={{ width: '100%' }}
+                      placeholder="选择标签或输入标签"
+                      onChange={(e) => this.handleChange(e, 'duanliangdian')}
+                    >
+                    
+                    </Select>
+                  )}
+                </FormItem>
+                <p className={styles.promptGray}>输入 [回车] 键 完成单个标签添加</p>
               </div>
             </article>
           </section>
@@ -752,7 +528,7 @@ export default class GoodProductionForm extends PureComponent {
           </section>
         }
         <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
-        <AuctionModal k="havegoods" onOk={this.handleAddProduct} />
+        <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
         <CropperModal onOk={this.handleAddCoverImg}/>
       </div>
     );

@@ -155,6 +155,11 @@ export default class TableList extends PureComponent {
           _id: record._id,
         });
         task = { ...result.task.haveGoods, _id: record._id };
+      } else if (record.channel_name === 'ifashion') {
+        const result = await queryTask({
+          _id: record._id,
+        });
+        task = { ...result.task.ifashion, _id: record._id };
       }
       this.state.nicaiCrx.innerText = JSON.stringify({ task, user: currentUser, channel_name: record.channel_name });
       const customEvent = document.createEvent('Event');
