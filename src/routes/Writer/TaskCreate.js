@@ -34,20 +34,12 @@ export default class TaskCreate extends PureComponent {
       cover_img: '',
     },
     haveGoodsTask: {
-      crowd: [],
-      title: '',
-      task_desc: '',
-      auction: {}, // 商品
-      cover_imgs: [], // 封面图
-      white_bg_img: '', // 白底图
-      long_advantage: [], // 亮点
-      short_advantage: [], // 短亮点
-      industry_title: '', // 行业标题
-      industry_introduction: '', // 行业介绍
-      industry_img: '', // 行业图
-      brand_name: '', // 品牌名称
-      brand_introduction: '', // 品牌介绍
-      brand_logo: '', // 商品logo
+      body: [],
+      title: '', // '任务标题',
+      bodyStruct: [{}],
+      bodyStruct0: [],
+      duanliangdian: [], // ['']
+      crowdId: '',
     },
     lifeResearch: {
       title: '', // '任务标题',

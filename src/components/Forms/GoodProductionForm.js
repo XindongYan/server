@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Input, Icon, message, Tag, Tooltip, Form, Select } from 'antd';
+import { Input, Icon, message, Tag, Tooltip, Form, Popover } from 'antd';
 import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
 import CropperModal from '../AlbumModal/CropperModal';
 
-import { CascaderSelect } from './FormParts/index';
+import { CascaderSelect, BodyStructContent } from './FormParts/index';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -23,17 +23,14 @@ export default class GoodProductionForm extends PureComponent {
       height: 0,
     },
     k: '',
+    visibleLongpoint: false,
+    visibleBodyStruct: false,
   }
   componentDidMount() {
     if (this.props.operation !== 'view') {
       const { formData } = this.props;
       const fieldsValue = {
         title: formData.title,
-        task_desc: formData.task_desc,
-        industry_title: formData.industry_title,
-        industry_introduction: formData.industry_introduction,
-        brand_name: formData.brand_name,
-        brand_introduction: formData.brand_introduction,
       };
       this.props.form.setFieldsValue(fieldsValue);
     }
@@ -44,11 +41,6 @@ export default class GoodProductionForm extends PureComponent {
       if (!this.props.formData.title && nextProps.formData.title) {
         const fieldsValue = {
           title: formData.title,
-          task_desc: formData.task_desc,
-          industry_title: formData.industry_title,
-          industry_introduction: formData.industry_introduction,
-          brand_name: formData.brand_name,
-          brand_introduction: formData.brand_introduction,
         };
         this.props.form.setFieldsValue(fieldsValue);
       }
@@ -94,8 +86,8 @@ export default class GoodProductionForm extends PureComponent {
     const { formData } = this.props;
     const { longPoint } = this.state;
     if (longPoint && longPoint.length >= min && longPoint.length <= max ) {
-      if (formData.long_advantage.indexOf(longPoint) === -1) {
-        if (this.props.onChange) this.props.onChange({ long_advantage: [ ...formData.long_advantage, longPoint ] });
+      if (formData.bodyStruct0.indexOf(longPoint) === -1) {
+        if (this.props.onChange) this.props.onChange({ bodyStruct0: [ ...formData.bodyStruct0, longPoint ] });
       }
       this.setState({
         longPoint: '',
@@ -106,8 +98,8 @@ export default class GoodProductionForm extends PureComponent {
     const { formData } = this.props;
     const { shortPoint } = this.state;
     if (shortPoint && shortPoint.length >= min && shortPoint.length <= max ) {
-      if (formData.short_advantage.indexOf(shortPoint) === -1) {
-        if (this.props.onChange) this.props.onChange({ short_advantage: [ ...formData.short_advantage, shortPoint ] });
+      if (formData.duanliangdian.indexOf(shortPoint) === -1) {
+        if (this.props.onChange) this.props.onChange({ duanliangdian: [ ...formData.duanliangdian, shortPoint ] });
       }
       this.setState({
         shortPoint: '',
@@ -127,6 +119,12 @@ export default class GoodProductionForm extends PureComponent {
         payload: { currentKey: key }
       });
     })
+  }
+  uploadCoverImg = (key) => {
+    this.props.dispatch({
+      type: 'album/show',
+      payload: { currentKey: "StructContent" },
+    });
   }
   handleTaskChange = (value, key) => {
     const data = {};
@@ -199,9 +197,84 @@ export default class GoodProductionForm extends PureComponent {
     if (this.props.onChange) this.props.onChange(data);
   }
 
+  handleShowLongpoint = () => {
+    this.setState({
+      visibleLongpoint: true,
+      visibleBodyStruct: false,
+    })
+  }
+  renderLongpointTitle = () => {
+    return (<div style={{ position: 'relative', height: 32, lineHeight: '32px' }}>
+      <span>宝贝亮点</span>
+      <Icon
+        onClick={() => {this.setState({ visibleLongpoint: false })}}
+        style={{ position: 'absolute', right: 0, top: 0, fontSize: 18, paddingTop: 6, cursor: 'pointer' }} type="close" />
+    </div>)
+  }
+  renderLongpointContent = () => {
+    const { formData} = this.props;
+    const { longPoint} = this.state;
+    const tagStyle = {
+      height: 32,
+      lineHeight: '32px',
+      paddingLeft: 12,
+      background: '#fff',
+      margin: '3px',
+    }
+    return (<div>
+      <p className={styles.lineTitleDefult}>
+        宝贝长亮点
+      </p>
+      <label className={styles.pointBox}>
+        <span>
+          { formData.bodyStruct0.map((tag, index) => {
+            return (
+              <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handlePointClose(e, tag, 'bodyStruct0')}>
+                {tag}
+              </Tag>
+            );
+          })}
+        </span>
+        {  formData.bodyStruct0.length < 3 &&
+          <span>
+            <Input
+              ref={this.saveInputRef}
+              type="text"
+              style={{ width: 150, border: 'none', marginTop: 3 }}
+              value={longPoint}
+              onChange={(e) => this.handlePointChange(e, 'longPoint')}
+              onPressEnter={() => this.handlePointConfirm(12, 20, 'longPoint', 'bodyStruct0')}
+              placeholder="选择标签或输入标签"
+            />
+          </span>
+        }
+      </label>
+      <p className={styles.promptTextRed}>
+        { longPoint.length > 0 && ( longPoint.length < 12 || longPoint.length > 20) &&
+          "标签的字数必须在12～20之间"
+        }
+      </p>
+      <p className={styles.promptText}>提示：轻敲【回车键】添加【宝贝长亮点】，【宝贝长亮点】数量2-3个，每个【宝贝长亮点】字数12-20个字，每个亮点必须以'。'结尾</p>
+    </div>)
+  }
+  renderBodyStructTitle = () => {
+    return (<div style={{ position: 'relative', height: 32, lineHeight: '32px' }}>
+      <span>编辑段落</span>
+      <Icon
+        onClick={() => {this.setState({ visibleBodyStruct: false })}}
+        style={{ position: 'absolute', right: 0, top: 0, fontSize: 18, paddingTop: 6, cursor: 'pointer' }} type="close" />
+    </div>)
+  }
+
+  handleShowBodyStruct = () => {
+    this.setState({
+      visibleLongpoint: false,
+      visibleBodyStruct: true,
+    })
+  }
   render() {
-    const { style, operation, formData } = this.props;
-    const { task, longPoint, shortPoint } = this.state;
+    const { style, operation, formData} = this.props;
+    const { task, longPoint, shortPoint,  } = this.state;
     let getFieldDecorator = null;
     if (this.props.form) {
       getFieldDecorator = this.props.form.getFieldDecorator;
@@ -221,7 +294,7 @@ export default class GoodProductionForm extends PureComponent {
         { (operation==='edit' || operation === 'create') &&
           <section className={styles.taskContentBox}>
             <article className={styles.goodsArticle}>
-              <div>
+              <div style={{ marginBottom: 20 }}>
                 <div className={styles.task_img_list}>
                   { !(formData.auction && formData.auction.itemId) &&
                     <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
@@ -266,63 +339,74 @@ export default class GoodProductionForm extends PureComponent {
                   
                 </div>
               </div>
-
-              <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
             </article>
-            
-            <article className={styles.goodsArticle}> 
-              <p className={styles.lineTitleBlue}>好在哪里</p>
-            
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  宝贝长亮点
-                </p>
-                <label className={styles.pointBox}>
-                  <span>
-                    { formData.long_advantage.map((tag, index) => {
-                      return (
-                        <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handlePointClose(e, tag, 'long_advantage')}>
-                          {tag}
-                        </Tag>
-                      );
-                    })}
-                  </span>
-                  {  formData.long_advantage.length < 3 &&
-                    <span>
-                      <Input
-                        ref={this.saveInputRef}
-                        type="text"
-                        style={{ width: 150, border: 'none', marginTop: 3 }}
-                        value={longPoint}
-                        onChange={(e) => this.handlePointChange(e, 'longPoint')}
-                        onPressEnter={() => this.handlePointConfirm(12, 20, 'longPoint', 'long_advantage')}
-                        placeholder="选择标签或输入标签"
-                      />
-                    </span>
+
+            <article className={styles.goodsArticle} style={{ background: '#fff' }}>
+              <Popover
+                overlayClassName={styles.popover_box}
+                placement="right"
+                title={this.renderLongpointTitle()}
+                content={this.renderLongpointContent()}
+                trigger="click"
+                visible={this.state.visibleLongpoint}
+                // onVisibleChange={this.handleVisibleChange}
+              >
+                <div style={{ padding: 20 }} onClick={this.handleShowLongpoint}>
+                  <div className={styles.section_show_title}>
+                    好在哪里
+                  </div>
+                  { formData.bodyStruct0 && formData.bodyStruct0.length > 0 ?
+                    <ul>
+                      <li className={styles.longpoint_list_item}></li>
+                    </ul> :
+                    <ul>
+                      {[0,1,2].map(item => <li key={item} className={styles.longpoint_list_item}>长亮点描述</li>)}
+                    </ul>
                   }
-                </label>
-                <p className={styles.promptTextRed}>
-                  { longPoint.length > 0 && ( longPoint.length < 12 || longPoint.length > 20) &&
-                    "标签的字数必须在12～20之间"
-                  }
-                </p>
-                <p className={styles.promptText}>提示：轻敲【回车键】添加【宝贝长亮点】，【宝贝长亮点】数量2-3个，每个【宝贝长亮点】字数12-20个字，每个亮点必须以'。'结尾</p>
-              </div>
-              <div>
+                </div>
+              </Popover>
+              { formData.bodyStruct.map((item, index) =><Popover
+                  key={index}
+                  overlayClassName={styles.popover_box}
+                  placement="right"
+                  title={this.renderBodyStructTitle()}
+                  content={<BodyStructContent formData={item} />}
+                  trigger="click"
+                  visible={this.state.visibleBodyStruct}
+                >
+                  <div style={{ padding: 20 }} onClick={this.handleShowBodyStruct}>
+                    <div className={styles.section_show_title}>
+                      { item.title || '请输入段落标题' }
+                    </div>
+                    <div style={{ marginBottom: 20 }}>
+                      { item.desc || '请输入段落介绍文本' }
+                    </div>
+                    <div>
+                      <img
+                        style={{ width: '100%', height: 'auto' }}
+                        src={item.images || 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
+                      ></img>
+                    </div>
+                  </div>
+                </Popover>)
+              }
+            </article>
+            <article className={styles.goodsArticle} style={{ background: '#f5f5f5' }}> 
+              <div style={{ padding: 20 }}>
                 <p className={styles.lineTitleDefult}>
                   宝贝短亮点
                 </p>
                 <label className={styles.pointBox}>
                   <span>
-                    { formData.short_advantage.map((tag, index) => {
+                    { formData.duanliangdian.map((tag, index) => {
                       return (
-                        <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handlePointClose(e, tag, 'short_advantage')}>
+                        <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handlePointClose(e, tag, 'duanliangdian')}>
                           {tag}
                         </Tag>
                       );
                     })}
                   </span>
-                  { formData.short_advantage.length < 3 &&
+                  { formData.duanliangdian.length < 3 &&
                     <span>
                       <Input
                         ref={this.saveInputRef}
@@ -330,40 +414,26 @@ export default class GoodProductionForm extends PureComponent {
                         style={{ width: 150, border: 'none', marginTop: 3 }}
                         value={shortPoint}
                         onChange={(e) => this.handlePointChange(e, 'shortPoint')}
-                        onPressEnter={() => this.handlePointConfirm(6, 12, 'shortPoint', 'short_advantage')}
+                        onPressEnter={() => this.handlePointConfirm(6, 12, 'shortPoint', 'duanliangdian')}
                         placeholder="选择标签或输入标签"
                       />
                     </span>
                   }
                 </label>
-                <p className={styles.promptTextRed}>
-                  { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
-                    "标签的字数必须在6～12之间"
-                  }
-                </p>
+                { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
+                  <p className={styles.promptTextRed}>
+                    标签的字数必须在6～12之间
+                  </p>
+                }
+                { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
+                  <p className={styles.promptTextRed}>
+                    至少输入2个标签
+                  </p>
+                }
                 <p className={styles.promptText}>提示：敲击【回车键】添加【宝贝短亮点】, 【宝贝短亮点】数量2-3个，每个【宝贝短亮点】字数6-12个字</p>
               </div>
-            </article>
-            
-            <article>
-              <div className={styles.taskList}>
-                <FormItem>
-                  {getFieldDecorator('duanliangdian', {
 
-                  })(
-                    <Select
-                      mode="tags"
-                      disabled={false}
-                      style={{ width: '100%' }}
-                      placeholder="选择标签或输入标签"
-                      onChange={(e) => this.handleChange(e, 'duanliangdian')}
-                    >
-                    
-                    </Select>
-                  )}
-                </FormItem>
-                <p className={styles.promptGray}>输入 [回车] 键 完成单个标签添加</p>
-              </div>
+              <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
             </article>
           </section>
         }
@@ -418,12 +488,12 @@ export default class GoodProductionForm extends PureComponent {
             
             <article className={styles.articleView}> 
               <p className={styles.lineTitleBlue}>好在哪里</p>
-              <div>
+              {/*<div>
                 <p className={styles.lineTitleDefult}>
                   宝贝长亮点
                 </p>
                   <span>
-                    { formData.long_advantage.map((tag, index) => {
+                    { formData.bodyStruct0.map((tag, index) => {
                       return (
                         <Tag style={tagStyle} key={index}>
                           {tag}
@@ -437,13 +507,13 @@ export default class GoodProductionForm extends PureComponent {
                   }
                 </p>
                 <p className={styles.promptText}>提示：轻敲【回车键】添加【宝贝长亮点】，【宝贝长亮点】数量2-3个，每个【宝贝长亮点】字数12-20个字，每个亮点必须以'。'结尾</p>
-              </div>
+              </div>*/}
               <div>
                 <p className={styles.lineTitleDefult}>
                   宝贝短亮点
                 </p>
                 <span>
-                  { formData.short_advantage.map((tag, index) => {
+                  { formData.duanliangdian.map((tag, index) => {
                     return (
                       <Tag style={tagStyle} key={index}>
                         {tag}
@@ -527,7 +597,6 @@ export default class GoodProductionForm extends PureComponent {
             </article>
           </section>
         }
-        <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
         <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
         <CropperModal onOk={this.handleAddCoverImg}/>
       </div>
