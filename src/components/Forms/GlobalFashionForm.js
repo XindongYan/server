@@ -6,11 +6,9 @@ import styles from './WeitaoForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from './FormParts/CascaderSelect';
-import Classification from './FormParts/Classification';
-import EndLink from './FormParts/EndLink';
-import CoverImage from './FormParts/CoverImage';
 import { ORIGIN } from '../../constants';
+
+import { CascaderSelect, EndLink, TagPicker, CoverImage } from './FormParts';
 
 const FormItem = Form.Item;
 
@@ -79,7 +77,7 @@ export default class GlobalFashionForm extends PureComponent {
     if (this.props.onChange) this.props.onChange({ cover_img: url });
   }
   handleEndlinkChange = (url, name) => {
-    if (this.props.onChange) this.props.onChange({ endLink_href: url, endLink_name: name });
+    if (this.props.onChange) this.props.onChange({ end_link: url, end_text: name });
   }
   render() {
     const { style, operation, formData } = this.props;
@@ -170,7 +168,7 @@ export default class GlobalFashionForm extends PureComponent {
             </div>
 
             <div className={styles.taskList}>
-            	<Classification disabled={disabled} dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
+            	<TagPicker disabled={disabled} dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
         }

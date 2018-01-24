@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane;
 
 }))
 
-export default class Classification extends PureComponent {
+export default class TagPicker extends PureComponent {
   state = {
     tabsKey: '',
     checkData: [],

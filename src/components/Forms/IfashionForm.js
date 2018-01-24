@@ -7,10 +7,7 @@ import request from '../../utils/request';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import CropperModal from '../AlbumModal/CropperModal';
-import CascaderSelect from './FormParts/CascaderSelect';
-import Classification from './FormParts/Classification';
-import CoverImage from './FormParts/CoverImage';
-import * as FormParts from './FormParts';
+import { CascaderSelect, TagPicker, CoverImage, AnchorImageList } from './FormParts';
 import { ORIGIN } from '../../constants';
 
 const FormItem = Form.Item;
@@ -161,7 +158,7 @@ export default class IfashionForm extends PureComponent {
             </div>
           </div>
           <div className={styles.taskList}>
-            <FormParts.AnchorImageList disabled={disabled} form={this.props.form} formData={formData} onChange={this.handleBodyChange} />
+            <AnchorImageList disabled={disabled} form={this.props.form} formData={formData} onChange={this.handleBodyChange} />
           </div>
           <div style={{ background: '#fff', padding: '20px 10px' }}>
             <CascaderSelect disabled={disabled} form={this.props.form} formData={formData} onChange={this.handleCrowdChange} rules={false} />
@@ -172,7 +169,7 @@ export default class IfashionForm extends PureComponent {
           </div>
 
           <div className={styles.taskList}>
-            <Classification disabled={disabled} dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
+            <TagPicker disabled={disabled} dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
           </div>
 
           <div className={styles.taskList}>

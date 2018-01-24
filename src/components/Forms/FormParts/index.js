@@ -1,5 +1,5 @@
 export CoverImage from './CoverImage';
-export Classification from './Classification';
+export TagPicker from './TagPicker';
 export CascaderSelect from './CascaderSelect';
 export AnchorImageList from './AnchorImageList';
 export EndLink from './EndLink';

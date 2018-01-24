@@ -18,14 +18,14 @@ export default class EndLink extends PureComponent {
   componentDidMount() {
     const { formData } = this.props;
     if (formData && formData.title && this.props.operation !== 'view') {
-      if (formData.endLink_href) {
+      if (formData.end_link) {
         this.setState({
           tag: true
         })
       }
       const fieldsValue = {
-        href: formData.endLink_href,
-        name: formData.endLink_name,
+        href: formData.end_link,
+        name: formData.end_text,
       };
       this.props.form.setFieldsValue(fieldsValue);
     }
@@ -33,14 +33,14 @@ export default class EndLink extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (!this.props.formData.title && nextProps.formData.title && this.props.operation !== 'view') {
       const { formData } = nextProps;
-      if (formData.endLink_href) {
+      if (formData.end_link) {
         this.setState({
           tag: true
         })
       }
       const fieldsValue = {
-        href: formData.endLink_href,
-        name: formData.endLink_name,
+        href: formData.end_link,
+        name: formData.end_text,
       };
       this.props.form.setFieldsValue(fieldsValue);
     }
@@ -124,8 +124,8 @@ export default class EndLink extends PureComponent {
             <div>
               { this.state.tag &&
                 <Tag closable onClose={this.handleCloseTag} style={{ height: 30, lineHeight: '30px', border: 'none', background: '#ECEEF2' }}>
-                  <Icon type="link" style={{ margin: '0 5px' }} />
-                  <a target="_blank" href={formData.endLink_href} style={{ dispaly: 'block', minWidth: 80, color: '#308CE6', maxWidth: 200, overflow: 'hidden' }}>{formData.endLink_name}</a>
+                  <Icon type="link" style={{ float: 'left', margin: '0 5px', height: 30, lineHeight: '30px' }} />
+                  <a target="_blank" href={formData.end_link} style={{ float: 'left', minWidth: 200, color: '#308CE6', maxWidth: 260, overflow: 'hidden' }}>{formData.end_text}</a>
                 </Tag>
               }
             </div>
@@ -134,14 +134,14 @@ export default class EndLink extends PureComponent {
             仅支持淘宝、天猫等阿里巴巴旗下网站链接（支付宝除外)
           </p>
         </div>}
-        { operation === 'view' && formData.endLink_href && <div>
+        { operation === 'view' && formData.end_link && <div>
           <p className={styles.lineTitleDefult}>
             文末链接
           </p>
           <div>
             <Tag style={{ height: 30, lineHeight: '30px', border: 'none', background: '#ECEEF2' }}>
               <Icon type="link" style={{ margin: '0 5px' }} />
-              <a target="_blank" href={formData.endLink_href} style={{ paddingRight: 80, color: '#308CE6' }}>{formData.endLink_name}</a>
+              <a target="_blank" href={formData.end_link} style={{ paddingRight: 80, color: '#308CE6' }}>{formData.end_text}</a>
             </Tag>
           </div>
         </div>}

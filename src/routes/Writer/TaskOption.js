@@ -56,6 +56,11 @@ export default class TaskOption extends PureComponent {
       box_text: '首页card-全球时尚',
       img: 'https://img.alicdn.com/tfs/TB1Cg5QdwoQMeJjy0FnXXb8gFXa-100-100.png',
       detail: '汇集优质的时尚领域内容，以时尚指南、潮流资讯等栏目打造用户所喜爱的女性内容导购频道。',
+    // }, {
+    //   name: '买遍全球',
+    //   box_text: '买遍全球',
+    //   img: 'https://img.alicdn.com/tfs/TB1lhBjXuMxLeJjy0FjXXcDbVXa-100-100.png',
+    //   detail: '用户只需要发一行字，一条语音、一张图片，立刻会有最匹配最有经验的一批人，告诉你最符合你需求的好东西，且所有推荐出的商品都有专门买手帮你购买的C2B社会化电商平台。',
     }, {
       name: 'ifashion',
       box_text: '首页card ifashion',
