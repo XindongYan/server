@@ -29,6 +29,7 @@ import ApproverTaskEdit from '../routes/Approver/TaskEdit';
 import ApproverTaskView from '../routes/Approver/TaskView';
 import { getNavData } from '../common/nav';
 import { getRouteData } from '../utils/utils';
+import { RIGHT } from '../constants';
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -342,11 +343,12 @@ class BasicLayout extends React.PureComponent {
               type={collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />
-            <Link target='_blank' to="/daren/list">
-              <div className={styles.daren}>
-                <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>榜单</span>
-              </div>
-            </Link>
+            { (currentUser.rights && currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) &&
+              <Link target='_blank' to="/daren/list">
+                <div className={styles.daren}>
+                  <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>榜单</span>
+                </div>
+              </Link>}
             <div className={styles.right}>
               { /* <HeaderSearch
                 className={`${styles.action} ${styles.search}`}
