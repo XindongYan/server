@@ -208,14 +208,14 @@ export default class DarenList extends PureComponent {
     const columns = [{
       title: '达人账号',
       dataIndex: 'attributes',
-      width: 200,
+      width: 160,
       render: (val, record) =>
         <a href={`https://v.taobao.com/n/author/homepage?&userId=${record.userId}`} target="_blank">
           <Row>
-            <Col span={6}>
+            <Col span={8}>
               <Avatar size="large" shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
             </Col>
-            <Col span={18}>
+            <Col span={16}>
               <Row><strong>{record.nick}</strong></Row>
               <Row>{record.area}</Row>
               { val && <Row>{val.creator_type}</Row> }
@@ -226,7 +226,7 @@ export default class DarenList extends PureComponent {
     }, {
       title: '粉丝分析',
       dataIndex: 'fans_data',
-      width: 80,
+      width: 100,
       render: (val, record) => {
         if (val) {
           return (
@@ -264,13 +264,13 @@ export default class DarenList extends PureComponent {
       title: '粉丝数',
       dataIndex: 'darenMissionData.fansCount',
       sorter: true,
-      width: 100,
+      width: 70,
     }, {
       title: '粉丝月增长数',
-      width: 100,
+      width: 70,
     }, {
       title: '最近7天PV',
-      width: 100,
+      width: 70,
       dataIndex: 'read_data',
       render: (val) => {
         if (val && val[0]) return val[0].value;
@@ -278,7 +278,7 @@ export default class DarenList extends PureComponent {
       },
     }, {
       title: '直播平均PV',
-      width: 100,
+      width: 70,
       dataIndex: 'liveVideos',
       render: (val) => {
         if (val && val.length > 0) return Math.ceil(val.map(item => item.totalJoinCount).reduce((a, b) => a + b, 0) / val.length);
@@ -288,29 +288,29 @@ export default class DarenList extends PureComponent {
       title: '合作商家数',
       dataIndex: 'darenMissionData.cooperateSellerCount',
       sorter: true,
-      width: 100,
+      width: 70,
     }, {
       title: '累计任务数',
       dataIndex: 'darenMissionData.completeMission',
       sorter: true,
-      width: 100,
+      width: 70,
     }, {
       title: '平均接单率',
       dataIndex: 'darenMissionData.receiveRate',
       sorter: true,
-      width: 100,
+      width: 70,
       render: (val) => val ? `${val}%` : '',
     }, {
       title: '平均完成率',
       dataIndex: 'darenMissionData.completeRate',
       sorter: true,
-      width: 100,
+      width: 70,
       render: (val) => val ? `${val}%` : '',
     }, {
       title: '合作渠道数',
       dataIndex: 'channelAbilitysLength',
       sorter: true,
-      width: 100,
+      width: 70,
     }, {
       title: '合作渠道',
       dataIndex: 'channelAbilitys',
