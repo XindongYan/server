@@ -1,4 +1,4 @@
-import { queryDarens } from '../services/daren';
+import { queryDarens, queryDarenLives } from '../services/daren';
 
 export default {
   namespace: 'daren',
@@ -12,6 +12,14 @@ export default {
       channel: '',
     },
     darensLoading: true,
+    darenLives: {
+      list: [],
+      pagination: {},
+      creator_type: '',
+      area: '',
+      channel: '',
+    },
+    darenLivesLoading: true,
   },
 
   effects: {
@@ -32,6 +40,23 @@ export default {
         payload: false,
       });
     },
+    *fetchDarenLives({ payload }, { call, put }) {
+      yield put({
+        type: 'changeDarenLivesLoading',
+        payload: true,
+      });
+      const response = yield call(queryDarenLives, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveDarenLives',
+          payload: {...payload, ...response},
+        });
+      }
+      yield put({
+        type: 'changeDarenLivesLoading',
+        payload: false,
+      });
+    },
   },
 
   reducers: {
@@ -45,6 +70,18 @@ export default {
       return {
         ...state,
         darensLoading: action.payload,
+      };
+    },
+    saveDarenLives(state, action) {
+      return {
+        ...state,
+        darenLives: action.payload,
+      };
+    },
+    changeDarenLivesLoading(state, action) {
+      return {
+        ...state,
+        darenLivesLoading: action.payload,
       };
     },
   },

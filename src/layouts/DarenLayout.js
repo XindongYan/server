@@ -5,6 +5,7 @@ import DocumentTitle from 'react-document-title';
 import { connect } from 'dva';
 import styles from './DarenLayout.less';
 import DarenList from '../routes/Daren/DarenList';
+import DarenLiveList from '../routes/Daren/DarenLiveList';
 
 class DarenLayout extends React.PureComponent {
   static childContextTypes = {
@@ -35,6 +36,7 @@ class DarenLayout extends React.PureComponent {
         <div className={styles.container}>
           <Switch>
             <Route key="daren" path="/daren/list" component={DarenList} />
+            <Route key="daren" path="/daren/live/list" component={DarenLiveList} />
             <Redirect to="/daren/list" />
           </Switch>
         </div>

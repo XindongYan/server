@@ -346,7 +346,13 @@ class BasicLayout extends React.PureComponent {
             { (currentUser.rights && currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) &&
               <Link target='_blank' to="/daren/list">
                 <div className={styles.daren}>
-                  <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>榜单</span>
+                  <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>综合榜单</span>
+                </div>
+              </Link>}
+            { (currentUser.rights && currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) &&
+              <Link target='_blank' to="/daren/live/list">
+                <div className={styles.daren}>
+                  <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>直播榜单</span>
                 </div>
               </Link>}
             <div className={styles.right}>
