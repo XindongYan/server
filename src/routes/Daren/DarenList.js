@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Button, Tag, Card, Select, Input, message, Avatar, Row, Col, Divider } from 'antd';
+import { Table, Button, Tag, Card, Select, Input, message, Avatar, Divider } from 'antd';
 import styles from './DarenList.less';
 import ChartPopover from './ChartPopover';
+import TrimSpan from '../../components/TrimSpan';
 
 const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
 const AREAS = [{
@@ -139,7 +140,7 @@ const { Option } = Select;
 export default class DarenList extends PureComponent {
   state = {
     searchValue: '',
-    y: document.body.clientHeight - 196,
+    y: document.body.clientHeight - 210,
   }
   componentDidMount() {
     const { darens: { pagination, creator_type, area, channel } } = this.props;
@@ -148,11 +149,11 @@ export default class DarenList extends PureComponent {
       payload: { ...pagination, creator_type, area, channel },
     });
     document.body.onresize = () => {
-      this.setState({ y: document.body.clientHeight - 196 });
+      this.setState({ y: document.body.clientHeight - 210 });
     }
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ y: document.body.clientHeight - 196 });
+    this.setState({ y: document.body.clientHeight - 210 });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, darens: { creator_type, area, channel } } = this.props;
@@ -206,20 +207,33 @@ export default class DarenList extends PureComponent {
     const { darens, loading,  } = this.props;
 
     const columns = [{
+      title: '排名',
+      dataIndex: 'rank',
+      width: 100,
+      className: styles.rankColumn,
+      render: (val, record, index) => {
+        const rank = (darens.pagination.current - 1) * darens.pagination.pageSize + index + 1;
+        let className = styles.rank_1_99;
+        if (rank >= 100 && rank <= 999) className = styles.rank_100_999;
+        if (rank >= 1000 && rank <= 9999) className = styles.rank_1000_9999;
+        if (rank >= 10000) className = styles.rank_gte_10000;
+        return <span className={className}>{rank}</span>;
+      },
+    }, {
       title: '达人账号',
       dataIndex: 'attributes',
-      width: 160,
+      width: 200,
       render: (val, record) =>
-        <Row>
-          <Col span={8}>
+        <div style={{  }}>
+          <div style={{ display: 'inline-block', verticalAlign: 'top' }}>
             <Avatar size="large" shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
-          </Col>
-          <Col span={16}>
-            <Row><strong>{record.nick}</strong></Row>
-            <Row>{record.area}</Row>
-            { val && <Row>{val.creator_type}</Row> }
-          </Col>
-        </Row>
+          </div>
+          <div style={{ display: 'inline-block', verticalAlign: 'top', marginLeft: 8 }}>
+            <div><strong><TrimSpan length={8} text={record.nick}/></strong></div>
+            <div>{record.area}</div>
+            { val && <div>{val.creator_type}</div> }
+          </div>
+        </div>
       ,
     }, {
       title: '粉丝分析',
@@ -272,6 +286,7 @@ export default class DarenList extends PureComponent {
       dataIndex: 'darenMissionData.fansCount',
       sorter: true,
       width: 70,
+      render: (val) => val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val,
     }, {
       title: '粉丝月增长数',
       width: 70,
@@ -323,7 +338,7 @@ export default class DarenList extends PureComponent {
       },
     }];
     return (
-      <Card bordered={false} bodyStyle={{ padding: '5px 2px 2px 0px', height: '100%' }}>
+      <Card bordered={false} bodyStyle={{ padding: '10px 2px 2px 0px', height: '100%' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
             <Select
