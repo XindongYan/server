@@ -23,6 +23,9 @@ export default {
       picWidth: 1,
       cropperKey: '',
     },
+    auctionImageModal: {
+      visible: false,
+    }
   },
 
   effects: {
@@ -73,6 +76,18 @@ export default {
         payload: { visible: false, src: '' },
       });
     },
+    *showAuctionImage({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeAuctionImageModal',
+        payload: { visible: true, ...payload },
+      });
+    },
+    *hideAuctionImage({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeAuctionImageModal',
+        payload: { visible: false, ...payload },
+      });
+    },
   },
 
   reducers: {
@@ -99,6 +114,15 @@ export default {
         ...state,
         cropperModal: {
           ...state.cropperModal,
+          ...action.payload,
+        },
+      };
+    },
+    changeAuctionImageModal(state, action) {
+      return {
+        ...state,
+        auctionImageModal: {
+          ...state.auctionImageModal,
           ...action.payload,
         },
       };

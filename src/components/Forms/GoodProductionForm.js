@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Input, Icon, message, Tag, Tooltip, Form, Popover } from 'antd';
+import { Input, Icon, message, Tag, Tooltip, Form, Popover, Anchor, Button } from 'antd';
 import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
 import CropperModal from '../AlbumModal/CropperModal';
 
-import { CascaderSelect, BodyStructContent } from './FormParts/index';
+import { CascaderSelect, BodyStructContent, AuctionImageModal } from './FormParts/index';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -17,6 +17,7 @@ const { TextArea } = Input;
 export default class GoodProductionForm extends PureComponent {
   state = {
     longPoint: '',
+    longpointContent: [],
     shortPoint: '',
     minSize: {
       width: 0,
@@ -24,11 +25,16 @@ export default class GoodProductionForm extends PureComponent {
     },
     k: '',
     visibleLongpoint: false,
-    visibleBodyStruct: false,
+    visibleBodyStruct: 5,
   }
   componentDidMount() {
     if (this.props.operation !== 'view') {
       const { formData } = this.props;
+      if (formData.bodyStruct0 && formData.bodyStruct0.length > 0) {
+        this.setState({
+          longpointContent: formData.bodyStruct0,
+        })
+      }
       const fieldsValue = {
         title: formData.title,
       };
@@ -39,6 +45,11 @@ export default class GoodProductionForm extends PureComponent {
     if (this.props.operation !== 'view') {
       const { formData } = nextProps;
       if (!this.props.formData.title && nextProps.formData.title) {
+        if (formData.bodyStruct0 && formData.bodyStruct0.length > 0) {
+          this.setState({
+            longpointContent: formData.bodyStruct0,
+          })
+        }
         const fieldsValue = {
           title: formData.title,
         };
@@ -60,7 +71,13 @@ export default class GoodProductionForm extends PureComponent {
     const advantage = this.props.formData[key].filter(tag => tag !== removedTag);
     const data = {};
     data[key] = advantage;
-    if (this.props.onChange) this.props.onChange(data)
+    if (key === 'duanliangdian') {
+      if (this.props.onChange) this.props.onChange(data)
+    } else {
+      this.setState({
+        longpointContent: [ ...this.state.longpointContent.filter(tag => tag !== removedTag) ],
+      })
+    }
   }
   handlePointChange = (e, key) => {
     const data = {};
@@ -74,7 +91,13 @@ export default class GoodProductionForm extends PureComponent {
       const data = {};
       data[key] = [ ...formData[key], str ]
       if (formData[key].indexOf(str) === -1) {
-        if (this.props.onChange) this.props.onChange(data);
+        if (k === 'shortPoint') {
+          if (this.props.onChange) this.props.onChange(data);
+        } else {
+          this.setState({
+            longpointContent: [ ...this.state.longpointContent, str ],
+          })
+        }
       }
       const point = {};
       point[k] = '';
@@ -82,30 +105,6 @@ export default class GoodProductionForm extends PureComponent {
     }
   }
 
-  handleInputConfirmLong = (min, max) => {
-    const { formData } = this.props;
-    const { longPoint } = this.state;
-    if (longPoint && longPoint.length >= min && longPoint.length <= max ) {
-      if (formData.bodyStruct0.indexOf(longPoint) === -1) {
-        if (this.props.onChange) this.props.onChange({ bodyStruct0: [ ...formData.bodyStruct0, longPoint ] });
-      }
-      this.setState({
-        longPoint: '',
-      });
-    }
-  }
-  handleInputConfirmShort = (min, max) => {
-    const { formData } = this.props;
-    const { shortPoint } = this.state;
-    if (shortPoint && shortPoint.length >= min && shortPoint.length <= max ) {
-      if (formData.duanliangdian.indexOf(shortPoint) === -1) {
-        if (this.props.onChange) this.props.onChange({ duanliangdian: [ ...formData.duanliangdian, shortPoint ] });
-      }
-      this.setState({
-        shortPoint: '',
-      });
-    }
-  }
   uploadCoverImg = (key,width,height) => {
     this.setState({
       k: key,
@@ -119,12 +118,6 @@ export default class GoodProductionForm extends PureComponent {
         payload: { currentKey: key }
       });
     })
-  }
-  uploadCoverImg = (key) => {
-    this.props.dispatch({
-      type: 'album/show',
-      payload: { currentKey: "StructContent" },
-    });
   }
   handleTaskChange = (value, key) => {
     const data = {};
@@ -141,32 +134,10 @@ export default class GoodProductionForm extends PureComponent {
     }
     if (this.props.onChange) this.props.onChange(data);
   }
-  handleCropCoverImg = (imgs) => {
-    const { minSize, k } = this.state;
-    if (imgs[0]) {
-      if (k === 'industry_img') {
-        this.handleAddCoverImg(imgs[0].url);
-      } else {
-        this.props.dispatch({
-          type: 'album/showCropper',
-          payload: {
-            visible: true,
-            src: imgs[0].url,
-            width: minSize.width,
-            height: minSize.height,
-            picHeight: imgs[0].picHeight,
-            picWidth: imgs[0].picWidth,
-            cropperKey: k,
-          }
-        });
-      }
-    }
-  }
   handleAddProduct = (auction, img) => {
     if (this.props.onChange) this.props.onChange({
-      auction: {
+      body: [{
         checked: false,
-        coverUrl: img,
         finalPricePc:0,
         finalPriceWap:0,
         images: auction.images,
@@ -176,12 +147,17 @@ export default class GoodProductionForm extends PureComponent {
         rawTitle: auction.title,
         resourceUrl: auction.item.itemUrl,
         title: auction.title,
-      }
+        coverUrl: img,
+      }]
+        // extraBanners: 
     });
+    this.props.dispatch({
+      type: 'album/showAuctionImage',
+    })
   }
   handleClearProduct = () => {
     if (this.props.onChange) this.props.onChange({
-      auction: {},
+      body: [],
     });
   }
   handleRemoveImg = (key, index) => {
@@ -200,7 +176,7 @@ export default class GoodProductionForm extends PureComponent {
   handleShowLongpoint = () => {
     this.setState({
       visibleLongpoint: true,
-      visibleBodyStruct: false,
+      visibleBodyStruct: 5,
     })
   }
   renderLongpointTitle = () => {
@@ -212,8 +188,7 @@ export default class GoodProductionForm extends PureComponent {
     </div>)
   }
   renderLongpointContent = () => {
-    const { formData} = this.props;
-    const { longPoint} = this.state;
+    const { longPoint, longpointContent} = this.state;
     const tagStyle = {
       height: 32,
       lineHeight: '32px',
@@ -221,13 +196,13 @@ export default class GoodProductionForm extends PureComponent {
       background: '#fff',
       margin: '3px',
     }
-    return (<div>
+    return (<div style={{ padding: '0 0 20px' }}>
       <p className={styles.lineTitleDefult}>
-        宝贝长亮点
+        亮点描述
       </p>
       <label className={styles.pointBox}>
         <span>
-          { formData.bodyStruct0.map((tag, index) => {
+          { longpointContent.map((tag, index) => {
             return (
               <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handlePointClose(e, tag, 'bodyStruct0')}>
                 {tag}
@@ -235,7 +210,7 @@ export default class GoodProductionForm extends PureComponent {
             );
           })}
         </span>
-        {  formData.bodyStruct0.length < 3 &&
+        { longpointContent.length < 3 &&
           <span>
             <Input
               ref={this.saveInputRef}
@@ -254,23 +229,61 @@ export default class GoodProductionForm extends PureComponent {
           "标签的字数必须在12～20之间"
         }
       </p>
-      <p className={styles.promptText}>提示：轻敲【回车键】添加【宝贝长亮点】，【宝贝长亮点】数量2-3个，每个【宝贝长亮点】字数12-20个字，每个亮点必须以'。'结尾</p>
+      <p className={styles.promptText}>
+        提示：敲击【回车键】添加【亮点描述】, 【亮点描述】数量2-3个，每个【亮点描述】字数12-20个字
+      </p>
+      <div style={{ height: 40, marginTop: 20 }}>
+        <Button type="primary" onClick={this.handleAddBodyStruct0} style={{ float: 'right' }}>确认</Button>
+      </div>
     </div>)
   }
   renderBodyStructTitle = () => {
     return (<div style={{ position: 'relative', height: 32, lineHeight: '32px' }}>
       <span>编辑段落</span>
       <Icon
-        onClick={() => {this.setState({ visibleBodyStruct: false })}}
+        onClick={() => {this.setState({ visibleBodyStruct: 5 })}}
         style={{ position: 'absolute', right: 0, top: 0, fontSize: 18, paddingTop: 6, cursor: 'pointer' }} type="close" />
     </div>)
   }
 
-  handleShowBodyStruct = () => {
+  handleShowBodyStruct = (index) => {
     this.setState({
       visibleLongpoint: false,
-      visibleBodyStruct: true,
+      visibleBodyStruct: index,
     })
+  }
+  handleChangeBodyStruct = (index, content) => {
+    const arr = this.props.formData.bodyStruct;
+    arr[index] = content;
+    if (this.props.onChange) this.props.onChange({ bodyStruct: arr });
+    this.setState({
+      visibleBodyStruct: 5,
+    })
+  }
+  handleAddBodyStruct = () => {
+    if (this.props.formData.bodyStruct.length <= 4) {
+      if (this.props.onChange) this.props.onChange({ bodyStruct: [...this.props.formData.bodyStruct, {}] });
+    }
+  }
+  handleAddBodyStruct0 = () => {
+    if (this.state.longpointContent.length >= 2) {
+      if (this.props.onChange) this.props.onChange({ bodyStruct0: [ ...this.state.longpointContent ] });
+      this.setState({
+        visibleLongpoint: false,
+      })
+    } else {
+      message.warn('至少输入2个标签')
+    }
+  }
+  handleChangeBodyImg = (coverUrl, extraBanners) => {
+    const json = this.props.formData.body[0];
+    console.log(json)
+    if (this.props.onChange) this.props.onChange({ body: [{ ...this.props.formData.body[0], coverUrl, extraBanners }] });
+  }
+  handleDeleteContent = (index) => {
+    const arr = this.props.formData.bodyStruct;
+    arr.splice(index,1);
+    if (this.props.onChange) this.props.onChange({ bodyStruct: [ ...arr ] });
   }
   render() {
     const { style, operation, formData} = this.props;
@@ -293,10 +306,10 @@ export default class GoodProductionForm extends PureComponent {
         </div>
         { (operation==='edit' || operation === 'create') &&
           <section className={styles.taskContentBox}>
-            <article className={styles.goodsArticle}>
+            <article className={styles.goodsArticle} style={{ padding: 20 }}>
               <div style={{ marginBottom: 20 }}>
                 <div className={styles.task_img_list}>
-                  { !(formData.auction && formData.auction.itemId) &&
+                  { !(formData.body && formData.body.length > 0) &&
                     <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
                       <div>
                         <Icon type="plus" className={styles.uploadIcon} />
@@ -304,9 +317,9 @@ export default class GoodProductionForm extends PureComponent {
                       </div>
                     </label>
                   }
-                  { formData.auction && formData.auction.itemId &&
+                  { formData.body && formData.body.length > 0 &&
                     <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
-                      <img src={formData.auction.coverUrl} />
+                      <img src={formData.body[0].coverUrl} />
                       <div className={styles.clearImg} onClick={this.handleClearProduct}>
                         <Icon type="delete" />
                       </div>
@@ -336,12 +349,21 @@ export default class GoodProductionForm extends PureComponent {
                       />
                     )}
                   </FormItem>
-                  
                 </div>
               </div>
             </article>
 
-            <article className={styles.goodsArticle} style={{ background: '#fff' }}>
+            <article className={styles.goodsArticle} style={{ background: '#fff', position: 'relative' }}>
+              <Anchor style={{ position: 'absolute', top: 0, left: '-80px' }}>
+                <div onClick={this.handleAddBodyStruct} style={{ width: 65, height: 65, padding: '6px 0', cursor: 'pointer', textAlign: 'center' }}>
+                  <div>
+                    <img style={{ width: 30, height: 30 }} src="//img.alicdn.com/tfs/TB1Q4jRa.gQMeJjy0FfXXbddXXa-48-48.png" />
+                  </div>
+                  <div style={{ fontSize: 12, color: '#999' }}>
+                    自定义段落
+                  </div>
+                </div>
+              </Anchor>
               <Popover
                 overlayClassName={styles.popover_box}
                 placement="right"
@@ -351,13 +373,13 @@ export default class GoodProductionForm extends PureComponent {
                 visible={this.state.visibleLongpoint}
                 // onVisibleChange={this.handleVisibleChange}
               >
-                <div style={{ padding: 20 }} onClick={this.handleShowLongpoint}>
+                <div style={{ padding: 20, border: this.state.visibleLongpoint ? '2px solid #00b395' : 'none' }} onClick={this.handleShowLongpoint}>
                   <div className={styles.section_show_title}>
                     好在哪里
                   </div>
                   { formData.bodyStruct0 && formData.bodyStruct0.length > 0 ?
                     <ul>
-                      <li className={styles.longpoint_list_item}></li>
+                      {formData.bodyStruct0.map(item => <li key={item} className={styles.longpoint_list_item}>{item}</li>)}
                     </ul> :
                     <ul>
                       {[0,1,2].map(item => <li key={item} className={styles.longpoint_list_item}>长亮点描述</li>)}
@@ -365,28 +387,33 @@ export default class GoodProductionForm extends PureComponent {
                   }
                 </div>
               </Popover>
-              { formData.bodyStruct.map((item, index) =><Popover
+              { formData.bodyStruct.map((item, index) =><Popover style={{ padding: 20 }}
                   key={index}
                   overlayClassName={styles.popover_box}
                   placement="right"
                   title={this.renderBodyStructTitle()}
-                  content={<BodyStructContent formData={item} />}
+                  content={<BodyStructContent onChange={this.handleChangeBodyStruct} formData={item} index={index} />}
                   trigger="click"
-                  visible={this.state.visibleBodyStruct}
+                  visible={this.state.visibleBodyStruct === index ? true : false}
                 >
-                  <div style={{ padding: 20 }} onClick={this.handleShowBodyStruct}>
+                  <div style={{ padding: 20, position: 'relative', border: this.state.visibleBodyStruct === index ? '2px solid #00b395' : 'none' }} onClick={() => this.handleShowBodyStruct(index)}>
                     <div className={styles.section_show_title}>
-                      { item.title || '请输入段落标题' }
+                      { item && item.title ? item.title : '请输入段落标题' }
                     </div>
                     <div style={{ marginBottom: 20 }}>
-                      { item.desc || '请输入段落介绍文本' }
+                      { item && item.desc ? item.desc : '请输入段落介绍文本' }
                     </div>
                     <div>
                       <img
                         style={{ width: '100%', height: 'auto' }}
-                        src={item.images || 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
+                        src={item && item.images ? item.images : 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
                       ></img>
                     </div>
+                    { this.state.visibleBodyStruct === index &&
+                      <div onClick={() => this.handleDeleteContent(index)} className={styles.deleteContentBox}>
+                        <Icon type="delete" />
+                      </div>
+                    }
                   </div>
                 </Popover>)
               }
@@ -437,168 +464,11 @@ export default class GoodProductionForm extends PureComponent {
             </article>
           </section>
         }
-        { operation === 'view' &&
-          <section className={styles.taskContentBox}>
-            <article className={styles.articleView}>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  商品宝贝
-                </p>
-                <div>
-                  { formData.auction && formData.auction.itemId &&
-                    <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
-                      <a href={formData.auction.resourceUrl}>
-                        <img src={formData.auction.coverUrl} />
-                      </a>
-                    </div>
-                  }
-                </div>
-              </div>
-              <div>
-                <p style={{ fontSize: 18 }}>{formData.title}</p>
-              </div>
-              <div>
-                <p style={{ marginBottom: 20 }}>{formData.task_desc}</p>
-              </div>
-              
-              <div>
-                <p>
-                  宝贝图
-                </p>
-                <div className={styles.clearFix}>
-                  { formData.cover_imgs && formData.cover_imgs.length > 0 &&
-                    formData.cover_imgs.map((img,index) =>
-                    <div className={styles.imgShowBox} style={{ width: 200, height: 200, float: 'left' }} key={index}>
-                      <img src={img} />
-                    </div>)
-                  }
-                </div>
-              </div>
-              <div>
-                <p>
-                  白底图
-                </p>
-                { formData.white_bg_img &&
-                  <div className={styles.imgShowBox} style={{ width: 200, height: 200 }}>
-                    <img src={formData.white_bg_img} />
-                  </div>
-                }
-              </div>
-            </article>
-            
-            <article className={styles.articleView}> 
-              <p className={styles.lineTitleBlue}>好在哪里</p>
-              {/*<div>
-                <p className={styles.lineTitleDefult}>
-                  宝贝长亮点
-                </p>
-                  <span>
-                    { formData.bodyStruct0.map((tag, index) => {
-                      return (
-                        <Tag style={tagStyle} key={index}>
-                          {tag}
-                        </Tag>
-                      );
-                    })}
-                  </span>
-                <p className={styles.promptTextRed}>
-                  { longPoint.length > 0 && ( longPoint.length < 12 || longPoint.length > 20) &&
-                    "标签的字数必须在12～20之间"
-                  }
-                </p>
-                <p className={styles.promptText}>提示：轻敲【回车键】添加【宝贝长亮点】，【宝贝长亮点】数量2-3个，每个【宝贝长亮点】字数12-20个字，每个亮点必须以'。'结尾</p>
-              </div>*/}
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  宝贝短亮点
-                </p>
-                <span>
-                  { formData.duanliangdian.map((tag, index) => {
-                    return (
-                      <Tag style={tagStyle} key={index}>
-                        {tag}
-                      </Tag>
-                    );
-                  })}
-                </span>
-                <p className={styles.promptTextRed}>
-                  { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
-                    "标签的字数必须在6～12之间"
-                  }
-                </p>
-                <p className={styles.promptText}>提示：敲击【回车键】添加【宝贝短亮点】, 【宝贝短亮点】数量2-3个，每个【宝贝短亮点】字数6-12个字</p>
-              </div>
-            </article>
-            <article className={styles.articleView}>  
-              <p className={styles.lineTitleBlue}>行业补充</p>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  标题
-                </p>
-                <div className={styles.InputBox}>
-                  <span style={{ fontSize: 16 }}>
-                    {formData.industry_title}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  介绍
-                </p>
-                <div>
-                  <span>
-                    {formData.industry_introduction}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  配图
-                </p>
-                { formData.industry_img &&
-                  <div className={styles.imgShowBox} style={{ width: 130, height: 130, lineHeight: '130px', textAlign: 'center' }}>
-                    <img src={formData.industry_img} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} />
-                  </div>
-                }
-              </div>
-            </article>
-            <article className={styles.articleView}> 
-              <p className={styles.lineTitleBlue}>品牌故事</p>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  品牌名称
-                </p>
-                <div>
-                  <span style={{ fontSize: 16 }}>
-                    {formData.brand_name}
-                  </span>
-                </div>
-              </div>
-               <div>
-                <p className={styles.lineTitleDefult}>
-                  介绍
-                </p>
-                <div>
-                  <span>
-                    {formData.brand_introduction}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <p className={styles.lineTitleDefult}>
-                  品牌logo
-                </p>
-                { formData.brand_logo &&
-                  <div className={styles.imgShowBox} style={{ width: 200, height: 83 }}>
-                    <img src={formData.brand_logo} />
-                  </div>
-                }
-              </div>
-            </article>
-          </section>
-        }
         <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
+        <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
         <CropperModal onOk={this.handleAddCoverImg}/>
+
+        <AuctionImageModal formData={formData.body.length ? formData.body[0] : []} onChange={this.handleChangeBodyImg} />
       </div>
     );
   }
