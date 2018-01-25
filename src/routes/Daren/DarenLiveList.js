@@ -106,6 +106,7 @@ export default class DarenLiveList extends PureComponent {
       dataIndex: 'darenMissionData.fansCount',
       sorter: true,
       width: 70,
+      render: (val) => val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val,
     }, {
       title: '人气',
       dataIndex: 'hongbei.hotsnum',

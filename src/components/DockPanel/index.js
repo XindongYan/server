@@ -78,7 +78,7 @@ export default class DockPanel extends PureComponent {
                   <Button shape="circle" icon="close" onClick={this.handleClose} />
                 </div>
               </div>
-              <div className={styles['dock-panel-head-extra']}>
+              {/*<div className={styles['dock-panel-head-extra']}>
                 <Row>
                   {this.renderExtraItem('任务名称', formData.name, 4)}
                   {this.renderExtraItem('商家标签', formData.merchant_tag, 4)}
@@ -86,7 +86,7 @@ export default class DockPanel extends PureComponent {
                   {this.renderExtraItem('创建时间', moment(formData.create_time).format('YYYY-MM-DD HH:mm'), 4)}
                   {this.renderExtraItem('活动酬劳', `￥${formData.price}`, 4)}
                 </Row>
-              </div>
+              </div> */}
             </div>
             <div className={[styles['dock-panel-body'], styles['with-header-extra']].join(' ')}>
               <Tabs activeKey={activeKey} onChange={this.handleActiveKeyChange}>

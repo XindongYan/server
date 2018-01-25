@@ -272,6 +272,7 @@ export default class DarenList extends PureComponent {
       dataIndex: 'darenMissionData.fansCount',
       sorter: true,
       width: 70,
+      render: (val) => val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val,
     }, {
       title: '粉丝月增长数',
       width: 70,
