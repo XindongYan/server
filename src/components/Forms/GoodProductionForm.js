@@ -28,8 +28,20 @@ export default class GoodProductionForm extends PureComponent {
     visibleBodyStruct: 5,
   }
   componentDidMount() {
-    if (this.props.operation !== 'view') {
-      const { formData } = this.props;
+    const { formData } = this.props;
+    if (formData.bodyStruct0 && formData.bodyStruct0.length > 0) {
+      this.setState({
+        longpointContent: formData.bodyStruct0,
+      })
+    }
+    const fieldsValue = {
+      title: formData.title,
+    };
+    this.props.form.setFieldsValue(fieldsValue);
+  }
+  componentWillReceiveProps(nextProps) {
+    const { formData } = nextProps;
+    if (!this.props.formData.title && nextProps.formData.title) {
       if (formData.bodyStruct0 && formData.bodyStruct0.length > 0) {
         this.setState({
           longpointContent: formData.bodyStruct0,
@@ -39,22 +51,6 @@ export default class GoodProductionForm extends PureComponent {
         title: formData.title,
       };
       this.props.form.setFieldsValue(fieldsValue);
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.operation !== 'view') {
-      const { formData } = nextProps;
-      if (!this.props.formData.title && nextProps.formData.title) {
-        if (formData.bodyStruct0 && formData.bodyStruct0.length > 0) {
-          this.setState({
-            longpointContent: formData.bodyStruct0,
-          })
-        }
-        const fieldsValue = {
-          title: formData.title,
-        };
-        this.props.form.setFieldsValue(fieldsValue);
-      }
     }
   }
   componentWillUnmount() {

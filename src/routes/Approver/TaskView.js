@@ -122,8 +122,8 @@ export default class TaskView extends PureComponent {
     const showAnnotation = showApproveLog;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} ref="taskOuterBox">
-          <div style={{ width: 650 }}>
+        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.channel_name === '有好货' ? 730 : 1000 }}>
+          <div style={{ width: formData.channel_name === '有好货' ? 375 : 650 }}>
             { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
               <WeitaoForm
                 form={this.props.form}
