@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Button, Tag, Card, Input, message, Avatar, Row, Col, Divider } from 'antd';
+import { Table, Button, Tag, Card, Input, message, Avatar, Row, Col, Divider, Radio } from 'antd';
 import styles from './DarenList.less';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const Search = Input.Search;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @connect(state => ({
   darenLives: state.daren.darenLives,
@@ -16,7 +18,8 @@ const Search = Input.Search;
 export default class DarenLiveList extends PureComponent {
   state = {
     searchValue: '',
-    y: document.body.clientHeight - 260,
+    y: document.body.clientHeight - 210,
+    cycle: 'day',
   }
   componentDidMount() {
     const { darenLives: { pagination } } = this.props;
@@ -25,11 +28,11 @@ export default class DarenLiveList extends PureComponent {
       payload: { ...pagination },
     });
     document.body.onresize = () => {
-      this.setState({ y: document.body.clientHeight - 260 });
+      this.setState({ y: document.body.clientHeight - 210 });
     }
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ y: document.body.clientHeight - 260 });
+    this.setState({ y: document.body.clientHeight - 210 });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -76,10 +79,12 @@ export default class DarenLiveList extends PureComponent {
       payload: values,
     });
   }
-
+  changeCycleStatus = (e) => {
+    this.setState({ cycle: e.target.value });
+  }
   render() {
     const { darenLives, loading,  } = this.props;
-
+    const { cycle } = this.state;
     const columns = [{
       title: '达人账号',
       dataIndex: 'attributes',
@@ -107,78 +112,46 @@ export default class DarenLiveList extends PureComponent {
       sorter: true,
       width: 70,
     }, {
-      title: '昨日',
-      children: [{
-        title: '观看人数/小时',
-        dataIndex: 'hongbei.day.base.watches_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '评论数/小时',
-        dataIndex: 'hongbei.day.base.cmt_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '评论人数/小时',
-        dataIndex: 'hongbei.day.base.cmt_user_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '商品点击次数/小时',
-        dataIndex: 'hongbei.day.base.trade_show_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '商品点击人数/小时',
-        dataIndex: 'hongbei.day.base.trade_show_uv_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '关注人数/小时',
-        dataIndex: 'hongbei.day.base.followers_avg_hour',
-        sorter: true,
-        width: 70,
-      }],
+      title: '观看人数/小时',
+      dataIndex: `hongbei.${cycle}.base.watches_avg_hour`,
+      sorter: true,
+      width: 70,
     }, {
-      title: '上周',
-      children: [{
-        title: '观看人数/小时',
-        dataIndex: 'hongbei.week.base.watches_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '评论数/小时',
-        dataIndex: 'hongbei.week.base.cmt_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '评论人数/小时',
-        dataIndex: 'hongbei.week.base.cmt_user_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '商品点击次数/小时',
-        dataIndex: 'hongbei.week.base.trade_show_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '商品点击人数/小时',
-        dataIndex: 'hongbei.week.base.trade_show_uv_avg_hour',
-        sorter: true,
-        width: 70,
-      }, {
-        title: '关注人数/小时',
-        dataIndex: 'hongbei.week.base.followers_avg_hour',
-        sorter: true,
-        width: 70,
-      }],
+      title: '评论数/小时',
+      dataIndex: `hongbei.${cycle}.base.cmt_avg_hour`,
+      sorter: true,
+      width: 70,
+    }, {
+      title: '评论人数/小时',
+      dataIndex: `hongbei.${cycle}.base.cmt_user_avg_hour`,
+      sorter: true,
+      width: 70,
+    }, {
+      title: '商品点击次数/小时',
+      dataIndex: `hongbei.${cycle}.base.trade_show_avg_hour`,
+      sorter: true,
+      width: 70,
+    }, {
+      title: '商品点击人数/小时',
+      dataIndex: `hongbei.${cycle}.base.trade_show_uv_avg_hour`,
+      sorter: true,
+      width: 70,
+    }, {
+      title: '关注人数/小时',
+      dataIndex: `hongbei.${cycle}.base.followers_avg_hour`,
+      sorter: true,
+      width: 70,
     }];
     return (
-      <Card bordered={false} bodyStyle={{ padding: '5px 2px 2px 0px', height: '100%' }}>
+      <Card bordered={false} bodyStyle={{ padding: '10px 2px 2px 0px', height: '100%' }}>
         <div className={styles.tableList}>
-          <div className={styles.tableListOperator} align="right">
+          <div className={styles.tableListOperator}>
+            <RadioGroup value={cycle} style={{ marginLeft: 8 }} onChange={this.changeCycleStatus}>
+              <RadioButton value="day">昨日</RadioButton>
+              <RadioButton value="week">上周</RadioButton>
+            </RadioGroup>
             <Search
-              style={{ width: 400 }}
+              style={{ width: 400, float: 'right' }}
               placeholder="昵称"
               value={this.state.searchValue}
               onChange={this.handleChange}

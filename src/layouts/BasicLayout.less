@@ -51,12 +51,16 @@
 .daren {
   display: inline-block;
   font-size: 20px;
-  line-height: 64px;
+  /*line-height: 64px;*/
+  color: rgba(0, 0, 0, 0.65);
   cursor: pointer;
   transition: all .3s;
   padding: 0 24px;
-  &:hover {
-    background: @primary-1;
+  a {
+    color: rgba(0, 0, 0, 0.65);
+  }
+  a:hover {
+    color: @primary-color;
   }
 }
 

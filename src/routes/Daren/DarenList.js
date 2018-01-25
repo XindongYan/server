@@ -139,7 +139,7 @@ const { Option } = Select;
 export default class DarenList extends PureComponent {
   state = {
     searchValue: '',
-    y: document.body.clientHeight - 196,
+    y: document.body.clientHeight - 210,
   }
   componentDidMount() {
     const { darens: { pagination, creator_type, area, channel } } = this.props;
@@ -148,11 +148,11 @@ export default class DarenList extends PureComponent {
       payload: { ...pagination, creator_type, area, channel },
     });
     document.body.onresize = () => {
-      this.setState({ y: document.body.clientHeight - 196 });
+      this.setState({ y: document.body.clientHeight - 210 });
     }
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ y: document.body.clientHeight - 196 });
+    this.setState({ y: document.body.clientHeight - 210 });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, darens: { creator_type, area, channel } } = this.props;
@@ -323,7 +323,7 @@ export default class DarenList extends PureComponent {
       },
     }];
     return (
-      <Card bordered={false} bodyStyle={{ padding: '5px 2px 2px 0px', height: '100%' }}>
+      <Card bordered={false} bodyStyle={{ padding: '10px 2px 2px 0px', height: '100%' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
             <Select

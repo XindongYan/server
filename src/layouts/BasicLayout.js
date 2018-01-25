@@ -344,17 +344,17 @@ class BasicLayout extends React.PureComponent {
               onClick={this.toggle}
             />
             { (currentUser.rights && currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) &&
-              <Link target='_blank' to="/daren/list">
-                <div className={styles.daren}>
-                  <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>综合榜单</span>
-                </div>
-              </Link>}
+              <div className={styles.daren}>
+                <Link target='_blank' to="/daren/list">
+                  <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>综合榜单</span>
+                </Link>
+              </div>}
             { (currentUser.rights && currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0) &&
-              <Link target='_blank' to="/daren/live/list">
-                <div className={styles.daren}>
-                  <Icon type="area-chart" style={{ lineHeight: 'inherit' }} /> <span style={{ fontSize: 14 }}>直播榜单</span>
-                </div>
-              </Link>}
+              <div className={styles.daren}>
+                <Link target='_blank' to="/daren/live/list">
+                  <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>直播榜单</span>
+                </Link>
+              </div>}
             <div className={styles.right}>
               { /* <HeaderSearch
                 className={`${styles.action} ${styles.search}`}
