@@ -377,7 +377,7 @@ export default class TableList extends PureComponent {
       },
     ];
     const times = [{
-      title: '最后修改时间',
+      title: '修改时间',
       dataIndex: 'last_update_time',
       render: (val) =>
         val ?
@@ -404,7 +404,7 @@ export default class TableList extends PureComponent {
       render: value => value ? value.nickname : '',
     };
     const grade = {
-      title: '审核分数',
+      title: '分数',
       dataIndex: 'grade',
       render: value => value < 0 ? 0 : value,
     };
@@ -585,6 +585,8 @@ export default class TableList extends PureComponent {
       columns.push( pushStatusText, daren_nickname, pushTime, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
       columns.push( pushStatusText, daren_nickname, opera);
+    } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
+      columns.push(...times, grade, status, opera);
     } else {
       columns.push(...times, approver, grade, approveTime, opera);
     }
