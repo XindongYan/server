@@ -99,6 +99,7 @@ export default class FinanceList extends PureComponent {
     const columns = [
       {
         title: '任务ID',
+        width: 80,
         dataIndex: 'id',
         render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'OperationPane')}>{val}</a>,
       },

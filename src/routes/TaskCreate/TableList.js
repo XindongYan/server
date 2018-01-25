@@ -414,6 +414,7 @@ export default class TableList extends PureComponent {
     const columns = [
       {
         title: '任务ID',
+        width: 80,
         dataIndex: 'id',
         render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
       },

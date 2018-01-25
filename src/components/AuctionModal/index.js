@@ -289,13 +289,13 @@ export default class AuctionModal extends PureComponent {
           <div style={{ margin: '10px 0' }}>
             <p>{auctionChoose.title}</p>
             <div style={{ margin: '5px 0' }}>
-              <Tag color="red">售价¥{auctionChoose.item.finalPrice}</Tag>
-              <Tag color="orange">{auctionChoose.item.taoKeDisplayPrice}</Tag>
+              <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
+              <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
               { new7 &&
-                <Tag color="blue">{new7}</Tag>
+                <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
               }
               { q_score &&
-                <Tag color="volcano">{q_score}</Tag>
+                <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
               }
             </div>
             { k !== 'material' &&
@@ -337,7 +337,7 @@ export default class AuctionModal extends PureComponent {
       >
         { k !== 'material' ?
           <Tabs
-            tabBarExtraContent={<div style={{ width: 580, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={`https://we.taobao.com/material/square/detail?kxuanParam={"nested":"we","id":"${tabBarExtraContent}"}`}>选品池</a></div>}
+            tabBarExtraContent={<div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={`https://we.taobao.com/material/square/detail?kxuanParam={"nested":"we","id":"${tabBarExtraContent}"}`}>选品池</a></div>}
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >

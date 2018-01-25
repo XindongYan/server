@@ -30,20 +30,12 @@ export default class TaskView extends PureComponent {
       approve_notes: [],
     },
     haveGoodsTask: {
-      crowd: [],
-      title: '',
-      task_desc: '',
-      auction: {}, // 商品
-      cover_imgs: [], // 封面图
-      white_bg_img: '', // 白底图
-      long_advantage: [], // 亮点
-      short_advantage: [], // 短亮点
-      industry_title: '', // 行业标题
-      industry_introduction: '', // 行业介绍
-      industry_img: '', // 行业图
-      brand_name: '', // 品牌名称
-      brand_introduction: '', // 品牌介绍
-      brand_logo: '', // 商品logo
+      body: [],
+      title: '', // '任务标题',
+      bodyStruct: [],
+      bodyStruct0: [],
+      duanliangdian: [], // ['']
+      crowdId: '',
     },
     lifeResearch: {
       title: '', // '任务标题',
@@ -129,8 +121,8 @@ export default class TaskView extends PureComponent {
     const showAnnotation = formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} ref="taskOuterBox">
-          <div style={{ width: 650 }}>
+        <div className={styles.taskOuterBox} style={{ width: formData.channel_name === '有好货' ? 730 : 1000 }} ref="taskOuterBox">
+          <div style={{ width: formData.channel_name === '有好货' ? 375 : 650 }}>
             { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
               <WeitaoForm
                 form={this.props.form}

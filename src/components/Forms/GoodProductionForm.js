@@ -28,8 +28,20 @@ export default class GoodProductionForm extends PureComponent {
     visibleBodyStruct: 5,
   }
   componentDidMount() {
-    if (this.props.operation !== 'view') {
-      const { formData } = this.props;
+    const { formData } = this.props;
+    if (formData.bodyStruct0 && formData.bodyStruct0.length > 0) {
+      this.setState({
+        longpointContent: formData.bodyStruct0,
+      })
+    }
+    const fieldsValue = {
+      title: formData.title,
+    };
+    this.props.form.setFieldsValue(fieldsValue);
+  }
+  componentWillReceiveProps(nextProps) {
+    const { formData } = nextProps;
+    if (!this.props.formData.title && nextProps.formData.title) {
       if (formData.bodyStruct0 && formData.bodyStruct0.length > 0) {
         this.setState({
           longpointContent: formData.bodyStruct0,
@@ -39,22 +51,6 @@ export default class GoodProductionForm extends PureComponent {
         title: formData.title,
       };
       this.props.form.setFieldsValue(fieldsValue);
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.operation !== 'view') {
-      const { formData } = nextProps;
-      if (!this.props.formData.title && nextProps.formData.title) {
-        if (formData.bodyStruct0 && formData.bodyStruct0.length > 0) {
-          this.setState({
-            longpointContent: formData.bodyStruct0,
-          })
-        }
-        const fieldsValue = {
-          title: formData.title,
-        };
-        this.props.form.setFieldsValue(fieldsValue);
-      }
     }
   }
   componentWillUnmount() {
@@ -174,10 +170,12 @@ export default class GoodProductionForm extends PureComponent {
   }
 
   handleShowLongpoint = () => {
-    this.setState({
-      visibleLongpoint: true,
-      visibleBodyStruct: 5,
-    })
+    if (this.props.operation !== 'view') {
+      this.setState({
+        visibleLongpoint: true,
+        visibleBodyStruct: 5,
+      })
+    }
   }
   renderLongpointTitle = () => {
     return (<div style={{ position: 'relative', height: 32, lineHeight: '32px' }}>
@@ -247,10 +245,12 @@ export default class GoodProductionForm extends PureComponent {
   }
 
   handleShowBodyStruct = (index) => {
-    this.setState({
-      visibleLongpoint: false,
-      visibleBodyStruct: index,
-    })
+    if (this.props.operation !== 'view') {
+      this.setState({
+        visibleLongpoint: false,
+        visibleBodyStruct: index,
+      })
+    }
   }
   handleChangeBodyStruct = (index, content) => {
     const arr = this.props.formData.bodyStruct;
@@ -299,171 +299,172 @@ export default class GoodProductionForm extends PureComponent {
       background: '#fff',
       margin: '3px',
     }
+    const disabled = this.props.operation === 'view' ? true : false;
     return (
       <div style={{ width: 375 }}>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
           内容创作
         </div>
-        { (operation==='edit' || operation === 'create') &&
-          <section className={styles.taskContentBox}>
-            <article className={styles.goodsArticle} style={{ padding: 20 }}>
-              <div style={{ marginBottom: 20 }}>
-                <div className={styles.task_img_list}>
-                  { !(formData.body && formData.body.length > 0) &&
-                    <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
-                      <div>
-                        <Icon type="plus" className={styles.uploadIcon} />
-                        <p>添加一个宝贝</p>
-                      </div>
-                    </label>
-                  }
-                  { formData.body && formData.body.length > 0 &&
-                    <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
-                      <img src={formData.body[0].coverUrl} />
-                      <div className={styles.clearImg} onClick={this.handleClearProduct}>
-                        <Icon type="delete" />
-                      </div>
+        <section className={styles.taskContentBox}>
+          <article className={styles.goodsArticle} style={{ padding: 20 }}>
+            <div style={{ marginBottom: 20 }}>
+              <div className={styles.task_img_list}>
+                { !(formData.body && formData.body.length > 0) &&
+                  <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
+                    <div>
+                      <Icon type="plus" className={styles.uploadIcon} />
+                      <p>添加一个宝贝</p>
                     </div>
-                  }
-                </div>
+                  </label>
+                }
+                { formData.body && formData.body.length > 0 &&
+                  <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
+                    <img src={formData.body[0].coverUrl} />
+                    { !disabled && <div className={styles.clearImg} onClick={this.handleClearProduct}>
+                      <Icon type="delete" />
+                    </div>}
+                  </div>
+                }
               </div>
-              <div>
-                <div className={styles.InputBox} style={{ border: 'none' }}>
-                  <FormItem>
-                    {getFieldDecorator('title', {
-                      rules: [{
-                        required: true, message: '标题不能为空',
-                      }, {
-                        max: 19, message: '文字长度太长, 要求长度最大为19',
-                      }, {
-                        whitespace: true, message: '标题不能为空格'
-                      }],
-                    })(
-                      <Input
-                        style={{ fontSize: '18px' }}
-                        suffix={<span style={{ color: formData.title.length>19 ? 'red' : '#666' }} className={styles.inputNum}>
-                          {formData.title.length}/19
-                        </span>}
-                        onChange={(e) => this.handleTaskChange(e.target.value, 'title')}
-                        placeholder="请在这里输入标题"
-                      />
-                    )}
-                  </FormItem>
-                </div>
+            </div>
+            <div>
+              <div className={styles.InputBox} style={{ border: 'none' }}>
+                <FormItem>
+                  {getFieldDecorator('title', {
+                    rules: [{
+                      required: true, message: '标题不能为空',
+                    }, {
+                      max: 19, message: '文字长度太长, 要求长度最大为19',
+                    }, {
+                      whitespace: true, message: '标题不能为空格'
+                    }],
+                  })(
+                    <Input
+                      style={{ fontSize: '18px' }}
+                      suffix={<span style={{ color: formData.title.length>19 ? 'red' : '#666' }} className={styles.inputNum}>
+                        {formData.title.length}/19
+                      </span>}
+                      onChange={(e) => this.handleTaskChange(e.target.value, 'title')}
+                      placeholder="请在这里输入标题"
+                      disabled={disabled}
+                    />
+                  )}
+                </FormItem>
               </div>
-            </article>
+            </div>
+          </article>
 
-            <article className={styles.goodsArticle} style={{ background: '#fff', position: 'relative' }}>
-              <Anchor style={{ position: 'absolute', top: 0, left: '-80px' }}>
-                <div onClick={this.handleAddBodyStruct} style={{ width: 65, height: 65, padding: '6px 0', cursor: 'pointer', textAlign: 'center' }}>
-                  <div>
-                    <img style={{ width: 30, height: 30 }} src="//img.alicdn.com/tfs/TB1Q4jRa.gQMeJjy0FfXXbddXXa-48-48.png" />
-                  </div>
-                  <div style={{ fontSize: 12, color: '#999' }}>
-                    自定义段落
-                  </div>
+          <article className={styles.goodsArticle} style={{ background: '#fff', position: 'relative' }}>
+            { !disabled && <Anchor style={{ position: 'absolute', top: 0, left: '-80px' }}>
+              <div onClick={this.handleAddBodyStruct} style={{ width: 65, height: 65, padding: '6px 0', cursor: 'pointer', textAlign: 'center' }}>
+                <div>
+                  <img style={{ width: 30, height: 30 }} src="//img.alicdn.com/tfs/TB1Q4jRa.gQMeJjy0FfXXbddXXa-48-48.png" />
                 </div>
-              </Anchor>
-              <Popover
+                <div style={{ fontSize: 12, color: '#999' }}>
+                  自定义段落
+                </div>
+              </div>
+            </Anchor>}
+            <Popover
+              overlayClassName={styles.popover_box}
+              placement="right"
+              title={this.renderLongpointTitle()}
+              content={this.renderLongpointContent()}
+              trigger="click"
+              visible={this.state.visibleLongpoint}
+              autoAdjustOverflow={false}
+            >
+              <div style={{ padding: 20, border: this.state.visibleLongpoint ? '2px solid #00b395' : 'none' }} onClick={this.handleShowLongpoint}>
+                <div className={styles.section_show_title}>
+                  好在哪里
+                </div>
+                { formData.bodyStruct0 && formData.bodyStruct0.length > 0 ?
+                  <ul>
+                    {formData.bodyStruct0.map(item => <li key={item} className={styles.longpoint_list_item}>{item}</li>)}
+                  </ul> :
+                  <ul>
+                    {[0,1,2].map(item => <li key={item} className={styles.longpoint_list_item}>长亮点描述</li>)}
+                  </ul>
+                }
+              </div>
+            </Popover>
+            { formData.bodyStruct.map((item, index) =><Popover style={{ padding: 20 }}
+                key={index}
                 overlayClassName={styles.popover_box}
                 placement="right"
-                title={this.renderLongpointTitle()}
-                content={this.renderLongpointContent()}
+                title={this.renderBodyStructTitle()}
+                content={<BodyStructContent onChange={this.handleChangeBodyStruct} formData={item} index={index} />}
                 trigger="click"
-                visible={this.state.visibleLongpoint}
-                // onVisibleChange={this.handleVisibleChange}
+                visible={this.state.visibleBodyStruct === index ? true : false}
+                autoAdjustOverflow={false}
               >
-                <div style={{ padding: 20, border: this.state.visibleLongpoint ? '2px solid #00b395' : 'none' }} onClick={this.handleShowLongpoint}>
+                <div style={{ padding: 20, position: 'relative', border: this.state.visibleBodyStruct === index ? '2px solid #00b395' : 'none' }} onClick={() => this.handleShowBodyStruct(index)}>
                   <div className={styles.section_show_title}>
-                    好在哪里
+                    { item && item.title ? item.title : '请输入段落标题' }
                   </div>
-                  { formData.bodyStruct0 && formData.bodyStruct0.length > 0 ?
-                    <ul>
-                      {formData.bodyStruct0.map(item => <li key={item} className={styles.longpoint_list_item}>{item}</li>)}
-                    </ul> :
-                    <ul>
-                      {[0,1,2].map(item => <li key={item} className={styles.longpoint_list_item}>长亮点描述</li>)}
-                    </ul>
+                  <div style={{ marginBottom: 20 }}>
+                    { item && item.desc ? item.desc : '请输入段落介绍文本' }
+                  </div>
+                  <div>
+                    <img
+                      style={{ width: '100%', height: 'auto' }}
+                      src={item && item.images ? item.images : 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
+                    ></img>
+                  </div>
+                  { this.state.visibleBodyStruct === index &&
+                    <div onClick={() => this.handleDeleteContent(index)} className={styles.deleteContentBox}>
+                      <Icon type="delete" />
+                    </div>
                   }
                 </div>
-              </Popover>
-              { formData.bodyStruct.map((item, index) =><Popover style={{ padding: 20 }}
-                  key={index}
-                  overlayClassName={styles.popover_box}
-                  placement="right"
-                  title={this.renderBodyStructTitle()}
-                  content={<BodyStructContent onChange={this.handleChangeBodyStruct} formData={item} index={index} />}
-                  trigger="click"
-                  visible={this.state.visibleBodyStruct === index ? true : false}
-                >
-                  <div style={{ padding: 20, position: 'relative', border: this.state.visibleBodyStruct === index ? '2px solid #00b395' : 'none' }} onClick={() => this.handleShowBodyStruct(index)}>
-                    <div className={styles.section_show_title}>
-                      { item && item.title ? item.title : '请输入段落标题' }
-                    </div>
-                    <div style={{ marginBottom: 20 }}>
-                      { item && item.desc ? item.desc : '请输入段落介绍文本' }
-                    </div>
-                    <div>
-                      <img
-                        style={{ width: '100%', height: 'auto' }}
-                        src={item && item.images ? item.images : 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
-                      ></img>
-                    </div>
-                    { this.state.visibleBodyStruct === index &&
-                      <div onClick={() => this.handleDeleteContent(index)} className={styles.deleteContentBox}>
-                        <Icon type="delete" />
-                      </div>
-                    }
-                  </div>
-                </Popover>)
-              }
-            </article>
-            <article className={styles.goodsArticle} style={{ background: '#f5f5f5' }}> 
-              <div style={{ padding: 20 }}>
-                <p className={styles.lineTitleDefult}>
-                  宝贝短亮点
-                </p>
-                <label className={styles.pointBox}>
+              </Popover>)
+            }
+          </article>
+          <article className={styles.goodsArticle} style={{ background: '#f5f5f5', padding: '0 0 20px' }}> 
+            <div style={{ padding: 20 }}>
+              <p className={styles.lineTitleDefult}>
+                宝贝短亮点
+              </p>
+              <label className={styles.pointBox}>
+                <span>
+                  { formData.duanliangdian.map((tag, index) => {
+                    return (
+                      <Tag style={tagStyle} key={index} closable={!disabled} onClose={(e) => this.handlePointClose(e, tag, 'duanliangdian')}>
+                        {tag}
+                      </Tag>
+                    );
+                  })}
+                </span>
+                { formData.duanliangdian.length < 3 && !disabled &&
                   <span>
-                    { formData.duanliangdian.map((tag, index) => {
-                      return (
-                        <Tag style={tagStyle} key={index} closable={true} onClose={(e) => this.handlePointClose(e, tag, 'duanliangdian')}>
-                          {tag}
-                        </Tag>
-                      );
-                    })}
+                    <Input
+                      ref={this.saveInputRef}
+                      type="text"
+                      style={{ width: 150, border: 'none', marginTop: 3 }}
+                      value={shortPoint}
+                      onChange={(e) => this.handlePointChange(e, 'shortPoint')}
+                      onPressEnter={() => this.handlePointConfirm(6, 12, 'shortPoint', 'duanliangdian')}
+                      placeholder="选择标签或输入标签"
+                    />
                   </span>
-                  { formData.duanliangdian.length < 3 &&
-                    <span>
-                      <Input
-                        ref={this.saveInputRef}
-                        type="text"
-                        style={{ width: 150, border: 'none', marginTop: 3 }}
-                        value={shortPoint}
-                        onChange={(e) => this.handlePointChange(e, 'shortPoint')}
-                        onPressEnter={() => this.handlePointConfirm(6, 12, 'shortPoint', 'duanliangdian')}
-                        placeholder="选择标签或输入标签"
-                      />
-                    </span>
-                  }
-                </label>
-                { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
-                  <p className={styles.promptTextRed}>
-                    标签的字数必须在6～12之间
-                  </p>
                 }
-                { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
-                  <p className={styles.promptTextRed}>
-                    至少输入2个标签
-                  </p>
-                }
-                <p className={styles.promptText}>提示：敲击【回车键】添加【宝贝短亮点】, 【宝贝短亮点】数量2-3个，每个【宝贝短亮点】字数6-12个字</p>
-              </div>
+              </label>
+              { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
+                <p className={styles.promptTextRed}>
+                  标签的字数必须在6～12之间
+                </p>
+              }
+              { shortPoint.length > 0 && ( shortPoint.length < 6 || shortPoint.length > 12) &&
+                <p className={styles.promptTextRed}>
+                  至少输入2个标签
+                </p>
+              }
+              <p className={styles.promptText}>提示：敲击【回车键】添加【宝贝短亮点】, 【宝贝短亮点】数量2-3个，每个【宝贝短亮点】字数6-12个字</p>
+            </div>
 
-              <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
-            </article>
-          </section>
-        }
+            <CascaderSelect disabled={disabled} operation={this.props.operation} form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
+          </article>
+        </section>
         <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
         <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
         <CropperModal onOk={this.handleAddCoverImg}/>

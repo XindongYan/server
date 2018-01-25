@@ -211,29 +211,31 @@ export default class TaskEdit extends PureComponent {
     const { task, haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
     if (this.props.formData.channel_name === '有好货') {
       let bOk = true;
-      this.props.form.validateFields(['title','task_desc','industry_title','industry_introduction','brand_name','brand_introduction'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title'], (err, val) => {
         if (!err) {
-          if (!haveGoodsTask.auction) {
+          if (!haveGoodsTask.body || !haveGoodsTask.body.length) {
             message.warn('请选择商品宝贝');
             bOk = false;
-          } else if (!haveGoodsTask.cover_imgs || haveGoodsTask.cover_imgs.length < 3) {
+          } else if (!haveGoodsTask.body[0].extraBanners || haveGoodsTask.body[0].extraBanners.length < 3) {
             message.warn('请选择至少三张封面图');
             bOk = false;
-          } else if (!haveGoodsTask.white_bg_img) {
-            message.warn('请选择一张白底图');
+          } else if (!haveGoodsTask.bodyStruct0 || haveGoodsTask.bodyStruct0.length < 2) {
+            message.warn('请输入宝贝亮点');
             bOk = false;
-          } else if (!haveGoodsTask.long_advantage || haveGoodsTask.long_advantage.length < 2) {
-            message.warn('请输入至少2条长亮点');
-            bOk = false;
-          } else if (!haveGoodsTask.short_advantage || haveGoodsTask.short_advantage.length < 2) {
+          } else if (!haveGoodsTask.duanliangdian || haveGoodsTask.duanliangdian.length < 2) {
             message.warn('请输入至少2条短亮点');
             bOk = false;
-          } else if (!haveGoodsTask.industry_img) {
-            message.warn('请选择一张行业配图');
+          } else if (!haveGoodsTask.bodyStruct || haveGoodsTask.bodyStruct.length < 2) {
+            message.warn('请编写至少2个段落');
             bOk = false;
-          } else if (!haveGoodsTask.brand_logo) {
-            message.warn('请上传品牌logo');
-            bOk = false;
+          } else {
+            for (var i = haveGoodsTask.bodyStruct.length - 1; i >= 0; i--) {
+              !haveGoodsTask.bodyStruct[i].title ? haveGoodsTask.bodyStruct.splice(i, 1) : '';
+            }
+            if (haveGoodsTask.bodyStruct.length < 2) {
+              message.warn('请编写至少2个段落');
+              bOk = false;
+            }
           }
         } else {
           bOk = false;
@@ -372,10 +374,14 @@ export default class TaskEdit extends PureComponent {
     const { formData } = this.props;
     const { haveGoodsTask } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
+    let outerBoxWidth = this.props.formData.approve_status === TASK_APPROVE_STATUS.rejected ? 1000 : 872;
+    if (formData.channel_name === '有好货') {
+      outerBoxWidth = 730;
+    }
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} style={{ width: this.props.formData.approve_status === TASK_APPROVE_STATUS.rejected ? 1000 : 872 }} ref="taskOuterBox">
-          <div style={{ width: 650 }}>
+        <div className={styles.taskOuterBox} style={{ width: outerBoxWidth }} ref="taskOuterBox">
+          <div style={{ width: formData.channel_name === '有好货' ? 375 : 650 }}>
             { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
               <WeitaoForm
                 form={this.props.form}
