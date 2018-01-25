@@ -87,6 +87,19 @@ export default class DarenLiveList extends PureComponent {
     const { darenLives, loading,  } = this.props;
     const { cycle } = this.state;
     const columns = [{
+      title: '排名',
+      dataIndex: 'rank',
+      width: 10,
+      className: styles.rankColumn,
+      render: (val, record, index) => {
+        const rank = (darenLives.pagination.current - 1) * darenLives.pagination.pageSize + index + 1;
+        let className = styles.rank_1_99;
+        if (rank >= 100 && rank <= 999) className = styles.rank_100_999;
+        if (rank >= 1000 && rank <= 9999) className = styles.rank_1000_9999;
+        if (rank >= 10000) className = styles.rank_gte_10000;
+        return <span className={className}>{rank}</span>;
+      },
+    }, {
       title: '达人账号',
       dataIndex: 'attributes',
       width: 150,

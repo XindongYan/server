@@ -207,9 +207,22 @@ export default class DarenList extends PureComponent {
     const { darens, loading,  } = this.props;
 
     const columns = [{
+      title: '排名',
+      dataIndex: 'rank',
+      width: 100,
+      className: styles.rankColumn,
+      render: (val, record, index) => {
+        const rank = (darens.pagination.current - 1) * darens.pagination.pageSize + index + 1;
+        let className = styles.rank_1_99;
+        if (rank >= 100 && rank <= 999) className = styles.rank_100_999;
+        if (rank >= 1000 && rank <= 9999) className = styles.rank_1000_9999;
+        if (rank >= 10000) className = styles.rank_gte_10000;
+        return <span className={className}>{rank}</span>;
+      },
+    }, {
       title: '达人账号',
       dataIndex: 'attributes',
-      width: 150,
+      width: 200,
       render: (val, record) =>
         <div style={{  }}>
           <div style={{ display: 'inline-block', verticalAlign: 'top' }}>
