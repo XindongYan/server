@@ -144,6 +144,14 @@ export default class TaskCreate extends PureComponent {
           } else if (!haveGoodsTask.bodyStruct || haveGoodsTask.bodyStruct.length < 2) {
             message.warn('请编写至少2个段落');
             bOk = false;
+          } else {
+            for (var i = haveGoodsTask.bodyStruct.length - 1; i >= 0; i--) {
+              !haveGoodsTask.bodyStruct[i].title ? haveGoodsTask.bodyStruct.splice(i, 1) : '';
+            }
+            if (haveGoodsTask.bodyStruct.length < 2) {
+              message.warn('请编写至少2个段落');
+              bOk = false;
+            }
           }
         } else {
           bOk = false;

@@ -86,9 +86,12 @@ export default class GlobalFashionForm extends PureComponent {
     if (this.props.form) {
       getFieldDecorator = this.props.form.getFieldDecorator;
     }
+    console.log(this.props.channel_name)
     let product = 0;
     if (this.props.channel_name === '全球时尚') {
       product = 3321;
+    } else {
+      product = 0;
     }
     return (
       <div className={styles.taskBox} style={style}>
@@ -150,7 +153,7 @@ export default class GlobalFashionForm extends PureComponent {
                 </div>
               : <div>
                 <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
-                <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange} product={3321} />
+                <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange} product={product} />
               </div>
               }
             </div>
