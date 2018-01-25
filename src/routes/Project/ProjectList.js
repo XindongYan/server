@@ -21,6 +21,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   data: state.project.data,
   loading: state.project.loading,
   teamUser: state.user.teamUser,
+  currentUser: state.user.currentUser,
 }))
 export default class ProjectList extends PureComponent {
   state = {
@@ -29,7 +30,7 @@ export default class ProjectList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
+    const { dispatch, teamUser, currentUser, data: { pagination, status, type } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (teamUser.team_id) {
       dispatch({
@@ -37,6 +38,7 @@ export default class ProjectList extends PureComponent {
         payload: {
           ...pagination,
           team_id: teamUser.team_id,
+          user_id: currentUser._id,
           status,
           type: Number(query.type || type),
         },
@@ -44,7 +46,7 @@ export default class ProjectList extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, teamUser, data: { pagination, status, type } } = nextProps;
+    const { dispatch, teamUser, currentUser, data: { pagination, status, type } } = nextProps;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (teamUser.team_id !== this.props.teamUser.team_id) {
       dispatch({
@@ -52,6 +54,7 @@ export default class ProjectList extends PureComponent {
         payload: {
           ...pagination,
           team_id: teamUser.team_id,
+          user_id: currentUser._id,
           status,
           type: Number(query.type || type),
         },
@@ -60,7 +63,7 @@ export default class ProjectList extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, teamUser, data: { status, type } } = this.props;
+    const { dispatch, teamUser, currentUser, data: { status, type } } = this.props;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -70,6 +73,7 @@ export default class ProjectList extends PureComponent {
 
     const params = {
       team_id: teamUser.team_id,
+      user_id: currentUser._id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       status,
@@ -141,7 +145,7 @@ export default class ProjectList extends PureComponent {
     });
   }
   handleOffshelf = (record) => {
-    const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
+    const { dispatch, teamUser, currentUser, data: { pagination, status, type } } = this.props;
     dispatch({
       type: 'project/offshelf',
       payload: {
@@ -158,6 +162,7 @@ export default class ProjectList extends PureComponent {
             payload: {
               ...pagination,
               team_id: teamUser.team_id,
+              user_id: currentUser._id,
               status,
               type,
             },
@@ -167,7 +172,7 @@ export default class ProjectList extends PureComponent {
     });
   }
   handleRemove = (record) => {
-    const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
+    const { dispatch, teamUser, currentUser, data: { pagination, status, type } } = this.props;
     dispatch({
       type: 'project/remove',
       payload: {
@@ -183,6 +188,7 @@ export default class ProjectList extends PureComponent {
             payload: {
               ...pagination,
               team_id: teamUser.team_id,
+              user_id: currentUser._id,
               status,
               type,
             },
@@ -192,10 +198,11 @@ export default class ProjectList extends PureComponent {
     });
   }
   handleSearch = (value, name) => {
-    const { dispatch, teamUser, data: { pagination, status, type } } = this.props;
+    const { dispatch, teamUser, currentUser, data: { pagination, status, type } } = this.props;
     const values = {
       ...pagination,
       team_id: teamUser.team_id,
+      user_id: currentUser._id,
       status,
       type,
     };
@@ -218,24 +225,26 @@ export default class ProjectList extends PureComponent {
   }
 
   changeStatus = (e) => {
-    const { dispatch, teamUser, data: { pagination, type } } = this.props;
+    const { dispatch, teamUser, currentUser, data: { pagination, type } } = this.props;
     dispatch({
       type: 'project/fetch',
       payload: {
         ...pagination,
         team_id: teamUser.team_id,
+        user_id: currentUser._id,
         status: e.target.value,
         type,
       },
     });
   }
   changeType = (e) => {
-    const { dispatch, teamUser, data: { pagination, status } } = this.props;
+    const { dispatch, teamUser, currentUser, data: { pagination, status } } = this.props;
     dispatch({
       type: 'project/fetch',
       payload: {
         ...pagination,
         team_id: teamUser.team_id,
+        user_id: currentUser._id,
         status,
         type: e.target.value,
       },

@@ -180,7 +180,7 @@ export function getNavData(user) {
     if (user.rights.indexOf(RIGHT.teamAdmin) >= 0) {
       menuItems.push(team);
     }
-    if (user.rights.indexOf(RIGHT.projectAdmin) >= 0) {
+    if (user.rights.indexOf(RIGHT.projectCreator) >= 0 || user.rights.indexOf(RIGHT.projectAdmin) >= 0) {
       menuItems.push(project);
     }
     if (user.rights.indexOf(RIGHT.writer) >= 0) {
