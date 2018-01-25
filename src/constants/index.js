@@ -6,6 +6,7 @@ export const RIGHTS = [
   { label: '写手', value: 1 },
   { label: '团队管理', value: 2 },
   { label: '活动管理', value: 3 },
+  { label: '活动主管', value: 4 },
   { label: '审核', value: 6 },
   { label: '财务', value: 7 },
   { label: '管理员', value: 8 },
@@ -84,8 +85,10 @@ export const CHANNEL_NAMES = ['淘宝头条', '微淘', '有好货', '生活研�
 export const RIGHT = {
   writer: 1,
   teamAdmin: 2,
-  projectAdmin: 3,
+  projectCreator: 3,
+  projectAdmin: 4,
   approver: 6,
+  finance: 7,
 };
 
 export const INVITATION_ROLE = {
