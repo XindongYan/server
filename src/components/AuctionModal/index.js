@@ -325,7 +325,7 @@ export default class AuctionModal extends PureComponent {
   render() {
     const { visible, k, currentKey } = this.props;
     const { itemList, pagination, loading, activeKey } = this.state;
-    const tabBarExtraContent = this.props.product && this.props.product !== 0 ? <div style={{ width: 580, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={`https://we.taobao.com/material/square/detail?kxuanParam={"nested":"we","id":${this.props.product}}`}>选品池</a></div> : <span></span>;
+    const tabBarExtraContent = this.props.product ? this.props.product : 0;
     return (
       <Modal
         title="添加宝贝"
@@ -337,7 +337,7 @@ export default class AuctionModal extends PureComponent {
       >
         { k !== 'material' ?
           <Tabs
-            tabBarExtraContent={tabBarExtraContent}
+            tabBarExtraContent={<div style={{ width: 580, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={`https://we.taobao.com/material/square/detail?kxuanParam={"nested":"we","id":"${tabBarExtraContent}"}`}>选品池</a></div>}
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >
