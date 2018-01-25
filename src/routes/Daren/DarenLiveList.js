@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Button, Tag, Card, Input, message, Avatar, Row, Col, Divider, Radio } from 'antd';
+import { Table, Button, Tag, Card, Input, message, Avatar, Divider, Radio } from 'antd';
+import TrimSpan from '../../components/TrimSpan';
 import styles from './DarenList.less';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
@@ -88,18 +89,18 @@ export default class DarenLiveList extends PureComponent {
     const columns = [{
       title: '达人账号',
       dataIndex: 'attributes',
-      width: 160,
+      width: 150,
       render: (val, record) =>
-        <Row>
-          <Col span={8}>
+        <div style={{  }}>
+          <div style={{ display: 'inline-block', verticalAlign: 'top' }}>
             <Avatar size="large" shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
-          </Col>
-          <Col span={16}>
-            <Row><strong>{record.nick}</strong></Row>
-            <Row>{record.area}</Row>
-            { val && <Row>{val.creator_type}</Row> }
-          </Col>
-        </Row>
+          </div>
+          <div style={{ display: 'inline-block', verticalAlign: 'top', marginLeft: 8 }}>
+            <div><strong><TrimSpan length={8} text={record.nick}/></strong></div>
+            <div>{record.area}</div>
+            { val && <div>{val.creator_type}</div> }
+          </div>
+        </div>
       ,
     }, {
       title: '粉丝数',
@@ -112,6 +113,7 @@ export default class DarenLiveList extends PureComponent {
       dataIndex: 'hongbei.hotsnum',
       sorter: true,
       width: 70,
+      render: (val) => val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val,
     }, {
       title: '观看人数/小时',
       dataIndex: `hongbei.${cycle}.base.watches_avg_hour`,
@@ -146,13 +148,13 @@ export default class DarenLiveList extends PureComponent {
     return (
       <Card bordered={false} bodyStyle={{ padding: '10px 2px 2px 0px', height: '100%' }}>
         <div className={styles.tableList}>
-          <div className={styles.tableListOperator}>
-            <RadioGroup value={cycle} style={{ marginLeft: 8 }} onChange={this.changeCycleStatus}>
+          <div className={styles.tableListOperator} align="right">
+            <RadioGroup value={cycle} style={{ marginRight: 20 }} onChange={this.changeCycleStatus}>
               <RadioButton value="day">昨日</RadioButton>
               <RadioButton value="week">上周</RadioButton>
             </RadioGroup>
             <Search
-              style={{ width: 400, float: 'right' }}
+              style={{ width: 400 }}
               placeholder="昵称"
               value={this.state.searchValue}
               onChange={this.handleChange}

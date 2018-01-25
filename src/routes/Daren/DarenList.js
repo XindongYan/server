@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Button, Tag, Card, Select, Input, message, Avatar, Row, Col, Divider } from 'antd';
+import { Table, Button, Tag, Card, Select, Input, message, Avatar, Divider } from 'antd';
 import styles from './DarenList.less';
 import ChartPopover from './ChartPopover';
+import TrimSpan from '../../components/TrimSpan';
 
 const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
 const AREAS = [{
@@ -208,18 +209,18 @@ export default class DarenList extends PureComponent {
     const columns = [{
       title: '达人账号',
       dataIndex: 'attributes',
-      width: 160,
+      width: 150,
       render: (val, record) =>
-        <Row>
-          <Col span={8}>
+        <div style={{  }}>
+          <div style={{ display: 'inline-block', verticalAlign: 'top' }}>
             <Avatar size="large" shape="square" style={{ backgroundColor: '#87d068' }} icon="user" src={record.headFullUrl}/>
-          </Col>
-          <Col span={16}>
-            <Row><strong>{record.nick}</strong></Row>
-            <Row>{record.area}</Row>
-            { val && <Row>{val.creator_type}</Row> }
-          </Col>
-        </Row>
+          </div>
+          <div style={{ display: 'inline-block', verticalAlign: 'top', marginLeft: 8 }}>
+            <div><strong><TrimSpan length={8} text={record.nick}/></strong></div>
+            <div>{record.area}</div>
+            { val && <div>{val.creator_type}</div> }
+          </div>
+        </div>
       ,
     }, {
       title: '粉丝分析',
