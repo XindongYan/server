@@ -87,7 +87,7 @@ export default class DarenLiveList extends PureComponent {
     const { darenLives, loading,  } = this.props;
     const { cycle } = this.state;
     const columns = [{
-      title: '排名',
+      title: <span className={styles.title}>排名</span>,
       dataIndex: 'rank',
       width: 10,
       className: styles.rankColumn,
@@ -100,7 +100,7 @@ export default class DarenLiveList extends PureComponent {
         return <span className={className}>{rank}</span>;
       },
     }, {
-      title: '达人账号',
+      title: <span className={styles.title}>达人账号</span>,
       dataIndex: 'attributes',
       width: 150,
       render: (val, record) =>
@@ -116,44 +116,44 @@ export default class DarenLiveList extends PureComponent {
         </div>
       ,
     }, {
-      title: '粉丝数',
+      title: <span className={styles.title}>粉丝数</span>,
       dataIndex: 'darenMissionData.fansCount',
       sorter: true,
       width: 70,
       render: (val) => val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val,
     }, {
-      title: '人气',
+      title: <span className={styles.title}>人气</span>,
       dataIndex: 'hongbei.hotsnum',
       sorter: true,
       width: 70,
       render: (val) => val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val,
     }, {
-      title: '观看人数/小时',
+      title: <span className={styles.title}>观看人数/小时</span>,
       dataIndex: `hongbei.${cycle}.base.watches_avg_hour`,
       sorter: true,
       width: 70,
     }, {
-      title: '评论数/小时',
+      title: <span className={styles.title}>评论数/小时</span>,
       dataIndex: `hongbei.${cycle}.base.cmt_avg_hour`,
       sorter: true,
       width: 70,
     }, {
-      title: '评论人数/小时',
+      title: <span className={styles.title}>评论人数/小时</span>,
       dataIndex: `hongbei.${cycle}.base.cmt_user_avg_hour`,
       sorter: true,
       width: 70,
     }, {
-      title: '商品点击次数/小时',
+      title: <span className={styles.title}>商品点击次数/小时</span>,
       dataIndex: `hongbei.${cycle}.base.trade_show_avg_hour`,
       sorter: true,
       width: 70,
     }, {
-      title: '商品点击人数/小时',
+      title: <span className={styles.title}>商品点击人数/小时</span>,
       dataIndex: `hongbei.${cycle}.base.trade_show_uv_avg_hour`,
       sorter: true,
       width: 70,
     }, {
-      title: '关注人数/小时',
+      title: <span className={styles.title}>关注人数/小时</span>,
       dataIndex: `hongbei.${cycle}.base.followers_avg_hour`,
       sorter: true,
       width: 70,
