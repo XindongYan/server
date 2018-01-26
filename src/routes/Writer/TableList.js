@@ -12,7 +12,7 @@ import TaskStatusColumn from '../../components/TaskStatusColumn';
 import TaskSourceColumn from '../../components/TaskSourceColumn';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
+import { TASK_APPROVE_STATUS, ORIGIN, SOURCE } from '../../constants';
 import styles from './TableList.less';
 import { queryConvertedTasks, queryTask } from '../../services/task';
 
