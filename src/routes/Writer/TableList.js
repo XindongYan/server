@@ -359,7 +359,7 @@ export default class TableList extends PureComponent {
         title: '名称',
         dataIndex: 'name',
         render: (record, task) => (
-          <Link to={`/project/task/view?_id=${task._id}`}>
+          <Link to={`/writer/task/view?_id=${task._id}`}>
             <TaskNameColumn text={record} length={10} />
           </Link>
         ),
@@ -460,14 +460,9 @@ export default class TableList extends PureComponent {
                 外链
               </a>
               <Divider type="vertical" />
-              { !record.project_id ?
-                <Link to={`/writer/task/create?_id=${record._id}&channel_name=${record.channel_name || '直播脚本'}&task_type=${record.task_type || 1}`}>
-                  <span>编辑</span>
-                </Link>
-                : <Link to={`/writer/task/edit?_id=${record._id}`}>
-                  <span>编辑</span>
-                </Link>
-              }
+              <Link to={`/writer/task/edit?_id=${record._id}`}>
+                <span>编辑</span>
+              </Link>
               { record.channel_name &&
                 <span>
                   <Divider type="vertical" />
@@ -646,7 +641,6 @@ export default class TableList extends PureComponent {
               }}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
-              rowSelection={rowSelection}
             />
             <DockPanel />
           </div>

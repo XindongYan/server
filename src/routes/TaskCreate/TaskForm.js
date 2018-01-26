@@ -4,7 +4,7 @@ import { Card, Form, Input, Select, Icon, Button, Upload, message, Tooltip } fro
 import path from 'path';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, SOURCE } from '../../constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -90,6 +90,7 @@ export default class TaskForm extends PureComponent {
             type: 'task/add',
             payload: {
               ...payload,
+              source: SOURCE.task,
               approve_status: TASK_APPROVE_STATUS.created,
             },
             callback: (result) => {
