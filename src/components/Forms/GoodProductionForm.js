@@ -380,7 +380,7 @@ export default class GoodProductionForm extends PureComponent {
                 </div>
                 { formData.bodyStruct0 && formData.bodyStruct0.length > 0 ?
                   <ul>
-                    {formData.bodyStruct0.map(item => <li key={item} className={styles.longpoint_list_item}>{item}</li>)}
+                    {formData.bodyStruct0.map((item, index) => <li key={index} className={styles.longpoint_list_item}>{item}</li>)}
                   </ul> :
                   <ul>
                     {[0,1,2].map(item => <li key={item} className={styles.longpoint_list_item}>长亮点描述</li>)}

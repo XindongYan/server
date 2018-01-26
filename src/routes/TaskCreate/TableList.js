@@ -7,7 +7,7 @@ import G2 from '@antv/g2';
 import { Table, Card, Button, Input, Form, Menu, Popconfirm, Modal, Select, Row, Col, Popover,
   Dropdown, Icon, message, Radio, Tooltip, DatePicker, Tabs } from 'antd';
 import { Link } from 'dva/router';
-import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
+import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, RIGHT } from '../../constants';
 import FinanceList from './FinanceList.js';
 import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -401,7 +401,7 @@ export default class TableList extends PureComponent {
     });
   }
   render() {
-    const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
+    const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers, currentUser } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible, activeKey } = this.state;
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
     const menu = (
@@ -709,9 +709,9 @@ export default class TableList extends PureComponent {
               <div id="chart"></div>
             </Card>
           </TabPane>
-           <TabPane tab="财务" key="finance">
+           { currentUser.rights && currentUser.rights.indexOf(RIGHT.finance) >= 0 && <TabPane tab="财务" key="finance">
             <FinanceList location={this.props.location} />
-          </TabPane>
+          </TabPane>}
         </Tabs>
         
       </div>
