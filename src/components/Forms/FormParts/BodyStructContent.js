@@ -14,7 +14,7 @@ export default class BodyStructContent extends PureComponent {
   state = {
     title: '',
     desc: '',
-    images: '',
+    images: [],
   }
   componentDidMount() {
     if (this.props.formData && this.props.formData.title) {
@@ -52,23 +52,27 @@ export default class BodyStructContent extends PureComponent {
       payload: { currentKey: this.props.index },
     });
   }
-  handleCropCoverImg = (imgs) => {
+  handleAddImg = (imgs) => {
     if (imgs[0]) {
       this.setState({
-        images: imgs[0].url,
+        images: [{
+          materialId: imgs[0].materialId,
+          picWidth: imgs[0].picWidth,
+          picHeight: imgs[0].picHeight,
+          picUrl: imgs[0].url,
+        }],
       })
     }
   }
   handleRemoveImg = () => {
     this.setState({
-      images: '',
+      images: [],
     })
   }
   handlePushContent = () => {
     this.props.form.validateFieldsAndScroll(['title', 'desc'], (err, val) => {
       if (!err) {
-        console.log(this.state.images);
-        if (!this.state.images) {
+        if (this.state.images.length < 1) {
           message.warn('请选择一张配图');
         } else {
           if (this.props.onChange) this.props.onChange(this.props.index, {
@@ -141,7 +145,7 @@ export default class BodyStructContent extends PureComponent {
           <p className={styles.lineTitleDefult}>
             配图
           </p>
-          { !images &&
+          { (!images || images.length === 0) &&
             <label onClick={() => this.uploadCoverImg('images',0,0)}>
               <div className={styles.upCover} style={{ width: 130, height: 130, paddingTop: 30 }}>
                 <Icon type="plus" className={styles.uploadIcon} />
@@ -149,9 +153,9 @@ export default class BodyStructContent extends PureComponent {
               </div>
             </label>
           }
-          { images &&
+          { images && images.length > 0 &&
             <div className={styles.imgShowBox} style={{ width: 130, height: 130, lineHeight: '126px' }}>
-              <img src={images} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} />
+              <img src={images[0].picUrl} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto', width: 'auto' }} />
               <div className={styles.clearImg} onClick={this.handleRemoveImg}>
                 <Icon type="delete" />
               </div>
@@ -163,7 +167,7 @@ export default class BodyStructContent extends PureComponent {
         <div style={{ height: 40, marginTop: 20 }}>
           <Button onClick={this.handlePushContent} type="primary" style={{ float: 'right' }}>确定</Button>
         </div>
-        <AlbumModal mode="single" k={this.props.index} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
+        <AlbumModal mode="single" k={this.props.index} minSize={this.state.minSize} onOk={this.handleAddImg}/>
       </div>
     );
   }

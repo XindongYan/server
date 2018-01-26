@@ -408,7 +408,7 @@ export default class GoodProductionForm extends PureComponent {
                   <div>
                     <img
                       style={{ width: '100%', height: 'auto' }}
-                      src={item && item.images ? item.images : 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
+                      src={item && item.images && item.images.length > 0 ? item.images[0].picUrl : 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
                     ></img>
                   </div>
                   { this.state.visibleBodyStruct === index &&
