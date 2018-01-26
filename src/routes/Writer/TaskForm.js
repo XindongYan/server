@@ -73,6 +73,8 @@ export default class TaskForm extends PureComponent {
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
       classification: [], // 分类
+      end_link: '', //文末链接
+      end_text: '',
     },
     approveModalVisible: false,
     approver_id: {

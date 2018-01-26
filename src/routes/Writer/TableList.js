@@ -568,7 +568,7 @@ export default class TableList extends PureComponent {
       }),
     };
     if (data.approve_status === -1 || data.approve_status === 0) {
-      columns.push(...times, approveTime, approver, grade, opera);
+      columns.push(...times, grade, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
       columns.push( pushStatusText, daren_nickname, pushTime, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
@@ -576,7 +576,7 @@ export default class TableList extends PureComponent {
     } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
       columns.push(...times, grade, status, opera);
     } else {
-      columns.push(...times, approver, grade, approveTime, opera);
+      columns.push(...times, grade, approveTime, opera);
     }
     return (
       <div>
