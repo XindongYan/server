@@ -7,7 +7,7 @@ export default class TaskStatusColumn extends PureComponent {
     if (status === -3) {
       return '已创建';
     } else if (status === -2) {
-      return (<Tag color="#FFF5EE">已上架</Tag>);
+      return (<Tag color="#C1C1C1">已上架</Tag>);
     } else if (status === -1) {
       return (<Tag color="#FFC125">已接单</Tag>);
     } else if (status === 0) {
