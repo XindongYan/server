@@ -20,10 +20,10 @@ export default class SubmissionList extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, projects: { pagination } } = this.props;
     dispatch({
       type: 'taskSquare/fetchProjects',
-      payload: { ...this.state.page, type: this.state.type }
+      payload: { ...pagination, type: this.state.type }
     });
   }
   componentWillReceiveProps(nextProps) {
