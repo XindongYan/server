@@ -755,7 +755,7 @@ export default class TaskForm extends PureComponent {
           </div>
           {formRight}
           {operation !== 'view' && <div className={styles.submitBox}>
-            { query.project_id ?
+            { (query.project_id || formData.project_id) ?
               <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton')}>
                 <Popconfirm overlayClassName={styles.popConfirm} getPopupContainer={() => document.getElementById('subButton')} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleSubmitTask}>
                   <Button id="subButton">提交审核</Button>
