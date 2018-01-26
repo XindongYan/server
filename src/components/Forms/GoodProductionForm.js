@@ -139,7 +139,7 @@ export default class GoodProductionForm extends PureComponent {
         images: auction.images,
         itemId: auction.item.itemId,
         materialId: auction.materialId,
-        price: auction.item.finalPrice,
+        price: Number(auction.item.finalPrice),
         rawTitle: auction.title,
         resourceUrl: auction.item.itemUrl,
         title: auction.title,
