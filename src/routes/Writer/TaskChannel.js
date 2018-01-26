@@ -53,8 +53,16 @@ export default class TaskChannel extends PureComponent {
       return (
         <span>iFashion定位女性中高端人群的时尚搭配与潮流基地。覆盖类目：女装/女士精品，女鞋，眼镜，女士内衣/家居服，美容护肤/美体/精油，服饰配件/皮带/帽子/围巾，彩妆/香水/美妆工具，珠宝/钻石/翡翠/黄金，饰品/流行首饰/时尚饰品新。</span>
       )
+    } else if (query.channel_name === '买遍全球') {
+      return (
+        <div>
+          <p>买遍全球频道为种草拔草一体化的进口好货发现频道，每一位达人都是海淘好货推荐官。如果你对海淘领域非常熟悉，并擅长向用户种草好货，买遍全球是最适合你的选择！</p>
+          <p>所需内容类型：单品、帖子、搭配、短视频。</p>
+        </div>
+      )
     }
   }
+
   handleRequire = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     if (query.channel_name === '淘宝头条') {
@@ -319,6 +327,36 @@ export default class TaskChannel extends PureComponent {
           </div>
           <div>
             <p>旺旺交流群：1639715526</p>
+          </div>
+        </div>
+      )
+    } else if (query.channel_name === '买遍全球') {
+      return (
+        <div className={styles.channel_detail_text}>
+          <p>一、基础要求：</p>
+          <div>
+            <p>1.擅长品类：专业领域下有资深选品经验与撰稿经验，熟知中高端用户需求，理解消费升级趋势，对某个品类有深入的了解和鉴赏评定能力者优先。</p>
+            <p>2.选品专业：有较强的品牌识别和选品能力，能挖掘并种草一般人不了解的品牌和商品。</p>
+            <p>3.内容价值：所有内容必须是原创，文案撰写必须体现较强的商品鉴赏评定，和导购包装能力，有一定的美工基础。</p>
+          </div>
+            
+          <p>二、达人要求及管理规范：</p>
+          <div>
+            <p>1.粉丝数>=20000，达人指数>=500，内容质量分>=500，账号活跃度>=50，非卖家账号</p>
+            <p>2.提供在淘宝其他渠道发布的资讯、评测、搭配案例各2个并审核通过</p>
+            <p>3.（选填）达人后台“统计-内容分析”页面，最近30天的数据页面完整截图</p>
+            <p>4.（选填）如在淘系外其他平台有账号，请提供该平台个人主页链接及后台主页截图（需包含粉丝数）</p>
+            <p>5.（选填）职业认证说明：职业相关的资格证书或工作证明，如有国家颁布的职业资格证书，请提供照片或扫描件</p>
+            <p>6.频道达人管理规范：</p>
+            <p>请见链接 https://woyao.bbs.taobao.com/detail.html?postId=8303068</p>
+          </div>
+          <div>
+            <p>三、内容类型</p>
+            <p>单品、帖子、搭配、短视频</p>
+          </div>
+          <div>
+            <p>四、内容规范、内容样例、内容展示位置</p>
+            <p>请见链接：https://woyao.bbs.taobao.com/detail.html?postId=7960106</p>
           </div>
         </div>
       )

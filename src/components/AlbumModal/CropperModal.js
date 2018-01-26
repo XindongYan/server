@@ -78,16 +78,46 @@ export default class CropperModal extends PureComponent {
     customEvent.initEvent('getVersion', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
+  handledataURLtoBlob = (dataurl) => {
+    var arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while(n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {
+      type: mime
+    });
+  }
   handleOk = () => {
     if (this.state.dataUrl && !this.state.confirmLoading) {
-      this.setState({ confirmLoading: true });
-      nicaiCrx.innerText = JSON.stringify({data: this.state.dataUrl});
-      const customEvent = document.createEvent('Event');
-      customEvent.initEvent('uploadImg', true, true);
-      nicaiCrx.dispatchEvent(customEvent);
-      message.destroy();
-      message.loading('上传中 ...', 60 * 60);
+      const { maxSize } = this.props;
+        // this.handleSubmit();
+      if (maxSize) {
+        const dataSize = this.handledataURLtoBlob(this.state.dataUrl).size;
+        const imgSize = Math.ceil(dataSize / 1024 * 1.024);
+        if (imgSize > maxSize) {
+          const n = ((maxSize/imgSize).toFixed(2) + '').substr(0, 3);
+          console.log(n);
+          this.handleSubmit(this.refs.cropper.getCroppedCanvas().toDataURL("image/jpeg", Number(n)));
+        } else {
+          this.handleSubmit(this.state.dataUrl);
+        }
+      } else {
+        this.handleSubmit(this.state.dataUrl);
+      }
     }
+  }
+  handleSubmit = (url) => {
+    this.setState({ confirmLoading: true });
+    nicaiCrx.innerText = JSON.stringify({data: url});
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('uploadImg', true, true);
+    nicaiCrx.dispatchEvent(customEvent);
+    message.destroy();
+    message.loading('上传中 ...', 60 * 60);
   }
   handleCancel = () => {
     const { dispatch } = this.props;
@@ -99,8 +129,7 @@ export default class CropperModal extends PureComponent {
   }
 
   _crop = () => {
-    const dataUrl = this.refs.cropper.getCroppedCanvas().toDataURL();
-    // console.log(dataUrl);
+    const dataUrl = this.refs.cropper.getCroppedCanvas().toDataURL("image/jpeg",0.9);
     this.setState({ dataUrl: dataUrl });
   }
   render() {
@@ -125,19 +154,21 @@ export default class CropperModal extends PureComponent {
         maskClosable={false}
         confirmLoading={confirmLoading}
       >
-        {visible && <Cropper
-          ref='cropper'
-          src={src}
-          style={{height: 400, display: 'inline-block', verticalAlign: 'middle'}}
-          crossOrigin="anonymous"
-          // Cropper.js options
-          aspectRatio={width / height}
-          minCropBoxWidth={width / rate}
-          minCropBoxHeight={height / rate}
-          zoomable={false}
-          guides={false}
-          crop={this._crop.bind(this)} /> }
-        <div style={{ width: '38%',  display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, paddingTop: 10}}>
+        {visible && <div style={{ width: '60%', display: 'inline-block' }}>
+          <Cropper
+            ref='cropper'
+            src={src}
+            style={{height: 400, display: 'inline-block', verticalAlign: 'middle'}}
+            crossOrigin="anonymous"
+            // Cropper.js options
+            aspectRatio={width / height}
+            minCropBoxWidth={width / rate}
+            minCropBoxHeight={height / rate}
+            zoomable={false}
+            guides={false}
+            crop={this._crop.bind(this)} />
+        </div> }
+        <div style={{ width: '38%', display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, paddingTop: 10}}>
           <img
             src={dataUrl}
             style={{ width: '100%'}}

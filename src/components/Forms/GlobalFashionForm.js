@@ -18,7 +18,6 @@ const FormItem = Form.Item;
 
 export default class GlobalFashionForm extends PureComponent {
   state = {
-    dataParent: ['潮流热点'],
     dataSource: [],
     minSize: {
       width: 750,
@@ -86,12 +85,14 @@ export default class GlobalFashionForm extends PureComponent {
     if (this.props.form) {
       getFieldDecorator = this.props.form.getFieldDecorator;
     }
-    console.log(this.props.channel_name)
+    let dataParent = [];
     let product = 0;
     if (this.props.channel_name === '全球时尚') {
       product = 3321;
+      dataParent.push('潮流热点');
     } else {
       product = 0;
+      dataParent.push('大进口新内容');
     }
     return (
       <div className={styles.taskBox} style={style}>
@@ -174,7 +175,7 @@ export default class GlobalFashionForm extends PureComponent {
             </div>
 
             <div className={styles.taskList}>
-            	<TagPicker disabled={disabled} dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
+            	<TagPicker disabled={disabled} dataParent={dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
         }

@@ -143,15 +143,9 @@ export default class TableList extends PureComponent {
   handlePublish = async (record) => {
     if (this.state.version) {
       const { currentUser } = this.props;
-      const tasks = await queryConvertedTasks({
-        _ids: JSON.stringify([record._id]),
-      });
+      
       let task = {};
-      if (record.channel_name === '微淘' || record.channel_name === '淘宝头条' || record.channel_name === '全球时尚' || record.channel_name === '生活研究所') {
-        console.log(1)
-        console.log(tasks)
-        task = tasks.list[0];
-      } else if (record.channel_name === '有好货') {
+      if (record.channel_name === '有好货') {
         const result = await queryTask({
           _id: record._id,
         });
@@ -161,6 +155,11 @@ export default class TableList extends PureComponent {
           _id: record._id,
         });
         task = { ...result.task.ifashion, _id: record._id };
+      } else {
+        const tasks = await queryConvertedTasks({
+          _ids: JSON.stringify([record._id]),
+        });
+        task = tasks.list[0];
       }
       this.state.nicaiCrx.innerText = JSON.stringify({ task, user: currentUser, channel_name: record.channel_name });
       const customEvent = document.createEvent('Event');

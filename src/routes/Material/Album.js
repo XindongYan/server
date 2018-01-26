@@ -156,8 +156,8 @@ export default class Album extends PureComponent {
       if (file.size / 1024 / 1024 >= 3) {
         message.warn('上传图片最大3M');
       } else {
-        const reader = new FileReader();   
-        reader.readAsDataURL(file);   
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
         reader.onload = (e) => {
           // console.log(e.target.result); //就是base64  
           this.state.nicaiCrx.innerText = JSON.stringify({data: e.target.result});
