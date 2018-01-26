@@ -276,9 +276,16 @@ export default class TaskForm extends PureComponent {
   }
   handleSubmitTask = () => {
     if (this.validate()) {
-      const { currentUser, teamUser } = this.props;
+      const { currentUser, teamUser, operation, formData } = this.props;
       const query = querystring.parse(this.props.location.search.substr(1));
-      const name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title || '';
+      let name;
+      if (operation === 'create') {
+        name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+      } else if (operation === 'edit') {
+        if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
+          name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+        }
+      }
       const values = {
         ...this.state.task,
       };
@@ -400,9 +407,16 @@ export default class TaskForm extends PureComponent {
   
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { currentUser, teamUser } = this.props;
+    const { currentUser, teamUser, operation, formData } = this.props;
     const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || '';
+    let name;
+    if (operation === 'create') {
+      name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+    } else if (operation === 'edit') {
+      if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
+        name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+      }
+    }
     const values = {
       ...this.state.task,
     };
@@ -513,9 +527,16 @@ export default class TaskForm extends PureComponent {
   }
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { currentUser, teamUser } = this.props;
+    const { currentUser, teamUser, operation, formData } = this.props;
     const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || '';
+    let name;
+    if (operation === 'create') {
+      name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+    } else if (operation === 'edit') {
+      if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
+        name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+      }
+    }
     const values = {
       ...this.state.task,
     };
