@@ -9,10 +9,10 @@ import fetch from 'dva/fetch';
 import { stringify } from 'qs';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
-import TaskSourceColumn from '../../components/TaskSourceColumn';
+import TaskIdColumn from '../../components/TaskIdColumn';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, ORIGIN } from '../../constants';
+import { TASK_APPROVE_STATUS, ORIGIN, SOURCE } from '../../constants';
 import styles from './TableList.less';
 import { queryConvertedTasks, queryTask } from '../../services/task';
 
@@ -351,15 +351,9 @@ export default class TableList extends PureComponent {
     const columns = [
       {
         title: '任务ID',
-        width: 80,
+        width: 100,
         dataIndex: 'id',
-        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
-      },
-      {
-        title: '来源',
-        width: 80,
-        dataIndex: 'source',
-        render: (val) => <TaskSourceColumn source={val}/>,
+        render: (val, record) => <TaskIdColumn source={record.source} text={<a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>} />,
       },
       {
         title: '名称',
@@ -479,8 +473,8 @@ export default class TableList extends PureComponent {
               }
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
-              {!record.creator_id || record.creator_id === currentUser._id && <Divider type="vertical" />}
-              {!record.creator_id || record.creator_id === currentUser._id &&
+              {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) && <Divider type="vertical" />}
+              {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) &&
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
                   <a>删除</a>
                 </Popconfirm>
@@ -493,10 +487,6 @@ export default class TableList extends PureComponent {
               <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
-              <Divider type="vertical" />
-              <Link to={`/writer/task/view?_id=${record._id}`}>
-                <span>查看</span>
-              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
@@ -505,10 +495,6 @@ export default class TableList extends PureComponent {
               <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
-              <Divider type="vertical" />
-              <Link to={`/writer/task/view?_id=${record._id}`}>
-                <span>查看</span>
-              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {

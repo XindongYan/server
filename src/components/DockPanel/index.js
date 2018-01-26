@@ -6,7 +6,7 @@ import DetailPane from './panes/DetailPane';
 import AnalyzePane from './panes/AnalyzePane';
 import OperationPane from './panes/OperationPane';
 import TaskStatusColumn from '../TaskStatusColumn';
-import TaskSourceColumn from '../TaskSourceColumn';
+import TaskIdColumn from '../TaskIdColumn';
 import styles from './index.less';
 const TabPane = Tabs.TabPane;
 
@@ -71,9 +71,8 @@ export default class DockPanel extends PureComponent {
             <div className={styles['dock-panel-head']}>
               <div className={styles['dock-panel-head-title']}>
                 <Breadcrumb separator="  ">
-                  <Breadcrumb.Item><span style={{ fontSize: '16px', color: '#000' }}>{formData.id}</span></Breadcrumb.Item>
+                  <Breadcrumb.Item><TaskIdColumn source={formData.source} text={<span style={{ fontSize: '16px', color: '#000' }}>{formData.id}</span>}/></Breadcrumb.Item>
                   <Breadcrumb.Item><TaskStatusColumn status={formData.approve_status}/></Breadcrumb.Item>
-                  <Breadcrumb.Item><TaskSourceColumn source={formData.source}/></Breadcrumb.Item>
                 </Breadcrumb>
                 
                 <div className={styles['dock-panel-head-close']}>

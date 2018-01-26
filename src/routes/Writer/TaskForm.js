@@ -276,9 +276,16 @@ export default class TaskForm extends PureComponent {
   }
   handleSubmitTask = () => {
     if (this.validate()) {
-      const { currentUser, teamUser } = this.props;
+      const { currentUser, teamUser, operation, formData } = this.props;
       const query = querystring.parse(this.props.location.search.substr(1));
-      const name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title || '';
+      let name;
+      if (operation === 'create') {
+        name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+      } else if (operation === 'edit') {
+        if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
+          name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+        }
+      }
       const values = {
         ...this.state.task,
       };
@@ -400,9 +407,17 @@ export default class TaskForm extends PureComponent {
   
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { currentUser, teamUser } = this.props;
+    const { currentUser, teamUser, operation, formData } = this.props;
     const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || '';
+    const title = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+    let name;
+    if (operation === 'create') {
+      name = title;
+    } else if (operation === 'edit') {
+      if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
+        name = title;
+      }
+    }
     const values = {
       ...this.state.task,
     };
@@ -418,7 +433,7 @@ export default class TaskForm extends PureComponent {
     } else if (channel_name === '买遍全球') {
       values.buyWorld = this.state.buyWorld;
     }
-    if (!name.trim()) {
+    if (!title.trim()) {
       message.warn('请输入标题');
     } else {
       this.setState({
@@ -513,9 +528,16 @@ export default class TaskForm extends PureComponent {
   }
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { currentUser, teamUser } = this.props;
+    const { currentUser, teamUser, operation, formData } = this.props;
     const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || '';
+    let name;
+    if (operation === 'create') {
+      name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+    } else if (operation === 'edit') {
+      if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
+        name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+      }
+    }
     const values = {
       ...this.state.task,
     };
@@ -755,7 +777,7 @@ export default class TaskForm extends PureComponent {
           </div>
           {formRight}
           {operation !== 'view' && <div className={styles.submitBox}>
-            { query.project_id ?
+            { (query.project_id || formData.project_id) ?
               <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton')}>
                 <Popconfirm overlayClassName={styles.popConfirm} getPopupContainer={() => document.getElementById('subButton')} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleSubmitTask}>
                   <Button id="subButton">提交审核</Button>

@@ -36,7 +36,7 @@ export default class teamTasks extends PureComponent {
     darenModalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
-    formValues: {},
+    searchValue: '',
     task: {},
   };
 
@@ -60,8 +60,7 @@ export default class teamTasks extends PureComponent {
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, teamTask: { approve_status }, teamUser: { team_id } } = this.props;
-    const { formValues } = this.state;
-    const query = querystring.parse(this.props.location.search.substr(1));
+    const { searchValue } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -72,7 +71,7 @@ export default class teamTasks extends PureComponent {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       approve_status,
-      ...formValues,
+      search: searchValue,
       ...filters,
     };
     if (sorter.field) {
@@ -234,10 +233,11 @@ export default class teamTasks extends PureComponent {
       payload: { team_id, approve_status: e.target.value, },
     });
   }
-  handleSearchClear = (e) => {
+  handleSearchChange = (e) => {
     if (e.target.value.length === 0) {
       this.handleSearch(e.target.value, 'search');
     }
+    this.setState({ searchValue: e.target.value });
   }
   handleShowDockPanel = (record, activeKey) => {
     this.props.dispatch({
@@ -393,7 +393,7 @@ export default class teamTasks extends PureComponent {
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
-                onChange={this.handleSearchClear}
+                onChange={this.handleSearchChange}
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />

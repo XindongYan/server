@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, Tooltip, message } from 'antd';
+import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, Tooltip, Input, message } from 'antd';
 import { RIGHTS, APPROVE_ROLES, RIGHT } from '../../constants';
 import styles from './TeamList.less';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
+const Search = Input.Search;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
@@ -20,7 +21,7 @@ export default class TableList extends PureComponent {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
-    formValues: {},
+    searchValue: '',
     user_id: '',
     user: {},
     addTeamUserModalVisible: false,
@@ -52,7 +53,7 @@ export default class TableList extends PureComponent {
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, teamUser } = this.props;
-    const { formValues } = this.state;
+    const { searchValue } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -64,7 +65,7 @@ export default class TableList extends PureComponent {
       team_id: teamUser.team_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
-      ...formValues,
+      search: searchValue,
       ...filters,
     };
     if (sorter.field) {
@@ -82,30 +83,27 @@ export default class TableList extends PureComponent {
       selectedRows: rows,
     });
   }
-
-  handleSearch = (e) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'team/fetch',
-        payload: values,
-      });
+  handleSearchChange = (e) => {
+    if (e.target.value.length === 0) {
+      this.handleSearch(e.target.value, 'search');
+    }
+    this.setState({ searchValue: e.target.value });
+  }
+  handleSearch = (value, name) => {
+    const { dispatch, teamUser, team: { data: { pagination } } } = this.props;
+    const values = {
+      ...pagination,
+    };
+    values[name] = value;
+    dispatch({
+      type: 'team/fetch',
+      payload: {
+        team_id: teamUser.team_id,
+        ...values,
+      },
     });
   }
+
   handleModalVisible = (flag) => {
     this.setState({
       modalVisible: !!flag,
@@ -296,6 +294,13 @@ export default class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
             <Button onClick={this.handleShowAddTeamUserModal} type="primary" icon="plus">添加成员</Button>
+            <Search
+              style={{ width: 260, float: 'right' }}
+              placeholder="姓名/昵称/电话"
+              onChange={this.handleSearchChange}
+              onSearch={(value) => this.handleSearch(value, 'search')}
+              enterButton
+            />
           </div>
           <Table
             loading={loading}

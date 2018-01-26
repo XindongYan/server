@@ -6,7 +6,7 @@ export default {
   state: {
     projects: {
       list: [],
-      pagination: {},
+      pagination: { pageSize: 99999999 },
     },
     projectsLoading: true,
     project: {},

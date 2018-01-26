@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Badge } from 'antd';
+import { Tag } from 'antd';
 
 export default class TaskStatusColumn extends PureComponent {
   render() {
@@ -7,23 +7,23 @@ export default class TaskStatusColumn extends PureComponent {
     if (status === -3) {
       return '已创建';
     } else if (status === -2) {
-      return (<Badge status="default" text="已发布" />);
+      return (<Tag color="#C1C1C1">已上架</Tag>);
     } else if (status === -1) {
-      return (<Badge status="warning" text="已接单" />);
+      return (<Tag color="#FFC125">已接单</Tag>);
     } else if (status === 0) {
-      return (<Badge status="processing" text="待审核" />);
+      return (<Tag color="#108ee9">待审核</Tag>);
     } else if (status === 1) {
-      return (<Badge status="success" text="已通过" />);
+      return (<Tag color="#87d068">已通过</Tag>);
     } else if (status === 2) {
-      return (<Badge status="error" text="未通过" />);
+      return (<Tag color="#f50">未通过</Tag>);
     } else if (status === 3) {
-      return (<Badge status="success" text="待发布到淘宝" />);
+      return (<Tag color="#FFD700">待发布</Tag>);
     } else if (status === 4) {
-      return (<Badge status="processing" text="已发布到淘宝" />);
+      return (<Tag color="#108ee9">已发布</Tag>);
     } else if (status === 5) {
-      return (<Badge status="success" text="淘宝通过" />);
+      return (<Tag color="#87d068">淘宝通过</Tag>);
     } else if (status === 6) {
-      return (<Badge status="error" text="淘宝不通过" />);
+      return (<Tag color="#f50">淘宝不通过</Tag>);
     } else {
       return <span>{status}</span> ;
     }

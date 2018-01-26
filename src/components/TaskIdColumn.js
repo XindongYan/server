@@ -2,17 +2,17 @@ import React, { PureComponent } from 'react';
 import { Badge } from 'antd';
 import { SOURCE } from '../constants';
 
-export default class TaskSourceColumn extends PureComponent {
+export default class TaskIdColumn extends PureComponent {
   render() {
-    const { source } = this.props;
+    const { source, text } = this.props;
     if (source === SOURCE.task) {
-      return (<Badge status="processing" text={"赏金任务"} />);
+      return (<Badge status="processing" text={text} />);
     } else if (source === SOURCE.deliver) {
-      return (<Badge status="warning" text={"投稿"} />);
+      return (<Badge status="warning" text={text} />);
     } else if (source === SOURCE.create) {
-      return (<Badge status="success" text={"我的"} />);
+      return (<Badge status="success" text={text} />);
     } else if (source === SOURCE.pass) {
-      return (<Badge status="error" text={"转交"} />);
+      return (<Badge status="error" text={text} />);
     } else {
       return <span>{source}</span> ;
     }
