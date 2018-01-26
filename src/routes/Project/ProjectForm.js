@@ -364,7 +364,7 @@ export default class ProjectForm extends PureComponent {
                     rules: [{ required: true, message: `请选择${label}人员` }],
                   })(
                     <Select
-                      mode="tags"
+                      mode="multiple"
                       style={{ width: '100%' }}
                       placeholder={`选择${label}人员`}
                     >
