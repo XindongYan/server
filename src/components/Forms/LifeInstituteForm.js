@@ -238,7 +238,7 @@ export default class LifeInstituteForm extends PureComponent {
           </div>
         }
         <AlbumModal mode="single" k="cover" minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
-        <CropperModal onOk={this.handleAddCoverImg}/>
+        <CropperModal onOk={this.handleAddCoverImg} maxSize={500}/>
       </div>
     );
   }

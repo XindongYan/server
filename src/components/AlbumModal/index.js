@@ -208,10 +208,11 @@ export default class AlbumModal extends PureComponent {
     if (file) {
       if (file.size / 1024 / 1024 >= 3) {
         message.warn('上传图片最大3M');
+      } else if (this.props.maxSize && file.size / 1024 / 1.024 > this.props.maxSize) {
+        message.warn('请上传符合要求大小的图片');
       } else {
-        // console.log(file)
         var reader = new FileReader();  
-        reader.readAsDataURL(file);  
+        reader.readAsDataURL(file);
         //监听文件读取结束后事件  
         reader.onloadend = (e1) => {
           if (k !== 'editor') {
