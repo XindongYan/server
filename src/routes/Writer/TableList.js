@@ -480,8 +480,8 @@ export default class TableList extends PureComponent {
               }
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
-              {!record.creator_id || record.creator_id === currentUser._id && <Divider type="vertical" />}
-              {!record.creator_id || record.creator_id === currentUser._id &&
+              {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) && <Divider type="vertical" />}
+              {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) &&
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
                   <a>删除</a>
                 </Popconfirm>
