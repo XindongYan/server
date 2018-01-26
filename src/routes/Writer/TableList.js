@@ -9,7 +9,7 @@ import fetch from 'dva/fetch';
 import { stringify } from 'qs';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
-import TaskSourceColumn from '../../components/TaskSourceColumn';
+import TaskIdColumn from '../../components/TaskIdColumn';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
 import { TASK_APPROVE_STATUS, ORIGIN, SOURCE } from '../../constants';
@@ -351,15 +351,9 @@ export default class TableList extends PureComponent {
     const columns = [
       {
         title: '任务ID',
-        width: 80,
+        width: 100,
         dataIndex: 'id',
-        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
-      },
-      {
-        title: '来源',
-        width: 80,
-        dataIndex: 'source',
-        render: (val) => <TaskSourceColumn source={val}/>,
+        render: (val, record) => <TaskIdColumn source={record.source} text={<a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>} />,
       },
       {
         title: '名称',
