@@ -493,10 +493,6 @@ export default class TableList extends PureComponent {
               <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
-              <Divider type="vertical" />
-              <Link to={`/writer/task/view?_id=${record._id}`}>
-                <span>查看</span>
-              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
@@ -505,10 +501,6 @@ export default class TableList extends PureComponent {
               <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
                 外链
               </a>
-              <Divider type="vertical" />
-              <Link to={`/writer/task/view?_id=${record._id}`}>
-                <span>查看</span>
-              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
