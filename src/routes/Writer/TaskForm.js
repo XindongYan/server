@@ -409,12 +409,13 @@ export default class TaskForm extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, operation, formData } = this.props;
     const { task, haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
+    const title = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
     let name;
     if (operation === 'create') {
-      name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+      name = title;
     } else if (operation === 'edit') {
       if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
-        name = this.state.task.title || this.state.haveGoodsTask.title || this.state.lifeResearch.title || this.state.globalFashion.title || this.state.ifashion.title || this.state.buyWorld.title;
+        name = title;
       }
     }
     const values = {
@@ -432,7 +433,7 @@ export default class TaskForm extends PureComponent {
     } else if (channel_name === '买遍全球') {
       values.buyWorld = this.state.buyWorld;
     }
-    if (!name.trim()) {
+    if (!title.trim()) {
       message.warn('请输入标题');
     } else {
       this.setState({
