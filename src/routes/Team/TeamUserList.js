@@ -231,6 +231,10 @@ export default class TableList extends PureComponent {
         dataIndex: 'user_id.nickname',
       },
       {
+        title: '姓名',
+        dataIndex: 'user_id.name',
+      },
+      {
         title: '角色',
         dataIndex: 'user_id.rights',
         render(val) {
