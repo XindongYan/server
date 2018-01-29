@@ -328,7 +328,7 @@ export default class AuctionModal extends PureComponent {
     const tabBarExtraContent = this.props.product ? this.props.product : 0;
     return (
       <Modal
-        title="添加宝贝"
+        title="添加商品"
         width="850px"
         visible={k === currentKey && visible}
         onOk={this.handleOk}
@@ -341,7 +341,7 @@ export default class AuctionModal extends PureComponent {
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >
-            <TabPane tab={<span>添加宝贝</span>} key="add">
+            <TabPane tab={<span>添加商品</span>} key="add">
               {this.addAuction()}
             </TabPane>
             <TabPane tab={<span>商品库</span>} key="commodities">
