@@ -259,12 +259,6 @@ window.UEDITOR_HOME_URL = "/ueditor/";
                   exec:function () {
                     	this.execCommand( 'paste' );
                   }
-              }, {
-                  label:'111', 
-                  cmdName:'backcolor',
-                  exec:function () {
-                    	this.execCommand( 'default' );
-                  }
               }
           ]
 
