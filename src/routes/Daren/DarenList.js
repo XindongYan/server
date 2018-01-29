@@ -334,7 +334,7 @@ export default class DarenList extends PureComponent {
       width: 200,
       // fixed: 'right',
       render: (val) => {
-        return val.map((item, index) => <Tag key={index} color={COLORS[index]}>{item.channelName}</Tag>);
+        return val.map((item, index) => <Tag key={index} className={styles['ant-tag']} color={COLORS[index]}>{item.channelName}</Tag>);
       },
     }];
     return (
