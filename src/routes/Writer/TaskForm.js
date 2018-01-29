@@ -135,7 +135,7 @@ export default class TaskForm extends PureComponent {
     const channel_name = this.getChannelName();
     if (channel_name === '有好货') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title'], {scroll: {alignWithTop: true}}, (err, val) => {
         if (!err) {
           if (!haveGoodsTask.body || !haveGoodsTask.body.length) {
             message.warn('请选择商品宝贝');
@@ -168,7 +168,7 @@ export default class TaskForm extends PureComponent {
       return bOk;
     } else if (channel_name === '生活研究所') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'summary', 'crowd'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'summary', 'crowd'], {scroll: {alignWithTop: true}}, (err, val) => {
         if (!err) {
           if (!lifeResearch.task_desc) {
             message.warn('请填写内容');
@@ -188,7 +188,7 @@ export default class TaskForm extends PureComponent {
     } else if (channel_name === '全球时尚') {
       console.log(2)
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'crowd'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'crowd'], {scroll: {alignWithTop: true}}, (err, val) => {
         if (!err) {
           if (!globalFashion.task_desc) {
             message.warn('请填写内容');
@@ -211,7 +211,7 @@ export default class TaskForm extends PureComponent {
     } else if (channel_name === '买遍全球') {
       console.log(1)
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], {scroll: {alignWithTop: true}}, (err, val) => {
         if (!err) {
           if (!buyWorld.task_desc) {
             message.warn('请填写内容');
@@ -233,7 +233,7 @@ export default class TaskForm extends PureComponent {
       return bOk;
     } else if (channel_name === 'ifashion') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title','sub_title','summary'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title','sub_title','summary'], {scroll: {alignWithTop: true}}, (err, val) => {
         if (!err) {
           if (!ifashion.title || !ifashion.title.replace(/\s+/g, '')) {
             message.warn('请填写标题');
