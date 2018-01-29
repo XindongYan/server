@@ -419,7 +419,7 @@ export default class TableList extends PureComponent {
         render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
       },
       {
-        title: '内容标题',
+        title: '任务标题',
         dataIndex: 'name',
         render: (record, task) => (
           <Link to={`/project/task/view?_id=${task._id}`}>
