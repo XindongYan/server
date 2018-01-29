@@ -268,7 +268,7 @@ export default class teamTasks extends PureComponent {
         render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
       },
       {
-        title: '内容标题',
+        title: '名称',
         dataIndex: 'name',
         render: (record, task) => (
           <Link to={`/project/task/view?_id=${task._id}`}>
