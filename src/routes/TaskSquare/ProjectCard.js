@@ -23,6 +23,7 @@ export default class ProjectCard extends PureComponent {
 
   projectInto = (project) => {
     this.props.dispatch(routerRedux.push(`/taskSquare/task/list?project_id=${project._id}`));
+    window.scrollTo(0, 0);
   }
   render() {
     const { project } = this.props;

@@ -21,23 +21,10 @@ export default class SubmissionCard extends PureComponent {
   componentWillReceiveProps(nextProps) {
     
   }
+
   handleDeliver = (project) => {
     const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'taskSquare/deliverTask',
-      payload: {
-        project_id: project._id,
-        creator_id: currentUser._id,
-        taker_id: currentUser._id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-        }
-      },
-    });
+    window.scrollTo(0, 0);
   }
   render() {
     const { project } = this.props;
@@ -95,7 +82,7 @@ export default class SubmissionCard extends PureComponent {
               <span className={styles.cardMsgDeadline}>截稿日期：{ moment(project.deadline).format('YYYY-MM-DD') }</span>
             }
             <Link to={`/taskSquare/submission/details?project_id=${project._id}`}>
-              <Button type="primary" ghost style={{ float: 'right' }}>详情</Button>
+              <Button type="primary" ghost style={{ float: 'right' }} onClick={this.handleDeliver}>详情</Button>
             </Link>
           </div>
         </div>
