@@ -91,9 +91,9 @@ export default class TaskForm extends PureComponent {
     grades: [],
   }
   componentDidMount() {
-    window.onbeforeunload = () => {
-      return "确认离开页面?";
-    }
+    // window.onbeforeunload = () => {
+    //   return "确认离开页面?";
+    // }
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
