@@ -23,7 +23,6 @@ export default class TaskOption extends PureComponent {
   }
   handleDeliver = (value) => {
     const task_type = value === '直播脚本' ? 3 : 1;
-    window.scrollTo(0, 0);
     if (value === '直播脚本') {
       this.props.dispatch(routerRedux.push(`/writer/task/create?channel_name=${value}&task_type=${task_type}`));
     } else {

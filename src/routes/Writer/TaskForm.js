@@ -26,6 +26,7 @@ const Option = Select.Option;
   teamUser: state.user.teamUser,
 }))
 @Form.create()
+
 export default class TaskForm extends PureComponent {
   state = {
     task: {
@@ -90,6 +91,9 @@ export default class TaskForm extends PureComponent {
     grades: [],
   }
   componentDidMount() {
+    window.onbeforeunload = () => {
+      return "确认离开页面?";
+    }
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
@@ -128,6 +132,7 @@ export default class TaskForm extends PureComponent {
       type: 'task/clearFormData'
     });
   }
+
 
   validate = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -662,9 +667,17 @@ export default class TaskForm extends PureComponent {
     if (operation === 'create') {
       return query.channel_name;
     } else if (operation === 'edit') {
-      return formData.channel_name;
+      if (formData.channel_name) {
+        return formData.channel_name;
+      } else {
+        return '直播脚本';
+      }
     } else if (operation === 'view') {
-      return formData.channel_name;
+      if (formData.channel_name) {
+        return formData.channel_name;
+      } else {
+        return '直播脚本';
+      }
     }
     return formData.channel_name;
   }
