@@ -352,8 +352,6 @@ export default class teamTasks extends PureComponent {
     };
     if (teamTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
       columns.push(daren_nickname, pushTime, opera);
-    } else {
-      columns.push(opera);
     }
     return (
       <div>
