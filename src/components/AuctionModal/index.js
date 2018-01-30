@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import $ from 'jquery';
 import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag } from 'antd';
 import styles from './index.less';
-import { searchStatistic, searchNew7 } from '../../services/tool';
+import { searchStatistic, searchNew7, queryQumai } from '../../services/tool';
 
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
@@ -31,6 +31,7 @@ export default class AuctionModal extends PureComponent {
     q_score: '',
     new7: '',
     search: '',
+    qumai: '',
     activeKey: 'add',
   }
   componentDidMount() {
@@ -145,6 +146,7 @@ export default class AuctionModal extends PureComponent {
       auctionChoose: null,
       new7: '',
       q_score: '',
+      qumai: '',
     })
   }
   handleAddAuction = (value) => {
@@ -200,12 +202,15 @@ export default class AuctionModal extends PureComponent {
       if (result.error) {
         message.error(result.msg)
       } else {
-
-        const result1 = await searchNew7({text: `https:${result.data.item.itemUrl}`});
-        if(result1.data && result1.data.length > 0 ){
-          const new7 = result1.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
+        const sevenResult = await searchNew7({text: `https:${result.data.item.itemUrl}`});
+        const qumaiResult = await queryQumai({text: result.data.item.itemUrl});
+        const index1 = qumaiResult.data.htmls.indexOf('有好货已入库');
+        const index2 = qumaiResult.data.htmls.indexOf('条');
+        if(sevenResult.data && sevenResult.data.length > 0 ){
+          const new7 = sevenResult.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
           this.setState({
-            q_score: result1.data[0].q_score,
+            qumai: qumaiResult.data.htmls.substring(index1, index2+1),
+            q_score: sevenResult.data[0].q_score,
             new7: new7,
             choose: result.data.images && result.data.images.length > 0 ? result.data.images[0] : '',
             auctionChoose: result.data,
@@ -244,6 +249,7 @@ export default class AuctionModal extends PureComponent {
     this.setState({
       new7: '',
       q_score: '',
+      qumai: '',
       auctionChoose: auction,
       choose: auction.images && auction.images.length > 0 ? auction.images[0] : auction.coverUrl,
       search: auction.item ? auction.item.itemUrl : '',
@@ -268,7 +274,7 @@ export default class AuctionModal extends PureComponent {
   }
   addAuction = () => {
     const { visible, k } = this.props;
-    const { search, itemList, pagination, loading, auctionChoose, q_score, new7 } = this.state;
+    const { search, itemList, pagination, loading, auctionChoose, q_score, new7, qumai } = this.state;
     return (<div style={{ padding: 10, height: 300 }}>
       <div style={{ position: 'relative' }}>
         <Search
@@ -296,6 +302,9 @@ export default class AuctionModal extends PureComponent {
               }
               { q_score &&
                 <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
+              }
+              { qumai &&
+                <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
               }
             </div>
             { k !== 'material' &&
