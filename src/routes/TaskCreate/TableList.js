@@ -603,19 +603,24 @@ export default class TableList extends PureComponent {
             <Card bordered={false} bodyStyle={{ padding: 14 }}>
               <div className={styles.tableList}>
                 <div className={styles.tableListOperator}>
-                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
-                  <Search
-                    style={{ width: 260, float: 'right' }}
-                    placeholder="ID／名称／商家标签"
-                    onChange={this.handleSearchClear}
-                    onSearch={(value) => this.handleSearch(value, 'search')}
-                    enterButton
-                  />
+                  {selectedRows.length === 0 && (
+                    <span>
+                      <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+                      <Search
+                        style={{ width: 260, float: 'right' }}
+                        placeholder="ID／名称／商家标签"
+                        onChange={this.handleSearchClear}
+                        onSearch={(value) => this.handleSearch(value, 'search')}
+                        enterButton
+                      />
+                    </span>)
+                  }
                   {
                     selectedRows.length > 0 && (
                       <span>
                         <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量上架</Button>
-                        <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
+                        <Button icon="user-add" type="default"
+                        onClick={() => this.handleDarenModalVisible(true)} style={{ marginLeft: 10 }}>指定达人</Button>
                         {/*<Dropdown overlay={menu}>
                           <Button>
                             更多操作 <Icon type="down" />
