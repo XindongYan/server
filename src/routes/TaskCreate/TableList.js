@@ -369,7 +369,7 @@ export default class TableList extends PureComponent {
   onSearch = (value) => {
     if (value) {
       this.props.dispatch({
-        type: 'team/searchUsers',
+        type: 'team/searchTeamUsers',
         payload: {
           nickname: value
         }

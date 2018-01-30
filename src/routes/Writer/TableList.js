@@ -244,7 +244,7 @@ export default class TableList extends PureComponent {
   handlePassSearch = (value) => {
     if (value) {
       this.props.dispatch({
-        type: 'team/searchUsers',
+        type: 'team/searchTeamUsers',
         payload: {
           nickname: value
         }
@@ -326,7 +326,7 @@ export default class TableList extends PureComponent {
     })
     if (value) {
       this.props.dispatch({
-        type: 'team/searchUsers',
+        type: 'team/searchTeamUsers',
         payload: {
           nickname: value
         },
