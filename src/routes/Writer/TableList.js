@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message, Form, Select, Modal } from 'antd';
+import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message, Form, Select, Modal, Button, Progress } from 'antd';
 import moment from 'moment';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
@@ -41,6 +41,10 @@ export default class TableList extends PureComponent {
     modalLoading: false,
     extension: '',
     extensionVisible: false,
+    publishVisible: false,
+    percent: 0,
+    queue: [],
+    queueNumber: 0,
   }
 
   componentDidMount() {
@@ -92,8 +96,24 @@ export default class TableList extends PureComponent {
     if (data.error) {
       message.error(data.msg);
     } else {
-      message.success(data.msg);
-      this.handleFetch();
+      if (this.state.queue && this.state.queue.length > 0) {
+        const n = ((this.state.queueNumber - this.state.queue.length) / this.state.queueNumber) * 100;
+        setTimeout(() => {
+          this.handlePublishToTaobao(this.state.queue[0]);
+          const arr = this.state.queue;
+          arr.splice(0, 1);
+          this.setState({
+            queue: [ ...arr ],
+            percent: n,
+          })
+        },1000)
+      } else {
+        this.setState({
+          publishVisible: false,
+        })
+        message.success(data.msg);
+        this.handleFetch();
+      }
     }
   }
   setVersion = (e) => {
@@ -142,28 +162,10 @@ export default class TableList extends PureComponent {
 
   handlePublish = async (record) => {
     if (this.state.version) {
-      const { currentUser } = this.props;
-      let task = {};
-      if (record.channel_name === '有好货') {
-        const result = await queryTask({
-          _id: record._id,
-        });
-        task = { ...result.task.haveGoods, _id: record._id };
-      } else if (record.channel_name === 'ifashion') {
-        const result = await queryTask({
-          _id: record._id,
-        });
-        task = { ...result.task.ifashion, _id: record._id };
-      } else {
-        const tasks = await queryConvertedTasks({
-          _ids: JSON.stringify([record._id]),
-        });
-        task = tasks.list[0];
-      }
-      this.state.nicaiCrx.innerText = JSON.stringify({ task, user: currentUser, channel_name: record.channel_name });
-      const customEvent = document.createEvent('Event');
-      customEvent.initEvent('publishToTaobao', true, true);
-      this.state.nicaiCrx.dispatchEvent(customEvent);
+      const tasks = await queryConvertedTasks({
+        _ids: JSON.stringify([record._id]),
+      });
+      this.handlePublishToTaobao(tasks.list[0]);
       message.destroy();
       message.loading('发布中 ...', 60);
     } else {
@@ -172,6 +174,34 @@ export default class TableList extends PureComponent {
     }
   }
 
+  handlePublishAll = async () => {
+    const { selectedRows } = this.state;
+    const _ids = [];
+    selectedRows.filter(val => { _ids.push(val._id) });
+    if (this.state.version) {
+      const tasks = await queryConvertedTasks({
+        _ids: JSON.stringify(_ids),
+      });
+      this.handlePublishToTaobao(tasks.list[0]);
+      const arr = tasks.list.splice(1);
+      this.setState({
+        queueNumber: tasks.list.length + 1,
+        queue: [ ...arr ],
+        publishVisible: true,
+        percent: 0,
+      })
+    } else {
+      message.destroy();
+      message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+    }
+  }
+  handlePublishToTaobao = (task) => {
+    const { currentUser } = this.props;
+    this.state.nicaiCrx.innerText = JSON.stringify({ task: task, user: currentUser, channel_name: task.channel_name });
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('publishToTaobao', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
   handleSearch = (value, name) => {
     const { dispatch, data: { pagination, approve_status }, currentUser } = this.props;
     const values = {
@@ -346,7 +376,7 @@ export default class TableList extends PureComponent {
 
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
-    const { modalVisible, selectedRowKeys, approveModalVisible, suggestionApproves } = this.state;
+    const { modalVisible, publishVisible, selectedRowKeys, approveModalVisible, suggestionApproves, selectedRows, percent } = this.state;
     const columns = [
       {
         title: '任务ID',
@@ -559,13 +589,13 @@ export default class TableList extends PureComponent {
         }
       }
     };
-    const rowSelection = {
+    const rowSelection = data.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ? {
       selectedRowKeys,
       onChange: this.handleRowSelectChange,
       getCheckboxProps: record => ({
         disabled: record.disabled,
       }),
-    };
+    } : null;
     if (data.approve_status === -1 || data.approve_status === 0) {
       columns.push(...times, grade, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
@@ -620,6 +650,12 @@ export default class TableList extends PureComponent {
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />
+              { selectedRows.length > 0 && (
+                <span>
+                  <Button icon="user-add" type="default" onClick={this.handlePublishAll}>批量发布</Button>
+                </span>
+                )
+              }
             </div>
             <Table
               loading={loading}
@@ -632,7 +668,21 @@ export default class TableList extends PureComponent {
               }}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
+              rowSelection={rowSelection}
             />
+            {
+              <Modal
+                visible={publishVisible}
+                title="发布中"
+                onCancel={() => this.setState({ publishVisible: false })}
+                footer={null}
+              >
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ marginBottom: 20 }}>正在发布，请勿关闭窗口</div>
+                  <Progress style={{ margin: 'auto'}} type="circle" percent={percent} />
+                </div>
+              </Modal>
+            }
             <DockPanel />
           </div>
         </Card>
