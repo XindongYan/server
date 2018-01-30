@@ -57,10 +57,10 @@ const creation = {
     name: '新建作品',
     path: 'writer-create',
     component: TaskOption,
-  }, {
-    name: '选品池',
-    path: 'https://kxuan.taobao.com/index.htm',
-    target: '_blank',
+  // }, {
+  //   name: '选品池',
+  //   path: 'https://kxuan.taobao.com/index.htm',
+  //   target: '_blank',
   }, {
     name: '淘宝热点',
     path: 'https://aidea.taobao.com/',
