@@ -111,7 +111,8 @@ export default class TableList extends PureComponent {
       } else {
         this.setState({
           publishVisible: false,
-        })
+        });
+        this.handleRowSelectChange([], []);
         message.success(data.msg);
         this.handleFetch();
       }
@@ -541,14 +542,6 @@ export default class TableList extends PureComponent {
               </a>
             </div>
           );
-        } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
-          return (
-            <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
-                外链
-              </a>
-            </div>
-          );
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
@@ -559,6 +552,18 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
+            </div>
+          );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
+          return (
+            <div>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+                外链
+              </a>
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                <a>发布</a>
+              </Popconfirm>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
@@ -640,7 +645,7 @@ export default class TableList extends PureComponent {
         }
       }
     };
-    const rowSelection = data.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ? {
+    const rowSelection = (data.approve_status === TASK_APPROVE_STATUS.passed || data.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) ? {
       selectedRowKeys,
       hideDefaultSelections: true,
       onChange: this.handleRowSelectChange,
