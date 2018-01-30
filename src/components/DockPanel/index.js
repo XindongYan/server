@@ -8,6 +8,7 @@ import OperationPane from './panes/OperationPane';
 import TaskStatusColumn from '../TaskStatusColumn';
 import TaskIdColumn from '../TaskIdColumn';
 import styles from './index.less';
+import { TASK_APPROVE_STATUS } from '../../constants';
 const TabPane = Tabs.TabPane;
 
 @connect(state => ({
@@ -63,6 +64,7 @@ export default class DockPanel extends PureComponent {
     } else {
       panelClassNames.push(styles['dock-panel-visible']);
     }
+    const disableAnalyzePane = formData.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || formData.approve_status === TASK_APPROVE_STATUS.taobaoRejected || formData.approve_status === TASK_APPROVE_STATUS.taobaoAccepted;
     return (
       <div >
         <div className={maskClassNames.join(' ')} onClick={this.handleClose} />
@@ -97,7 +99,7 @@ export default class DockPanel extends PureComponent {
                 <TabPane tab="动态" key="OperationPane">
                   <OperationPane _id={_id}/>
                 </TabPane>
-                <TabPane tab="分析" key="AnalyzePane">
+                <TabPane tab="分析" key="AnalyzePane" disabled={!disableAnalyzePane}>
                   <AnalyzePane task={formData}/>
                 </TabPane>
               </Tabs>

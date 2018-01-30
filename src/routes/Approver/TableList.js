@@ -466,24 +466,28 @@ export default class TableList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Select
-                allowClear
-                showSearch
-                style={{ width: 160, marginRight: 8 }}
-                placeholder="渠道"
-                onChange={(value) => this.handleSearch(value,'channel_name')}
-                optionFilterProp="children"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                { CHANNEL_NAMES.map(item => <Option key={item} value={item}>{item}</Option>) }
-              </Select>
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
-              <Search
-                style={{ width: 260, float: 'right'}}
-                placeholder="ID／名称／商家标签"
-                onSearch={(value) => this.handleSearch(value, 'search')}
-                enterButton
-              />
+              { selectedRows.length === 0 && (
+                <span>
+                  <Select
+                    allowClear
+                    showSearch
+                    style={{ width: 160, marginRight: 8 }}
+                    placeholder="渠道"
+                    onChange={(value) => this.handleSearch(value,'channel_name')}
+                    optionFilterProp="children"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                    { CHANNEL_NAMES.map(item => <Option key={item} value={item}>{item}</Option>) }
+                  </Select>
+                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+                  <Search
+                    style={{ width: 260, float: 'right'}}
+                    placeholder="ID／名称／商家标签"
+                    onSearch={(value) => this.handleSearch(value, 'search')}
+                    enterButton
+                  />
+                </span>)
+              }
               { selectedRows.length > 0 && (
                   <span>
                     <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
