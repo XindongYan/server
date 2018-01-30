@@ -650,7 +650,7 @@ export default class TaskForm extends PureComponent {
           nickname: value,
         },
         callback: (res) => {
-          data[key] = res.users || [];
+          data[key] = res.list || [];
           this.setState({
             suggestionApproves: { ...this.state.suggestionApproves, ...data },
           })
