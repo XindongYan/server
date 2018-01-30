@@ -11,6 +11,7 @@ const Search = Input.Search;
 @connect(state => ({
   projects: state.taskSquare.projects,
   loading: state.taskSquare.projectsLoading,
+  teamUser: state.user.teamUser,
 }))
 
 export default class SubmissionList extends PureComponent {
@@ -20,26 +21,22 @@ export default class SubmissionList extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, projects: { pagination } } = this.props;
+    const { dispatch, projects: { pagination }, teamUser } = this.props;
     dispatch({
       type: 'taskSquare/fetchProjects',
-      payload: { ...pagination, type: this.state.type }
+      payload: { ...pagination, type: this.state.type, team_id: teamUser.team_id }
     });
   }
   componentWillReceiveProps(nextProps) {
-    
+    const { dispatch, projects: { pagination }, teamUser } = nextProps;
+    if (teamUser.team_id !== this.props.teamUser.team_id) {
+      dispatch({
+        type: 'taskSquare/fetchProjects',
+        payload: { ...pagination, type: this.state.type, team_id: teamUser.team_id }
+      });
+    }
   }
 
-  tabChange = (e) => {
-    this.setState({
-      type: e
-    },() => {
-      this.props.dispatch({
-        type: 'taskSquare/fetchProjects',
-        payload: { ...this.state.page, type: this.state.type }
-      });
-    })
-  }
   handleSearchChange = (e) => {
     if (e.target.value.length === 0) {
       this.handleSearch(e.target.value, 'search');
@@ -47,10 +44,11 @@ export default class SubmissionList extends PureComponent {
     this.setState({ searchValue: e.target.value });
   }
   handleSearch = (value, name) => {
-    const { dispatch, projects: { pagination } } = this.props;
+    const { dispatch, projects: { pagination }, teamUser } = this.props;
     const values = {
       ...pagination,
-      type: this.state.type
+      type: this.state.type,
+      team_id: teamUser.team_id,
     };
     values[name] = value;
     dispatch({
@@ -79,18 +77,6 @@ export default class SubmissionList extends PureComponent {
             暂无数据
           </div>
         }
-        { /*
-          <Tabs defaultActiveKey="1" onChange={this.tabChange}>
-            <TabPane tab="活动" key="1">
-              
-            </TabPane>
-             <TabPane tab="投稿" key="2">
-              {projects.list.map((item,index) => 
-                <SubmissionCard key={index} project={item} />)
-              }
-            </TabPane>
-          </Tabs>
-        */ }
       </Card>
     );
   }
