@@ -461,14 +461,13 @@ export default class GoodProductionForm extends PureComponent {
               }
               <p className={styles.promptText}>提示：敲击【回车键】添加【宝贝短亮点】, 【宝贝短亮点】数量2-3个，每个【宝贝短亮点】字数6-12个字</p>
             </div>
-
             <CascaderSelect disabled={disabled} operation={this.props.operation} form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
           </article>
         </section>
         <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
         <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
         <CropperModal onOk={this.handleAddCoverImg}/>
-
+        
         <AuctionImageModal formData={formData.body.length ? formData.body[0] : []} onChange={this.handleChangeBodyImg} />
       </div>
     );

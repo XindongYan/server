@@ -224,7 +224,11 @@ export default class TableList extends PureComponent {
     });
   }
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-    this.setState({ selectedRowKeys, selectedRows });
+    if (selectedRowKeys && selectedRowKeys.length <= 3) {
+      this.setState({ selectedRowKeys, selectedRows });
+    } else {
+      message.warn('一次最多发布3条');
+    }
   }
   changeApproveStatus = (e) => {
     const { dispatch, currentUser, data: { pagination } } = this.props;
@@ -633,6 +637,7 @@ export default class TableList extends PureComponent {
     };
     const rowSelection = data.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ? {
       selectedRowKeys,
+      hideDefaultSelections: true,
       onChange: this.handleRowSelectChange,
       getCheckboxProps: record => ({
         disabled: record.disabled,
