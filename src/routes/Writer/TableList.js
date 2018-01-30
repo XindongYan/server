@@ -173,7 +173,7 @@ export default class TableList extends PureComponent {
         const tasks = await queryConvertedTasks({
           _ids: JSON.stringify([record._id]),
         });
-        // this.handlePublishToTaobao(tasks.list[0]);
+        this.handlePublishToTaobao(tasks.list[0]);
         message.destroy();
         message.loading('发布中 ...', 60);
       }
