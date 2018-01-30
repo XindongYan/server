@@ -107,7 +107,7 @@ export default class BodyStructContent extends PureComponent {
               })(
                 <Input
                   maxLength="6"
-                  suffix={<span>{ this.props.form.getFieldValue(['title']) ? this.props.form.getFieldValue(['title']).length : 0 }/6</span>}
+                  suffix={<span>{ this.props.form.getFieldValue('title') ? this.props.form.getFieldValue('title').length : 0 }/6</span>}
                   placeholder="请在这里输入4-6个字以内的段落标题"
                 />
               )}
