@@ -343,7 +343,21 @@ export default class TableList extends PureComponent {
       },
     });
   }
-
+  handleReject = (record) => {
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'task/reject',
+      payload: { _id: record._id, approver_id: currentUser._id },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          this.handleFetch();
+        }
+      },
+    });
+  }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
     const { modalVisible, selectedRowKeys, approveModalVisible, suggestionApproves } = this.state;
@@ -542,6 +556,34 @@ export default class TableList extends PureComponent {
                   查看
                 </a>
               }
+            </div>
+          );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
+          return (
+            <div>
+              { record.taobao && record.taobao.url &&
+                <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
+                  推广
+                </a>
+              }
+              { record.taobao && record.taobao.url &&
+                <Divider type="vertical" />
+              }
+              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                分析
+              </a>
+              { record.taobao && record.taobao.url &&
+                <Divider type="vertical" />
+              }
+              {record.taobao && record.taobao.url &&
+                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
+                  查看
+                </a>
+              }
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <a>退回</a>
+              </Popconfirm>
             </div>
           );
         } else {
