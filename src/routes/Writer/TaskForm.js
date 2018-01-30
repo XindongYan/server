@@ -17,6 +17,8 @@ import { TASK_APPROVE_STATUS, SOURCE } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
+import NicaiForm from '../../components/Form/index.js';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 @connect(state => ({
@@ -787,6 +789,11 @@ export default class TaskForm extends PureComponent {
                 operation="create"
                 formData={this.state.ifashion}
                 onChange={this.handleChangeIfashion}
+              />
+            }
+            { channel_name === '测试' &&
+              <NicaiForm 
+                form={this.props.form}
               />
             }
           </div>

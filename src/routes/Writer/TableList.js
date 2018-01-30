@@ -143,7 +143,6 @@ export default class TableList extends PureComponent {
   handlePublish = async (record) => {
     if (this.state.version) {
       const { currentUser } = this.props;
-      
       let task = {};
       if (record.channel_name === '有好货') {
         const result = await queryTask({

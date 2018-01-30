@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radio, Popconfirm, DatePicker,
-Tooltip, Divider } from 'antd';
+Tooltip, Divider, Form, Modal } from 'antd';
 import { Link } from 'dva/router';
 import moment from 'moment';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN, RIGHT } from '../../constants';
@@ -13,6 +13,7 @@ import styles from './TableList.less';
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
 const { Option } = Select;
+const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const RadioButton = Radio.Button;
@@ -26,13 +27,17 @@ function onChange(date, dateString) {
   currentUser: state.user.currentUser,
   teamUser: state.user.teamUser,
   teamUsers: state.team.data.list,
+  suggestionUsers: state.team.suggestionUsers,
 }))
+@Form.create()
+
 export default class TableList extends PureComponent {
   state = {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
     user_id: '',
+    darenModalVisible: false,
   };
 
   componentDidMount() {
@@ -181,9 +186,55 @@ export default class TableList extends PureComponent {
       },
     });
   }
+
+  handleDarenModalVisible = (flag) => {
+    this.setState({
+      darenModalVisible: !!flag,
+    });
+  }
+  handleSpecifyDaren = () => {
+    const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
+    this.props.form.validateFields((err, values) => {
+      if (!err && values.target_user_id.length >= 24) {
+        dispatch({
+          type: 'project/darenTasks',
+          payload: {
+            task_ids: this.state.selectedRowKeys,
+            user_id: currentUser._id,
+            target_user_id: values.target_user_id,
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              message.success(result.msg);
+              this.handleDarenModalVisible(false);
+              dispatch({
+                type: 'task/fetchApproverTasks',
+                payload: { ...pagination, approve_status, user_id: currentUser._id }
+              });
+              this.handleRowSelectChange([], []);
+            }
+          },
+        });
+      } else {
+        message.warn('请选择达人！');
+      }
+    });
+  }
+  handleSearchDaren = (value) => {
+    if (value) {
+      this.props.dispatch({
+        type: 'team/searchUsers',
+        payload: {
+          nickname: value
+        }
+      });
+    }
+  }
   render() {
-    const { data, loading, currentUser, teamUsers } = this.props;
-    const { selectedRows, modalVisible, selectedRowKeys } = this.state;
+    const { data, loading, currentUser, teamUsers, form: { getFieldDecorator }, suggestionUsers } = this.props;
+    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
     const columns = [
       {
         title: '任务ID',
@@ -376,6 +427,13 @@ export default class TableList extends PureComponent {
       }
     }
     
+    const rowSelection = data.approve_status === 'passed' ? {
+      selectedRowKeys,
+      onChange: this.handleRowSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.disabled,
+      }),
+    } : null;
     return (
       <div>
         <div className={styles.searchBox}>
@@ -426,6 +484,12 @@ export default class TableList extends PureComponent {
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />
+              { selectedRows.length > 0 && (
+                  <span>
+                    <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
+                  </span>
+                )
+              }
             </div>
             <Table
               loading={loading}
@@ -439,7 +503,39 @@ export default class TableList extends PureComponent {
               }}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
+              rowSelection={rowSelection}
             />
+            { darenModalVisible && <Modal
+                title="指定达人"
+                visible={darenModalVisible}
+                onOk={this.handleSpecifyDaren}
+                onCancel={() => this.handleDarenModalVisible(false)}
+              >
+                <FormItem
+                  label="达人"
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 20 }}
+                >
+                  {getFieldDecorator('target_user_id', {
+                    initialValue: '',
+                    rules: [{ required: true, message: '请选择达人！' }],
+                  })(
+                    <Select
+                      style={{ width: '100%' }}
+                      mode="combobox"
+                      optionLabelProp="children"
+                      placeholder="搜索昵称指定达人"
+                      notFoundContent=""
+                      defaultActiveFirstOption={false}
+                      showArrow={false}
+                      filterOption={false}
+                      onSearch={this.handleSearchDaren}
+                    >
+                      {suggestionUsers.map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
+                    </Select>
+                  )}
+                </FormItem>
+              </Modal>}
             <DockPanel />
           </div>
         </Card>
