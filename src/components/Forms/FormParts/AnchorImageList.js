@@ -55,7 +55,7 @@ export default class AnchorImageList extends PureComponent {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
       if (versionNumber < 106) { // 1.0.4
-        message.warn('插件版本较低，请更新！');
+        message.warn('请更新插件！', 60 * 60);
       }
     }
   }

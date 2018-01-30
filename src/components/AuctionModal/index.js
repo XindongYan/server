@@ -89,7 +89,8 @@ export default class AuctionModal extends PureComponent {
       })
     }
     if (data.error) {
-      message.warn(data.msg);
+      message.destroy();
+      message.warn(data.msg, 60 * 60);
       this.setState({
         loading: false,
       });
@@ -111,7 +112,7 @@ export default class AuctionModal extends PureComponent {
       });
     } else {
       message.destroy();
-      message.warn(data.msg);
+      message.warn(data.msg, 60 * 60);
       this.setState({
         loading: false,
       });
