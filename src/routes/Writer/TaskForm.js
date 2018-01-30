@@ -643,7 +643,7 @@ export default class TaskForm extends PureComponent {
     })
     if (value) {
       this.props.dispatch({
-        type: 'team/searchUsers',
+        type: 'team/searchTeamUsers',
         payload: {
           nickname: value
         },
