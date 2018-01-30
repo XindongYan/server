@@ -163,13 +163,20 @@ export default class TableList extends PureComponent {
   }
 
   handlePublish = async (record) => {
-    if (this.state.version) {
-      const tasks = await queryConvertedTasks({
-        _ids: JSON.stringify([record._id]),
-      });
-      this.handlePublishToTaobao(tasks.list[0]);
-      message.destroy();
-      message.loading('发布中 ...', 60);
+    const { version } = this.state;
+    if (version && version.length > 0) {
+      const arr = version.split('.');
+      const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
+      if (versionNumber < 107) { // 1.0.4
+        message.warn('请更新插件！');
+      } else {
+        const tasks = await queryConvertedTasks({
+          _ids: JSON.stringify([record._id]),
+        });
+        // this.handlePublishToTaobao(tasks.list[0]);
+        message.destroy();
+        message.loading('发布中 ...', 60);
+      }
     } else {
       message.destroy();
       message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
