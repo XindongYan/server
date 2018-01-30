@@ -709,7 +709,9 @@ export default class TableList extends PureComponent {
               />
               { selectedRows.length > 0 && (
                 <span>
-                  <Button icon="user-add" type="default" onClick={this.handlePublishAll}>批量发布</Button>
+                  <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={this.handlePublishAll} okText="确认" cancelText="取消">
+                    <Button icon="user-add" type="default">批量发布</Button>
+                  </Popconfirm>
                 </span>
                 )
               }
@@ -725,7 +727,7 @@ export default class TableList extends PureComponent {
               }}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
-              rowSelection={rowSelection}
+              // rowSelection={rowSelection}
             />
             {
               <Modal
