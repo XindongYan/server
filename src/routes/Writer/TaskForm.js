@@ -733,7 +733,7 @@ export default class TaskForm extends PureComponent {
               <WeitaoForm
                 form={this.props.form}
                 role="writer"
-                operation="create"
+                operation={operation}
                 formData={task}
                 onChange={this.handleChange}
               />
@@ -741,7 +741,7 @@ export default class TaskForm extends PureComponent {
             { (query.channel_name === '直播脚本' || formData.task_type === 3) &&
               <ZhiboForm
                 role="writer"
-                operation="create"
+                operation={operation}
                 formData={task}
                 onChange={this.handleChange}
               />
@@ -750,7 +750,7 @@ export default class TaskForm extends PureComponent {
               <GoodProductionForm
                 form={this.props.form}
                 role="writer"
-                operation="create"
+                operation={operation}
                 formData={haveGoodsTask}
                 onChange={this.handleChangeGoods}
               />
@@ -759,7 +759,7 @@ export default class TaskForm extends PureComponent {
               <LifeInstituteForm
                 form={this.props.form}
                 role="writer"
-                operation="create"
+                operation={operation}
                 formData={this.state.lifeResearch}
                 onChange={this.handleChangeLife}
               />
@@ -769,7 +769,7 @@ export default class TaskForm extends PureComponent {
                 channel_name={channel_name}
                 form={this.props.form}
                 role="writer"
-                operation="create"
+                operation={operation}
                 formData={this.state.globalFashion}
                 onChange={this.handleChangeGlobal}
               />
@@ -779,7 +779,7 @@ export default class TaskForm extends PureComponent {
                 channel_name={channel_name}
                 form={this.props.form}
                 role="writer"
-                operation="create"
+                operation={operation}
                 formData={this.state.buyWorld}
                 onChange={this.handleChangeBuyWorld}
               />
@@ -788,7 +788,7 @@ export default class TaskForm extends PureComponent {
               <IfashionForm
                 form={this.props.form}
                 role="writer"
-                operation="create"
+                operation={operation}
                 formData={this.state.ifashion}
                 onChange={this.handleChangeIfashion}
               />
