@@ -1,5 +1,5 @@
 import { queryTeamUsers, updateUser, searchUsers, createTeamUser, removeTeamUser,
-  queryTeamUsersByRole } from '../services/team';
+  queryTeamUsersByRole, searchTeamUsers } from '../services/team';
 
 export default {
   namespace: 'team',
@@ -85,7 +85,15 @@ export default {
       const response = yield call(searchUsers, payload);
       yield put({
         type: 'saveSuggestionUsers',
-        payload: response.users,
+        payload: response.list,
+      });
+      if (callback) callback(response);
+    },
+    *searchTeamUsers({ payload, callback }, { call, put }) {
+      const response = yield call(searchTeamUsers, payload);
+      yield put({
+        type: 'saveSuggestionUsers',
+        payload: response.list,
       });
       if (callback) callback(response);
     },

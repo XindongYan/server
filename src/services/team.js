@@ -27,6 +27,10 @@ export async function searchUsers(params) {
   return request(`/api/task/users/search?${stringify(params)}`);
 }
 
+export async function searchTeamUsers(params) {
+  return request(`/api/task/team/users/search?${stringify(params)}`);
+}
+
 export async function createTeamUser(params) {
   return request('/api/task/team/user', {
     method: 'POST',

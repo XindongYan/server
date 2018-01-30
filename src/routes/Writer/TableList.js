@@ -28,6 +28,7 @@ const Search = Input.Search;
   data: state.task.takerTask,
   loading: state.task.takerTaskLoading,
   currentUser: state.user.currentUser,
+  teamUser: state.user.teamUser,
   suggestionUsers: state.team.suggestionUsers,
 }))
 @Form.create()
@@ -246,11 +247,13 @@ export default class TableList extends PureComponent {
     })
   }
   handlePassSearch = (value) => {
+    const { teamUser } = this.props;
     if (value) {
       this.props.dispatch({
-        type: 'team/searchUsers',
+        type: 'team/searchTeamUsers',
         payload: {
-          nickname: value
+          team_id: teamUser.team_id,
+          nickname: value,
         }
       });
     }
@@ -308,7 +311,7 @@ export default class TableList extends PureComponent {
     });
   }
   handleEditSubmit = (record) => {
-    const { currentUser, teamUser } = this.props;
+    const { currentUser } = this.props;
     this.props.dispatch({
       type: 'task/handin',
       payload: { _id: record._id, user_id: currentUser._id },
@@ -323,6 +326,7 @@ export default class TableList extends PureComponent {
   }
   
   handleApproveSearch = (value, key) => {
+    const { teamUser } = this.props;
     const data = {};
     data[key] = '';
     this.setState({
@@ -330,9 +334,10 @@ export default class TableList extends PureComponent {
     })
     if (value) {
       this.props.dispatch({
-        type: 'team/searchUsers',
+        type: 'team/searchTeamUsers',
         payload: {
-          nickname: value
+          team_id: teamUser.team_id,
+          nickname: value,
         },
         callback: (res) => {
           data[key] = res.users || [];

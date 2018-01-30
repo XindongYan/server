@@ -636,6 +636,7 @@ export default class TaskForm extends PureComponent {
     }
   }
   handleApproveSearch = (value, key) => {
+    const { teamUser } = this.props;
     const data = {};
     data[key] = '';
     this.setState({
@@ -643,9 +644,10 @@ export default class TaskForm extends PureComponent {
     })
     if (value) {
       this.props.dispatch({
-        type: 'team/searchUsers',
+        type: 'team/searchTeamUsers',
         payload: {
-          nickname: value
+          team_id: teamUser.team_id,
+          nickname: value,
         },
         callback: (res) => {
           data[key] = res.users || [];

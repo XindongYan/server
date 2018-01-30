@@ -223,11 +223,13 @@ export default class TableList extends PureComponent {
     });
   }
   handleSearchDaren = (value) => {
+    const { teamUser } = this.props;
     if (value) {
       this.props.dispatch({
-        type: 'team/searchUsers',
+        type: 'team/searchTeamUsers',
         payload: {
-          nickname: value
+          team_id: teamUser.team_id,
+          nickname: value,
         }
       });
     }
