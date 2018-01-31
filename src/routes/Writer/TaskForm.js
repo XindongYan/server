@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
-import { Card, Button, Popconfirm, message, Modal, Form, Select, Input, Tooltip } from 'antd';
+import { Card, Button, Popconfirm, message, Modal, Form, Select, Input, Tooltip, Icon } from 'antd';
 import $ from 'jquery';
 import Annotation from '../../components/Annotation';
 import WeitaoForm from '../../components/Forms/WeitaoForm';
@@ -800,8 +800,8 @@ export default class TaskForm extends PureComponent {
             }
           </div>
           {formRight}
-          {operation !== 'view' && <div className={styles.submitBox}>
-            { (query.project_id || formData.project_id) ?
+          { operation !== 'view' && <div className={styles.submitBox}>
+            { (query.project_id || formData.project_id || formData.approve_status === TASK_APPROVE_STATUS.rejected) ?
               <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton')}>
                 <Popconfirm overlayClassName={styles.popConfirm} getPopupContainer={() => document.getElementById('subButton')} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleSubmitTask}>
                   <Button id="subButton">提交审核</Button>
@@ -815,17 +815,25 @@ export default class TaskForm extends PureComponent {
             <Tooltip placement="top" title="保存到待完成列表">
               <Button onClick={() => this.handleSave()} loading={this.state.saveLoading}>保存</Button>
             </Tooltip>
-          </div>}
-          {operation !== 'view' && formData.grade > 0 && formData.approve_status > 0 &&
-            <div className={styles.submitBox}>
+            { formData.grade > 0 && (formData.approve_status === TASK_APPROVE_STATUS.rejected || formData.approve_status === TASK_APPROVE_STATUS.passed) &&
               <dl className={styles.showGradeBox}>
-              <dt>分数</dt>
+                <dt>分数</dt>
+              {formData.grades && formData.grades.map((item) => 
+                <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
+              }
+              </dl>
+            }
+          </div>}
+          { operation === 'view' && formData.grade > 0 && <div className={styles.submitBox}>
+            <div>
+              <dl className={styles.showGradeBox}>
+                <dt>分数</dt>
               {formData.grades && formData.grades.map((item) => 
                 <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
               }
               </dl>
             </div>
-          }
+          </div>}
         </div>
         {approveModalVisible && <Modal
           title="选择审核人员"
