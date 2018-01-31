@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import $ from 'jquery';
-import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag } from 'antd';
+import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Table } from 'antd';
 import styles from './index.less';
 import { searchNew7, queryQumai } from '../../services/tool';
 import { queryYhhBody } from '../../services/task';
@@ -16,7 +16,6 @@ const Search = Input.Search;
   
 export default class BbuModal extends PureComponent {
   state = {
-    innerText: null,
     nicaiCrx: null,
     version: '',
     choose: '',
@@ -36,12 +35,12 @@ export default class BbuModal extends PureComponent {
 
     bpuValuesPage: {
       pagination: {
-        pageSize: 18,
+        pageSize: 15,
         current: 1,
         total: 0,
       },
       list: [],
-      loading: false,
+      loading: true,
       effective: true,
     },
     bPUSelectionData: {
@@ -51,7 +50,7 @@ export default class BbuModal extends PureComponent {
         total: 0,
       },
       list: [],
-      loading: false,
+      loading: true,
     },
     bPUFromMemberStoreData: {
       pagination: {
@@ -60,7 +59,7 @@ export default class BbuModal extends PureComponent {
         total: 0,
       },
       list: [],
-      loading: false,
+      loading: true,
     },
     bpuFromOnlineData: {
       pagination: {
@@ -69,7 +68,7 @@ export default class BbuModal extends PureComponent {
         total: 0,
       },
       list: [],
-      loading: false,
+      loading: true,
     },
   }
   componentDidMount() {
@@ -88,7 +87,7 @@ export default class BbuModal extends PureComponent {
           });
         }
         setTimeout(() => {
-          if(!this.state.version && !this.state.innerText){
+          if(!this.state.version){
             message.destroy();
             message.warn('请安装尼采创作平台插件！');
             this.setState({ loading: false });
@@ -97,7 +96,6 @@ export default class BbuModal extends PureComponent {
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('setBpuValuesPage', this.setBpuValuesPage);
-        nicaiCrx.removeEventListener('setVersion', this.setVersion);
       }
     }
   }
@@ -112,10 +110,9 @@ export default class BbuModal extends PureComponent {
     if (data.version) {
       this.setState({
         version: data.version,
-        innerText: data,
       });
     }
-    console.log(data);
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
     if (data.error) {
       message.destroy();
       message.warn(data.msg, 60 * 60);
@@ -123,11 +120,12 @@ export default class BbuModal extends PureComponent {
         loading: false,
       });
     } else {
-      // this.handleGetBpuValuesPage({ pageSize: this.state.bpuValuesPage.pagination.pageSize, currentPage: 1 });
+      this.handleGetBpuValuesPage({ pageSize: this.state.bpuValuesPage.pagination.pageSize, currentPage: 1 });
     }
   }
   setBpuValuesPage = (e) => {
     const data = JSON.parse(e.target.innerText);
+    console.log(data);
     if (!data.error) {
       this.setState({
         bpuValuesPage: {
@@ -149,12 +147,6 @@ export default class BbuModal extends PureComponent {
     }
   }
   handleGetBpuValuesPage = (params) => {
-    this.setState({
-      bpuValuesPage: {
-        ...this.state.bpuValuesPage,
-        loading: true,
-      },
-    });
     this.state.nicaiCrx.innerText = JSON.stringify(params);
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getBpuValuesPage', true, true);
@@ -199,23 +191,6 @@ export default class BbuModal extends PureComponent {
     } else {
       message.warn('请输入商品链接');
     }
-  }
-  renderPhoto = (auction) => {
-    return (
-      <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer' }} onClick={() => this.handleChooseAuction(auction)} bodyStyle={{ padding: 0 }} key={auction.id} >
-        <div className={styles.customImageBox}>
-          <img className={styles.customImage} src={auction.url} />
-          { this.state.auctionChoose && auction.id === this.state.auctionChoose.id &&
-            <div className={styles.customImgZz}><Icon type="check" /></div>
-          }
-        </div>
-        <div className={styles.auctionCard}>
-            <p className={styles.auctionNodes}>{auction.title}</p>
-            <p className={styles.auctionNodes} style={{ margin: '3px 0', color: '#555' }}>¥{auction.item.finalPrice}</p>
-            <p className={styles.auctionNodes}>{auction.item.taoKeDisplayPrice}</p>
-        </div>
-      </Card>
-    );
   }
   changeBpuValuesPagePage = (current, pageSize) => {
     this.setState({
@@ -286,22 +261,37 @@ export default class BbuModal extends PureComponent {
   }
   renderBpuValuesPage = () => {
     const { bpuValuesPage: { list, pagination, loading } } = this.state;
+    const columns = [{
+      title: '商品细节',
+      dataIndex: 'title',
+      render: (val, record) => val,
+    }, {
+      title: '类目',
+      dataIndex: 'categoryName',
+    }, {
+      title: '品牌',
+      dataIndex: 'brandName',
+    }, {
+      title: '是否缺内容',
+      dataIndex: 'contentRare',
+      render: (val) => val ? '是' : '否',
+    }];
     return (
       <div>
         <div>
-          <Spin spinning={loading}>
-            {list.map(item => 'ghj')}
-          </Spin>
         </div>
-        <Pagination
-          {...{
+        <Table
+          loading={loading}
+          dataSource={list}
+          columns={columns}
+          pagination={{
             showSizeChanger: true,
             showQuickJumper: true,
             ...pagination,
           }}
           onChange={this.changeBpuValuesPagePage}
-          onShowSizeChange={this.changeBpuValuesPagePage}
-          style={{float: 'right', margin: '10px 20px'}}
+          rowKey="finalBpuId"
+          scroll={{ y: 450 }}
         />
       </div>
     );
@@ -312,7 +302,7 @@ export default class BbuModal extends PureComponent {
     return (
       <Modal
         title="标准商品品牌信息 查找"
-        width="850px"
+        width="1000px"
         visible={k === currentKey && visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}

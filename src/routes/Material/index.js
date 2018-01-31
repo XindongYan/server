@@ -52,7 +52,6 @@ export default class Material extends PureComponent {
   }
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
     nicaiCrx.removeEventListener('setAuction', this.setAuction);
     nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
   }
@@ -67,8 +66,8 @@ export default class Material extends PureComponent {
     const data = JSON.parse(e.target.innerText);
     this.setState({
       version: data.version,
-    })
-    console.log(data);
+    });
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
     if (data.error) {
       message.warn(data.msg);
       this.setState({
