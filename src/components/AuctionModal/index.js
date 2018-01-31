@@ -33,12 +33,11 @@ export default class AuctionModal extends PureComponent {
     new7: '',
     search: '',
     qumai: '',
+    yhhList: '',
     activeKey: 'add',
   }
   componentDidMount() {
-    // queryYhhBody({resourceUrl: '//item.taobao.com/item.htm?id=546883095427'}).then(result => {
-    //   console.log(result);
-    // });
+    
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.k === nextProps.currentKey) {
@@ -209,42 +208,30 @@ export default class AuctionModal extends PureComponent {
       if (result.error) {
         message.error(result.msg)
       } else {
-        // const sevenResult = await searchNew7({text: `https:${result.data.item.itemUrl}`});
-        // const qumaiResult = await queryQumai({text: result.data.item.itemUrl});
-        // const index1 = qumaiResult.data.htmls.indexOf('有好货已入库');
-        // const index2 = qumaiResult.data.htmls.indexOf('条');
-        // if(sevenResult.data && sevenResult.data.length > 0 ){
-        //   const new7 = sevenResult.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
-        //   this.setState({
-        //     addLoading: false,
-        //     qumai: qumaiResult.data.htmls.substring(index1, index2+1),
-        //     q_score: sevenResult.data[0].q_score,
-        //     new7: new7,
-        //     choose: result.data.images && result.data.images.length > 0 ? result.data.images[0] : '',
-        //     auctionChoose: result.data,
-        //   });
-        // } else {
-          this.setState({
-            choose: result.data.images && result.data.images.length > 0 ? result.data.images[0] : '',
-            auctionChoose: result.data,
-          });
-        // }
+        this.setState({
+          choose: result.data.images && result.data.images.length > 0 ? result.data.images[0] : '',
+          auctionChoose: result.data,
+        });
       }
     }
   }
   handleSetTags = async (url) => {
     const sevenResult = await searchNew7({text: `https:${url}`});
     const qumaiResult = await queryQumai({text: url});
+    const yhhResult = await queryYhhBody({resourceUrl: url});
+    const yhhList = yhhResult.list && yhhResult.list.length > 0 ? '网站其它用户已经写过，重复了' : '';
     const index1 = qumaiResult.data.htmls.indexOf('有好货已入库');
     const index2 = qumaiResult.data.htmls.indexOf('条');
     if(sevenResult.data && sevenResult.data.length > 0 ){
       const new7 = sevenResult.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
+      
       this.setState({
         addLoading: false,
         actsLoading: false,
         qumai: qumaiResult.data.htmls.substring(index1, index2+1),
         q_score: sevenResult.data[0].q_score,
-        new7: new7
+        new7: new7,
+        yhhList: yhhList,
       });
     }
   }
@@ -274,6 +261,7 @@ export default class AuctionModal extends PureComponent {
       new7: '',
       q_score: '',
       qumai: '',
+      yhhList: '',
       actsLoading: true,
       auctionChoose: auction,
       choose: auction.images && auction.images.length > 0 ? auction.images[0] : auction.coverUrl,
@@ -291,7 +279,6 @@ export default class AuctionModal extends PureComponent {
     })
   }
   handleChangeTabpane = () =>{
-    
     this.setState({
       activeKey: 'add'
     }, () => {
@@ -301,19 +288,6 @@ export default class AuctionModal extends PureComponent {
   addAuction = () => {
     const { visible, k } = this.props;
     const { search, itemList, pagination, addLoading, auctionChoose, q_score, new7, qumai } = this.state;
-    const Tags = auctionChoose ? <div style={{ margin: '5px 0' }}>
-      <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
-      <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
-      { new7 &&
-        <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
-      }
-      { q_score &&
-        <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
-      }
-      { qumai &&
-        <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
-      }
-    </div> : '';
     return (<div style={{ padding: 10, height: 300 }}>
       <div style={{ position: 'relative' }}>
         <Search
@@ -334,7 +308,22 @@ export default class AuctionModal extends PureComponent {
           <div>
             <div style={{ margin: '10px 0' }}>
               <p>{auctionChoose.title}</p>
-              {Tags}
+              <div style={{ margin: '5px 0' }}>
+                <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
+                <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
+                { new7 &&
+                  <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
+                }
+                { q_score &&
+                  <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
+                }
+                { qumai &&
+                  <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
+                }
+                { this.state.yhhList &&
+                  <Tag style={{ cursor: 'default' }} color="cyan">{this.state.yhhList}</Tag>
+                }
+              </div>
               { k !== 'material' &&
                 <p>选择商品主图：</p>
               }
@@ -358,12 +347,11 @@ export default class AuctionModal extends PureComponent {
           </div>
         }
       </Spin>
-        
     </div>)
   }
   render() {
     const { visible, k, currentKey } = this.props;
-    const { itemList, pagination, actsLoading, activeKey } = this.state;
+    const { itemList, pagination, actsLoading, activeKey, auctionChoose, q_score, new7, qumai } = this.state;
     const tabBarExtraContent = this.props.product ? this.props.product : 0;
     return (
       <Modal
@@ -386,13 +374,28 @@ export default class AuctionModal extends PureComponent {
             </TabPane>
             <TabPane tab={<span>商品库</span>} key="commodities">
               <div>
-                <div>
-                  
+                <Spin spinning={actsLoading}>
+                { auctionChoose && <div style={{ marginBottom: 10 }}>
+                  <div style={{ margin: '5px 0' }}>
+                    <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
+                    <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
+                    { new7 &&
+                      <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
+                    }
+                    { q_score &&
+                      <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
+                    }
+                    { qumai &&
+                      <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
+                    }
+                    { this.state.yhhList &&
+                      <Tag style={{ cursor: 'default' }} color="cyan">{this.state.yhhList}</Tag>
+                    }
+                  </div>
                 </div>
+                }
                 <div style={{ height: 300, overflow: 'auto'}}>
-                  <Spin spinning={actsLoading}>
-                    {itemList.map(this.renderAuctions)}
-                  </Spin>
+                  {itemList.map(this.renderAuctions)}
                 </div>
                 <Pagination
                   {...{
@@ -404,6 +407,8 @@ export default class AuctionModal extends PureComponent {
                   onShowSizeChange={this.changeAuctionPage}
                   style={{float: 'right', margin: '10px 20px'}}
                 />
+
+                  </Spin>
               </div>
             </TabPane>
           </Tabs>
