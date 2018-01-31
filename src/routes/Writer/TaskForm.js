@@ -797,6 +797,74 @@ export default class TaskForm extends PureComponent {
         </ul>
       </div>
     );
+    let form = '';
+    if (formData.channel_name === '微淘') {
+      form = <WeitaoForm
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.weitao}
+              onChange={this.handleChangeWeitao}
+            />;
+    } else if (formData.channel_name === '淘宝头条') {
+      form = <WeitaoForm
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.toutiao}
+              onChange={this.handleChangeToutiao}
+            />;
+    } else if (!formData.channel_name && formData.task_type === 3) {
+      form = <ZhiboForm
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.zhibo}
+              onChange={this.handleChangeZhibo}
+            />;
+    } else if (formData.channel_name === '有好货') {
+      form = <GoodProductionForm
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.haveGoodsTask}
+              onChange={this.handleChangeGoods}
+            />
+    } else if (formData.channel_name === '生活研究所') {
+      form = <LifeInstituteForm
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.lifeResearch}
+              onChange={this.handleChangeLife}
+            />
+    } else if (formData.channel_name === '全球时尚') {
+      form = <GlobalFashionForm
+              channel_name={formData.channel_name}
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.globalFashion}
+              onChange={this.handleChangeGlobal}
+            />
+    } else if (formData.channel_name === '买遍全球') {
+      form = <GlobalFashionForm
+              channel_name={formData.channel_name}
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.buyWorld}
+              onChange={this.handleChangeBuyWorld}
+            />
+    } else if (formData.channel_name === 'ifashion') {
+      form = <IfashionForm
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.ifashion}
+              onChange={this.handleChangeIfashion}
+            />
+    }
     let formRight = null;
     if (operation === 'create') {
       formRight = writeTips;

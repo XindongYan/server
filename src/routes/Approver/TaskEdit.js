@@ -528,9 +528,6 @@ export default class TaskEdit extends PureComponent {
       </div>
     );
     let form = '';
-    
-    
-    
     if (formData.channel_name === '微淘') {
       form = <WeitaoForm
               form={this.props.form}
