@@ -31,7 +31,22 @@ export default class TaskView extends PureComponent {
       title: '',
       task_desc: '',
       cover_img: '',
-      approve_notes: [],
+    },
+    weitao: {
+      crowd: [],
+      title: '',
+      task_desc: '',
+      cover_img: '',
+    },
+    toutiao: {
+      title: '', // '任务标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',
+      crowd: [], // 目标人群
+    },
+    zhibo: {
+      title: '', // '任务标题',
+      task_desc: '', // '写手提交的稿子内容',
     },
     haveGoodsTask: {
       body: [],
@@ -71,6 +86,13 @@ export default class TaskView extends PureComponent {
       cover_img: '',//封面
       classification: [], // 分类
     },
+    approve_notes: [],
+    grade: 0,
+    grades: [
+      {name: '标题', value: 0},
+      {name: '正文', value: 0},
+      {name: '图片', value: 0},
+    ],
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -84,20 +106,55 @@ export default class TaskView extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      task: {
-        crowd: nextProps.formData.crowd,
-        title: nextProps.formData.title,
-        task_desc: nextProps.formData.task_desc,
-        cover_img: nextProps.formData.cover_img,
+    if (nextProps.formData.title) {
+      if (nextProps.formData.channel_name === '微淘' ) {
+        this.setState({
+          weitao: {
+            crowd: nextProps.formData.crowd,
+            title: nextProps.formData.title,
+            task_desc: nextProps.formData.task_desc,
+            cover_img: nextProps.formData.cover_img,
+          }
+        });
+      } else if (nextProps.formData.channel_name === '淘宝头条') {
+        this.setState({
+          toutiao: {
+            crowd: nextProps.formData.crowd,
+            title: nextProps.formData.title,
+            task_desc: nextProps.formData.task_desc,
+            cover_img: nextProps.formData.cover_img,
+          }
+        });
+      } else if (nextProps.formData.task_type === 3) {
+        this.setState({
+          toutiao: {
+            title: nextProps.formData.title,
+            task_desc: nextProps.formData.task_desc,
+          }
+        });
+      }
+      this.props.dispatch({
+        type: 'task/update',
+        payload: {
+          ...this.state.task,
+          _id: query._id,
+        }
+      });
+    } else {
+      this.setState({
+        weitao: nextProps.formData.weitao,
+        toutiao: nextProps.formData.toutiao,
+        zhibo: nextProps.formData.zhibo,
+        haveGoodsTask: nextProps.formData.haveGoods,
+        lifeResearch: nextProps.formData.lifeResearch,
+        globalFashion: nextProps.formData.globalFashion,
+        ifashion: nextProps.formData.ifashion,
+        buyWorld: nextProps.formData.buyWorld,
+        grade: nextProps.formData.grade,
+        grades: nextProps.formData.grades && nextProps.formData.grades.length ? nextProps.formData.grades : [...this.state.grades],
         approve_notes: nextProps.formData.approve_notes || [],
-      },
-      haveGoodsTask: nextProps.formData.haveGoods,
-      lifeResearch: nextProps.formData.lifeResearch,
-      globalFashion: nextProps.formData.globalFashion,
-      ifashion: nextProps.formData.ifashion,
-      buyWorld: nextProps.formData.buyWorld,
-    });
+      });
+    }
   }
   componentWillUnmount() {
     this.props.dispatch({
@@ -116,6 +173,7 @@ export default class TaskView extends PureComponent {
   }
   render() {
     const { formData, approveData, currentUser } = this.props;
+    const { grades } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const operation = 'view';
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
@@ -124,23 +182,28 @@ export default class TaskView extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.channel_name === '有好货' ? 730 : 1000 }}>
           <div style={{ width: formData.channel_name === '有好货' ? 375 : 650 }}>
-            { (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') &&
+            { formData.channel_name === '微淘' &&
               <WeitaoForm
                 form={this.props.form}
                 role="approve"
                 operation={operation}
-                style={{ width: 650 }}
-                formData={this.state.task}
-                onChange={this.handleChange}
+                formData={this.state.weitao}
               />
             }
-            { !formData.channel_name && formData.task_type === 3 &&
-              <ZhiboForm
+            { formData.channel_name === '淘宝头条' &&
+              <WeitaoForm
+                form={this.props.form}
                 role="approve"
                 operation={operation}
-                style={{ width: 650 }}
-                formData={this.state.task}
-                onChange={this.handleChange}
+                formData={this.state.toutiao}
+              />
+            }
+            { formData.task_type === 3 &&
+              <ZhiboForm
+                form={this.props.form}
+                role="approve"
+                operation={operation}
+                formData={this.state.zhibo}
               />
             }
             { formData.channel_name === '有好货' &&
@@ -188,7 +251,7 @@ export default class TaskView extends PureComponent {
           </div>  
           { showAnnotation &&
             <div className={styles.taskComment}>
-              <Annotation viewStatus="view" value={this.state.task.approve_notes} onChange={this.handleChange}/>
+              <Annotation viewStatus="view" value={this.state.approve_notes}/>
             </div>
           }
           {this.state.grade > 0 &&

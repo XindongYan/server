@@ -129,7 +129,7 @@ export default class CropperModal extends PureComponent {
   }
 
   _crop = () => {
-    const dataUrl = this.refs.cropper.getCroppedCanvas().toDataURL("image/jpeg",0.9);
+    const dataUrl = this.refs.cropper.getCroppedCanvas().toDataURL("image/jpeg", 1);
     this.setState({ dataUrl: dataUrl });
   }
   render() {
