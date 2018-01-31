@@ -49,13 +49,14 @@ export default class TableList extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
+    const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id) {
       dispatch({
         type: 'task/fetchTakerTasks',
         payload: {
           ...pagination,
+          team_id: teamUser.team_id,
           approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
           user_id: currentUser._id
         },
@@ -73,13 +74,14 @@ export default class TableList extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, currentUser, data: { pagination, approve_status } } = nextProps;
+    const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = nextProps;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id !== this.props.currentUser._id) {
       dispatch({
         type: 'task/fetchTakerTasks',
         payload: {
           ...pagination,
+          team_id: teamUser.team_id,
           approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
           user_id: currentUser._id,
         },
@@ -130,14 +132,14 @@ export default class TableList extends PureComponent {
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleFetch = () => {
-    const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
+    const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
     dispatch({
       type: 'task/fetchTakerTasks',
-      payload: { ...pagination, approve_status, user_id: currentUser._id, currentPage: 1, },
+      payload: { ...pagination, approve_status, user_id: currentUser._id, currentPage: 1, team_id: teamUser.team_id, },
     });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, currentUser, data: { approve_status } } = this.props;
+    const { dispatch, currentUser, teamUser, data: { approve_status } } = this.props;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -149,6 +151,7 @@ export default class TableList extends PureComponent {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       user_id: currentUser._id,
+      team_id: teamUser.team_id,
       approve_status,
       ...filters,
     };
@@ -212,8 +215,9 @@ export default class TableList extends PureComponent {
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleSearch = (value, name) => {
-    const { dispatch, data: { pagination, approve_status }, currentUser } = this.props;
+    const { dispatch, data: { pagination, approve_status }, currentUser, teamUser } = this.props;
     const values = {
+      team_id: teamUser.team_id,
       user_id: currentUser._id,
       approve_status,
     };
@@ -240,10 +244,10 @@ export default class TableList extends PureComponent {
     }
   }
   changeApproveStatus = (e) => {
-    const { dispatch, currentUser, data: { pagination } } = this.props;
+    const { dispatch, currentUser, teamUser, data: { pagination } } = this.props;
     dispatch({
       type: 'task/fetchTakerTasks',
-      payload: { ...pagination, user_id: currentUser._id, approve_status: e.target.value, currentPage: 1, }
+      payload: { ...pagination, user_id: currentUser._id, team_id: teamUser.team_id, approve_status: e.target.value, currentPage: 1, }
     });
   }
 

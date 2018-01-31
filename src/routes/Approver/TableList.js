@@ -45,7 +45,7 @@ export default class TableList extends PureComponent {
     if (currentUser._id) {
       dispatch({
         type: 'task/fetchApproverTasks',
-        payload: { ...pagination, approve_status, user_id: currentUser._id }
+        payload: { ...pagination, approve_status, user_id: currentUser._id, team_id: teamUser.team_id, }
       });
     }
     if (teamUser.team_id) {
@@ -67,7 +67,7 @@ export default class TableList extends PureComponent {
     if (currentUser._id !== this.props.currentUser._id) {
       dispatch({
         type: 'task/fetchApproverTasks',
-        payload: { ...pagination, approve_status, user_id: currentUser._id }
+        payload: { ...pagination, approve_status, user_id: currentUser._id, team_id: teamUser.team_id, }
       });
     }
     if (teamUser.team_id !== this.props.teamUser.team_id) {
@@ -85,7 +85,7 @@ export default class TableList extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, currentUser, data: { approve_status } } = this.props;
+    const { dispatch, currentUser, teamUser, data: { approve_status } } = this.props;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -94,6 +94,7 @@ export default class TableList extends PureComponent {
     }, {});
 
     const params = {
+      team_id: teamUser.team_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       user_id: this.state.user_id || currentUser._id,
@@ -111,19 +112,19 @@ export default class TableList extends PureComponent {
   }
   handleSelectTeamUser = (value) => {
     this.setState({ user_id: value });
-    const { data: { pagination, approve_status }, dispatch } = this.props;
+    const { data: { pagination, approve_status }, dispatch, teamUser } = this.props;
     dispatch({
       type: 'task/fetchApproverTasks',
-      payload: { ...pagination, user_id: value, approve_status }
+      payload: { ...pagination, user_id: value, approve_status, team_id: teamUser.team_id, }
     });
   }
   handleChangeTeamUser = (value) => {
     if (!value) {
       this.setState({ user_id: '' });
-      const { data: { pagination, approve_status }, dispatch, currentUser } = this.props;
+      const { data: { pagination, approve_status }, dispatch, currentUser, teamUser } = this.props;
       dispatch({
         type: 'task/fetchApproverTasks',
-        payload: { ...pagination, user_id: currentUser._id, approve_status }
+        payload: { ...pagination, user_id: currentUser._id, approve_status, team_id: teamUser.team_id, }
       });
     }
   }
@@ -131,7 +132,7 @@ export default class TableList extends PureComponent {
     this.setState({ selectedRowKeys, selectedRows });
   }
   handleSearch = (value, name) => {
-    const { dispatch, data: { pagination, approve_status }, currentUser } = this.props;
+    const { dispatch, data: { pagination, approve_status }, currentUser, teamUser } = this.props;
     const values = {
       user_id: this.state.user_id || currentUser._id,
       approve_status,
@@ -145,6 +146,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'task/fetchApproverTasks',
       payload: { 
+        team_id: teamUser.team_id,
         currentPage: pagination.current,
         pageSize: pagination.pageSize,
         ...values, 
@@ -153,7 +155,7 @@ export default class TableList extends PureComponent {
   }
 
   handleReject = (record) => {
-    const { dispatch, data: { pagination, approve_status }, currentUser } = this.props;
+    const { dispatch, data: { pagination, approve_status }, currentUser, teamUser } = this.props;
     dispatch({
       type: 'task/reject',
       payload: { _id: record._id, approver_id: currentUser._id },
@@ -164,17 +166,17 @@ export default class TableList extends PureComponent {
           message.success(result.msg);
           dispatch({
             type: 'task/fetchApproverTasks',
-            payload: { ...pagination, approve_status, user_id: this.state.user_id || currentUser._id }
+            payload: { ...pagination, approve_status, team_id: teamUser.team_id, user_id: this.state.user_id || currentUser._id }
           });
         }
       },
     }); 
   }
   changeApproveStatus = (e) => {
-    const { data: { pagination }, dispatch, currentUser } = this.props;
+    const { data: { pagination }, dispatch, currentUser, teamUser } = this.props;
     dispatch({
       type: 'task/fetchApproverTasks',
-      payload: { ...pagination, user_id: this.state.user_id || currentUser._id, approve_status: e.target.value, }
+      payload: { ...pagination, team_id: teamUser.team_id, user_id: this.state.user_id || currentUser._id, approve_status: e.target.value, }
     });
   }
   handleShowDockPanel = (record, activeKey) => {
@@ -193,7 +195,7 @@ export default class TableList extends PureComponent {
     });
   }
   handleSpecifyDaren = () => {
-    const { dispatch, currentUser, data: { pagination, approve_status } } = this.props;
+    const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err && values.target_user_id.length >= 24) {
         dispatch({
@@ -211,7 +213,7 @@ export default class TableList extends PureComponent {
               this.handleDarenModalVisible(false);
               dispatch({
                 type: 'task/fetchApproverTasks',
-                payload: { ...pagination, approve_status, user_id: currentUser._id }
+                payload: { ...pagination, approve_status, team_id: teamUser.team_id, user_id: currentUser._id }
               });
               this.handleRowSelectChange([], []);
             }
