@@ -34,6 +34,22 @@ export default class TaskEdit extends PureComponent {
       task_desc: '',
       cover_img: '',
     },
+    weitao: {
+      crowd: [],
+      title: '',
+      task_desc: '',
+      cover_img: '',
+    },
+    toutiao: {
+      title: '', // '任务标题',
+      task_desc: '', // '写手提交的稿子内容',
+      cover_img: '',
+      crowd: [], // 目标人群
+    },
+    zhibo: {
+      title: '', // '任务标题',
+      task_desc: '', // '写手提交的稿子内容',
+    },
     haveGoodsTask: {
       body: [],
       title: '', // '任务标题',
@@ -88,23 +104,56 @@ export default class TaskEdit extends PureComponent {
       payload: query,
       callback: (result) => {
         if (!result.error) {
-          this.setState({
-            task: {
-              crowd: result.task.crowd,
-              title: result.task.title,
-              task_desc: result.task.task_desc,
-              cover_img: result.task.cover_img,
-            },
-            haveGoodsTask: result.task.haveGoods,
-            lifeResearch: result.task.lifeResearch,
-            globalFashion: result.task.globalFashion,
-            ifashion: result.task.ifashion,
-            buyWorld: result.task.buyWorld,
-            grade: result.task.grade,
-            grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
-            approve_status: result.task.approve_status,
-            approve_notes: result.task.approve_notes || [],
-          });
+          if (result.task.title) {
+            if (result.task.channel_name === '微淘' ) {
+              this.setState({
+                weitao: {
+                  crowd: result.task.crowd,
+                  title: result.task.title,
+                  task_desc: result.task.task_desc,
+                  cover_img: result.task.cover_img,
+                }
+              });
+            } else if (result.task.channel_name === '淘宝头条') {
+              this.setState({
+                toutiao: {
+                  crowd: result.task.crowd,
+                  title: result.task.title,
+                  task_desc: result.task.task_desc,
+                  cover_img: result.task.cover_img,
+                }
+              });
+            } else if (result.task.task_type === 3) {
+              this.setState({
+                toutiao: {
+                  title: result.task.title,
+                  task_desc: result.task.task_desc,
+                }
+              });
+            }
+            this.props.dispatch({
+              type: 'task/update',
+              payload: {
+                ...this.state.task,
+                _id: query._id,
+              }
+            });
+          } else {
+            this.setState({
+              weitao: result.task.weitao,
+              toutiao: result.task.toutiao,
+              zhibo: result.task.zhibo,
+              haveGoodsTask: result.task.haveGoods,
+              lifeResearch: result.task.lifeResearch,
+              globalFashion: result.task.globalFashion,
+              ifashion: result.task.ifashion,
+              buyWorld: result.task.buyWorld,
+              grade: result.task.grade,
+              grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
+              approve_status: result.task.approve_status,
+              approve_notes: result.task.approve_notes || [],
+            });
+          }
         }
       }
     });
@@ -141,8 +190,14 @@ export default class TaskEdit extends PureComponent {
       approve_notes: [...commentContent],
     })
   }
-  handleChange = (task) => {
-    this.setState({ task: { ...this.state.task, ...task } });
+  handleChangeWeitao = (task) => {
+    this.setState({ weitao: { ...this.state.weitao, ...task } });
+  }
+  handleChangeToutiao = (task) => {
+    this.setState({ toutiao: { ...this.state.toutiao, ...task } });
+  }
+  handleChangeZhibo = (task) => {
+    this.setState({ zhibo: { ...this.state.zhibo, ...task } });
   }
   handleChangeGoods = (task) => {
     this.setState({ haveGoodsTask: { ...this.state.haveGoodsTask, ...task } });
@@ -161,12 +216,11 @@ export default class TaskEdit extends PureComponent {
   }
   handleSave = () => {
     const { formData } = this.props;
-    const { grade, grades, approve_status, approve_notes, task, haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
+    const { grade, grades, approve_status, approve_notes, haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || '';
+    const name = haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title || '';
     if (name.trim()) {
       const values = {
-        ...this.state.task,
         _id: query._id,
         approve_notes: approve_notes,
       }
@@ -180,6 +234,12 @@ export default class TaskEdit extends PureComponent {
         values.ifashion = this.state.ifashion;
       } else if (formData.channel_name === '买遍全球') {
         values.buyWorld = this.state.buyWorld;
+      } else if (formData.channel_name === '微淘') {
+        values.weitao = this.state.weitao;
+      } else if (formData.channel_name === '淘宝头条') {
+        values.toutiao = this.state.toutiao;
+      } else if (formData.channel_name === '直播脚本') {
+        values.zhibo = this.state.zhibo;
       }
       if (!formData.project_id) {
         values.name =  name;
@@ -201,7 +261,7 @@ export default class TaskEdit extends PureComponent {
   }
   validate = () => {
     const { formData } = this.props;
-    const { task, haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
+    const { haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
     if (formData.channel_name === '有好货') {
       let bOk = true;
       this.props.form.validateFieldsAndScroll(['title'], (err, val) => {
@@ -275,7 +335,6 @@ export default class TaskEdit extends PureComponent {
       })
       return bOk;
     } else if (formData.channel_name === '买遍全球') {
-      console.log(1)
       let bOk = true;
       this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], (err, val) => {
         if (!err) {
@@ -324,18 +383,47 @@ export default class TaskEdit extends PureComponent {
         }
       });
       return bOk;
-    } else {
-      if (!task.title || !task.title.replace(/\s+/g, '')) {
+    } else if (formData.channel_name === '微淘') {
+      if (!weitao.title || !weitao.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');
         return false;
-      } else if (task.title && task.title.length > 19) {
+      } else if (weitao.title && weitao.title.length > 19) {
         message.warn('标题字数不符合要求');
         return false;
-      } else if (!task.task_desc) {
+      } else if (!weitao.task_desc) {
         message.warn('请填写内容');
         return false;
-      } else if (!task.cover_img && this.props.formData.task_type !== 3) {
+      } else if (!weitao.cover_img) {
         message.warn('请选择封面图');
+        return false;
+      } else {
+        return true;
+      }
+    } else if (formData.channel_name === '淘宝头条') {
+      if (!toutiao.title || !toutiao.title.replace(/\s+/g, '')) {
+        message.warn('请填写标题');
+        return false;
+      } else if (toutiao.title && toutiao.title.length > 19) {
+        message.warn('标题字数不符合要求');
+        return false;
+      } else if (!toutiao.task_desc) {
+        message.warn('请填写内容');
+        return false;
+      } else if (!toutiao.cover_img) {
+        message.warn('请选择封面图');
+        return false;
+      } else {
+        return true;
+      }
+    } else if (!formData.channel_name && formData.task_type === 3) {
+      if (!zhibo.title || !zhibo.title.replace(/\s+/g, '')) {
+        message.warn('请填写标题');
+        return false;
+      } else if (zhibo.title && zhibo.title.length > 19) {
+        message.warn('标题字数不符合要求');
+        return false;
+      } else if (!zhibo.task_desc) {
+        message.warn('请填写内容');
         return false;
       } else {
         return true;
@@ -345,11 +433,10 @@ export default class TaskEdit extends PureComponent {
   handleSubmit = (status) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { formData } = this.props;
-    const { grade, grades, approve_status, approve_notes, haveGoodsTask, task, lifeResearch, globalFashion, ifashion, buyWorld } = this.state;
-    const name = task.title || haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || '';
+    const { grade, grades, approve_status, approve_notes, haveGoodsTask, task, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
+    const name = haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title || '';
     if (this.validate()) {
       const values = {
-        ...this.state.task,
         _id: query._id,
       }
       if (formData.channel_name === '有好货') {
@@ -362,6 +449,12 @@ export default class TaskEdit extends PureComponent {
         values.ifashion = this.state.ifashion;
       } else if (formData.channel_name === '买遍全球') {
         values.buyWorld = this.state.buyWorld;
+      } else if (formData.channel_name === '微淘') {
+        values.weitao = this.state.weitao;
+      } else if (formData.channel_name === '淘宝头条') {
+        values.toutiao = this.state.toutiao;
+      } else if (formData.channel_name === '直播脚本') {
+        values.zhibo = this.state.zhibo;
       }
       if (!formData.project_id) {
         values.name =  name;
@@ -435,46 +528,55 @@ export default class TaskEdit extends PureComponent {
       </div>
     );
     let form = '';
-    if (formData.channel_name === '淘宝头条' || formData.channel_name === '微淘') {
+    if (formData.channel_name === '微淘') {
       form = <WeitaoForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.task}
-                onChange={this.handleChange}
-              />;
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.weitao}
+              onChange={this.handleChangeWeitao}
+            />;
+    } else if (formData.channel_name === '淘宝头条') {
+      form = <WeitaoForm
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.toutiao}
+              onChange={this.handleChangeToutiao}
+            />;
     } else if (!formData.channel_name && formData.task_type === 3) {
       form = <ZhiboForm
-                role="approve"
-                operation={operation}
-                formData={this.state.task}
-                onChange={this.handleChange}
-              />;
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.zhibo}
+              onChange={this.handleChangeZhibo}
+            />;
     } else if (formData.channel_name === '有好货') {
       form = <GoodProductionForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.haveGoodsTask}
-                onChange={this.handleChangeGoods}
-              />
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.haveGoodsTask}
+              onChange={this.handleChangeGoods}
+            />
     } else if (formData.channel_name === '生活研究所') {
       form = <LifeInstituteForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.lifeResearch}
-                onChange={this.handleChangeLife}
-              />
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.lifeResearch}
+              onChange={this.handleChangeLife}
+            />
     } else if (formData.channel_name === '全球时尚') {
       form = <GlobalFashionForm
-                channel_name={formData.channel_name}
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.globalFashion}
-                onChange={this.handleChangeGlobal}
-              />
+              channel_name={formData.channel_name}
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.globalFashion}
+              onChange={this.handleChangeGlobal}
+            />
     } else if (formData.channel_name === '买遍全球') {
       form = <GlobalFashionForm
               channel_name={formData.channel_name}
@@ -486,12 +588,12 @@ export default class TaskEdit extends PureComponent {
             />
     } else if (formData.channel_name === 'ifashion') {
       form = <IfashionForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.ifashion}
-                onChange={this.handleChangeIfashion}
-              />
+              form={this.props.form}
+              role="approve"
+              operation={operation}
+              formData={this.state.ifashion}
+              onChange={this.handleChangeIfashion}
+            />
     }
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>

@@ -100,8 +100,7 @@ export default class CropperModal extends PureComponent {
         const imgSize = Math.ceil(dataSize / 1024 * 1.024);
         if (imgSize > maxSize) {
           const n = ((maxSize/imgSize).toFixed(2) + '').substr(0, 3);
-          console.log(n);
-          this.handleSubmit(this.refs.cropper.getCroppedCanvas().toDataURL("image/jpeg", Number(n)));
+          this.handleSubmit(this.refs.cropper.getCroppedCanvas().toDataURL("image/jpg", Number(n)));
         } else {
           this.handleSubmit(this.state.dataUrl);
         }
@@ -129,7 +128,7 @@ export default class CropperModal extends PureComponent {
   }
 
   _crop = () => {
-    const dataUrl = this.refs.cropper.getCroppedCanvas().toDataURL("image/jpeg",0.9);
+    const dataUrl = this.refs.cropper.getCroppedCanvas().toDataURL("image/jpg");
     this.setState({ dataUrl: dataUrl });
   }
   render() {
