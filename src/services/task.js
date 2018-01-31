@@ -149,3 +149,7 @@ export async function queryTeamTasks(params) {
 export async function queryProjectFinanceTasks(params) {
   return request(`/api/task/list/project/finance?${stringify(params)}`);
 }
+
+export async function queryYhhBody(params) {
+  return request(`/api/task/yhh/body?${stringify(params)}`);
+}

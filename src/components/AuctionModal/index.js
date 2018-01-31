@@ -3,7 +3,8 @@ import { connect } from 'dva';
 import $ from 'jquery';
 import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag } from 'antd';
 import styles from './index.less';
-import { searchStatistic, searchNew7, queryQumai } from '../../services/tool';
+import { searchNew7, queryQumai } from '../../services/tool';
+import { queryYhhBody } from '../../services/task';
 
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
@@ -35,7 +36,9 @@ export default class AuctionModal extends PureComponent {
     activeKey: 'add',
   }
   componentDidMount() {
-    
+    // queryYhhBody({resourceUrl: '//item.taobao.com/item.htm?id=546883095427'}).then(result => {
+    //   console.log(result);
+    // });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.k === nextProps.currentKey) {
