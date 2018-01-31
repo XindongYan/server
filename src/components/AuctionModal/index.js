@@ -16,7 +16,6 @@ const Search = Input.Search;
   
 export default class AuctionModal extends PureComponent {
   state = {
-    innerText: null,
     nicaiCrx: null,
     version: '',
     choose: '',
@@ -52,11 +51,11 @@ export default class AuctionModal extends PureComponent {
             this.setState({ nicaiCrx }, () => {
               setTimeout(() => {
                 this.handleGetVersion();
-              }, 400);
+              }, 600);
             });
           }
           setTimeout(() => {
-            if(!this.state.version && !this.state.innerText){
+            if(!this.state.version){
               message.destroy();
               message.warn('请安装尼采创作平台插件！');
               this.setState({ loading: false });
@@ -88,7 +87,6 @@ export default class AuctionModal extends PureComponent {
     if (data.version) {
       this.setState({
         version: data.version,
-        innerText: data,
       })
     }
     if (data.error) {

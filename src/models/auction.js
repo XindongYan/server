@@ -11,6 +11,10 @@ export default {
     loading: true,
     visible: false,
     currentKey: '',
+    bbuModal: {
+      visible: false,
+      currentKey: '',
+    },
   },
 
   effects: {
@@ -26,6 +30,18 @@ export default {
         payload: { visible: false },
       });
     },
+    *showBbu({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeBbuVisible',
+        payload: { visible: true, currentKey: payload.currentKey },
+      });
+    },
+    *hideBbu(_, { call, put }) {
+      yield put({
+        type: 'changeBbuVisible',
+        payload: { visible: false },
+      });
+    },
   },
 
   reducers: {
@@ -33,6 +49,12 @@ export default {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    changeBbuVisible(state, action) {
+      return {
+        ...state,
+        bbuModal: { ...state.bbuModal, ...action.payload, },
       };
     },
   },

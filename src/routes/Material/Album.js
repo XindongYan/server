@@ -27,7 +27,7 @@ export default class Album extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 400);
+        }, 600);
       });
     }
   }

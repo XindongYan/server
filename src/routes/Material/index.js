@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress, Tabs } from 'antd';
 import Album from './Album.js';
 import AuctionModal from '../../components/AuctionModal';
+import BbuModal from '../../components/AuctionModal/BbuModal';
 import styles from './index.less';
 
 const TabPane = Tabs.TabPane;
@@ -11,7 +12,6 @@ const TabPane = Tabs.TabPane;
 }))
 export default class Material extends PureComponent {
   state = {
-    innerText: null,
     version: '',
     nicaiCrx: null,
     search: '',
@@ -33,7 +33,7 @@ export default class Material extends PureComponent {
     nicaiCrx.addEventListener('setAuction', this.setAuction);
     nicaiCrx.addEventListener('uploadResult', this.uploadResult);
     setTimeout(() => {
-      if(!this.state.version && !this.state.innerText){
+      if(!this.state.version){
         message.destroy();
         message.warn('请安装尼采创作平台插件！', 60 * 60);
         this.setState({ loading: false });
@@ -43,7 +43,7 @@ export default class Material extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 400);
+        }, 600);
       });
     }
   }
@@ -67,8 +67,8 @@ export default class Material extends PureComponent {
     const data = JSON.parse(e.target.innerText);
     this.setState({
       version: data.version,
-      innerText: data,
     })
+    console.log(data);
     if (data.error) {
       message.warn(data.msg);
       this.setState({
@@ -183,7 +183,9 @@ export default class Material extends PureComponent {
                   onShowSizeChange={this.changeAuctionPage}
                   style={{float: 'right', margin: '10px 20px'}}
                 />
+                <Button onClick={() => this.props.dispatch({type: 'auction/showBbu', payload: {currentKey: 'material'}})}>456789</Button>
                 <AuctionModal k="material" onOk={this.handleAddProduct} />
+                <BbuModal k="material" />
               </div>
             </TabPane>
             <TabPane tab="我的图片" key="album">

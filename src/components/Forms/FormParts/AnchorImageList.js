@@ -18,7 +18,7 @@ export default class AnchorImageList extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 400);
+        }, 600);
       });
     }
     setTimeout(() => {

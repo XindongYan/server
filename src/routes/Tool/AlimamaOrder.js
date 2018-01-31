@@ -37,7 +37,7 @@ export default class AlimamaOrder extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 400);
+        }, 600);
       });
     }
     if (this.props.currentUser._id && this.props.currentUser.alimama && this.props.currentUser.alimama[0]) {
