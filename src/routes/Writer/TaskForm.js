@@ -42,16 +42,19 @@ export default class TaskForm extends PureComponent {
       title: '',
       task_desc: '',
       cover_img: '',
+      pushDaren: true,
     },
     toutiao: {
       title: '', // '任务标题',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',
       crowd: [], // 目标人群
+      pushDaren: true,
     },
     zhibo: {
       title: '', // '任务标题',
       task_desc: '', // '写手提交的稿子内容',
+      pushDaren: true,
     },
     haveGoodsTask: {
       body: [],
@@ -60,6 +63,7 @@ export default class TaskForm extends PureComponent {
       bodyStruct0: [],
       duanliangdian: [], // ['']
       crowdId: '',
+      pushDaren: true,
     },
     lifeResearch: {
       title: '', // '任务标题',
@@ -68,6 +72,7 @@ export default class TaskForm extends PureComponent {
       cover_img: '',//封面
       crowd: [], // 目标人群
       summary: '', // 摘要
+      pushDaren: true,
     },
     globalFashion: {
       title: '', // '任务标题',
@@ -77,6 +82,7 @@ export default class TaskForm extends PureComponent {
       classification: [], // 分类
       end_link: '', //文末链接
       end_text: '',
+      pushDaren: true,
     },
     ifashion: {
       title: '', // '任务标题',
@@ -85,6 +91,7 @@ export default class TaskForm extends PureComponent {
       crowd: [], // 目标人群
       classification: [], // 分类
       tags: [], // 标签
+      pushDaren: true,
     },
     buyWorld: {
       title: '', // '任务标题',
@@ -94,6 +101,7 @@ export default class TaskForm extends PureComponent {
       classification: [], // 分类
       end_link: '', //文末链接
       end_text: '',
+      pushDaren: true,
     },
     approveModalVisible: false,
     approver_id: {
@@ -782,6 +790,26 @@ export default class TaskForm extends PureComponent {
     }
     return formData.channel_name;
   }
+  handleChangePushDaren = (pushDaren) => {
+    const channel_name = this.getChannelName();
+    if (channel_name === '微淘') {
+      this.handleChangeWeitao({ pushDaren: pushDaren });
+    } else if (channel_name === '淘宝头条') {
+      this.handleChangeToutiao({ pushDaren: pushDaren });
+    } else if (channel_name === '直播脚本') {
+      this.handleChangeZhibo({ pushDaren: pushDaren });
+    } else if (channel_name === '有好货') {
+      this.handleChangeGoods({ pushDaren: pushDaren });
+    } else if (channel_name === '生活研究所') {
+      this.handleChangeLife({ pushDaren: pushDaren });
+    } else if (channel_name === '全球时尚') {
+      this.handleChangeGlobal({ pushDaren: pushDaren });
+    } else if (channel_name === '买遍全球') {
+      this.handleChangeBuyWorld({ pushDaren: pushDaren });
+    } else if (channel_name === 'ifashion') {
+      this.handleChangeIfashion({ pushDaren: pushDaren });
+    }
+  }
   render() {
     const { form: { getFieldDecorator }, operation, formData } = this.props;
     const { approveModalVisible, haveGoodsTask, suggestionApproves } = this.state;
@@ -798,73 +826,84 @@ export default class TaskForm extends PureComponent {
       </div>
     );
     let form = '';
-    if (formData.channel_name === '微淘') {
+    let pushDaren = true;
+    if (channel_name === '微淘') {
+      pushDaren = this.state.weitao.pushDaren;
       form = <WeitaoForm
               form={this.props.form}
-              role="approve"
+              role="writer"
               operation={operation}
               formData={this.state.weitao}
               onChange={this.handleChangeWeitao}
             />;
-    } else if (formData.channel_name === '淘宝头条') {
+    } else if (channel_name === '淘宝头条') {
+      pushDaren = this.state.toutiao.pushDaren;
       form = <WeitaoForm
               form={this.props.form}
-              role="approve"
+              role="writer"
               operation={operation}
               formData={this.state.toutiao}
               onChange={this.handleChangeToutiao}
             />;
-    } else if (!formData.channel_name && formData.task_type === 3) {
+    } else if (channel_name === '直播脚本') {
+      pushDaren = this.state.zhibo.pushDaren;
       form = <ZhiboForm
               form={this.props.form}
-              role="approve"
+              role="writer"
               operation={operation}
               formData={this.state.zhibo}
               onChange={this.handleChangeZhibo}
             />;
-    } else if (formData.channel_name === '有好货') {
+    } else if (channel_name === '有好货') {
+      pushDaren = this.state.haveGoodsTask.pushDaren;
       form = <GoodProductionForm
               form={this.props.form}
-              role="approve"
+              role="writer"
               operation={operation}
               formData={this.state.haveGoodsTask}
               onChange={this.handleChangeGoods}
-            />
-    } else if (formData.channel_name === '生活研究所') {
+            />;
+    } else if (channel_name === '生活研究所') {
+      pushDaren = this.state.lifeResearch.pushDaren;
       form = <LifeInstituteForm
               form={this.props.form}
-              role="approve"
+              role="writer"
               operation={operation}
               formData={this.state.lifeResearch}
               onChange={this.handleChangeLife}
-            />
-    } else if (formData.channel_name === '全球时尚') {
+            />;
+    } else if (channel_name === '全球时尚') {
+      pushDaren = this.state.globalFashion.pushDaren;
       form = <GlobalFashionForm
-              channel_name={formData.channel_name}
+              channel_name={channel_name}
               form={this.props.form}
-              role="approve"
+              role="writer"
               operation={operation}
               formData={this.state.globalFashion}
               onChange={this.handleChangeGlobal}
-            />
-    } else if (formData.channel_name === '买遍全球') {
+            />;
+    } else if (channel_name === '买遍全球') {
+      pushDaren = this.state.buyWorld.pushDaren;
       form = <GlobalFashionForm
-              channel_name={formData.channel_name}
+              channel_name={channel_name}
               form={this.props.form}
-              role="approve"
+              role="writer"
               operation={operation}
               formData={this.state.buyWorld}
               onChange={this.handleChangeBuyWorld}
-            />
-    } else if (formData.channel_name === 'ifashion') {
+            />;
+    } else if (channel_name === 'ifashion') {
+      pushDaren = this.state.ifashion.pushDaren;
       form = <IfashionForm
               form={this.props.form}
-              role="approve"
+              role="writer"
               operation={operation}
               formData={this.state.ifashion}
               onChange={this.handleChangeIfashion}
-            />
+            />;
     }
+    const pushDarenStyle = pushDaren ? {border: 'none', color: '#fff', background: '#6af'} :
+    {border: '2px solid #e0e0e0', color: '#e0e0e0'};
     let formRight = null;
     if (operation === 'create') {
       formRight = writeTips;
@@ -894,92 +933,16 @@ export default class TaskForm extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: channel_name === '有好货' ? 730 : 1000 }} ref="taskOuterBox">
           <div style={{ width: channel_name === '有好货' ? 375 : 650 }}>
-            { channel_name === '微淘' &&
-              <WeitaoForm
-                form={this.props.form}
-                role="writer"
-                operation={operation}
-                formData={this.state.weitao}
-                onChange={this.handleChangeWeitao}
-              />
-            }
-            { channel_name === '淘宝头条' &&
-              <WeitaoForm
-                form={this.props.form}
-                role="writer"
-                operation={operation}
-                formData={this.state.toutiao}
-                onChange={this.handleChangeToutiao}
-              />
-            }
-            { (query.channel_name === '直播脚本' || formData.task_type === 3) &&
-              <ZhiboForm
-                form={this.props.form}
-                role="writer"
-                operation={operation}
-                formData={this.state.zhibo}
-                onChange={this.handleChangeZhibo}
-              />
-            }
-            { channel_name === '有好货' &&
-              <GoodProductionForm
-                form={this.props.form}
-                role="writer"
-                operation={operation}
-                formData={haveGoodsTask}
-                onChange={this.handleChangeGoods}
-              />
-            }
-            { channel_name === '生活研究所' &&
-              <LifeInstituteForm
-                form={this.props.form}
-                role="writer"
-                operation={operation}
-                formData={this.state.lifeResearch}
-                onChange={this.handleChangeLife}
-              />
-            }
-            { channel_name === '全球时尚' &&
-              <GlobalFashionForm
-                channel_name={channel_name}
-                form={this.props.form}
-                role="writer"
-                operation={operation}
-                formData={this.state.globalFashion}
-                onChange={this.handleChangeGlobal}
-              />
-            }
-            { channel_name === '买遍全球' &&
-              <GlobalFashionForm
-                channel_name={channel_name}
-                form={this.props.form}
-                role="writer"
-                operation={operation}
-                formData={this.state.buyWorld}
-                onChange={this.handleChangeBuyWorld}
-              />
-            }
-            { channel_name === 'ifashion' &&
-              <IfashionForm
-                form={this.props.form}
-                role="writer"
-                operation={operation}
-                formData={this.state.ifashion}
-                onChange={this.handleChangeIfashion}
-              />
-            }
-            { channel_name === '测试' &&
-              <NicaiForm 
-                form={this.props.form}
-              />
-            }
+            {form}
           </div>
           {formRight}
           { operation !== 'view' && <div className={styles.submitBox}>
             <div style={{ float: 'left', margin: '-6px 50px 0 0' }}>
               <div style={{ fontSize: 12 }}>推送到</div>
-              <div className={styles.CreatorPush} style={{border: 'none', color: '#fff', background: '#6af'}}>
-                <Icon type="home" />
+              <div className={styles.CreatorPush} style={pushDarenStyle} onClick={() => this.handleChangePushDaren(!pushDaren)}>
+                <Tooltip placement="top" title={pushDaren ? '推送到个人主页' : '选中后推送到个人主页'}>
+                  <Icon type="home" />
+                </Tooltip>
               </div>
             </div>
             { (query.project_id || formData.project_id || formData.approve_status === TASK_APPROVE_STATUS.rejected) ?
