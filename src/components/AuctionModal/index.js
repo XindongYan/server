@@ -33,7 +33,6 @@ export default class AuctionModal extends PureComponent {
     new7: '',
     search: '',
     qumai: '',
-    yhhList: '',
     activeKey: 'add',
   }
   componentDidMount() {
@@ -204,6 +203,7 @@ export default class AuctionModal extends PureComponent {
   }
   resultAuction = async (e) => {
     const result = JSON.parse(e.target.innerText);
+    console.log(result)
     if (this.props.k === this.props.currentKey) {
       if (result.error) {
         message.error(result.msg)
@@ -218,20 +218,25 @@ export default class AuctionModal extends PureComponent {
   handleSetTags = async (url) => {
     const sevenResult = await searchNew7({text: `https:${url}`});
     const qumaiResult = await queryQumai({text: url});
-    const yhhResult = await queryYhhBody({resourceUrl: url});
-    const yhhList = yhhResult.list && yhhResult.list.length > 0 ? '网站其它用户已经写过，重复了' : '';
+    if ( this.props.k === 'havegoods') {
+      const yhhResult = await queryYhhBody({resourceUrl: url});
+      const yhhList = yhhResult.list && yhhResult.list.length > 0 ? true : false;
+      if (yhhList) {
+        Modal.warning({
+          title: '该商品在平台内已经被其它人写过，请选择其它商品。',
+        });
+      }
+    }
     const index1 = qumaiResult.data.htmls.indexOf('有好货已入库');
     const index2 = qumaiResult.data.htmls.indexOf('条');
     if(sevenResult.data && sevenResult.data.length > 0 ){
       const new7 = sevenResult.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
-      
       this.setState({
         addLoading: false,
         actsLoading: false,
         qumai: qumaiResult.data.htmls.substring(index1, index2+1),
         q_score: sevenResult.data[0].q_score,
         new7: new7,
-        yhhList: yhhList,
       });
     }
   }
@@ -261,7 +266,6 @@ export default class AuctionModal extends PureComponent {
       new7: '',
       q_score: '',
       qumai: '',
-      yhhList: '',
       actsLoading: true,
       auctionChoose: auction,
       choose: auction.images && auction.images.length > 0 ? auction.images[0] : auction.coverUrl,
@@ -319,9 +323,6 @@ export default class AuctionModal extends PureComponent {
                 }
                 { qumai &&
                   <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
-                }
-                { this.state.yhhList &&
-                  <Tag style={{ cursor: 'default' }} color="cyan">{this.state.yhhList}</Tag>
                 }
               </div>
               { k !== 'material' &&
@@ -387,9 +388,6 @@ export default class AuctionModal extends PureComponent {
                     }
                     { qumai &&
                       <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
-                    }
-                    { this.state.yhhList &&
-                      <Tag style={{ cursor: 'default' }} color="cyan">{this.state.yhhList}</Tag>
                     }
                   </div>
                 </div>
