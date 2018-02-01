@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import $ from 'jquery';
-import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Table } from 'antd';
+import entities from 'entities';
+import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Select, Table } from 'antd';
 import styles from './index.less';
-import { searchNew7, queryQumai } from '../../services/tool';
-import { queryYhhBody } from '../../services/task';
 
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
+const Option = Select.Option;
 
 @connect(state => ({
   visible: state.auction.bbuModal.visible,
@@ -18,22 +17,10 @@ export default class BbuModal extends PureComponent {
   state = {
     nicaiCrx: null,
     version: '',
-    choose: '',
-    loading: true,
-    itemList: [],
-    pagination: {
-      pageSize: 18,
-      current: 1,
-      total: 0,
-    },
-    auctionChoose: null,
-    q_score: '',
-    new7: '',
-    search: '',
-    qumai: '',
     activeKey: 'bpuValuesPage',
-
     bpuValuesPage: {
+      selectedRows: [],
+      selectedRowKeys: [],
       pagination: {
         pageSize: 15,
         current: 1,
@@ -42,6 +29,8 @@ export default class BbuModal extends PureComponent {
       list: [],
       loading: true,
       effective: true,
+      searchField: 'title',
+      searchValue: '',
     },
     bPUSelectionData: {
       pagination: {
@@ -51,6 +40,9 @@ export default class BbuModal extends PureComponent {
       },
       list: [],
       loading: true,
+      effective: true,
+      searchField: 'title',
+      searchValue: '',
     },
     bPUFromMemberStoreData: {
       pagination: {
@@ -70,6 +62,7 @@ export default class BbuModal extends PureComponent {
       list: [],
       loading: true,
     },
+    bpuValue: {},
   }
   componentDidMount() {
   }
@@ -79,6 +72,8 @@ export default class BbuModal extends PureComponent {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.addEventListener('setVersion', this.setVersion);
         nicaiCrx.addEventListener('setBpuValuesPage', this.setBpuValuesPage);
+        nicaiCrx.addEventListener('setBPUSelectionData', this.setBPUSelectionData);
+        nicaiCrx.addEventListener('setBpuValueById', this.setBpuValueById);
         if (!this.state.nicaiCrx) {
           this.setState({ nicaiCrx }, () => {
             setTimeout(() => {
@@ -95,11 +90,12 @@ export default class BbuModal extends PureComponent {
         }, 5000);
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
+        nicaiCrx.removeEventListener('setBpuValueById', this.setBpuValueById);
+        nicaiCrx.removeEventListener('setBPUSelectionData', this.setBPUSelectionData);
         nicaiCrx.removeEventListener('setBpuValuesPage', this.setBpuValuesPage);
       }
     }
   }
-
   handleGetVersion = () => {
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getVersion', true, true);
@@ -120,9 +116,58 @@ export default class BbuModal extends PureComponent {
         loading: false,
       });
     } else {
-      this.handleGetBpuValuesPage({ pageSize: this.state.bpuValuesPage.pagination.pageSize, currentPage: 1 });
+      const { pagination, effective} = this.state.bpuValuesPage;
+      this.handleGetBpuValuesPage({
+        pageSize: pagination.pageSize,
+        currentPage: 1,
+        effective,
+      });
     }
   }
+  handleCancel = () => {
+    this.props.dispatch({
+      type: 'auction/hideBbu',
+    });
+  }
+  handleOk = () => {
+    const result = this.state[this.state.activeKey].selectedRows;
+    console.log(result);
+    this.props.dispatch({
+      type: 'auction/hide',
+    });
+  }
+
+  handleChangeTab = (activeKey) =>{
+    if (activeKey === 'bpuValuesPage') {
+      this.handleGetBpuValuesPage({ pageSize: this.state.bpuValuesPage.pagination.pageSize, currentPage: 1 });
+    } else if (activeKey === 'bPUSelectionData') {
+      console.log(this.state.nicaiCrx);
+      this.handleGetBPUSelectionData({ pageSize: this.state.bPUSelectionData.pagination.pageSize, currentPage: 1 });
+    }
+    this.setState({
+      activeKey
+    })
+  }
+  setBpuValueById = () => {
+    const data = JSON.parse(this.state.nicaiCrx.innerText);
+    console.log(data);
+    if (data.error) {
+      message.error(data.msg, 60 * 60);
+    } else {
+      this.setState({ bpuValue: data });
+    }
+  }
+  handleLoadBpuValue = (record) => {
+    const params = {
+      finalBpuId: record.finalBpuId,
+      nocache: 1,
+    };
+    this.state.nicaiCrx.innerText = JSON.stringify(params);
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getBpuValueById', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
+
   setBpuValuesPage = (e) => {
     const data = JSON.parse(e.target.innerText);
     console.log(data);
@@ -140,9 +185,12 @@ export default class BbuModal extends PureComponent {
       });
     } else {
       message.destroy();
-      message.warn(data.msg, 60 * 60);
+      message.warn(data.msg);
       this.setState({
-        loading: false,
+        bpuValuesPage: {
+          ...this.state.bpuValuesPage,
+          loading: false,
+        },
       });
     }
   }
@@ -152,133 +200,114 @@ export default class BbuModal extends PureComponent {
     customEvent.initEvent('getBpuValuesPage', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
-  handleCancel = () => {
-    this.props.dispatch({
-      type: 'auction/hideBbu',
-    });
-  }
-  handleSearchChange = (e) => {
-    this.setState({
-      search: e.target.value,
-    })
-    if (!e.target.value) {
+  changeBpuValuesPagePage = (pagination, filters) => {
+    if (pagination.current !== this.state.bpuValuesPage.pagination.current || pagination.pageSize !== this.state.bpuValuesPage.pagination.pageSize) {
       this.setState({
-        choose: '',
-        auctionChoose: null,
-      })
-    }
-  }
-  handleClear = () => {
-    this.setState({
-      search: '',
-      choose: '',
-      auctionChoose: null,
-      new7: '',
-      q_score: '',
-      qumai: '',
-    })
-  }
-  handleAddAuction = (value) => {
-    this.setState({
-      choose: '',
-      auctionChoose: null,
-    })
-    if (value) {
-      this.state.nicaiCrx.innerText = JSON.stringify(value);
-      const customEvent = document.createEvent('Event');
-      customEvent.initEvent('uploadAuction', true, true);
-      this.state.nicaiCrx.dispatchEvent(customEvent);
-    } else {
-      message.warn('请输入商品链接');
-    }
-  }
-  changeBpuValuesPagePage = (current, pageSize) => {
-    this.setState({
-      bpuValuesPage: {
-        ...this.state.bpuValuesPage,
-        pagination: {
-          ...this.state.bpuValuesPage.pagination,
-          current,
-          pageSize,
+        bpuValuesPage: {
+          ...this.state.bpuValuesPage,
+          pagination,
+          loading: true,
         }
-      }
-    })
-    if (this.state.nicaiCrx) {
-      this.setState({ loading: true });
-      this.handleGetBpuValuesPage({
-        pageSize,
-        currentPage: current,
       });
+      if (this.state.nicaiCrx) {
+        const { effective } = this.state.bpuValuesPage;
+        this.handleGetBpuValuesPage({
+          pageSize: pagination.pageSize,
+          currentPage: pagination.current,
+          effective,
+        });
+      }
     }
   }
-  handleChooseImg = (photo) => {
-    this.setState({
-      choose: photo,
-    })
-  }
-  handleOk = () => {
-    if (this.state.auctionChoose) {
-      const img = this.state.choose || this.state.auctionChoose.coverUrl;
-      if (this.props.onOk) this.props.onOk(this.state.auctionChoose, img);
-      this.setState({
-        choose: '',
-        auctionChoose: null,
-        search: '',
-      })
+  handleSearchBpuValuesPage = (searchValue) => {
+    this.setState({ bpuValuesPage: { ...this.state.bpuValuesPage, searchValue, loading: true } });
+    const { pagination, effective, searchField } = this.state.bpuValuesPage;
+    const params = {
+      pageSize: pagination.pageSize,
+      currentPage: pagination.current,
+      effective,
+    };
+    if (searchField) {
+      params[searchField] = searchValue;
     }
-    this.props.dispatch({
-      type: 'auction/hide',
-    });
+    this.handleGetBpuValuesPage(params);
   }
-
-  handleChooseAuction = (auction) => {
-    // auctionChoose
-    this.setState({
-      new7: '',
-      q_score: '',
-      qumai: '',
-      auctionChoose: auction,
-      choose: auction.images && auction.images.length > 0 ? auction.images[0] : auction.coverUrl,
-      search: auction.item ? auction.item.itemUrl : '',
-    })
-  }
-
-  handleChangeTab = (e) =>{
-    if (e === 'bpuValuesPage') {
-      this.handleGetBpuValuesPage({ pageSize: this.state.pagination.pageSize, currentPage: 1 });
-    }
-    this.setState({
-      activeKey: e
-    })
-  }
-  handleChangeTabpane = () =>{
-    
-    this.setState({
-      activeKey: 'add'
-    }, () => {
-      console.log(this.state.activeKey)
-    })
+  handleBpuValuesPageRowSelectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({ bpuValuesPage: { ...this.state.bpuValuesPage, selectedRowKeys, selectedRows } });
   }
   renderBpuValuesPage = () => {
-    const { bpuValuesPage: { list, pagination, loading } } = this.state;
+    const { bpuValuesPage: { list, pagination, loading, searchField, searchValue, selectedRowKeys } } = this.state;
     const columns = [{
       title: '商品细节',
       dataIndex: 'title',
-      render: (val, record) => val,
+      width: 300,
+      render: (val, record) => (
+        <div>
+          <img src={record.mainPicUrl} style={{ width: 50, display: 'inline-block', verticalAlign: 'top' }}/>
+          <div style={{ width: 200, display: 'inline-block', verticalAlign: 'top', marginLeft: 5 }}>
+            <div style={{ color: '#999' }}>{record.finalBpuId}</div>
+            <div>{record.title}</div>
+          </div>
+        </div>
+      ),
     }, {
       title: '类目',
       dataIndex: 'categoryName',
+      width: 200,
     }, {
       title: '品牌',
       dataIndex: 'brandName',
+      width: 200,
     }, {
       title: '是否缺内容',
       dataIndex: 'contentRare',
+      width: 150,
       render: (val) => val ? '是' : '否',
+      filters: [{
+        text: '是',
+        value: 'true',
+      }, {
+        text: '否',
+        value: 'false',
+      }, {
+        text: '不限',
+        value: 'unlimit',
+      }],
+      filterMultiple: false,
+      onFilter: (value, record) => value === 'unlimit' ? true : String(record.contentRare) === value,
     }];
+    const rowSelection = {
+      selectedRowKeys,
+      hideDefaultSelections: true,
+      onChange: this.handleBpuValuesPageRowSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.disabled,
+      }),
+    };
+    const selectBefore = (
+      <Select
+        style={{ width: 100 }}
+        value={searchField}
+        onSelect={value => this.setState({ bpuValuesPage: { ...this.state.bpuValuesPage, searchField: value } })}
+      >
+        <Option value="title">商品标题</Option>
+        <Option value="finalBpuId">ID</Option>
+        <Option value="categoryName">类目</Option>
+        <Option value="brandName">品牌</Option>
+      </Select>
+    );
     return (
       <div>
-        <div>
+        <div style={{ marginBottom: 10 }}>
+          <Search
+            addonBefore={selectBefore}
+            style={{ width: 400 }}
+            value={searchValue}
+            onChange={e => this.setState({ bpuValuesPage: { ...this.state.bpuValuesPage, searchValue: e.target.value } })}
+            onSearch={this.handleSearchBpuValuesPage}
+            enterButton
+            placeholder="搜索商品名称、ID、类目、品牌"
+          />
         </div>
         <Table
           loading={loading}
@@ -291,14 +320,215 @@ export default class BbuModal extends PureComponent {
           }}
           onChange={this.changeBpuValuesPagePage}
           rowKey="finalBpuId"
-          scroll={{ y: 450 }}
+          scroll={{ y: 380 }}
+          bordered={true}
+          rowSelection={rowSelection}
+           onRow={(record) => ({
+            onClick: () => this.handleLoadBpuValue(record),
+            onDoubleClick: () => {},
+            onContextMenu: () => {},
+            onMouseEnter: () => {},
+            onMouseLeave: () => {},
+          })}
+          size="small"
         />
+      </div>
+    );
+  }
+
+  setBPUSelectionData = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    console.log(data);
+    if (!data.error) {
+      this.setState({
+        bPUSelectionData: {
+          ...this.state.bPUSelectionData,
+          ...data,
+          pagination: {
+            ...this.state.bPUSelectionData.pagination,
+            total: data.total,
+          },
+          loading: false,
+        },
+      });
+    } else {
+      message.destroy();
+      message.warn(data.msg);
+      this.setState({
+        bPUSelectionData: {
+          ...this.state.bPUSelectionData,
+          loading: false,
+        },
+      });
+    }
+  }
+  handleGetBPUSelectionData = (params) => {
+    this.state.nicaiCrx.innerText = JSON.stringify(params);
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getBPUSelectionData', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
+  changeBPUSelectionDataPage = (pagination, filters) => {
+    if (pagination.current !== this.state.bPUSelectionData.pagination.current || pagination.pageSize !== this.state.bPUSelectionData.pagination.pageSize) {
+      this.setState({
+        bPUSelectionData: {
+          ...this.state.bPUSelectionData,
+          pagination,
+          loading: true,
+        }
+      });
+      if (this.state.nicaiCrx) {
+        const { effective } = this.state.bPUSelectionData;
+        this.handleGetBPUSelectionData({
+          pageSize: pagination.pageSize,
+          currentPage: pagination.current,
+          effective,
+        });
+      }
+    }
+  }
+  handleSearchBPUSelectionData = (searchValue) => {
+    this.setState({ bPUSelectionData: { ...this.state.bPUSelectionData, searchValue, loading: true } });
+    const { pagination, effective, searchField } = this.state.bPUSelectionData;
+    const params = {
+      pageSize: pagination.pageSize,
+      currentPage: pagination.current,
+      effective,
+    };
+    if (searchField) {
+      params[searchField] = searchValue;
+    }
+    this.handleGetBPUSelectionData(params);
+  }
+  handleBPUSelectionDataRowSelectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({ bPUSelectionData: { ...this.state.bPUSelectionData, selectedRowKeys, selectedRows } });
+  }
+  renderBPUSelectionData = () => {
+    const { bPUSelectionData: { list, pagination, loading, searchField, searchValue, selectedRowKeys } } = this.state;
+    const columns = [{
+      title: '商品细节',
+      dataIndex: 'title',
+      width: 300,
+      render: (val, record) => (
+        <div>
+          <img src={record.mainPicUrl} style={{ width: 50, display: 'inline-block', verticalAlign: 'top' }}/>
+          <div style={{ width: 200, display: 'inline-block', verticalAlign: 'top', marginLeft: 5 }}>
+            <div style={{ color: '#999' }}>{record.finalBpuId}</div>
+            <div>{record.title}</div>
+          </div>
+        </div>
+      ),
+    }, {
+      title: '类目',
+      dataIndex: 'categoryName',
+      width: 200,
+    }, {
+      title: '品牌',
+      dataIndex: 'brandName',
+      width: 200,
+    }, {
+      title: '是否缺内容',
+      dataIndex: 'contentRare',
+      width: 150,
+      render: (val) => val ? '是' : '否',
+      filters: [{
+        text: '是',
+        value: 'true',
+      }, {
+        text: '否',
+        value: 'false',
+      }, {
+        text: '不限',
+        value: 'unlimit',
+      }],
+      filterMultiple: false,
+      onFilter: (value, record) => value === 'unlimit' ? true : String(record.contentRare) === value,
+    }];
+    const rowSelection = {
+      selectedRowKeys,
+      hideDefaultSelections: true,
+      onChange: this.handleBpuValuesPageRowSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.disabled,
+      }),
+    };
+    const selectBefore = (
+      <Select
+        style={{ width: 100 }}
+        value={searchField}
+        onSelect={value => this.setState({ bPUSelectionData: { ...this.state.bPUSelectionData, searchField: value } })}
+      >
+        <Option value="title">商品标题</Option>
+        <Option value="finalBpuId">ID</Option>
+        <Option value="categoryName">类目</Option>
+        <Option value="brandName">品牌</Option>
+      </Select>
+    );
+    return (
+      <div>
+        <div style={{ marginBottom: 10 }}>
+          <Search
+            addonBefore={selectBefore}
+            style={{ width: 400 }}
+            value={searchValue}
+            onChange={e => this.setState({ bPUSelectionData: { ...this.state.bPUSelectionData, searchValue: e.target.value } })}
+            onSearch={this.handleSearchBPUSelectionData}
+            enterButton
+            placeholder="搜索商品名称、ID、类目、品牌"
+          />
+        </div>
+        <Table
+          loading={loading}
+          dataSource={list}
+          columns={columns}
+          pagination={{
+            showSizeChanger: true,
+            showQuickJumper: true,
+            ...pagination,
+          }}
+          onChange={this.changeBPUSelectionDataPage}
+          rowKey="finalBpuId"
+          scroll={{ y: 380 }}
+          bordered={true}
+          rowSelection={rowSelection}
+           onRow={(record) => ({
+            onClick: () => this.handleLoadBpuValue(record),
+            onDoubleClick: () => {},
+            onContextMenu: () => {},
+            onMouseEnter: () => {},
+            onMouseLeave: () => {},
+          })}
+          size="small"
+        />
+      </div>
+    );
+  }
+
+  renderJsonDesc = (jsonDesc) => {
+    return (
+      <div>
+        {jsonDesc.blocks.map((item, index) => {
+          if (item.type === 'unstyled') {
+            return <p key={`renderJsonDesc${index}`} style={{ margin: '8px 0 8px' }}>{item.text}</p>;
+          } else if (item.type === 'atomic') {
+            return item.entityRanges.map((item1, index1) => <p key={`entityMap${index}`}><img src={jsonDesc.entityMap[item1.key].data.url}/></p>);
+          }
+          
+        })
+      }
       </div>
     );
   }
   render() {
     const { visible, k, currentKey } = this.props;
-    const { activeKey } = this.state;
+    const { activeKey, bpuValue } = this.state;
+    let htmlDesc = '';
+    let jsonDesc = {};
+    if (bpuValue.htmlDesc && bpuValue.htmlDesc.substring(0, 1) === '{') {
+      jsonDesc = JSON.parse(entities.decodeHTML(bpuValue.htmlDesc));
+    } else if (bpuValue.htmlDesc) {
+      htmlDesc = entities.decodeHTML(bpuValue.htmlDesc);
+    }
     return (
       <Modal
         title="标准商品品牌信息 查找"
@@ -306,7 +536,8 @@ export default class BbuModal extends PureComponent {
         visible={k === currentKey && visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
-        bodyStyle={{ padding: '5px 20px' }}
+        style={{ top: 40 }}
+        bodyStyle={{ padding: '5px 20px', position: 'relative' }}
       >
         <Tabs
           activeKey={activeKey}
@@ -315,7 +546,29 @@ export default class BbuModal extends PureComponent {
           <TabPane tab="商品中心" key="bpuValuesPage">
             {this.renderBpuValuesPage()}
           </TabPane>
+          <TabPane tab="选品平台" key="bPUSelectionData">
+            {this.renderBPUSelectionData()}
+          </TabPane>
         </Tabs>
+        <div id="bpuValueDetail" style={{ position: 'absolute', width: '96%', minHeight: '500px', top: 0, height: '100%', display: !!bpuValue.finalBpuId ? 'block' : 'none'  }}>
+        </div>
+        <Modal visible={!!bpuValue.finalBpuId} width="800px"
+        style={{ position: 'absolute', top: 110, right: 0, left: 0 }}
+        maskStyle={{ position: 'absolute' }}
+        bodyStyle={{ height: 500, overflow: 'scroll' }}
+        getContainer={() => document.getElementById('bpuValueDetail')}
+        onCancel={() => this.setState({ bpuValue: {} })}
+        footer={null}>
+          <h3>基本信息</h3>
+          <div>{bpuValue.title}</div>
+          <div>{bpuValue.categoryName}</div>
+          <div>{bpuValue.imageList && bpuValue.imageList.split('|').map((item, index) =>
+            <span key={`imageList${index}`} style={{ padding: 10 }}><img src={item} style={{ width: 162 }} /></span>)}
+          </div>
+          <h3 style={{ margin: '10px 0 10px' }}>图文详情</h3>
+          { htmlDesc && <div dangerouslySetInnerHTML={{ __html: htmlDesc }}></div> }
+          { jsonDesc.blocks && this.renderJsonDesc(jsonDesc) }
+        </Modal>
       </Modal>
     );
   }

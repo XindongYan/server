@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress, Tabs } from 'antd';
 import Album from './Album.js';
 import AuctionModal from '../../components/AuctionModal';
+import BbuModal from '../../components/AuctionModal/BbuModal';
 import styles from './index.less';
 
 const TabPane = Tabs.TabPane;
@@ -182,6 +183,8 @@ export default class Material extends PureComponent {
                   style={{float: 'right', margin: '10px 20px'}}
                 />
                 <AuctionModal k="material" onOk={this.handleAddProduct} />
+                <BbuModal k="material" />
+                <Button onClick={() => this.props.dispatch({type: 'auction/showBbu', payload: {currentKey: 'material'}})}>567890</Button>
               </div>
             </TabPane>
             <TabPane tab="我的图片" key="album">
