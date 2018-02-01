@@ -12,7 +12,7 @@ import TaskStatusColumn from '../../components/TaskStatusColumn';
 import TaskIdColumn from '../../components/TaskIdColumn';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, ORIGIN, SOURCE } from '../../constants';
+import { TASK_APPROVE_STATUS, ORIGIN, SOURCE, TAOBAO_ACTIVITYID } from '../../constants';
 import styles from './TableList.less';
 import { queryConvertedTasks, queryTask } from '../../services/task';
 
@@ -46,6 +46,7 @@ export default class TableList extends PureComponent {
     percent: 0,
     queue: [],
     queueNumber: 0,
+    channel_list: [],
   }
 
   componentDidMount() {
@@ -65,11 +66,12 @@ export default class TableList extends PureComponent {
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.addEventListener('publishResult', this.publishResult);
     nicaiCrx.addEventListener('setVersion', this.setVersion);
+    nicaiCrx.addEventListener('setChannel', this.setChannel);
     if (!this.state.nicaiCrx) {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 600);
+        }, 1000);
       });
     }
   }
@@ -122,13 +124,38 @@ export default class TableList extends PureComponent {
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
-    this.setState({
-      version: data.version,
-    })
+    if (data.version) {
+      this.setState({
+        version: data.version,
+      })
+    }
+    if (data.error) {
+      message.destroy();
+      message.warn(data.msg, 60 * 60);
+      this.setState({
+        actsLoading: false,
+      });
+    } else {
+      this.handleGetChannel();
+    }
+  }
+  setChannel = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    if (data.itemList) {
+      this.setState({
+        channel_list: data.itemList,
+      })
+      this.state.nicaiCrx.removeEventListener('setChannel', this.setChannel);
+    }
   }
   handleGetVersion = () => {
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getVersion', true, true);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
+  }
+  handleGetChannel = () => {
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getChannel', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleFetch = () => {
@@ -189,7 +216,33 @@ export default class TableList extends PureComponent {
       message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
     }
   }
-
+  handlePublishValidate = (record) => {
+    const { version, channel_list } = this.state;
+    if (version && version.length > 0) {
+      let canPush = true;
+      if (TAOBAO_ACTIVITYID[record.channel_name]) {
+        canPush = false;
+        if (channel_list.length > 0) {
+          channel_list.forEach(item => {
+            item.activityList.find(item1 => {
+              if (item1.id === TAOBAO_ACTIVITYID[record.channel_name]) {
+                canPush = true;
+              }
+            });
+          });
+        }
+      }
+      if (canPush) {
+        this.handlePublish(record);
+      } else {
+        message.destroy();
+        message.warn('没有对应发布渠道，无法发布到阿里创作平台', 10);
+      }
+    } else {
+      message.destroy();
+      message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+    }
+  }
   handlePublishAll = async () => {
     const { selectedRows } = this.state;
     const _ids = [];
@@ -534,7 +587,7 @@ export default class TableList extends PureComponent {
               { record.channel_name &&
                 <span>
                   <Divider type="vertical" />
-                  <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                  <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublishValidate(record)} okText="确认" cancelText="取消">
                     <a>发布</a>
                   </Popconfirm>
                 </span>
@@ -576,7 +629,7 @@ export default class TableList extends PureComponent {
                 外链
               </a>
               <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublishValidate(record)} okText="确认" cancelText="取消">
                 <a>发布</a>
               </Popconfirm>
             </div>
@@ -588,7 +641,7 @@ export default class TableList extends PureComponent {
                 外链
               </a>
               <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublishValidate(record)} okText="确认" cancelText="取消">
                 <a>发布</a>
               </Popconfirm>
             </div>

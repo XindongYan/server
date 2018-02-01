@@ -56,7 +56,7 @@ export default class TaskForm extends PureComponent {
       task_desc: '', // '写手提交的稿子内容',
       pushDaren: true,
     },
-    haveGoodsTask: {
+    haveGoods: {
       body: [],
       title: '', // '任务标题',
       bodyStruct: [],
@@ -170,7 +170,7 @@ export default class TaskForm extends PureComponent {
                 weitao: result.task.weitao,
                 toutiao: result.task.toutiao,
                 zhibo: result.task.zhibo,
-                haveGoodsTask: { ...result.task.haveGoods },
+                haveGoods: { ...result.task.haveGoods },
                 lifeResearch: result.task.lifeResearch,
                 globalFashion: result.task.globalFashion,
                 ifashion: result.task.ifashion,
@@ -196,32 +196,32 @@ export default class TaskForm extends PureComponent {
 
   validate = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { weitao, haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld, toutiao, zhibo } = this.state;
+    const { weitao, haveGoods, lifeResearch, globalFashion, ifashion, buyWorld, toutiao, zhibo } = this.state;
     const channel_name = this.getChannelName();
     if (channel_name === '有好货') {
       let bOk = true;
       this.props.form.validateFieldsAndScroll(['title'], {scroll: {alignWithTop: true}}, (err, val) => {
         if (!err) {
-          if (!haveGoodsTask.body || !haveGoodsTask.body.length) {
+          if (!haveGoods.body || !haveGoods.body.length) {
             message.warn('请选择商品宝贝');
             bOk = false;
-          } else if (!haveGoodsTask.body[0].extraBanners || haveGoodsTask.body[0].extraBanners.length < 3) {
+          } else if (!haveGoods.body[0].extraBanners || haveGoods.body[0].extraBanners.length < 3) {
             message.warn('请选择至少三张封面图');
             bOk = false;
-          } else if (!haveGoodsTask.bodyStruct0 || haveGoodsTask.bodyStruct0.length < 2) {
+          } else if (!haveGoods.bodyStruct0 || haveGoods.bodyStruct0.length < 2) {
             message.warn('请输入宝贝亮点');
             bOk = false;
-          } else if (!haveGoodsTask.duanliangdian || haveGoodsTask.duanliangdian.length < 2) {
+          } else if (!haveGoods.duanliangdian || haveGoods.duanliangdian.length < 2) {
             message.warn('请输入至少2条短亮点');
             bOk = false;
-          } else if (!haveGoodsTask.bodyStruct || haveGoodsTask.bodyStruct.length < 2) {
+          } else if (!haveGoods.bodyStruct || haveGoods.bodyStruct.length < 2) {
             message.warn('请编写至少2个段落');
             bOk = false;
           } else {
-            for (var i = haveGoodsTask.bodyStruct.length - 1; i >= 0; i--) {
-              !haveGoodsTask.bodyStruct[i].title ? haveGoodsTask.bodyStruct.splice(i, 1) : '';
+            for (var i = haveGoods.bodyStruct.length - 1; i >= 0; i--) {
+              !haveGoods.bodyStruct[i].title ? haveGoods.bodyStruct.splice(i, 1) : '';
             }
-            if (haveGoodsTask.bodyStruct.length < 2) {
+            if (haveGoods.bodyStruct.length < 2) {
               message.warn('请编写至少2个段落');
               bOk = false;
             }
@@ -372,8 +372,8 @@ export default class TaskForm extends PureComponent {
     if (this.validate()) {
       const query = querystring.parse(this.props.location.search.substr(1));
       const { currentUser, teamUser, operation, formData } = this.props;
-      const { haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
-      const title = haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title;
+      const { haveGoods, approver_id, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
+      const title = haveGoods.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title;
       let name;
       if (operation === 'create') {
         name = title;
@@ -385,7 +385,7 @@ export default class TaskForm extends PureComponent {
       const values = {};
       const channel_name = this.getChannelName();
       if (channel_name === '有好货') {
-        values.haveGoods = this.state.haveGoodsTask;
+        values.haveGoods = this.state.haveGoods;
       } else if (channel_name === '生活研究所') {
         values.lifeResearch = this.state.lifeResearch;
       } else if (channel_name === '全球时尚') {
@@ -491,7 +491,7 @@ export default class TaskForm extends PureComponent {
     this.setState({ zhibo: { ...this.state.zhibo, ...task } });
   }
   handleChangeGoods = (task) => {
-    this.setState({ haveGoodsTask: { ...this.state.haveGoodsTask, ...task } });
+    this.setState({ haveGoods: { ...this.state.haveGoods, ...task } });
   }
   handleChangeLife = (task) => {
     this.setState({ lifeResearch: { ...this.state.lifeResearch, ...task } });
@@ -514,8 +514,8 @@ export default class TaskForm extends PureComponent {
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, operation, formData } = this.props;
-    const { haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
-    const title = haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title || '';
+    const { haveGoods, approver_id, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
+    const title = haveGoods.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title || '';
     let name;
     if (operation === 'create') {
       name = title;
@@ -527,7 +527,7 @@ export default class TaskForm extends PureComponent {
     const values = {};
     const channel_name = this.getChannelName();
     if (channel_name === '有好货') {
-      values.haveGoods = this.state.haveGoodsTask;
+      values.haveGoods = this.state.haveGoods;
     } else if (channel_name === '生活研究所') {
       values.lifeResearch = this.state.lifeResearch;
     } else if (channel_name === '全球时尚') {
@@ -639,8 +639,8 @@ export default class TaskForm extends PureComponent {
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, operation, formData } = this.props;
-    const { haveGoodsTask, approver_id, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
-    const title = haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title;
+    const { haveGoods, approver_id, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
+    const title = haveGoods.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title;
     let name;
     if (operation === 'create') {
       name = title;
@@ -652,7 +652,7 @@ export default class TaskForm extends PureComponent {
     const values = {};
     const channel_name = this.getChannelName();
     if (channel_name === '有好货') {
-      values.haveGoods = this.state.haveGoodsTask;
+      values.haveGoods = this.state.haveGoods;
     } else if (channel_name === '生活研究所') {
       values.lifeResearch = this.state.lifeResearch;
     } else if (channel_name === '全球时尚') {
@@ -812,7 +812,7 @@ export default class TaskForm extends PureComponent {
   }
   render() {
     const { form: { getFieldDecorator }, operation, formData } = this.props;
-    const { approveModalVisible, haveGoodsTask, suggestionApproves } = this.state;
+    const { approveModalVisible, haveGoods, suggestionApproves } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const channel_name = this.getChannelName();
     const writeTips = (
@@ -855,12 +855,12 @@ export default class TaskForm extends PureComponent {
               onChange={this.handleChangeZhibo}
             />;
     } else if (channel_name === '有好货') {
-      pushDaren = this.state.haveGoodsTask.pushDaren;
+      pushDaren = this.state.haveGoods.pushDaren;
       form = <GoodProductionForm
               form={this.props.form}
               role="writer"
               operation={operation}
-              formData={this.state.haveGoodsTask}
+              formData={this.state.haveGoods}
               onChange={this.handleChangeGoods}
             />;
     } else if (channel_name === '生活研究所') {
@@ -937,8 +937,7 @@ export default class TaskForm extends PureComponent {
           </div>
           {formRight}
           { operation !== 'view' && <div className={styles.submitBox}>
-            {/*
-              <div style={{ float: 'left', margin: '-6px 50px 0 0' }}>
+            <div style={{ float: 'left', margin: '-6px 50px 0 0' }}>
               <div style={{ fontSize: 12 }}>推送到</div>
               <div className={styles.CreatorPush} style={pushDarenStyle} onClick={() => this.handleChangePushDaren(!pushDaren)}>
                 <Tooltip placement="top" title={pushDaren ? '推送到个人主页' : '选中后推送到个人主页'}>
@@ -946,7 +945,6 @@ export default class TaskForm extends PureComponent {
                 </Tooltip>
               </div>
             </div>
-            */}
             { (query.project_id || formData.project_id || formData.approve_status === TASK_APPROVE_STATUS.rejected) ?
               <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton')}>
                 <Popconfirm overlayClassName={styles.popConfirm} getPopupContainer={() => document.getElementById('subButton')} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleSubmitTask}>

@@ -104,3 +104,11 @@ export const SOURCE = {
   create: 3, // 我的
   pass: 4, // 转交
 };
+
+export const TAOBAO_ACTIVITYID = {
+  '有好货': 414,
+  '生活研究所': 82,
+  'ifashion': 1437,
+  '全球时尚': 1439,
+  '买遍全球': 60,
+};
