@@ -12,7 +12,7 @@ export default class Album extends PureComponent {
     nicaiCrx: null,
     itemList: [],
     pagination: {
-      pageSize: 20,
+      pageSize: 18,
       current: 1,
       total: 0,
     },
