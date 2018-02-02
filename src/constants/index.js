@@ -106,9 +106,12 @@ export const SOURCE = {
 };
 
 export const TAOBAO_ACTIVITYID = {
-  '有好货': 414,
-  '生活研究所': 82,
-  'ifashion': 1437,
-  '全球时尚': 1439,
-  '买遍全球': 60,
+  '414': '有好货',
+  '82': '生活研究所',
+  '1437': 'ifashion',
+  '1439': '全球时尚',
+  '60': '买遍全球',
 };
+
+export const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
+

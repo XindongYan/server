@@ -133,6 +133,7 @@ export default class TaskView extends PureComponent {
           }
         });
       }
+      const query = querystring.parse(nextProps.location.search.substr(1));
       this.props.dispatch({
         type: 'task/update',
         payload: {
