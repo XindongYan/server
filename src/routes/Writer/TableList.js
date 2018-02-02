@@ -10,11 +10,12 @@ import { stringify } from 'qs';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import TaskIdColumn from '../../components/TaskIdColumn';
+import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, ORIGIN, SOURCE, TAOBAO_ACTIVITYID } from '../../constants';
+import { TASK_APPROVE_STATUS, ORIGIN, SOURCE } from '../../constants';
 import styles from './TableList.less';
-import { queryConvertedTasks, queryTask } from '../../services/task';
+import { queryConvertedTasks } from '../../services/task';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -144,7 +145,7 @@ export default class TableList extends PureComponent {
     if (data.itemList) {
       this.setState({
         channel_list: data.itemList,
-      })
+      });
       this.state.nicaiCrx.removeEventListener('setChannel', this.setChannel);
     }
   }
@@ -210,33 +211,6 @@ export default class TableList extends PureComponent {
         }
         message.destroy();
         message.loading('发布中 ...', 60);
-      }
-    } else {
-      message.destroy();
-      message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
-    }
-  }
-  handlePublishValidate = (record) => {
-    const { version, channel_list } = this.state;
-    if (version && version.length > 0) {
-      let canPush = true;
-      if (TAOBAO_ACTIVITYID[record.channel_name]) {
-        canPush = false;
-        if (channel_list.length > 0) {
-          channel_list.forEach(item => {
-            item.activityList.find(item1 => {
-              if (item1.id === TAOBAO_ACTIVITYID[record.channel_name]) {
-                canPush = true;
-              }
-            });
-          });
-        }
-      }
-      if (canPush) {
-        this.handlePublish(record);
-      } else {
-        message.destroy();
-        message.warn('没有对应发布渠道，无法发布到阿里创作平台', 10);
       }
     } else {
       message.destroy();
@@ -468,7 +442,7 @@ export default class TableList extends PureComponent {
   }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
-    const { modalVisible, publishVisible, selectedRowKeys, approveModalVisible, suggestionApproves, selectedRows, percent } = this.state;
+    const { modalVisible, publishVisible, selectedRowKeys, approveModalVisible, suggestionApproves, selectedRows, percent, channel_list } = this.state;
     const columns = [
       {
         title: '任务ID',
@@ -565,12 +539,12 @@ export default class TableList extends PureComponent {
           {moment(val).fromNow()}
         </Tooltip> : ''
       ),
-    }
+    };
     const status = {
       title: '状态',
       dataIndex: 'approve_status',
       render: val => (<TaskStatusColumn status={val}/>),
-    }
+    };
     const opera = {
       title: '操作',
       render: (record) => {
@@ -587,8 +561,8 @@ export default class TableList extends PureComponent {
               { record.channel_name &&
                 <span>
                   <Divider type="vertical" />
-                  <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublishValidate(record)} okText="确认" cancelText="取消">
-                    <a>发布</a>
+                  <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                    <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
                   </Popconfirm>
                 </span>
               }
@@ -629,8 +603,8 @@ export default class TableList extends PureComponent {
                 外链
               </a>
               <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublishValidate(record)} okText="确认" cancelText="取消">
-                <a>发布</a>
+              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
             </div>
           );
@@ -641,8 +615,8 @@ export default class TableList extends PureComponent {
                 外链
               </a>
               <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublishValidate(record)} okText="确认" cancelText="取消">
-                <a>发布</a>
+              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
             </div>
           );

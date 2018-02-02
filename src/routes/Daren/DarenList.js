@@ -5,8 +5,8 @@ import { Table, Button, Tag, Card, Select, Input, message, Avatar, Divider } fro
 import styles from './DarenList.less';
 import ChartPopover from './ChartPopover';
 import TrimSpan from '../../components/TrimSpan';
+import { COLORS } from '../../constants';
 
-const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
 const AREAS = [{
   "text": "全部领域", "value": ""
 }, {
