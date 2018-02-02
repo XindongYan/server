@@ -9,6 +9,7 @@ import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
+import Extension from '../../components/Extension';
 import styles from './TableList.less';
 import { queryConvertedTasks } from '../../services/task';
 
@@ -42,6 +43,8 @@ export default class TableList extends PureComponent {
     selectedRowKeys: [],
     user_id: '',
     darenModalVisible: false,
+    extension: '',
+    extensionVisible: false,
     percent: 0,
     queue: [],
     queueNumber: 0,
@@ -720,6 +723,7 @@ export default class TableList extends PureComponent {
                 </FormItem>
               </Modal>}
             <DockPanel />
+            <Extension visible={this.state.extensionVisible} url={this.state.extension} onCancel={() => this.setState({ extensionVisible: false })} />
           </div>
         </Card>
       </div>

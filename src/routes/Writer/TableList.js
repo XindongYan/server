@@ -335,10 +335,6 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleCancel = () => {
-    this.setState({ extensionVisible: false });
-  }
-
   handleSpecifyApprover = () => {
     const { dispatch } = this.props;
     const { approver_id } = this.state;
@@ -820,7 +816,7 @@ export default class TableList extends PureComponent {
             )}
           </FormItem>
         </Modal>}
-        <Extension visible={this.state.extensionVisible} url={this.state.extension} onCancel={this.handleCancel} />
+        <Extension visible={this.state.extensionVisible} url={this.state.extension} onCancel={() => this.setState({ extensionVisible: false })} />
       </div>
     );
   }
