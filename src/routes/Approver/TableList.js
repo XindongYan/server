@@ -6,6 +6,7 @@ import { Link } from 'dva/router';
 import moment from 'moment';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN, RIGHT } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
+import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
@@ -378,7 +379,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'name',
         width: 200,
         render: (record, task) => (
-          <Link to={`/project/task/view?_id=${task._id}`}>
+          <Link to={`/approver/task/view?_id=${task._id}`}>
             <TaskNameColumn text={record} length={10} />
           </Link>
         )
@@ -410,7 +411,7 @@ export default class TableList extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
-        render: val => val ? <TaskNameColumn text={val} length={10}/> : '',
+        render: val => val ? <TrimSpan text={val} length={10}/> : '',
       },
     ];
     const approver = {
