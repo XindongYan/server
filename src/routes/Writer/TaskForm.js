@@ -729,6 +729,7 @@ export default class TaskForm extends PureComponent {
           message.error(result.msg);
         } else {
           this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${_id}`));
+          window.scroll(0, 0);
         }
         if (callback) callback(result);
       }

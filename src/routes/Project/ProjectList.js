@@ -381,7 +381,7 @@ export default class ProjectList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               {/* <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button> */}
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} placeholder={['创建开始时间', '创建结束时间']} />
               <Search
                 style={{ width: 260, float: 'right'}}
                 placeholder="ID／名称／商家标签"

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import $ from 'jquery';
-import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag } from 'antd';
+import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag, Switch } from 'antd';
 import styles from './index.less';
 import { searchNew7, queryQumai } from '../../services/tool';
 import { queryYhhBody } from '../../services/task';
@@ -289,6 +289,9 @@ export default class AuctionModal extends PureComponent {
       console.log(this.state.activeKey)
     })
   }
+  handelCutout = () => {
+    
+  }
   addAuction = () => {
     const { visible, k } = this.props;
     const { search, itemList, pagination, addLoading, auctionChoose, q_score, new7, qumai } = this.state;
@@ -344,6 +347,9 @@ export default class AuctionModal extends PureComponent {
                 <img src={auctionChoose.coverUrl} style={{ width: 120, height: 120, }} />
               </a>
               }
+            </div>
+            <div>
+              智能抠图：<Switch defaultChecked onChange={this.handelCutout} />
             </div>
           </div>
         }

@@ -483,7 +483,7 @@ export default class TableList extends PureComponent {
                   >
                     { CHANNEL_NAMES.map(item => <Option key={item} value={item}>{item}</Option>) }
                   </Select>
-                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} placeholder={['创建开始时间', '创建结束时间']} />
                   <Search
                     style={{ width: 260, float: 'right'}}
                     placeholder="ID／名称／商家标签"
