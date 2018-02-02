@@ -18,7 +18,7 @@ export default class TaskStatusColumn extends PureComponent {
     } else if (status === 2) {
       return (<Tag className={styles['ant-tag']} color="#f50">未通过</Tag>);
     } else if (status === 3) {
-      return (<Tag className={styles['ant-tag']} color="#FFD700">待发布</Tag>);
+      return (<Tag className={styles['ant-tag']} color="#FFA500">待发布</Tag>);
     } else if (status === 4) {
       return (<Tag className={styles['ant-tag']} color="#108ee9">已发布</Tag>);
     } else if (status === 5) {
