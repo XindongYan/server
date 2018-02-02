@@ -428,7 +428,7 @@ export default class TableList extends PureComponent {
       title: '审核时间',
       dataIndex: 'approve_time',
       render: val => (
-        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
+        val && <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
           {moment(val).format('MM/DD')}
         </Tooltip>
       ),
