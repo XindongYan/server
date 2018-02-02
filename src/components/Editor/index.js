@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
+import BpuModal from '../AuctionModal/BpuModal.js';
 import styles from './index.less';
 @connect(() => ({
 
@@ -58,6 +59,7 @@ export default class Editor extends PureComponent {
           'justifyjustify', // 两端对齐
           'picture',
           'taobao',
+          'bpu',
           'drafts', // 从草稿箱加载
           forecolor,
           backcolor,
@@ -82,6 +84,16 @@ export default class Editor extends PureComponent {
           type: 'auction/show',
           payload: {
             currentKey: 'editor',
+          }
+        });
+      }
+    };
+    ue.commands.bpu = {
+      execCommand: () => {
+        this.props.dispatch({
+          type: 'auction/showBbu',
+          payload: {
+            currentKey: 'editor'
           }
         });
       }
@@ -122,6 +134,7 @@ export default class Editor extends PureComponent {
         <div id="editor" className={styles.editor} />
         <AlbumModal k="editor" onOk={this.handleAddImg} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} product={this.props.product} />
+        <BpuModal k="editor" onOk={result => console.log(result)}/>
       </div>
     );
   }

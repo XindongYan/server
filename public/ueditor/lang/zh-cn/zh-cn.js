@@ -25,7 +25,7 @@ UE.I18N['zh-cn'] = {
         'imageleft':'左浮动', 'imageright':'右浮动', 'attachment':'附件', 'imagecenter':'居中', 'wordimage':'图片转存',
         'lineheight':'行间距','edittip' :'编辑提示','customstyle':'自定义标题', 'autotypeset':'自动排版',
         'webapp':'百度应用','touppercase':'字母大写', 'tolowercase':'字母小写','background':'背景','template':'模板','scrawl':'涂鸦',
-        'music':'音乐','inserttable':'插入表格','drafts': '加载最近备份数据', 'charts': '图表','picture':'图片上传','taobao':'添加宝贝'
+        'music':'音乐','inserttable':'插入表格','drafts': '加载最近备份数据', 'charts': '图表','picture':'图片上传','taobao':'添加宝贝','bpu':'标准商品'
     },
     'insertorderedlist':{
         'num':'1,2,3...',

@@ -124,6 +124,9 @@ export default class AuctionImageModal extends PureComponent {
       if (this.state.cutCoverUrl[index]) {
         coverUrl = this.state.cutCoverUrl[index];
       }
+      this.setState({
+        checkedCutpic: false,
+      })
       if (this.props.onChange) this.props.onChange(coverUrl, this.state.extraBanners);
       this.props.dispatch({
         type: 'album/hideAuctionImage',
