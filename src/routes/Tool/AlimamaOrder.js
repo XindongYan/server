@@ -29,7 +29,7 @@ export default class AlimamaOrder extends PureComponent {
         message.destroy();
         message.warn('请安装尼采创作平台插件！');
       }
-    }, 3000);
+    }, 5000);
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.addEventListener('setAlimamaInfo', this.setAlimamaInfo);
     nicaiCrx.addEventListener('setVersion', this.setVersion);
@@ -37,7 +37,7 @@ export default class AlimamaOrder extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 600);
+        }, 2000);
       });
     }
     if (this.props.currentUser._id && this.props.currentUser.alimama && this.props.currentUser.alimama[0]) {

@@ -600,11 +600,11 @@ export default class BpuModal extends PureComponent {
           />
           <div style={{ backgroundColor: '#EEE', display: 'inline-block', padding: '0 10px 0 10px' }}>
             <span>价格区间：</span>
-            <Input prefix="￥" style={{ width: 90 }} value={minPrice}
+            <Input placeholder="￥" style={{ width: 90 }} value={minPrice}
               onChange={e => this.setState({ bPUSelectionData: { ...this.state.bPUSelectionData, minPrice: e.target.value } })}
             />
             <span style={{ margin: '0 5px 0 5px' }}>-</span> 
-            <Input prefix="￥" style={{ width: 90 }} value={maxPrice}
+            <Input placeholder="￥" style={{ width: 90 }} value={maxPrice}
               onChange={e => this.setState({ bPUSelectionData: { ...this.state.bPUSelectionData, maxPrice: e.target.value } })}
             />
           </div>
@@ -837,11 +837,11 @@ export default class BpuModal extends PureComponent {
           />
           <div style={{ backgroundColor: '#EEE', display: 'inline-block', padding: '0 10px 0 10px' }}>
             <span>价格区间：</span>
-            <Input prefix="￥" style={{ width: 90 }} value={minPrice}
+            <Input placeholder="￥" style={{ width: 90 }} value={minPrice}
               onChange={e => this.setState({ bPUFromMemberStoreData: { ...this.state.bPUFromMemberStoreData, minPrice: e.target.value } })}
             />
             <span style={{ margin: '0 5px 0 5px' }}>-</span> 
-            <Input prefix="￥" style={{ width: 90 }} value={maxPrice}
+            <Input placeholder="￥" style={{ width: 90 }} value={maxPrice}
               onChange={e => this.setState({ bPUFromMemberStoreData: { ...this.state.bPUFromMemberStoreData, maxPrice: e.target.value } })}
             />
             <span style={{ marginLeft: 10 }}>商家昵称：</span>
@@ -1070,11 +1070,11 @@ export default class BpuModal extends PureComponent {
           />
           <div style={{ backgroundColor: '#EEE', display: 'inline-block', padding: '0 10px 0 10px' }}>
             <span>价格区间：</span>
-            <Input prefix="￥" style={{ width: 90 }} value={minPrice}
+            <Input placeholder="￥" style={{ width: 90 }} value={minPrice}
               onChange={e => this.setState({ bpuFromOnlineData: { ...this.state.bpuFromOnlineData, minPrice: e.target.value } })}
             />
             <span style={{ margin: '0 5px 0 5px' }}>-</span> 
-            <Input prefix="￥" style={{ width: 90 }} value={maxPrice}
+            <Input placeholder="￥" style={{ width: 90 }} value={maxPrice}
               onChange={e => this.setState({ bpuFromOnlineData: { ...this.state.bpuFromOnlineData, maxPrice: e.target.value } })}
             />
           </div>
