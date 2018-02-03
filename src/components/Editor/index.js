@@ -121,6 +121,26 @@ export default class Editor extends PureComponent {
     const html = `<a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}" _data="${text}"><img src="${src}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a>`;
     this.state.ue.execCommand('inserthtml', html, true);
   }
+  handleAddBpu = (products) => {
+    const list = products.map(item => ({
+      data: {
+        coverUrl: item.mainPicUrl,
+        features: "{}",
+        name: "",
+        spuId: item.finalBpuId,
+        title: item.title,
+        type: "SIDEBARADDSPU",
+      },
+      mutability: 'IMMUTABLE',
+      type: 'SIDEBARADDSPU',
+    }));
+    let htmls = '';
+    list.forEach(item => {
+      const text = encodeURIComponent(JSON.stringify(item));
+      htmls += `<p><a contenteditable="false" class="editor_auctions" _data="${text}"><img src="${item.data.coverUrl}" /><i contenteditable="false" class="editor_auctions_details">${item.data.title}</i></a></p>`;
+    });
+    this.state.ue.execCommand('inserthtml', htmls, true);
+  }
   handleChange = () => {
     if (this.state.ue) {
       const content = this.state.ue.getContent();
@@ -134,7 +154,7 @@ export default class Editor extends PureComponent {
         <div id="editor" className={styles.editor} />
         <AlbumModal k="editor" onOk={this.handleAddImg} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} product={this.props.product} />
-        <BpuModal k="editor" onOk={result => console.log(result)}/>
+        <BpuModal k="editor" onOk={this.handleAddBpu}/>
       </div>
     );
   }
