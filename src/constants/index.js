@@ -113,5 +113,13 @@ export const TAOBAO_ACTIVITYID = {
   '60': '买遍全球',
 };
 
+export const TAOBAO_ACTIVITYID_MIRROR = {
+  '有好货': '414',
+  '生活研究所': '82',
+  'ifashion': '1437',
+  '全球时尚': '1439',
+  '买遍全球': '60',
+};
+
 export const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
 
