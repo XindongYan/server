@@ -250,6 +250,7 @@ export default class AuctionImageModal extends PureComponent {
         uploadBgImage: url,
         coverUrl: url,
         images: arr,
+        checkedCutpic: false,
       });
     } else if (this.state.k === 'extraImage') {
       const arr = [...this.state.extraBanners];
