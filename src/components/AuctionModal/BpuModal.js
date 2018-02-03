@@ -192,7 +192,7 @@ export default class BpuModal extends PureComponent {
     const result = this.state[this.state.activeKey].selectedRows;
     if (this.props.onOk) this.props.onOk(result);
     this.props.dispatch({
-      type: 'auction/hide',
+      type: 'auction/hideBbu',
     });
   }
 
