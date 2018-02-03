@@ -117,7 +117,22 @@ export default class Editor extends PureComponent {
     // this.state.ue.execCommand('inserthtml', html);
   }
   handleAddProduct = (auction, src) => {
-    const text = encodeURIComponent(JSON.stringify(auction));
+    const data = {
+      data: {
+        name: '',
+        coverUrl: src,
+        images: auction.images,
+        itemId: auction.item.itemId,
+        materialId: auction.materialId,
+        price: auction.item.finalPrice,
+        resourceUrl: auction.item.itemUrl,
+        title: auction.title,
+        type: 'SIDEBARSEARCHITEM',
+      },
+      mutability: 'IMMUTABLE',
+      type: 'SIDEBARSEARCHITEM',
+    };
+    const text = encodeURIComponent(JSON.stringify(data));
     const html = `<a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}" _data="${text}"><img src="${src}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a>`;
     this.state.ue.execCommand('inserthtml', html, true);
   }
@@ -134,7 +149,7 @@ export default class Editor extends PureComponent {
         <div id="editor" className={styles.editor} />
         <AlbumModal k="editor" onOk={this.handleAddImg} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} product={this.props.product} />
-        <BpuModal k="editor" onOk={result => console.log(result)}/>
+        <BpuModal k="editor" onOk={result => console.log(result)} />
       </div>
     );
   }
