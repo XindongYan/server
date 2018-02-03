@@ -216,10 +216,14 @@ export default class AuctionModal extends PureComponent {
     }
   }
   handleSetTags = async (url) => {
-    const sevenResult = await searchNew7({text: `https:${url}`});
-    const qumaiResult = await queryQumai({text: url});
+    let newUrl = url;
+    if (!/^((http:)|(https:))/.test(newUrl)) {
+      newUrl = `https:${newUrl}`;
+    }
+    const sevenResult = await searchNew7({text: newUrl});
+    const qumaiResult = await queryQumai({text: newUrl});
     if ( this.props.k === 'havegoods') {
-      const yhhResult = await queryYhhBody({resourceUrl: url});
+      const yhhResult = await queryYhhBody({resourceUrl: newUrl});
       const yhhList = yhhResult.list && yhhResult.list.length > 0 ? true : false;
       if (yhhList) {
         Modal.warning({
@@ -347,9 +351,6 @@ export default class AuctionModal extends PureComponent {
                 <img src={auctionChoose.coverUrl} style={{ width: 120, height: 120, }} />
               </a>
               }
-            </div>
-            <div>
-              智能抠图：<Switch defaultChecked onChange={this.handelCutout} />
             </div>
           </div>
         }

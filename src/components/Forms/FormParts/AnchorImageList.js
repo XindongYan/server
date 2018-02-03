@@ -50,7 +50,6 @@ export default class AnchorImageList extends PureComponent {
     this.setState({
       version: data.version,
     });
-    console.log(version)
     if (version && version.length > 0) {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
