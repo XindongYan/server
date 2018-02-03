@@ -29,7 +29,7 @@ export default class AlimamaOrder extends PureComponent {
         message.destroy();
         message.warn('请安装尼采创作平台插件！');
       }
-    }, 3000);
+    }, 5000);
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.addEventListener('setAlimamaInfo', this.setAlimamaInfo);
     nicaiCrx.addEventListener('setVersion', this.setVersion);
@@ -37,7 +37,7 @@ export default class AlimamaOrder extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 600);
+        }, 1000);
       });
     }
     if (this.props.currentUser._id && this.props.currentUser.alimama && this.props.currentUser.alimama[0]) {
@@ -55,7 +55,6 @@ export default class AlimamaOrder extends PureComponent {
     })
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.removeEventListener('setAlimamaInfo', this.setAlimamaInfo);
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
 
   handleGetVersion = () => {
@@ -64,7 +63,6 @@ export default class AlimamaOrder extends PureComponent {
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   getAlimamaInfo = () => {
-    this.state.nicaiCrx.innerText = '';
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getAlimamaInfo', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
@@ -95,6 +93,7 @@ export default class AlimamaOrder extends PureComponent {
       }
     }
     this.getAlimamaInfo();
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   handleOk = () => {
     const { currentUser } = this.props;
