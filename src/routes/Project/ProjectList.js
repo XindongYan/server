@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
 import TaskNameColumn from '../../components/TaskNameColumn';
-import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message, Radio, DatePicker } from 'antd';
+import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message, Radio, DatePicker, Tooltip } from 'antd';
 import { Link } from 'dva/router';
 import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
 
@@ -381,7 +381,10 @@ export default class ProjectList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               {/* <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button> */}
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} placeholder={['创建开始时间', '创建结束时间']} />
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <Tooltip placement="top" title="创建时间">
+                <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+              </Tooltip>
               <Search
                 style={{ width: 260, float: 'right'}}
                 placeholder="ID／名称／商家标签"

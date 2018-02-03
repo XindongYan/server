@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Input, Form, Menu, Modal, Icon, message, Radio, Popconfirm, DatePicker } from 'antd';
+import { Table, Card, Button, Input, Form, Menu, Modal, Icon, message, Radio, Popconfirm, DatePicker, Tooltip } from 'antd';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import DockPanel from '../../components/DockPanel';
@@ -201,6 +201,9 @@ export default class FinanceList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <Tooltip placement="top" title="创建时间">
+                <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+              </Tooltip>
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"

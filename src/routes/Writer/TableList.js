@@ -769,7 +769,10 @@ export default class TableList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} placeholder={['创建开始时间', '创建结束时间']} />
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <Tooltip placement="top" title="接单／创建时间">
+                <Icon type="question-circle-o" />
+              </Tooltip>
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"

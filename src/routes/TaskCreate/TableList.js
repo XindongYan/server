@@ -647,7 +647,10 @@ export default class TableList extends PureComponent {
                 <div className={styles.tableListOperator}>
                   {selectedRows.length === 0 && (
                     <span>
-                      <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} placeholder={['创建开始时间', '创建结束时间']} />
+                      <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+                      <Tooltip placement="top" title="创建时间">
+                        <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+                      </Tooltip>
                       <Search
                         style={{ width: 260, float: 'right' }}
                         placeholder="ID／名称／商家标签"

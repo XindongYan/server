@@ -3,7 +3,8 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
-import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col, Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
+import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
+Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import DockPanel from '../../components/DockPanel';
@@ -428,6 +429,9 @@ export default class teamTasks extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <Tooltip placement="top" title="创建时间">
+                <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+              </Tooltip>
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
