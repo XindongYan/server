@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message, Form, Select, Modal, Button, Progress } from 'antd';
+import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message, Form, Select, Modal, Button, Progress, Icon, Popover } from 'antd';
 import moment from 'moment';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
@@ -512,13 +512,42 @@ export default class TableList extends PureComponent {
     };
     const pushStatusText = {
       title: '推送状态',
-      dataIndex: 'taobao',
+      dataIndex: 'taobao.pushStatusText',
       render: val => {
         let pushStatusTextTags = '';
-        if (val.pushStatusText) {
-          pushStatusTextTags = val.pushStatusText.map((item, index) => <p key={index}>{item}</p>);
+        if (val) {
+          pushStatusTextTags = val.map((item, index) => <p key={index}>{item}</p>);
         }
         return <span>{pushStatusTextTags}</span>
+      },
+    };
+    const recruitColumn = {
+      title: '投稿状态',
+      dataIndex: 'taobao.recruitFail',
+      render: (val, record) => {
+        if (record.taobao.recruitStatusDesc) {
+          let color = '';
+          if (record.taobao.recruitStatusDesc === '审核中') {
+            color = 'rgb(252, 166, 28)';
+          } else if (record.taobao.recruitStatusDesc === '审核通过') {
+            color = 'rgb(74, 190, 90)';
+          } else if (record.taobao.recruitStatusDesc === '审核不通过') {
+            color = 'rgb(248, 109, 109)';
+          }
+          return (
+            <div>
+              <div>{record.taobao.recruitTitle ? `已投${record.taobao.recruitTitle}` : ''}</div>
+              <div><span style={{ color, marginRight: 5 }}>{record.taobao.recruitStatusDesc}</span>
+              {record.taobao.recruitStatusDesc === '审核不通过' ?
+                <Popover placement="top" content={record.taobao.recruitFailMessage} trigger="hover">
+                  <Icon type="question-circle-o" />
+                </Popover>: ''}
+              </div>
+            </div>
+          );
+        } else {
+          return '';
+        }
       },
     };
     const daren_nickname = {
@@ -694,9 +723,9 @@ export default class TableList extends PureComponent {
     if (data.approve_status === -1 || data.approve_status === 0) {
       columns.push(...times, grade, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
-      columns.push( pushStatusText, daren_nickname, pushTime, opera);
+      columns.push( pushStatusText, recruitColumn, daren_nickname, pushTime, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
-      columns.push( pushStatusText, daren_nickname, opera);
+      columns.push( pushStatusText, recruitColumn, daren_nickname, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
       columns.push(...times, grade, status, opera);
     } else {
