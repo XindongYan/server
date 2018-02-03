@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radio, Popconfirm, DatePicker,
-Tooltip, Divider, Form, Modal } from 'antd';
+Tooltip, Divider, Form, Modal, Popover } from 'antd';
 import { Link } from 'dva/router';
 import moment from 'moment';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN, RIGHT } from '../../constants';
@@ -424,6 +424,46 @@ export default class TableList extends PureComponent {
       dataIndex: 'grade',
       render: value => value < 0 ? 0 : value,
     };
+    const pushStatusText = {
+      title: '推送状态',
+      dataIndex: 'taobao.pushStatusText',
+      render: val => {
+        let pushStatusTextTags = '';
+        if (val) {
+          pushStatusTextTags = val.map((item, index) => <p key={index}>{item}</p>);
+        }
+        return <span>{pushStatusTextTags}</span>
+      },
+    };
+    const recruitColumn = {
+      title: '投稿状态',
+      dataIndex: 'taobao.recruitFail',
+      render: (val, record) => {
+        if (record.taobao.recruitStatusDesc) {
+          let color = '';
+          if (record.taobao.recruitStatusDesc === '审核中') {
+            color = 'rgb(252, 166, 28)';
+          } else if (record.taobao.recruitStatusDesc === '审核通过') {
+            color = 'rgb(74, 190, 90)';
+          } else if (record.taobao.recruitStatusDesc === '审核不通过') {
+            color = 'rgb(248, 109, 109)';
+          }
+          return (
+            <div>
+              <div>{record.taobao.recruitTitle ? `已投${record.taobao.recruitTitle}` : ''}</div>
+              <div><span style={{ color, marginRight: 5 }}>{record.taobao.recruitStatusDesc}</span>
+              {record.taobao.recruitStatusDesc === '审核不通过' ?
+                <Popover placement="top" content={record.taobao.recruitFailMessage} trigger="hover">
+                  <Icon type="question-circle-o" />
+                </Popover>: ''}
+              </div>
+            </div>
+          );
+        } else {
+          return '';
+        }
+      },
+    };
     const approveTime = {
       title: '审核时间',
       dataIndex: 'approve_time',
@@ -582,6 +622,8 @@ export default class TableList extends PureComponent {
       columns.push(status, opera);
     } else if (data.approve_status === 'approving') {
       columns.push(status, opera);
+    } else if (data.approve_status === 'publishedToTaobao' || data.approve_status === 'taobaoRejected' || data.approve_status === 'taobaoAccepted') {
+      columns.push(pushStatusText, recruitColumn, opera);
     } else {
       columns.push(approver, grade, approveTime, status, opera);
     }

@@ -338,6 +338,46 @@ export default class teamTasks extends PureComponent {
         </Tooltip> : ''
       ),
     };
+    const pushStatusText = {
+      title: '推送状态',
+      dataIndex: 'taobao.pushStatusText',
+      render: val => {
+        let pushStatusTextTags = '';
+        if (val) {
+          pushStatusTextTags = val.map((item, index) => <p key={index}>{item}</p>);
+        }
+        return <span>{pushStatusTextTags}</span>
+      },
+    };
+    const recruitColumn = {
+      title: '投稿状态',
+      dataIndex: 'taobao.recruitFail',
+      render: (val, record) => {
+        if (record.taobao.recruitStatusDesc) {
+          let color = '';
+          if (record.taobao.recruitStatusDesc === '审核中') {
+            color = 'rgb(252, 166, 28)';
+          } else if (record.taobao.recruitStatusDesc === '审核通过') {
+            color = 'rgb(74, 190, 90)';
+          } else if (record.taobao.recruitStatusDesc === '审核不通过') {
+            color = 'rgb(248, 109, 109)';
+          }
+          return (
+            <div>
+              <div>{record.taobao.recruitTitle ? `已投${record.taobao.recruitTitle}` : ''}</div>
+              <div><span style={{ color, marginRight: 5 }}>{record.taobao.recruitStatusDesc}</span>
+              {record.taobao.recruitStatusDesc === '审核不通过' ?
+                <Popover placement="top" content={record.taobao.recruitFailMessage} trigger="hover">
+                  <Icon type="question-circle-o" />
+                </Popover>: ''}
+              </div>
+            </div>
+          );
+        } else {
+          return '';
+        }
+      },
+    };
     const gridStyle = {
       width: '32%',
       margin: '5px',
@@ -351,7 +391,7 @@ export default class teamTasks extends PureComponent {
       }),
     };
     if (teamTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
-      columns.push(daren_nickname, pushTime, opera);
+      columns.push(daren_nickname, pushTime, pushStatusText, recruitColumn, opera);
     }
     return (
       <div>
