@@ -120,16 +120,6 @@ export default class GoodProductionForm extends PureComponent {
     data[key] = value;
     if (this.props.onChange) this.props.onChange(data);
   }
-  handleAddCoverImg = (url) => {
-    const { k } = this.state;
-    const data = {};
-    if (k === 'cover_imgs') {
-      data[k] = [ ...this.props.formData.cover_imgs, url ];
-    } else {
-      data[k] = url;
-    }
-    if (this.props.onChange) this.props.onChange(data);
-  }
   handleAddProduct = (auction, img) => {
     if (this.props.onChange) this.props.onChange({
       body: [{
@@ -465,8 +455,6 @@ export default class GoodProductionForm extends PureComponent {
           </article>
         </section>
         <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
-        <AlbumModal mode="single" k={this.state.k} minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
-        <CropperModal onOk={this.handleAddCoverImg}/>
         
         <AuctionImageModal formData={formData.body.length ? formData.body[0] : []} onChange={this.handleChangeBodyImg} />
       </div>
