@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Table, Button, Tag, Card, Select, Input, message, Avatar, Divider } from 'antd';
 import styles from './DarenList.less';
 import ChartPopover from './ChartPopover';
+import FansChartPopover from './FansChartPopover';
 import TrimSpan from '../../components/TrimSpan';
 import { COLORS } from '../../constants';
 
@@ -286,11 +287,15 @@ export default class DarenList extends PureComponent {
       dataIndex: 'darenMissionData.fansCount',
       sorter: true,
       width: 70,
-      render: (val) => val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val,
-    }, {
-      title: <span className={styles.title}>粉丝月增长数</span>,
-      width: 70,
-      sorter: true,
+      render: (val, record) => {
+        const text = val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val;
+        return (
+          <FansChartPopover
+          data={{ list: record.darenMissionData.fansCounts, _id: record._id }}>
+            <a>{text}</a>
+          </FansChartPopover>
+        );
+      },
     }, {
       title: <span className={styles.title}>最近7天PV</span>,
       width: 70,
