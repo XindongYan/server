@@ -398,10 +398,10 @@ export default class TableList extends PureComponent {
           </Tooltip> : ''
         ),
       },
-      {
-        title: '修改',
-        dataIndex: 'update_times',
-      },
+      // {
+      //   title: '修改',
+      //   dataIndex: 'update_times',
+      // },
       {
         title: '写手',
         dataIndex: 'taker_id',
@@ -548,6 +548,14 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <a>退回</a>
+              </Popconfirm>
+              <Divider type="vertical" />
+              <Link to={`/approver/task/edit?_id=${record._id}`}>
+                <span>详情</span>
+              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
@@ -622,7 +630,7 @@ export default class TableList extends PureComponent {
     } else if (data.approve_status === 'approving') {
       columns.push(status, opera);
     } else if (data.approve_status === 'publishedToTaobao' || data.approve_status === 'taobaoRejected' || data.approve_status === 'taobaoAccepted') {
-      columns.push(pushStatusText, recruitColumn, opera);
+      columns.push(pushStatusText, opera);
     } else {
       columns.push(approver, approveTime, status, opera);
     }

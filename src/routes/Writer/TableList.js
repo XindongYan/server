@@ -642,6 +642,14 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <a>退回</a>
+              </Popconfirm>
+              <Divider type="vertical" />
+              <Link to={`/approver/task/edit?_id=${record._id}`}>
+                <span>编辑</span>
+              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
@@ -722,9 +730,9 @@ export default class TableList extends PureComponent {
     if (data.approve_status === -1 || data.approve_status === 0) {
       columns.push(...times, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
-      columns.push( pushStatusText, recruitColumn, daren_nickname, pushTime, opera);
+      columns.push( pushStatusText, daren_nickname, pushTime, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
-      columns.push( pushStatusText, recruitColumn, daren_nickname, opera);
+      columns.push( pushStatusText, daren_nickname, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
       columns.push(...times, status, opera);
     } else {
