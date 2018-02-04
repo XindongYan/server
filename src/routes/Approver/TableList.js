@@ -310,6 +310,7 @@ export default class TableList extends PureComponent {
       type: 'task/fetchApproverTasks',
       payload: { ...pagination, team_id: teamUser.team_id, user_id: this.state.user_id || currentUser._id, approve_status: e.target.value, }
     });
+    this.handleRowSelectChange([], []);
   }
   handleShowDockPanel = (record, activeKey) => {
     this.props.dispatch({
@@ -723,7 +724,7 @@ export default class TableList extends PureComponent {
                   />
                 </span>)
               }
-              { selectedRows.length > 0 && (
+              { selectedRows.length > 0 && (data.approve_status === 'passed' || data.approve_status === 'all')  && (
                   <span>
                     <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
                   </span>
