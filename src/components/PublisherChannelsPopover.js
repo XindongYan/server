@@ -20,7 +20,7 @@ export default class PublisherChannelsPopover extends PureComponent {
         content={
           <div style={{ width: 200 }}>
             {list.map((item, index) => <div key={index} style={{ margin: '5px 0 5px' }}><Tag color={COLORS[index]}>{item.text}：{item.remainCount}篇</Tag></div>)}
-            <strong>注：除【微淘】和【淘宝头条】外，其他渠道需要去阿里创作平台申请</strong>
+            <strong>注：除【微淘】外，其他渠道需要去阿里创作平台申请</strong>
           </div>}
       >
       {this.props.children}</Popover>
