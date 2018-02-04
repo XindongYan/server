@@ -288,11 +288,12 @@ export default class BpuModal extends PureComponent {
         }
       });
       if (this.state.nicaiCrx) {
-        const { effective } = this.state.bpuValuesPage;
+        const { effective, searchField, searchValue } = this.state.bpuValuesPage;
         this.handleGetBpuValuesPage({
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           effective,
+          [searchField]: searchValue,
         });
       }
     }
@@ -304,10 +305,9 @@ export default class BpuModal extends PureComponent {
       pageSize: pagination.pageSize,
       currentPage: 1,
       effective,
+      [searchField]: searchValue,
     };
-    if (searchField) {
-      params[searchField] = searchValue;
-    }
+
     this.handleGetBpuValuesPage(params);
   }
   handleBpuValuesPageRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -466,11 +466,12 @@ export default class BpuModal extends PureComponent {
         }
       });
       if (this.state.nicaiCrx) {
-        const { effective, maxPrice, minPrice, } = this.state.bPUSelectionData;
+        const { effective, maxPrice, minPrice, searchField, searchValue } = this.state.bPUSelectionData;
         this.handleGetBPUSelectionData({
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           effective, maxPrice, minPrice,
+          [searchField]: searchValue,
         });
       }
     } else {
@@ -489,10 +490,8 @@ export default class BpuModal extends PureComponent {
       pageSize: pagination.pageSize,
       currentPage: 1,
       effective, maxPrice, minPrice,
+      [searchField]: searchValue,
     };
-    if (searchField) {
-      params[searchField] = searchValue;
-    }
     this.handleGetBPUSelectionData(params);
   }
   handleBPUSelectionDataRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -712,11 +711,12 @@ export default class BpuModal extends PureComponent {
         }
       });
       if (this.state.nicaiCrx) {
-        const { effective, maxPrice, minPrice, sellerNick, } = this.state.bPUFromMemberStoreData;
+        const { effective, maxPrice, minPrice, sellerNick, searchField, searchValue } = this.state.bPUFromMemberStoreData;
         this.handleGetBPUFromMemberStoreData({
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
-          effective, maxPrice, minPrice, sellerNick
+          effective, maxPrice, minPrice, sellerNick,
+          [searchField]: searchValue,
         });
       }
     } else {
@@ -735,10 +735,8 @@ export default class BpuModal extends PureComponent {
       pageSize: pagination.pageSize,
       currentPage: 1,
       effective, maxPrice, minPrice, sellerNick,
+      [searchField]: searchValue,
     };
-    if (searchField) {
-      params[searchField] = searchValue;
-    }
     this.handleGetBPUFromMemberStoreData(params);
   }
   handleBPUFromMemberStoreDataRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -962,11 +960,12 @@ export default class BpuModal extends PureComponent {
         }
       });
       if (this.state.nicaiCrx) {
-        const { effective, maxPrice, minPrice, } = this.state.bpuFromOnlineData;
+        const { effective, maxPrice, minPrice, searchField, searchValue } = this.state.bpuFromOnlineData;
         this.handleGetBpuFromOnlineData({
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           effective, maxPrice, minPrice,
+          [searchField]: searchValue,
         });
       }
     } else {
@@ -985,10 +984,8 @@ export default class BpuModal extends PureComponent {
       pageSize: pagination.pageSize,
       currentPage: 1,
       effective, maxPrice, minPrice,
+      [searchField]: searchValue,
     };
-    if (searchField) {
-      params[searchField] = searchValue;
-    }
     this.handleGetBpuFromOnlineData(params);
   }
   handleBpuFromOnlineDataRowSelectChange = (selectedRowKeys, selectedRows) => {
