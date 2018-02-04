@@ -465,7 +465,6 @@ export default class GoodProductionForm extends PureComponent {
           </article>
         </section>
         <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
-        
         <AuctionImageModal formData={formData.body.length ? formData.body[0] : []} onChange={this.handleChangeBodyImg} />
       </div>
     );

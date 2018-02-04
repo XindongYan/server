@@ -25,6 +25,12 @@ export default {
     },
     auctionImageModal: {
       visible: false,
+    },
+    cutpicModal: {
+      visible: false,
+      currentKey: '',
+      src: '',
+      image: {},
     }
   },
 
@@ -88,6 +94,18 @@ export default {
         payload: { visible: false, ...payload },
       });
     },
+    *showCutpic({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeCutpicModal',
+        payload: { visible: true, ...payload },
+      });
+    },
+    *hideCutpic({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeCutpicModal',
+        payload: { visible: false, ...payload },
+      });
+    },
   },
 
   reducers: {
@@ -123,6 +141,15 @@ export default {
         ...state,
         auctionImageModal: {
           ...state.auctionImageModal,
+          ...action.payload,
+        },
+      };
+    },
+    changeCutpicModal(state, action) {
+      return {
+        ...state,
+        cutpicModal: {
+          ...state.cutpicModal,
           ...action.payload,
         },
       };
