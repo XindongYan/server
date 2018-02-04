@@ -420,11 +420,6 @@ export default class TableList extends PureComponent {
       dataIndex: 'approver_id',
       render: value => value ? value.nickname : '',
     };
-    const grade = {
-      title: '审核分数',
-      dataIndex: 'grade',
-      render: value => value < 0 ? 0 : value,
-    };
     const pushStatusText = {
       title: '推送状态',
       dataIndex: 'taobao.pushStatusText',
@@ -626,7 +621,7 @@ export default class TableList extends PureComponent {
     } else if (data.approve_status === 'publishedToTaobao' || data.approve_status === 'taobaoRejected' || data.approve_status === 'taobaoAccepted') {
       columns.push(pushStatusText, recruitColumn, opera);
     } else {
-      columns.push(approver, grade, approveTime, status, opera);
+      columns.push(approver, approveTime, status, opera);
     }
     
     const rowSelection = {

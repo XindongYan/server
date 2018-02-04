@@ -88,12 +88,6 @@ export default class TaskEdit extends PureComponent {
       cover_img: '',//封面
       classification: [], // 分类
     },
-    grade: 0,
-    grades: [
-      {name: '标题', value: 0},
-      {name: '正文', value: 0},
-      {name: '图片', value: 0},
-    ],
     approve_status: 0,
     approve_notes: [],
   }
@@ -148,8 +142,6 @@ export default class TaskEdit extends PureComponent {
               globalFashion: result.task.globalFashion,
               ifashion: result.task.ifashion,
               buyWorld: result.task.buyWorld,
-              grade: result.task.grade,
-              grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
               approve_status: result.task.approve_status,
               approve_notes: result.task.approve_notes || [],
             });
@@ -171,19 +163,6 @@ export default class TaskEdit extends PureComponent {
     this.props.dispatch({
       type: 'task/clearFormData'
     });
-  }
-  changeGrades = (index, value) => {
-    const { grades } = this.state;
-    const newGrades = [...this.state.grades];
-    newGrades.splice(index, 1, {...this.state.grades[index], value: value});
-    const title_grade = newGrades[0].value;
-    const desc_grade = newGrades[1].value;
-    const img_grade = newGrades[2].value;
-    const grade = (title_grade * 0.3 + desc_grade * 0.4 + img_grade * 0.3).toFixed(1);
-    this.setState({
-      grade: Number(grade),
-      grades: newGrades,
-    })
   }
   changeApproveNode = (commentContent) => {
     this.setState({
@@ -216,7 +195,7 @@ export default class TaskEdit extends PureComponent {
   }
   handleSave = () => {
     const { formData } = this.props;
-    const { grade, grades, approve_status, approve_notes, haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
+    const { approve_status, approve_notes, haveGoodsTask, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const name = haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title || '';
     if (name.trim()) {
@@ -433,7 +412,7 @@ export default class TaskEdit extends PureComponent {
   handleSubmit = (status) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { formData } = this.props;
-    const { grade, grades, approve_status, approve_notes, haveGoodsTask, task, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
+    const { approve_status, approve_notes, haveGoodsTask, task, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
     const name = haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title || '';
     if (this.validate()) {
       const values = {
@@ -470,8 +449,6 @@ export default class TaskEdit extends PureComponent {
               type: 'task/approve',
               payload: {
                 _id: query._id,
-                grade: grade,
-                grades: grades,
                 approve_status: status,
                 approver_id: this.props.currentUser._id,
                 approve_notes: approve_notes,
@@ -508,25 +485,9 @@ export default class TaskEdit extends PureComponent {
   render() {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { grades, approve_notes } = this.state;
+    const { approve_notes } = this.state;
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const operation = 'edit';
-    const content = (
-      <div style={{width: 360}}>
-        {grades.map((item, index) => 
-          <div style={{padding: '10px 0'}} key={index}>
-            <span style={{margin: '0 15px'}}>{item.name}</span>
-            <Slider
-              style={{width: '80%', display: 'inline-block', margin: 0}}
-              value={Number(item.value)}
-              max={10}
-              step={0.1}
-              onChange={(value) => this.changeGrades(index, value)}
-            />
-          </div>)
-        }
-      </div>
-    );
     let form = '';
     if (formData.channel_name === '微淘') {
       form = <WeitaoForm
@@ -612,14 +573,6 @@ export default class TaskEdit extends PureComponent {
           </div>
           { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) &&
             <div className={styles.submitBox}>
-              {this.state.grade > 0 && formData.approve_status !== 0 &&
-                <dl className={styles.showGradeBox}>
-                  <dt>分数</dt>
-                  {grades.map((item) => 
-                    <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
-                  }
-                </dl>
-              }
               { formData.approve_status !== 1 ?
                 <div>
                   <Popconfirm
@@ -627,24 +580,14 @@ export default class TaskEdit extends PureComponent {
                     title="确认提交？"
                     onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}
                   >
-                    { showApproveLog ?
-                      <Popover content={content} title="评分" trigger="hover">
-                        <Button>不通过</Button>
-                      </Popover>
-                      : <Button>不通过</Button>
-                    }
+                    <Button>不通过</Button>
                   </Popconfirm>
                   <Popconfirm
                     placement="top"
                     title="确认提交？"
                     onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}
                   >
-                    { showApproveLog ?
-                      <Popover content={content} title="评分" trigger="hover">
-                        <Button>通过</Button>
-                      </Popover>
-                      : <Button>通过</Button>
-                    }
+                    <Button>通过</Button>
                   </Popconfirm>
                 </div>
                 :

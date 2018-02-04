@@ -498,11 +498,6 @@ export default class TableList extends PureComponent {
       dataIndex: 'approver_id',
       render: value => value ? value.nickname : '',
     };
-    const grade = {
-      title: '分数',
-      dataIndex: 'grade',
-      render: value => value < 0 ? 0 : value,
-    };
     const approveTime = {
       title: '审核时间',
       dataIndex: 'approve_time',
@@ -724,15 +719,15 @@ export default class TableList extends PureComponent {
       }),
     } : null;
     if (data.approve_status === -1 || data.approve_status === 0) {
-      columns.push(...times, grade, opera);
+      columns.push(...times, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
       columns.push( pushStatusText, recruitColumn, daren_nickname, pushTime, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
       columns.push( pushStatusText, recruitColumn, daren_nickname, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
-      columns.push(...times, grade, status, opera);
+      columns.push(...times, status, opera);
     } else {
-      columns.push(...times, grade, approveTime, opera);
+      columns.push(...times, approveTime, opera);
     }
     return (
       <div>
