@@ -4,6 +4,8 @@ import entities from 'entities';
 import { Card, Modal, message, Input, Tabs, Select, Table } from 'antd';
 import styles from './index.less';
 
+import { queryBpus, queryBpu } from '../../services/material';
+
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -222,15 +224,18 @@ export default class BpuModal extends PureComponent {
       this.setState({ bpuValue: data });
     }
   }
-  handleLoadBpuValue = (record) => {
-    const params = {
-      finalBpuId: record.finalBpuId,
-      nocache: 1,
-    };
-    this.state.nicaiCrx.innerText = JSON.stringify(params);
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getBpuValueById', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
+  handleLoadBpuValue = async (record) => {
+    // const params = {
+    //   finalBpuId: record.finalBpuId,
+    //   nocache: 1,
+    // };
+    // this.state.nicaiCrx.innerText = JSON.stringify(params);
+    // const customEvent = document.createEvent('Event');
+    // customEvent.initEvent('getBpuValueById', true, true);
+    // this.state.nicaiCrx.dispatchEvent(customEvent);
+
+    const bpuValue = await queryBpu({ finalBpuId: record.finalBpuId });
+    this.setState({ bpuValue });
   }
   // ============================================================================================================
   setBpuValuesPage = (e) => {
@@ -258,11 +263,20 @@ export default class BpuModal extends PureComponent {
       });
     }
   }
-  handleGetBpuValuesPage = (params) => {
-    this.state.nicaiCrx.innerText = JSON.stringify(params);
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getBpuValuesPage', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
+  handleGetBpuValuesPage = async (params) => {
+    // this.state.nicaiCrx.innerText = JSON.stringify(params);
+    // const customEvent = document.createEvent('Event');
+    // customEvent.initEvent('getBpuValuesPage', true, true);
+    // this.state.nicaiCrx.dispatchEvent(customEvent);
+
+    const result = await queryBpus({...params, type: 'bpuValuesPage'});
+    this.setState({
+      bpuValuesPage: {
+        ...this.state.bpuValuesPage,
+        ...result,
+        loading: false,
+      },
+    });
   }
   changeBpuValuesPagePage = (pagination, filters) => {
     if (pagination.current !== this.state.bpuValuesPage.pagination.current || pagination.pageSize !== this.state.bpuValuesPage.pagination.pageSize) {
@@ -425,11 +439,20 @@ export default class BpuModal extends PureComponent {
       });
     }
   }
-  handleGetBPUSelectionData = (params) => {
-    this.state.nicaiCrx.innerText = JSON.stringify(params);
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getBPUSelectionData', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
+  handleGetBPUSelectionData = async (params) => {
+    // this.state.nicaiCrx.innerText = JSON.stringify(params);
+    // const customEvent = document.createEvent('Event');
+    // customEvent.initEvent('getBPUSelectionData', true, true);
+    // this.state.nicaiCrx.dispatchEvent(customEvent);
+
+    const result = await queryBpus({...params, type: 'bPUSelectionData'});
+    this.setState({
+      bPUSelectionData: {
+        ...this.state.bPUSelectionData,
+        ...result,
+        loading: false,
+      },
+    });
   }
   changeBPUSelectionDataPage = (pagination, filters, sorter) => {
     const { bPUSelectionData } = this.state;
@@ -662,11 +685,20 @@ export default class BpuModal extends PureComponent {
       });
     }
   }
-  handleGetBPUFromMemberStoreData = (params) => {
-    this.state.nicaiCrx.innerText = JSON.stringify(params);
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getBPUFromMemberStoreData', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
+  handleGetBPUFromMemberStoreData = async (params) => {
+    // this.state.nicaiCrx.innerText = JSON.stringify(params);
+    // const customEvent = document.createEvent('Event');
+    // customEvent.initEvent('getBPUFromMemberStoreData', true, true);
+    // this.state.nicaiCrx.dispatchEvent(customEvent);
+
+    const result = await queryBpus({...params, type: 'bPUFromMemberStoreData'});
+    this.setState({
+      bPUFromMemberStoreData: {
+        ...this.state.bPUFromMemberStoreData,
+        ...result,
+        loading: false,
+      },
+    });
   }
   changeBPUFromMemberStoreData = (pagination, filters, sorter) => {
     const { bPUFromMemberStoreData } = this.state;
@@ -903,11 +935,20 @@ export default class BpuModal extends PureComponent {
       });
     }
   }
-  handleGetBpuFromOnlineData = (params) => {
-    this.state.nicaiCrx.innerText = JSON.stringify(params);
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getBpuFromOnlineData', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
+  handleGetBpuFromOnlineData = async (params) => {
+    // this.state.nicaiCrx.innerText = JSON.stringify(params);
+    // const customEvent = document.createEvent('Event');
+    // customEvent.initEvent('getBpuFromOnlineData', true, true);
+    // this.state.nicaiCrx.dispatchEvent(customEvent);
+
+    const result = await queryBpus({...params, type: 'bpuFromOnlineData'});
+    this.setState({
+      bpuFromOnlineData: {
+        ...this.state.bpuFromOnlineData,
+        ...result,
+        loading: false,
+      },
+    });
   }
   changeBpuFromOnlineDataPage = (pagination, filters, sorter) => {
     const { bpuFromOnlineData } = this.state;
@@ -1127,9 +1168,9 @@ export default class BpuModal extends PureComponent {
     const { activeKey, bpuValue } = this.state;
     let htmlDesc = '';
     let jsonDesc = {};
-    if (bpuValue.htmlDesc && bpuValue.htmlDesc.substring(0, 1) === '{') {
+    if (bpuValue.descType === 'JSON') {
       jsonDesc = JSON.parse(entities.decodeHTML(bpuValue.htmlDesc));
-    } else if (bpuValue.htmlDesc) {
+    } else if (bpuValue.descType === 'HTML') {
       htmlDesc = entities.decodeHTML(bpuValue.htmlDesc);
     }
     return (
