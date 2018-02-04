@@ -93,7 +93,7 @@ export default class TableList extends PureComponent {
   }
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
-    this.state.nicaiCrx.removeEventListener('setChannel', this.setChannel);
+    nicaiCrx.removeEventListener('setChannel', this.setChannel);
     nicaiCrx.removeEventListener('setVersion', this.setVersion);
     nicaiCrx.removeEventListener('publishResult', this.publishResult);
   }
