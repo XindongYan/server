@@ -94,16 +94,15 @@ export default class CropperModal extends PureComponent {
   handleOk = () => {
     if (this.state.dataUrl && !this.state.confirmLoading) {
       const { maxSize } = this.props;
-        // this.handleSubmit();
-      if (maxSize) {
-        const dataSize = this.handledataURLtoBlob(this.state.dataUrl).size;
-        const imgSize = Math.ceil(dataSize / 1024 * 1.024);
-        if (imgSize > maxSize) {
-          const n = ((maxSize/imgSize).toFixed(2) + '').substr(0, 3);
-          this.handleSubmit(this.refs.cropper.getCroppedCanvas().toDataURL("image/jpg", Number(n)));
-        } else {
-          this.handleSubmit(this.state.dataUrl);
+      const dataSize = this.handledataURLtoBlob(this.state.dataUrl).size;
+      const imgSize = Math.ceil(dataSize / 1024 * 1.024);
+      if (imgSize > 500) {
+        let n = ((maxSize/imgSize).toFixed(2) + '').substr(0, 3);
+        if (n < 0.1) {
+          n = 0.1;
         }
+        const newDataUrl = this.refs.cropper.getCroppedCanvas().toDataURL("image/jpeg", n);
+        this.handleSubmit(newDataUrl);
       } else {
         this.handleSubmit(this.state.dataUrl);
       }
