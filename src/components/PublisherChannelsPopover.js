@@ -9,7 +9,7 @@ export default class PublisherChannelsPopover extends PureComponent {
     channel_list.forEach(item => {
       item.activityList.find(item1 => {
         if (TAOBAO_ACTIVITYID[item1.id]) {
-          list.push(TAOBAO_ACTIVITYID[item1.id]);
+          list.push({...item1, text: TAOBAO_ACTIVITYID[item1.id]});
         }
       });
     });
@@ -19,8 +19,8 @@ export default class PublisherChannelsPopover extends PureComponent {
         title="可发渠道"
         content={
           <div style={{ width: 200 }}>
-            {list.map((item, index) => <div key={index} style={{ margin: '5px 0 5px' }}><Tag color={COLORS[index]}>{item}</Tag></div>)}
-            <strong>注：除【微淘】和【淘宝头条】外，其他渠道需要去阿里创作平台申请</strong>
+            {list.map((item, index) => <div key={index} style={{ margin: '5px 0 5px' }}><Tag color={COLORS[index]}>{item.text}：{item.remainCount}篇</Tag></div>)}
+            <strong>注：除【微淘】外，其他渠道需要去阿里创作平台申请</strong>
           </div>}
       >
       {this.props.children}</Popover>

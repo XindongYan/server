@@ -288,7 +288,7 @@ export default class BpuModal extends PureComponent {
     const { pagination, effective, searchField } = this.state.bpuValuesPage;
     const params = {
       pageSize: pagination.pageSize,
-      currentPage: pagination.current,
+      currentPage: 1,
       effective,
     };
     if (searchField) {
@@ -464,7 +464,7 @@ export default class BpuModal extends PureComponent {
     const { pagination, effective, maxPrice, minPrice, searchField } = this.state.bPUSelectionData;
     const params = {
       pageSize: pagination.pageSize,
-      currentPage: pagination.current,
+      currentPage: 1,
       effective, maxPrice, minPrice,
     };
     if (searchField) {
@@ -701,7 +701,7 @@ export default class BpuModal extends PureComponent {
     const { pagination, effective, maxPrice, minPrice, searchField, sellerNick } = this.state.bPUFromMemberStoreData;
     const params = {
       pageSize: pagination.pageSize,
-      currentPage: pagination.current,
+      currentPage: 1,
       effective, maxPrice, minPrice, sellerNick,
     };
     if (searchField) {
@@ -942,7 +942,7 @@ export default class BpuModal extends PureComponent {
     const { pagination, effective, maxPrice, minPrice, searchField } = this.state.bpuFromOnlineData;
     const params = {
       pageSize: pagination.pageSize,
-      currentPage: pagination.current,
+      currentPage: 1,
       effective, maxPrice, minPrice,
     };
     if (searchField) {
