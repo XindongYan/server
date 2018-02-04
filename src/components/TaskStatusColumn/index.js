@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tag, Tooltip } from 'antd';
+import { Tag } from 'antd';
 import styles from './index.less';
 
 export default class TaskStatusColumn extends PureComponent {
@@ -10,7 +10,7 @@ export default class TaskStatusColumn extends PureComponent {
     } else if (status === -2) {
       return (<Tag className={styles['ant-tag']} color="#C1C1C1">已上架</Tag>);
     } else if (status === -1) {
-      return (<Tooltip placement="top" title="待完成/已接单"><Tag color="#00b395">待完成</Tag></Tooltip>);
+      return (<Tag className={styles['ant-tag']} color="#00b395">待完成</Tag>);
     } else if (status === 0) {
       return (<Tag className={styles['ant-tag']} color="#108ee9">待审核</Tag>);
     } else if (status === 1) {
