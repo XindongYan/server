@@ -573,7 +573,7 @@ export default class TaskEdit extends PureComponent {
           </div>
           { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) &&
             <div className={styles.submitBox}>
-              { formData.approve_status !== 1 ?
+              { formData.approve_status !== 1 && formData.approve_status !== 3 ?
                 <div>
                   <Popconfirm
                     placement="top"
