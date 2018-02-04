@@ -153,7 +153,7 @@ export default class CropperModal extends PureComponent {
         maskClosable={false}
         confirmLoading={confirmLoading}
       >
-        {visible && <div>
+        {visible &&
           <Cropper
             ref='cropper'
             src={src}
@@ -166,7 +166,7 @@ export default class CropperModal extends PureComponent {
             zoomable={false}
             guides={false}
             crop={this._crop.bind(this)} />
-        </div>}
+        }
         <div style={{ width: '38%', display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, paddingTop: 10}}>
           <img
             src={dataUrl}

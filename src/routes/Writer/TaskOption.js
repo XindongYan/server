@@ -81,16 +81,12 @@ export default class TaskOption extends PureComponent {
   }
   handleGetRemainCount = (name) => {
     const { channel_list } = this.state;
-    // console.log(channel_list);
     if (channel_list && channel_list.length > 0) {
       if (TAOBAO_ACTIVITYID_MIRROR[name]) {
         let remainCount = '';
         channel_list.forEach(item => {
           item.activityList.find(item1 => {
-              // console.log(item1);
-              // console.log(TAOBAO_ACTIVITYID_MIRROR[name]);
             if (item1.id == TAOBAO_ACTIVITYID_MIRROR[name]) {
-              console.log(item1.remainCount);
               remainCount = item1.remainCount;
             }
           });
