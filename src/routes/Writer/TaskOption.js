@@ -105,7 +105,7 @@ export default class TaskOption extends PureComponent {
       img: 'https://img.alicdn.com/tfs/TB15kxjaWagSKJjy0FgXXcRqFXa-200-200.png',
       detail: '打造中国最大的生活消费资讯平台，建立一个用户、媒体/自媒体、品牌，触达彼此、互相信任的消费信息生态。如果你热爱生活，对个人消费拥有独到品味和见解，乐于分享专业知识，那不论你是个人，是媒体或是品牌组织，我们都欢迎你来加入。『用内容引领消费！』所需内容类型：不局限于文字、画面、声音、视频等等任何一种载体，只要“优秀”！'
     }, {
-      name: '帖子',
+      name: '微淘',
       box_text: '日常活动',
       img: 'https://img.alicdn.com/tfs/TB1D3lPSFXXXXX0XXXXXXXXXXXX-180-180.png',
       detail: '微淘话题是淘宝内容化升级的新产品。该产品以构建内容场景为主，利用全域流量对消费者做精准分发：系统根据消费者的在线行为，一旦触发条件，相关微淘话题立即曝光；同时微淘话题也是达人从创作内容到运营内容参与模式的全新体验。'
