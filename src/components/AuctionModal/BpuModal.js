@@ -234,8 +234,8 @@ export default class BpuModal extends PureComponent {
     // customEvent.initEvent('getBpuValueById', true, true);
     // this.state.nicaiCrx.dispatchEvent(customEvent);
 
-    const bpuValue = await queryBpu({ finalBpuId: record.finalBpuId });
-    this.setState({ bpuValue });
+    const result = await queryBpu({ finalBpuId: record.finalBpuId });
+    this.setState({ bpuValue: result.bpu });
   }
   // ============================================================================================================
   setBpuValuesPage = (e) => {
