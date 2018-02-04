@@ -275,6 +275,11 @@ export default class GoodProductionForm extends PureComponent {
     arr.splice(index,1);
     if (this.props.onChange) this.props.onChange({ bodyStruct: [ ...arr ] });
   }
+  handleEditProduct = () => {
+    this.props.dispatch({
+      type: 'album/showAuctionImage',
+    })
+  }
   render() {
     const { style, operation, formData} = this.props;
     const { task, longPoint, shortPoint,  } = this.state;
@@ -310,8 +315,13 @@ export default class GoodProductionForm extends PureComponent {
                 { formData.body && formData.body.length > 0 &&
                   <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
                     <img src={formData.body[0].coverUrl} />
-                    { !disabled && <div className={styles.clearImg} onClick={this.handleClearProduct}>
-                      <Icon type="delete" />
+                    { !disabled && <div className={styles.clearImg}>
+                      <div>
+                        <Icon type="edit" onClick={this.handleEditProduct} />
+                      </div>
+                      <div onClick={this.handleClearProduct}>
+                        <Icon type="delete" />
+                      </div>
                     </div>}
                   </div>
                 }

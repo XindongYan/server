@@ -55,14 +55,13 @@ export default class AuctionImageModal extends PureComponent {
         }
       }, 5000);
       const { formData } = nextProps;
-      if (!this.props.formData.coverUrl && formData.coverUrl) {
+      if (formData.coverUrl) {
         this.setState({
-          coverUrl: formData.coverUrl,
+          coverUrl: formData.images[0],
           extraBanners: formData.extraBanners || [],
         });
       }
-
-      if (!this.props.formData.images && nextProps.formData.images) {
+      if (formData.images) {
         const arr = [];
         for (let i = 0; i < nextProps.formData.images.length; i++) {
           arr.push('');
