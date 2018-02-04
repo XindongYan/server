@@ -108,8 +108,9 @@ export default class TableList extends PureComponent {
   }
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.removeEventListener('publishResult', this.publishResult);
+    this.state.nicaiCrx.removeEventListener('setChannel', this.setChannel);
     nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    nicaiCrx.removeEventListener('publishResult', this.publishResult);
   }
   publishResult = (e) => {
     const data = JSON.parse(e.target.innerText);
@@ -135,6 +136,7 @@ export default class TableList extends PureComponent {
         this.handleRowSelectChange([], []);
         message.success(data.msg);
         this.handleFetch();
+        this.handleGetChannel();
       }
     }
   }
@@ -161,7 +163,6 @@ export default class TableList extends PureComponent {
       this.setState({
         channel_list: data.itemList,
       });
-      this.state.nicaiCrx.removeEventListener('setChannel', this.setChannel);
     }
   }
   handleGetVersion = () => {
