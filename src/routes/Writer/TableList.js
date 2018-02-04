@@ -93,7 +93,7 @@ export default class TableList extends PureComponent {
   }
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
-    this.state.nicaiCrx.removeEventListener('setChannel', this.setChannel);
+    nicaiCrx.removeEventListener('setChannel', this.setChannel);
     nicaiCrx.removeEventListener('setVersion', this.setVersion);
     nicaiCrx.removeEventListener('publishResult', this.publishResult);
   }
@@ -499,11 +499,6 @@ export default class TableList extends PureComponent {
       dataIndex: 'approver_id',
       render: value => value ? value.nickname : '',
     };
-    const grade = {
-      title: '分数',
-      dataIndex: 'grade',
-      render: value => value < 0 ? 0 : value,
-    };
     const approveTime = {
       title: '审核时间',
       dataIndex: 'approve_time',
@@ -608,7 +603,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
             </div>
@@ -616,7 +611,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -628,7 +623,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -640,7 +635,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -725,15 +720,15 @@ export default class TableList extends PureComponent {
       }),
     } : null;
     if (data.approve_status === -1 || data.approve_status === 0) {
-      columns.push(...times, grade, opera);
+      columns.push(...times, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
       columns.push( pushStatusText, recruitColumn, daren_nickname, pushTime, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
       columns.push( pushStatusText, recruitColumn, daren_nickname, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
-      columns.push(...times, grade, status, opera);
+      columns.push(...times, status, opera);
     } else {
-      columns.push(...times, grade, approveTime, opera);
+      columns.push(...times, approveTime, opera);
     }
     return (
       <div>

@@ -87,12 +87,6 @@ export default class TaskView extends PureComponent {
       classification: [], // 分类
     },
     approve_notes: [],
-    grade: 0,
-    grades: [
-      {name: '标题', value: 0},
-      {name: '正文', value: 0},
-      {name: '图片', value: 0},
-    ],
   }
   componentDidMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -151,8 +145,6 @@ export default class TaskView extends PureComponent {
         globalFashion: nextProps.formData.globalFashion,
         ifashion: nextProps.formData.ifashion,
         buyWorld: nextProps.formData.buyWorld,
-        grade: nextProps.formData.grade,
-        grades: nextProps.formData.grades && nextProps.formData.grades.length ? nextProps.formData.grades : [...this.state.grades],
         approve_notes: nextProps.formData.approve_notes || [],
       });
     }
@@ -174,7 +166,6 @@ export default class TaskView extends PureComponent {
   }
   render() {
     const { formData, approveData, currentUser } = this.props;
-    const { grades } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const operation = 'view';
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
@@ -253,16 +244,6 @@ export default class TaskView extends PureComponent {
           { showAnnotation &&
             <div className={styles.taskComment}>
               <Annotation viewStatus="view" value={this.state.approve_notes}/>
-            </div>
-          }
-          {this.state.grade > 0 &&
-            <div className={styles.submitBox}>
-              <dl className={styles.showGradeBox}>
-              <dt>分数</dt>
-              {grades.map((item) => 
-                <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
-              }
-              </dl>
             </div>
           }
         </div>

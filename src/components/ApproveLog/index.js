@@ -5,13 +5,6 @@ import { TASK_APPROVE_STATUS } from '../../constants';
 
 export default class ApproveLog extends PureComponent {
   state = {}
-  renderGrades = (grades) => {
-    return grades.map((item, index) => (
-      <Row key={index}>
-        <Col span={8}>{item.name}:</Col><Col span={16}>{item.value} 分</Col>
-      </Row>
-    ));
-  }
   render() {
     const { approveData = [] } = this.props;
     return (
@@ -29,12 +22,6 @@ export default class ApproveLog extends PureComponent {
                 return (
                   <Timeline.Item color={color} key={index}>
                     <p>{moment(item.approve_time).format('YYYY-MM-DD HH:mm')} {item.approver_id ? item.approver_id.name : ''}</p>
-                    {item.grade > 0 &&
-                      <p>{this.renderGrades(item.grades)}
-                      <Row key={4}>
-                        <Col span={8}>得分:</Col><Col span={16}>{item.grade} 分</Col>
-                      </Row>
-                      </p>}
                   </Timeline.Item>
                 );
               })}

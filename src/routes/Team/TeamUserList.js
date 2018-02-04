@@ -238,7 +238,11 @@ export default class TableList extends PureComponent {
         title: '角色',
         dataIndex: 'user_id.rights',
         render(val) {
-          return val ? val.map(item => RIGHTS.find(item1 => item1.value === item).label).join(',') : '';
+          if (val) {
+            const rights = val.filter(item => item !== 8);
+            return rights.map(item => RIGHTS.find(item1 => item1.value === item).label).join(',');
+          }
+          return '';
         },
       },
       {
@@ -316,7 +320,7 @@ export default class TableList extends PureComponent {
           />
         </div>
         <Modal
-          title="权限设置"
+          title="角色设置"
           visible={modalVisible}
           onOk={this.handleModalOk}
           onCancel={() => this.handleModalVisible()}
@@ -324,7 +328,7 @@ export default class TableList extends PureComponent {
           <FormItem
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
-            label="权限"
+            label="角色"
           >
             <CheckboxGroup options={RIGHTS.filter(item => item.value !== 8)} value={user.rights} onChange={this.handleRightsChange} />
           </FormItem>

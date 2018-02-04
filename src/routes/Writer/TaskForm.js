@@ -113,8 +113,6 @@ export default class TaskForm extends PureComponent {
       second: [],
     },
     saveLoading: false,
-    grade: 0,
-    grades: [],
   }
   componentDidMount() {
     // window.onbeforeunload = () => {
@@ -175,8 +173,6 @@ export default class TaskForm extends PureComponent {
                 globalFashion: result.task.globalFashion,
                 ifashion: result.task.ifashion,
                 buyWorld: result.task.buyWorld,
-                grade: result.task.grade,
-                grades: result.task.grades && result.task.grades.length ? result.task.grades : [...this.state.grades],
               });
             }
           }
@@ -960,24 +956,6 @@ export default class TaskForm extends PureComponent {
             <Tooltip placement="top" title="保存到待完成列表">
               <Button onClick={() => this.handleSave()} loading={this.state.saveLoading}>保存</Button>
             </Tooltip>
-            { formData.grade > 0 && (formData.approve_status === TASK_APPROVE_STATUS.rejected || formData.approve_status === TASK_APPROVE_STATUS.passed) &&
-              <dl className={styles.showGradeBox}>
-                <dt>分数</dt>
-              {formData.grades && formData.grades.map((item) => 
-                <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
-              }
-              </dl>
-            }
-          </div>}
-          { operation === 'view' && formData.grade > 0 && <div className={styles.submitBox}>
-            <div>
-              <dl className={styles.showGradeBox}>
-                <dt>分数</dt>
-              {formData.grades && formData.grades.map((item) => 
-                <dd key={item.name}><span>{item.name}：</span><span>{item.value}</span></dd>)
-              }
-              </dl>
-            </div>
           </div>}
         </div>
         {approveModalVisible && <Modal
