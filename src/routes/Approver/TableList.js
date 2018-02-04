@@ -484,7 +484,7 @@ export default class TableList extends PureComponent {
           if (!record.current_approvers || record.current_approvers.length === 0 || record.current_approvers.indexOf(currentUser._id) >= 0) {
             return (
               <div>
-                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                   外链
                 </a>
                 <Divider type="vertical" />
@@ -500,7 +500,7 @@ export default class TableList extends PureComponent {
           } else {
             return (
               <div>
-                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                   外链
                 </a>
                 <Divider type="vertical" />
@@ -513,7 +513,7 @@ export default class TableList extends PureComponent {
         } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -525,7 +525,7 @@ export default class TableList extends PureComponent {
         } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -541,7 +541,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}&channel_name=${record.channel_name}`}>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
