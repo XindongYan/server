@@ -353,16 +353,16 @@ export default class TableList extends PureComponent {
       }
     });
   }
-  handleEditSubmit = (record) => {
+  handleReturnToTakenAndEdit = (record) => {
     const { currentUser } = this.props;
     this.props.dispatch({
-      type: 'task/handin',
-      payload: { _id: record._id, user_id: currentUser._id },
+      type: 'task/update',
+      payload: { _id: record._id, approve_status: TASK_APPROVE_STATUS.taken },
       callback: (result1) => {
         if (result1.error) {
           message.error(result1.msg);
         } else {
-          this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${record._id}`));
+          this.props.dispatch(routerRedux.push(`/writer/task/edit?_id=${record._id}`));
         }
       }
     });
@@ -704,6 +704,16 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                 <a>退回</a>
               </Popconfirm>
+              { !record.approver_id &&
+                <Divider type="vertical" />
+              }
+              {!record.approver_id &&
+                <Popconfirm placement="left" title="当前稿子将转移到待完成列表中，编辑后请到待完成中查找。" onConfirm={() => this.handleReturnToTakenAndEdit(record)} okText="确认" cancelText="取消">
+                  <a>
+                    编辑
+                  </a>
+                </Popconfirm>
+              }
             </div>
           );
         } else {
