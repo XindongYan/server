@@ -37,7 +37,7 @@ export default class FansChartPopover extends PureComponent {
       if (index === data.list.length - 1) {
         year = `今天`;
       }
-      return {year, value: Number((item/10000).toFixed(1))}
+      return {year, value: item}
     });
     const chart = this.state.chart || new G2.Chart({
       container: document.getElementById(`chart_fansCounts_${data._id}`),
@@ -45,10 +45,14 @@ export default class FansChartPopover extends PureComponent {
       height: 400,
     });
     chart.source(list);
+    const minValue = Math.min(...data.list);
+    let min = 0;
+    if (minValue >=1000 && minValue  < 10000) min = 1000;
+    else  min = Math.floor((minValue / 1000)) * 1000;
     chart.scale('value', {
-      min: 0,
+      min,
       alias: '粉丝',
-      formatter: value => `${value}万`,
+      formatter: value => `${value / 10000}万`,
     });
     chart.scale('year', {
       range: [ 0 , 1 ]
