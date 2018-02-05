@@ -6,37 +6,36 @@ import { queryAuctionOrders } from '../../../services/task';
 
 export default class AnalyzePane extends PureComponent {
   state = {
-    // nicaiCrx: null,
-    // version: '',
     auctionOrders: [],
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
     loading: true,
   }
   componentDidMount() {
-    // const nicaiCrx = document.getElementById('nicaiCrx');
-    // nicaiCrx.addEventListener('setVersion', this.setVersion);
-    // nicaiCrx.addEventListener('setAnalyzeData', this.setAnalyzeData);
-    // setTimeout(() => {
-    //   if(!this.state.version){
-    //     message.destroy();
-    //     message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
-    //     this.setState({ loading: false });
-    //   }
-    // }, 5000);
-    // if (!this.state.nicaiCrx) {
-    //   this.setState({ nicaiCrx }, () => {
-    //     setTimeout(() => {
-    //       this.handleGetVersion();
-    //     }, 600);
-    //   });
-    // }
     if (this.props.task.auctionIds && this.props.task.auctionIds.length > 0) {
       queryAuctionOrders({auctionIds: JSON.stringify(this.props.task.auctionIds)}).then(result => {
         if (!result.error) {
-          this.setState({ auctionOrders: result.list, loading: false });
+          this.setState({
+            auctionOrders: result.list,
+            loading: false,
+            pagination: {
+              current: 1,
+              pageSize: 10,
+            },
+          });
         }
       });
     } else {
-      this.setState({ auctionOrders: [], loading: false });
+      this.setState({
+        auctionOrders: [],
+        loading: false,
+        pagination: {
+          current: 1,
+          pageSize: 10,
+        },
+      });
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -45,49 +44,32 @@ export default class AnalyzePane extends PureComponent {
       if (nextProps.task.auctionIds && nextProps.task.auctionIds.length > 0) {
         queryAuctionOrders({auctionIds: JSON.stringify(nextProps.task.auctionIds)}).then(result => {
           if (!result.error) {
-            this.setState({ auctionOrders: result.list, loading: false });
+            this.setState({
+              auctionOrders: result.list,
+              loading: false,
+              pagination: {
+                current: 1,
+                pageSize: 10,
+              },
+            });
           }
         });
       } else {
-        this.setState({ auctionOrders: [], loading: false });
+        this.setState({
+          auctionOrders: [],
+          loading: false,
+          pagination: {
+            current: 1,
+            pageSize: 10,
+          },
+        });
       }
     }
   }
-  componentWillUnmount() {
-    // const nicaiCrx = document.getElementById('nicaiCrx');
-    // nicaiCrx.removeEventListener('setVersion', this.setVersion);
-    // nicaiCrx.removeEventListener('setAnalyzeData', this.setAnalyzeData);
+  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+    console.log(pagination);
+   this.setState({ pagination });
   }
-  // setVersion = (e) => {
-  //   const data = JSON.parse(e.target.innerText);
-  //   if (data.error) {
-  //     message.warn(data.msg);
-  //   }
-  //   this.setState({
-  //     version: data.version,
-  //   })
-  //   this.handleGetAnalyzeData(this.props.task);
-  // }
-  // setAnalyzeData = (e) => {
-  //   const data = JSON.parse(e.target.innerText);
-  //   // console.log(data);
-  //   this.setState({
-  //     summary: data.data,
-  //   });
-  // }
-  // handleGetVersion = () => {
-  //   const customEvent = document.createEvent('Event');
-  //   customEvent.initEvent('getVersion', true, true);
-  //   this.state.nicaiCrx.dispatchEvent(customEvent);
-  // }
-  // handleGetAnalyzeData = (task) => {
-  //   if (task.taobao && task.taobao.contentId) {
-  //     this.state.nicaiCrx.innerText = JSON.stringify(task.taobao);
-  //     const customEvent = document.createEvent('Event');
-  //     customEvent.initEvent('getAnalyzeData', true, true);
-  //     this.state.nicaiCrx.dispatchEvent(customEvent);
-  //   }
-  // }
   render() {
     const { task } = this.props;
     const summary = task.taobao && task.taobao.summary ? task.taobao.summary : {};
@@ -183,6 +165,12 @@ export default class AnalyzePane extends PureComponent {
             loading={this.state.loading}
             dataSource={this.state.auctionOrders}
             columns={columns}
+            pagination={{
+              showSizeChanger: true,
+              showQuickJumper: true,
+              ...this.state.pagination,
+            }}
+            onChange={this.handleStandardTableChange}
             rowKey="_id"
           />
         </Row>
