@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Divider, Table, message } from 'antd';
+import { Card, Row, Col, Divider, Table, Tooltip, Icon, message } from 'antd';
 import moment from 'moment';
 import { queryAuctionOrders } from '../../../services/task';
 
@@ -71,6 +71,7 @@ export default class AnalyzePane extends PureComponent {
   }
   render() {
     const { task } = this.props;
+    const orders = this.state.auctionOrders.filter(item => item.payStatus === 3 || item.payStatus === 12);
     const summary = task.taobao && task.taobao.summary ? task.taobao.summary : {};
     const alias = [{
       "value": "sumShareCnt",
@@ -132,12 +133,12 @@ export default class AnalyzePane extends PureComponent {
       {
         title: '付款金额',
         dataIndex: 'totalAlipayFee',
-        render: (val) => val.toFixed(2),
+        render: (val) => `￥${val.toFixed(2)}`,
       },
       {
         title: '淘客佣金',
         dataIndex: 'fee',
-        render: (val) => val.toFixed(2),
+        render: (val) => `￥${val.toFixed(2)}`,
       },
     ];
     return (
@@ -158,7 +159,31 @@ export default class AnalyzePane extends PureComponent {
             {summary.updateTime && <span><span>数据更新时间：</span><span>{moment(new Date(summary.updateTime)).format('YYYY年MM月DD日')}</span></span>}
           </div>
         </Row>
-        <Row style={{ marginTop: 10 }}>
+        <Row style={{ marginTop: 20 }}>
+          <Card.Grid style={{ width: `50%`, textAlign: 'center' }}>
+            <div>
+              付款金额
+              <Tooltip placement="top" title="【订单结算】与【订单付款】的付款金额之和">
+                <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+              </Tooltip>
+            </div>
+            <h2>
+              {`￥${orders.map(item => item.totalAlipayFee).reduce((a, b) => a + b, 0).toFixed(2)}`}
+            </h2>
+          </Card.Grid>
+          <Card.Grid style={{ width: `50%`, textAlign: 'center' }}>
+            <div>
+              淘客佣金
+              <Tooltip placement="top" title="【订单结算】与【订单付款】的淘客佣金之和">
+                <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+              </Tooltip>
+            </div>
+            <h2>
+              {`￥${orders.map(item => item.fee).reduce((a, b) => a + b, 0).toFixed(2)}`}
+            </h2>
+          </Card.Grid>
+        </Row>
+        <Row style={{ marginTop: 0 }}>
           <Table
             size="small"
             loading={this.state.loading}

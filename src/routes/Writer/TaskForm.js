@@ -506,7 +506,20 @@ export default class TaskForm extends PureComponent {
       approveModalVisible: !!flag,
     });
   }
-  
+  extractAuctionIds = (task_desc) => {
+    const auctionIds = [];
+    const result = $(task_desc);
+    result.each((index, e) => {
+      if (e.children && e.children[0] && e.children[0].tagName === 'A' && $(e.children[0]).attr('_data')) {
+        const _data = $(e.children[0]).attr('_data');
+        const data = JSON.parse(decodeURIComponent(_data));
+        console.log(data);
+        auctionIds.push(Number(data.data.itemId || data.data.spuId));
+      }
+    });
+    console.log(auctionIds);
+    return auctionIds;
+  }
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, operation, formData } = this.props;
@@ -522,20 +535,26 @@ export default class TaskForm extends PureComponent {
     }
     const values = {};
     const channel_name = this.getChannelName();
+    let auctionIds = [];
     if (channel_name === '有好货') {
       values.haveGoods = this.state.haveGoods;
     } else if (channel_name === '生活研究所') {
       values.lifeResearch = this.state.lifeResearch;
+      auctionIds = this.extractAuctionIds(values.lifeResearch.task_desc);
     } else if (channel_name === '全球时尚') {
       values.globalFashion = this.state.globalFashion;
+      auctionIds = this.extractAuctionIds(values.globalFashion.task_desc);
     } else if (channel_name === 'ifashion') {
       values.ifashion = this.state.ifashion;
     } else if (channel_name === '买遍全球') {
       values.buyWorld = this.state.buyWorld;
+      auctionIds = this.extractAuctionIds(values.buyWorld.task_desc);
     } else if (channel_name === '微淘') {
       values.weitao = this.state.weitao;
+      auctionIds = this.extractAuctionIds(values.weitao.task_desc);
     } else if (channel_name === '淘宝头条') {
       values.toutiao = this.state.toutiao;
+      auctionIds = this.extractAuctionIds(values.toutiao.task_desc);
     } else if (channel_name === '直播脚本') {
       values.zhibo = this.state.zhibo;
     }
@@ -550,6 +569,7 @@ export default class TaskForm extends PureComponent {
           type: 'task/update',
           payload: {
             ...values,
+            auctionIds,
             _id: query._id,
             name: name,
           },
@@ -570,6 +590,7 @@ export default class TaskForm extends PureComponent {
             type: 'task/add',
             payload: {
               ...values,
+              auctionIds,
               source: SOURCE.deliver,
               name: name,
               approve_status: TASK_APPROVE_STATUS.taken,
@@ -601,6 +622,7 @@ export default class TaskForm extends PureComponent {
             type: 'task/addByWriter',
             payload: {
               ...values,
+              auctionIds,
               source: SOURCE.create,
               name: name,
               approve_status: TASK_APPROVE_STATUS.taken,
@@ -647,20 +669,26 @@ export default class TaskForm extends PureComponent {
     }
     const values = {};
     const channel_name = this.getChannelName();
+    let auctionIds = [];
     if (channel_name === '有好货') {
       values.haveGoods = this.state.haveGoods;
     } else if (channel_name === '生活研究所') {
       values.lifeResearch = this.state.lifeResearch;
+      auctionIds = this.extractAuctionIds(values.lifeResearch.task_desc);
     } else if (channel_name === '全球时尚') {
       values.globalFashion = this.state.globalFashion;
+      auctionIds = this.extractAuctionIds(values.globalFashion.task_desc);
     } else if (channel_name === 'ifashion') {
       values.ifashion = this.state.ifashion;
     } else if (channel_name === '买遍全球') {
       values.buyWorld = this.state.buyWorld;
+      auctionIds = this.extractAuctionIds(values.buyWorld.task_desc);
     } else if (channel_name === '微淘') {
       values.weitao = this.state.weitao;
+      auctionIds = this.extractAuctionIds(values.weitao.task_desc);
     } else if (channel_name === '淘宝头条') {
       values.toutiao = this.state.toutiao;
+      auctionIds = this.extractAuctionIds(values.toutiao.task_desc);
     } else if (channel_name === '直播脚本') {
       values.zhibo = this.state.zhibo;
     }
@@ -673,6 +701,7 @@ export default class TaskForm extends PureComponent {
           current_approvers: approvers[0],
           approvers: approvers,
           name: name,
+          auctionIds,
           ...values,
         },
         callback: (result) => {
@@ -688,6 +717,7 @@ export default class TaskForm extends PureComponent {
         type: 'task/addByWriter',
         payload: {
           ...values,
+          auctionIds,
           source: SOURCE.create,
           name: name,
           approve_status: TASK_APPROVE_STATUS.taken,

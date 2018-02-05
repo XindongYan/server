@@ -314,13 +314,17 @@ export default class teamTasks extends PureComponent {
       width: 80,
       fixed: 'right',
       render: (record) => {
-        return (
-          <div>
-            <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
-              分析
-            </a>
-          </div>
-        );
+        if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || record.approve_status === TASK_APPROVE_STATUS.taobaoRejected ||
+          record.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
+          return (
+            <div>
+              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                分析
+              </a>
+            </div>
+          );
+        }
+        return '';
       },
     };
     const daren_nickname = {
@@ -379,11 +383,6 @@ export default class teamTasks extends PureComponent {
         }
       },
     };
-    const gridStyle = {
-      width: '32%',
-      margin: '5px',
-      padding: '10px',
-    };
     const rowSelection = {
       selectedRowKeys,
       onChange: this.handleRowSelectChange,
@@ -394,8 +393,9 @@ export default class teamTasks extends PureComponent {
     if (teamTask.approve_status === TASK_APPROVE_STATUS.all) {
       columns.push(status);
     } else if (teamTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
-      columns.push(daren_nickname, pushTime, pushStatusText, recruitColumn, opera);
+      columns.push(daren_nickname, pushTime, pushStatusText, recruitColumn);
     }
+    columns.push(opera);
     return (
       <div>
         <RadioGroup value={teamTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>

@@ -602,11 +602,6 @@ export default class TableList extends PureComponent {
         }
       },
     };
-    const gridStyle = {
-      width: '32%',
-      margin: '5px',
-      padding: '10px',
-    };
     const rowSelection = {
       selectedRowKeys,
       onChange: this.handleRowSelectChange,
