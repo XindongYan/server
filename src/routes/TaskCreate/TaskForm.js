@@ -33,6 +33,7 @@ export default class TaskForm extends PureComponent {
         attachments: formData.attachments,
         price: formData.price,
         channel_name: formData.channel_name,
+        merchant_tag: formData.merchant_tag,
       });
     }
     this.props.dispatch({
@@ -40,14 +41,19 @@ export default class TaskForm extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
+    const { operation } = nextProps;
     if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
-      this.props.form.setFieldsValue({
+      const f = {
         name: nextProps.formData.name,
         desc: nextProps.formData.desc,
         attachments: nextProps.formData.attachments,
         price: nextProps.formData.price,
-        channel_name: nextProps.formData.channel_name,
-      });
+      };
+      if (operation === 'edit') {
+        f.channel_name = nextProps.formData.channel_name;
+        f.merchant_tag = nextProps.formData.merchant_tag;
+      }
+      this.props.form.setFieldsValue(f);
     }
   }
   componentWillUnmount() {
@@ -155,7 +161,7 @@ export default class TaskForm extends PureComponent {
               <Input placeholder="最多20字" maxLength="20" />
             )}
           </FormItem>
-          <FormItem
+          { operation === 'edit' && <FormItem
             label="渠道"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
@@ -169,7 +175,20 @@ export default class TaskForm extends PureComponent {
                 {CHANNEL_NAMES.map(item => <Option value={item} key={item}>{item}</Option>)}
               </Select>
             )}
-          </FormItem>
+          </FormItem>}
+          { operation === 'edit' && <FormItem
+            label="商家标签"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('merchant_tag', {
+              rules: [{ required: true, message: '请输入项目标题！' }, {
+                whitespace: true, message: '商家标签不能为空格！',
+              }],
+            })(
+              <Input maxLength="30" placeholder="最多输入30个字" />
+            )}
+          </FormItem>}
           <FormItem
             label="描述"
             labelCol={{ span: 4 }}
