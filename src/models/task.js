@@ -1,6 +1,6 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
 queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, payoffTask, removeTask, undarenTask, queryTaskOperationRecords,
-queryTeamTasks, queryProjectFinanceTasks } from '../services/task';
+queryTeamTasks, queryProjectFinanceTasks, queryDarenTasks } from '../services/task';
 import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
@@ -32,6 +32,12 @@ export default {
       approve_status: 'all',
     },
     approverTaskLoading: true,
+    darenTask: {
+      list: [],
+      pagination: {},
+      approve_status: TASK_APPROVE_STATUS.all,
+    },
+    darenTaskLoading: true,
     teamTask: {
       approve_status: TASK_APPROVE_STATUS.all,
       list: [],
@@ -183,6 +189,23 @@ export default {
         payload: false,
       });
     },
+    *fetchDarenTasks({ payload }, { call, put }) {
+      yield put({
+        type: 'changeDarenTasksLoading',
+        payload: true,
+      });
+      const response = yield call(queryDarenTasks, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveDarenTasks',
+          payload: {...response, approve_status: payload.approve_status},
+        });
+      }
+      yield put({
+        type: 'changeDarenTasksLoading',
+        payload: false,
+      });
+    },
     *fetchTeamTasks({ payload }, { call, put }) {
       yield put({
         type: 'changeTeamTasksLoading',
@@ -290,6 +313,18 @@ export default {
       return {
         ...state,
         approverTaskLoading: action.payload,
+      };
+    },
+    saveDarenTasks(state, action) {
+      return {
+        ...state,
+        darenTask: action.payload,
+      };
+    },
+    changeDarenTasksLoading(state, action) {
+      return {
+        ...state,
+        darenTaskLoading: action.payload,
       };
     },
     saveTeamTasks(state, action) {

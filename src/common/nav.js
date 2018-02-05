@@ -11,6 +11,8 @@ import TeamTasks from '../routes/Team/TeamTasks';
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
 
+import Daren from '../routes/Daren/TableList';
+
 import TaskSquare from '../routes/TaskSquare/ProjectList';
 import SubmissionList from '../routes/TaskSquare/SubmissionList';
 import Invitation from '../routes/Invitation/InvitationList';
@@ -65,6 +67,17 @@ const creation = {
     name: '淘宝热点',
     path: 'https://aidea.taobao.com/',
     target: '_blank',
+  }],
+};
+
+const publish = {
+  name: '发布',
+  path: 'daren',
+  icon: 'fork',
+  children: [{
+    name: '全部作品',
+    path: 'daren-list',
+    component: Daren,
   }],
 };
 
@@ -179,6 +192,9 @@ export function getNavData(user) {
     }
     if (user.rights.indexOf(RIGHT.teamAdmin) >= 0) {
       menuItems.push(team);
+    }
+    if (user.rights.indexOf(RIGHT.daren) >= 0) {
+      menuItems.push(publish);
     }
     if (user.rights.indexOf(RIGHT.projectCreator) >= 0 || user.rights.indexOf(RIGHT.projectAdmin) >= 0) {
       menuItems.push(project);

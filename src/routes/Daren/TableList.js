@@ -26,11 +26,10 @@ const { RangePicker } = DatePicker;
 const Search = Input.Search;
 
 @connect(state => ({
-  data: state.task.takerTask,
-  loading: state.task.takerTaskLoading,
+  data: state.task.darenTask,
+  loading: state.task.darenTaskLoading,
   currentUser: state.user.currentUser,
   teamUser: state.user.teamUser,
-  suggestionUsers: state.team.suggestionUsers,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -55,7 +54,7 @@ export default class TableList extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id) {
       dispatch({
-        type: 'task/fetchTakerTasks',
+        type: 'task/fetchDarenTasks',
         payload: {
           ...pagination,
           team_id: teamUser.team_id,
@@ -81,7 +80,7 @@ export default class TableList extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id !== this.props.currentUser._id) {
       dispatch({
-        type: 'task/fetchTakerTasks',
+        type: 'task/fetchDarenTasks',
         payload: {
           ...pagination,
           team_id: teamUser.team_id,
@@ -163,7 +162,7 @@ export default class TableList extends PureComponent {
   handleFetch = () => {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
     dispatch({
-      type: 'task/fetchTakerTasks',
+      type: 'task/fetchDarenTasks',
       payload: { ...pagination, approve_status, user_id: currentUser._id, currentPage: 1, team_id: teamUser.team_id, },
     });
   }
@@ -189,7 +188,7 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'task/fetchTakerTasks',
+      type: 'task/fetchDarenTasks',
       payload: params,
     });
   }
@@ -263,7 +262,7 @@ export default class TableList extends PureComponent {
       values[name] = value;
     }
     dispatch({
-      type: 'task/fetchTakerTasks',
+      type: 'task/fetchDarenTasks',
       payload: {
         currentPage: 1,
         pageSize: pagination.pageSize,
@@ -281,7 +280,7 @@ export default class TableList extends PureComponent {
   changeApproveStatus = (e) => {
     const { dispatch, currentUser, teamUser, data: { pagination } } = this.props;
     dispatch({
-      type: 'task/fetchTakerTasks',
+      type: 'task/fetchDarenTasks',
       payload: { ...pagination, user_id: currentUser._id, team_id: teamUser.team_id, approve_status: e.target.value, currentPage: 1, }
     });
   }
@@ -441,7 +440,7 @@ export default class TableList extends PureComponent {
     });
   }
   render() {
-    const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
+    const { data, loading, form: { getFieldDecorator }, currentUser } = this.props;
     const { modalVisible, publishVisible, selectedRowKeys, approveModalVisible, suggestionApproves, selectedRows, percent, channel_list } = this.state;
     const columns = [
       {
@@ -572,55 +571,7 @@ export default class TableList extends PureComponent {
     const opera = {
       title: '操作',
       render: (record) => {
-        if (record.approve_status === TASK_APPROVE_STATUS.taken) {
-          return (
-            <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-              <Divider type="vertical" />
-              <Link to={`/writer/task/edit?_id=${record._id}`}>
-                <span>编辑</span>
-              </Link>
-              { record.channel_name &&
-                <span>
-                  <Divider type="vertical" />
-                  <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                    <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
-                  </Popconfirm>
-                </span>
-              }
-              {!record.project_id && <Divider type="vertical" />}
-              {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
-              {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) && <Divider type="vertical" />}
-              {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) &&
-                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
-                  <a>删除</a>
-                </Popconfirm>
-              }
-            </div>
-          );
-        } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
-          return (
-            <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-            </div>
-          );
-        } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
-          return (
-            <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-              <Divider type="vertical" />
-              <Link to={`/writer/task/edit?_id=${record._id}`}>
-                <span>编辑</span>
-              </Link>
-            </div>
-          );
-        } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
+        if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
               <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
@@ -630,87 +581,75 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <Tooltip placement="top" title="退回到未通过">
+                  <a>退回</a>
+                </Tooltip>
+              </Popconfirm>
+              <Divider type="vertical" />
+              <Link to={`/approver/task/edit?_id=${record._id}`}>
+                <span>编辑</span>
+              </Link>
             </div>
           );
-        // } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
-        //   return (
-        //     <div>
-        //       <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-        //         外链
-        //       </a>
-        //       <Divider type="vertical" />
-        //       <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-        //         <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
-        //       </Popconfirm>
-        //       <Divider type="vertical" />
-        //       <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-        //         <Tooltip placement="top" title="退回到未通过">
-        //           <a>退回</a>
-        //         </Tooltip>
-        //       </Popconfirm>
-        //       <Divider type="vertical" />
-        //       <Link to={`/approver/task/edit?_id=${record._id}`}>
-        //         <span>编辑</span>
-        //       </Link>
-        //     </div>
-        //   );
-        // } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
-        //   return (
-        //     <div>
-        //       { record.taobao && record.taobao.url &&
-        //         <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
-        //           推广
-        //         </a>
-        //       }
-        //       { record.taobao && record.taobao.url &&
-        //         <Divider type="vertical" />
-        //       }
-        //       <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
-        //         分析
-        //       </a>
-        //       { record.taobao && record.taobao.url &&
-        //         <Divider type="vertical" />
-        //       }
-        //       {record.taobao && record.taobao.url &&
-        //         <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-        //           查看
-        //         </a>
-        //       }
-        //     </div>
-        //   );
-        // } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
-        //   return (
-        //     <div>
-        //       { record.taobao && record.taobao.url &&
-        //         <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
-        //           推广
-        //         </a>
-        //       }
-        //       { record.taobao && record.taobao.url && <Divider type="vertical" /> }
-        //       <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
-        //         分析
-        //       </a>
-        //       { record.taobao && record.taobao.url && <Divider type="vertical" /> }
-        //       {record.taobao && record.taobao.url &&
-        //         <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-        //           查看
-        //         </a>
-        //       }
-        //       { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id && <Divider type="vertical" />}
-        //       { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id &&
-        //         <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-        //         <a>退回</a>
-        //       </Popconfirm>}
-        //       { !record.approver_id && <Divider type="vertical" />}
-        //       { !record.approver_id &&
-        //         <Popconfirm placement="left" title="当前稿子将转移到待完成列表中，编辑后请到待完成中查找。" onConfirm={() => this.handleReturnToTakenAndEdit(record)} okText="确认" cancelText="取消">
-        //           <a>
-        //             编辑
-        //           </a>
-        //         </Popconfirm>
-        //       }
-        //     </div>
-        //   );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
+          return (
+            <div>
+              { record.taobao && record.taobao.url &&
+                <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
+                  推广
+                </a>
+              }
+              { record.taobao && record.taobao.url &&
+                <Divider type="vertical" />
+              }
+              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                分析
+              </a>
+              { record.taobao && record.taobao.url &&
+                <Divider type="vertical" />
+              }
+              {record.taobao && record.taobao.url &&
+                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
+                  查看
+                </a>
+              }
+            </div>
+          );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
+          return (
+            <div>
+              { record.taobao && record.taobao.url &&
+                <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
+                  推广
+                </a>
+              }
+              { record.taobao && record.taobao.url && <Divider type="vertical" /> }
+              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+                分析
+              </a>
+              { record.taobao && record.taobao.url && <Divider type="vertical" /> }
+              {record.taobao && record.taobao.url &&
+                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
+                  查看
+                </a>
+              }
+              { record.approver_id &&  <Divider type="vertical" />}
+              { record.approver_id &&
+                <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <a>退回</a>
+              </Popconfirm>}
+              { !record.approver_id && <Divider type="vertical" />}
+              { !record.approver_id &&
+                <Popconfirm placement="left" title="当前稿子将转移到待完成列表中，编辑后请到待完成中查找。" onConfirm={() => this.handleReturnToTakenAndEdit(record)} okText="确认" cancelText="取消">
+                  <a>
+                    编辑
+                  </a>
+                </Popconfirm>
+              }
+            </div>
+          );
         } else {
           return (
             <div>
@@ -734,26 +673,32 @@ export default class TableList extends PureComponent {
         disabled: record.disabled,
       }),
     } : null;
-    if (data.approve_status === -1 || data.approve_status === 0) {
-      columns.push(...times, opera);
-    // } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
-    //   columns.push( pushStatusText, recruitColumn, daren_nickname, pushTime, opera);
-    } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
-      columns.push(...times, status, opera);
-    } else {
-      columns.push(...times, approveTime, opera);
-    }
+    columns.push( pushStatusText, recruitColumn, daren_nickname, pushTime, opera);
     return (
       <div>
         <div className={styles.searchBox}>
           <RadioGroup value={data.approve_status} onChange={this.changeApproveStatus}>
             <RadioButton value={TASK_APPROVE_STATUS.all}>全部</RadioButton>
-            <Tooltip placement="top" title="待完成/草稿箱">
-              <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
+            <Tooltip placement="top" title="待发布至阿里创作平台">
+              <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
+                待发布
+              </RadioButton>
             </Tooltip>
-            <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
+            <Tooltip placement="top" title="已发布至阿里创作平台">
+              <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
+                已发布
+              </RadioButton>
+            </Tooltip>
+            <Tooltip placement="top" title="阿里创作平台不通过">
+              <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
+                淘宝不通过
+              </RadioButton>
+            </Tooltip>
+            <Tooltip placement="top" title="阿里创作平台通过">
+              <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
+                淘宝通过
+              </RadioButton>
+            </Tooltip>
           </RadioGroup>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
@@ -807,39 +752,6 @@ export default class TableList extends PureComponent {
             <DockPanel />
           </div>
         </Card>
-
-        {modalVisible && <Modal
-          title="选择转交对象"
-          visible={modalVisible}
-          onOk={this.handlePass}
-          onCancel={() => {this.setState({ modalVisible: false })}}
-          confirmLoading={this.state.modalLoading}
-        >
-          <FormItem
-            label="用户"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-          >
-            {getFieldDecorator('target_user_id', {
-              initialValue: '',
-              rules: [{ required: true, message: '请选择转交用户！' }],
-            })(
-              <Select
-                style={{ width: '100%' }}
-                mode="combobox"
-                optionLabelProp="children"
-                placeholder="搜索昵称指定转交用户"
-                notFoundContent=""
-                defaultActiveFirstOption={false}
-                showArrow={false}
-                filterOption={false}
-                onSearch={this.handlePassSearch}
-              >
-                {suggestionUsers.filter(item => item._id !== currentUser._id).map(item => <Option value={item._id} key={item._id}>{item.nickname}</Option>)}
-              </Select>
-            )}
-          </FormItem>
-        </Modal>}
         <Extension visible={this.state.extensionVisible} url={this.state.extension} onCancel={() => this.setState({ extensionVisible: false })} />
       </div>
     );

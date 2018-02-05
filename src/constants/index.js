@@ -7,6 +7,7 @@ export const RIGHTS = [
   { label: '团队管理', value: 2 },
   { label: '活动管理', value: 3 },
   { label: '活动主管', value: 4 },
+  { label: '达人', value: 5 },
   { label: '审核', value: 6 },
   { label: '财务', value: 7 },
   { label: '管理员', value: 8 },
@@ -87,6 +88,7 @@ export const RIGHT = {
   teamAdmin: 2,
   projectCreator: 3,
   projectAdmin: 4,
+  daren: 5,
   approver: 6,
   finance: 7,
 };

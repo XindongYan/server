@@ -4,8 +4,8 @@ import { Link, Route, Switch, Redirect, routerRedux } from 'dva/router';
 import DocumentTitle from 'react-document-title';
 import { connect } from 'dva';
 import styles from './DarenLayout.less';
-import DarenList from '../routes/Daren/DarenList';
-import DarenLiveList from '../routes/Daren/DarenLiveList';
+import DarenList from '../routes/TaobaoDaren/DarenList';
+import DarenLiveList from '../routes/TaobaoDaren/DarenLiveList';
 
 class DarenLayout extends React.PureComponent {
   static childContextTypes = {
@@ -35,9 +35,9 @@ class DarenLayout extends React.PureComponent {
       <DocumentTitle title={this.getPageTitle()}>
         <div className={styles.container}>
           <Switch>
-            <Route key="daren" path="/daren/list" component={DarenList} />
-            <Route key="daren" path="/daren/live/list" component={DarenLiveList} />
-            <Redirect to="/daren/list" />
+            <Route key="daren" path="/taobao_daren/list" component={DarenList} />
+            <Route key="daren" path="/taobao_daren/live/list" component={DarenLiveList} />
+            <Redirect to="/taobao_daren/list" />
           </Switch>
         </div>
       </DocumentTitle>

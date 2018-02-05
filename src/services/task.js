@@ -147,6 +147,10 @@ export async function queryTakerTasks(params) {
   return request(`/api/task/list/taker?${stringify(params)}`);
 }
 
+export async function queryDarenTasks(params) {
+  return request(`/api/task/list/daren?${stringify(params)}`);
+}
+
 export async function queryConvertedTasks(params) {
   return request(`/api/chrome/test.json?${stringify(params)}`);
 }

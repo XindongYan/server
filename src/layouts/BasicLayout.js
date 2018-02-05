@@ -149,7 +149,7 @@ class BasicLayout extends React.PureComponent {
     // const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
     // currentMenuSelectedKeys.splice(-1, 1);
     // if (currentMenuSelectedKeys.length === 0) {
-      return ['square', 'creation', 'project', 'approve', 'team', 'album', 'tool'];
+      return ['square', 'creation', 'project', 'approve', 'daren', 'team', 'album', 'tool'];
     // }
     // return currentMenuSelectedKeys;
   }
@@ -344,12 +344,12 @@ class BasicLayout extends React.PureComponent {
               onClick={this.toggle}
             />
             <div className={styles.daren}>
-              <Link target='_blank' to="/daren/list">
+              <Link target='_blank' to="/taobao_daren/list">
                 <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>综合榜单</span>
               </Link>
             </div>
             <div className={styles.daren}>
-              <Link target='_blank' to="/daren/live/list">
+              <Link target='_blank' to="/taobao_daren/live/list">
                 <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>直播榜单</span>
               </Link>
             </div>

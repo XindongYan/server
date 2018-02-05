@@ -14,7 +14,7 @@ function RouterConfig({ history }) {
         <Switch>
           <Route path="/user" component={UserLayout} />
           <Route path="/setting" component={UserInfoLayout} />
-          <Route path="/daren" component={DarenLayout} />
+          <Route path="/taobao_daren" component={DarenLayout} />
           <Route path="/" component={BasicLayout} />
           <Redirect to="/" />
         </Switch>
