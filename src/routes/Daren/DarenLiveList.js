@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Table, Button, Tag, Card, Input, message, Avatar, Divider, Radio } from 'antd';
 import TrimSpan from '../../components/TrimSpan';
+import FansChartPopover from './FansChartPopover';
 import styles from './DarenList.less';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
@@ -120,7 +121,15 @@ export default class DarenLiveList extends PureComponent {
       dataIndex: 'darenMissionData.fansCount',
       sorter: true,
       width: 70,
-      render: (val) => val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val,
+      render: (val, record) => {
+        const text = val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val;
+        return (
+          <FansChartPopover
+          data={{ list: record.darenMissionData.fansCounts || [], _id: record._id }}>
+            <a>{text}</a>
+          </FansChartPopover>
+        );
+      },
     }, {
       title: <span className={styles.title}>人气</span>,
       dataIndex: 'hongbei.hotsnum',

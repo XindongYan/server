@@ -291,7 +291,7 @@ export default class DarenList extends PureComponent {
         const text = val >= 10000 ? `${Number((val/10000).toFixed(1))}万` : val;
         return (
           <FansChartPopover
-          data={{ list: record.darenMissionData.fansCounts, _id: record._id }}>
+          data={{ list: record.darenMissionData.fansCounts || [], _id: record._id }}>
             <a>{text}</a>
           </FansChartPopover>
         );
