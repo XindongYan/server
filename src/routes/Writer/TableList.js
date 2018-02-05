@@ -696,8 +696,8 @@ export default class TableList extends PureComponent {
                   查看
                 </a>
               }
-              { record.approver_id && <Divider type="vertical" />}
-              { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id  &&
+              { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id && <Divider type="vertical" />}
+              { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id &&
                 <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                 <a>退回</a>
               </Popconfirm>}
