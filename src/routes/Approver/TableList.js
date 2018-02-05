@@ -50,6 +50,7 @@ export default class TableList extends PureComponent {
     queue: [],
     queueNumber: 0,
     channel_list: [],
+    searchValue: '',
   }
 
   componentDidMount() {
@@ -198,6 +199,7 @@ export default class TableList extends PureComponent {
       user_id: this.state.user_id || currentUser._id,
       approve_status,
       ...filters,
+      search: this.state.searchValue,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -285,7 +287,12 @@ export default class TableList extends PureComponent {
       }
     });
   }
-
+  handleChange = (e) => {
+    if (!e.target.value) {
+      this.handleSearch(e.target.value, 'search')
+    }
+    this.setState({ searchValue: e.target.value });
+  }
   handleReject = (record) => {
     const { dispatch, data: { pagination, approve_status }, currentUser, teamUser } = this.props;
     dispatch({
@@ -746,6 +753,8 @@ export default class TableList extends PureComponent {
                   <Search
                     style={{ width: 260, float: 'right'}}
                     placeholder="ID／名称／商家标签／昵称"
+                    value={this.state.searchValue}
+                    onChange={this.handleChange}
                     onSearch={(value) => this.handleSearch(value, 'search')}
                     enterButton
                   />
