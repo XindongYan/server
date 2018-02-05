@@ -367,6 +367,7 @@ export default class ProjectList extends PureComponent {
               <RadioButton value={-4}>全部</RadioButton>
               <RadioButton value={1}>接单活动</RadioButton>
               <RadioButton value={2}>投稿活动</RadioButton>
+              <RadioButton value={3}>派单活动</RadioButton>
             </RadioGroup>
           </div>
           <div>
