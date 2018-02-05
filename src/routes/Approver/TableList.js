@@ -357,6 +357,27 @@ export default class TableList extends PureComponent {
       }
     });
   }
+  handleUnSpecifyDaren = (record) => {
+    const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
+    dispatch({
+      type: 'task/undaren',
+      payload: {
+        _id: record._id,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          dispatch({
+            type: 'task/fetchApproverTasks',
+            payload: { ...pagination, approve_status, team_id: teamUser.team_id, user_id: currentUser._id }
+          });
+        }
+      },
+    });
+  }
   handleSearchDaren = (value) => {
     const { teamUser } = this.props;
     if (value) {
@@ -551,7 +572,15 @@ export default class TableList extends PureComponent {
               </Popconfirm>
               <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <a>退回</a>
+                <Tooltip placement="top" title="退回到未通过">
+                  <a>退回</a>
+                </Tooltip>
+              </Popconfirm>
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleUnSpecifyDaren(record)} okText="确认" cancelText="取消">
+                <Tooltip placement="top" title="撤回到已通过">
+                  <a>撤回</a>
+                </Tooltip>
               </Popconfirm>
               <Divider type="vertical" />
               <Link to={`/approver/task/edit?_id=${record._id}`}>

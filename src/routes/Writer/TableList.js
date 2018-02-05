@@ -644,7 +644,9 @@ export default class TableList extends PureComponent {
               </Popconfirm>
               <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <a>退回</a>
+                <Tooltip placement="top" title="退回到未通过">
+                  <a>退回</a>
+                </Tooltip>
               </Popconfirm>
               <Divider type="vertical" />
               <Link to={`/approver/task/edit?_id=${record._id}`}>

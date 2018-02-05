@@ -130,6 +130,15 @@ export async function payoffTask(params) {
   });
 }
 
+export async function undarenTask(params) {
+  return request('/api/task/undaren', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }

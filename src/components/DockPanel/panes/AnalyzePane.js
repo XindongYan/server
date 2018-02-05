@@ -36,7 +36,7 @@ export default class AnalyzePane extends PureComponent {
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.removeEventListener('setVersion', this.setVersion);
-    nicaiCrx.removeEventListener('setAnalyzeData', this.setVersion);
+    nicaiCrx.removeEventListener('setAnalyzeData', this.setAnalyzeData);
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);

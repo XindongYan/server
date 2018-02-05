@@ -1,6 +1,6 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
-queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, removeTask, queryTaskOperationRecords, queryTeamTasks,
-payoffTask, queryProjectFinanceTasks } from '../services/task';
+queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, payoffTask, removeTask, undarenTask, queryTaskOperationRecords,
+queryTeamTasks, queryProjectFinanceTasks } from '../services/task';
 import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
@@ -126,6 +126,10 @@ export default {
     },
     *payoff({ payload, callback }, { call, put }) {
       const result = yield call(payoffTask, payload);
+      if (callback) callback(result);
+    },
+    *undaren({ payload, callback }, { call, put }) {
+      const result = yield call(undarenTask, payload);
       if (callback) callback(result);
     },
     *fetchProjectTasks({ payload }, { call, put }) {

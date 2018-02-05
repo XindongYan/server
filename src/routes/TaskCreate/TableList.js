@@ -252,6 +252,28 @@ export default class TableList extends PureComponent {
       }
     });
   }
+  handleUnSpecifyDaren = (record) => {
+    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    dispatch({
+      type: 'task/undaren',
+      payload: {
+        _id: record._id,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          dispatch({
+            type: 'task/fetchProjectTasks',
+            payload: { ...pagination, approve_status, project_id: query.project_id },
+          });
+        }
+      },
+    });
+  }
   handleEdit = (record) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch(routerRedux.push(`/project/task/edit?project_id=${query.project_id}&_id=${record._id}`));
@@ -293,10 +315,10 @@ export default class TableList extends PureComponent {
     });
   }
   handleSpecify = () => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
-      if (!err && values.target_user_id.length >= 24) {
+      if (!err && values.target_user_id) {
         dispatch({
           type: 'task/specify',
           payload: {
@@ -312,7 +334,7 @@ export default class TableList extends PureComponent {
               this.handleModalVisible(false);
               dispatch({
                 type: 'task/fetchProjectTasks',
-                payload: { project_id: query.project_id },
+                payload: { ...pagination, project_id: query.project_id, approve_status },
               });
             }
           },
@@ -323,7 +345,7 @@ export default class TableList extends PureComponent {
     });
   }
   handleWithdraw = (record) => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/withdraw',
@@ -338,14 +360,14 @@ export default class TableList extends PureComponent {
           message.success(result.msg);
           dispatch({
             type: 'task/fetchProjectTasks',
-            payload: { project_id: query.project_id },
+            payload: { ...pagination, project_id: query.project_id, approve_status },
           });
         }
       },
     });
   }
   handleRemove = (record) => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/remove',
@@ -360,7 +382,7 @@ export default class TableList extends PureComponent {
           message.success(result.msg);
           dispatch({
             type: 'task/fetchProjectTasks',
-            payload: { project_id: query.project_id },
+            payload: {  ...pagination, project_id: query.project_id, approve_status },
           });
         }
       },
@@ -379,12 +401,13 @@ export default class TableList extends PureComponent {
     }
   }
   changeApproveStatus = (e) => {
-    const { dispatch, projectTask } = this.props;
+    const { dispatch } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/fetchProjectTasks',
       payload: { project_id: query.project_id, approve_status: e.target.value, },
     });
+    this.handleRowSelectChange([], []);
   }
   handleShowDockPanel = (record, activeKey) => {
     this.props.dispatch({
@@ -486,7 +509,9 @@ export default class TableList extends PureComponent {
               <a onClick={() => this.handleEdit(record)}>修改</a>
               <span className={styles.splitLine} />
               <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
-                <a>撤回</a>
+                <Tooltip placement="top" title="撤回到已创建">
+                  <a>撤回</a>
+                </Tooltip>
               </Popconfirm>
             </p>
           );
@@ -494,7 +519,19 @@ export default class TableList extends PureComponent {
           return (
             <p>
               <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleWithdraw(record)} okText="确认" cancelText="取消">
-                <a>撤回</a>
+                <Tooltip placement="top" title="撤回到已创建">
+                  <a>撤回</a>
+                </Tooltip>
+              </Popconfirm>
+            </p>
+          );
+        } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
+          return (
+            <p>
+              <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleUnSpecifyDaren(record)} okText="确认" cancelText="取消">
+                <Tooltip placement="top" title="撤回到已通过">
+                  <a>撤回</a>
+                </Tooltip>
               </Popconfirm>
             </p>
           );
