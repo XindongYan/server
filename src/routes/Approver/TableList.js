@@ -658,7 +658,7 @@ export default class TableList extends PureComponent {
     if (data.approve_status === 'all') {
       columns.push(status);
     } else if (data.approve_status === 'publishedToTaobao' || data.approve_status === 'taobaoRejected' || data.approve_status === 'taobaoAccepted') {
-      columns.push(pushStatusText);
+      columns.push(pushStatusText, recruitColumn);
     } else {
       columns.push(approver, approveTime);
     }
