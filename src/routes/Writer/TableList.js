@@ -686,28 +686,23 @@ export default class TableList extends PureComponent {
                   推广
                 </a>
               }
-              { record.taobao && record.taobao.url &&
-                <Divider type="vertical" />
-              }
+              { record.taobao && record.taobao.url && <Divider type="vertical" /> }
               <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
                 分析
               </a>
-              { record.taobao && record.taobao.url &&
-                <Divider type="vertical" />
-              }
+              { record.taobao && record.taobao.url && <Divider type="vertical" /> }
               {record.taobao && record.taobao.url &&
                 <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
                   查看
                 </a>
               }
-              <Divider type="vertical" />
-              <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+              { record.approver_id && <Divider type="vertical" />}
+              { record.approver_id &&
+                <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                 <a>退回</a>
-              </Popconfirm>
+              </Popconfirm>}
+              { !record.approver_id && <Divider type="vertical" />}
               { !record.approver_id &&
-                <Divider type="vertical" />
-              }
-              {!record.approver_id &&
                 <Popconfirm placement="left" title="当前稿子将转移到待完成列表中，编辑后请到待完成中查找。" onConfirm={() => this.handleReturnToTakenAndEdit(record)} okText="确认" cancelText="取消">
                   <a>
                     编辑
