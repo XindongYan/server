@@ -67,7 +67,6 @@ export default class AnalyzePane extends PureComponent {
     }
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    console.log(pagination);
    this.setState({ pagination });
   }
   render() {

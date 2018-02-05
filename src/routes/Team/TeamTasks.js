@@ -303,12 +303,12 @@ export default class teamTasks extends PureComponent {
         dataIndex: 'take_time',
         render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
       },
-      {
-        title: '状态',
-        dataIndex: 'approve_status',
-        render: val => (<TaskStatusColumn status={val}/>),
-      },
     ];
+    const status = {
+      title: '状态',
+      dataIndex: 'approve_status',
+      render: val => (<TaskStatusColumn status={val}/>),
+    };
     const opera = {
       title: '操作',
       width: 80,
@@ -391,7 +391,9 @@ export default class teamTasks extends PureComponent {
         disabled: record.disabled,
       }),
     };
-    if (teamTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
+    if (teamTask.approve_status === TASK_APPROVE_STATUS.all) {
+      columns.push(status);
+    } else if (teamTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
       columns.push(daren_nickname, pushTime, pushStatusText, recruitColumn, opera);
     }
     return (

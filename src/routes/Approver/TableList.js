@@ -655,16 +655,14 @@ export default class TableList extends PureComponent {
         }
       },
     }
-    if (data.approve_status === 'waitingForApprove') {
-      columns.push(status, opera);
-    } else if (data.approve_status === 'approving') {
-      columns.push(status, opera);
+    if (data.approve_status === 'all') {
+      columns.push(status);
     } else if (data.approve_status === 'publishedToTaobao' || data.approve_status === 'taobaoRejected' || data.approve_status === 'taobaoAccepted') {
-      columns.push(pushStatusText, opera);
+      columns.push(pushStatusText);
     } else {
-      columns.push(approver, approveTime, status, opera);
+      columns.push(approver, approveTime);
     }
-    
+    columns.push(opera);
     const rowSelection = {
       selectedRowKeys,
       onChange: this.handleRowSelectChange,
