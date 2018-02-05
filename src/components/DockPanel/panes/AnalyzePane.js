@@ -142,7 +142,7 @@ export default class AnalyzePane extends PureComponent {
           } else if (val === 12) {
             return (<span style={{ color: '#5aa62e' }}>订单付款</span>);
           } else if (val === 13) {
-            return (<span style={{ color: 'red' }}>订单付款</span>);
+            return (<span style={{ color: 'red' }}>订单失效</span>);
           } else {
             return '未知'
           }
