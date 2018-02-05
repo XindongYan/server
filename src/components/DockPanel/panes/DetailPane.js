@@ -24,10 +24,10 @@ export default class DetailPane extends PureComponent {
           </Row>
           <Row gutter={2} style={rowStyle}>
             <Col span={2} style={labelStyle}>
-              商家标签：
+              任务描述：
             </Col>
             <Col span={22}>
-              <div>{task.merchant_tag || '无'}</div>
+              <div style={{ wordWrap: 'break-word' }}>{task.desc || '无'}</div>
             </Col>
           </Row>
           <Row gutter={2} style={rowStyle}>
@@ -40,10 +40,10 @@ export default class DetailPane extends PureComponent {
           </Row>
           <Row gutter={2} style={rowStyle}>
             <Col span={2} style={labelStyle}>
-              任务描述：
+              商家标签：
             </Col>
             <Col span={22}>
-              <div style={{ wordWrap: 'break-word' }}>{task.desc || '无'}</div>
+              <div>{task.merchant_tag || '无'}</div>
             </Col>
           </Row>
           <Row gutter={2} style={rowStyle}>
@@ -59,18 +59,18 @@ export default class DetailPane extends PureComponent {
           </Row>
           <Row gutter={2} style={rowStyle}>
             <Col span={2} style={labelStyle}>
-              创建时间：
-            </Col>
-            <Col span={22}>
-              <div>{moment(task.create_time).format('YYYY-MM-DD HH:mm')}</div>
-            </Col>
-          </Row>
-          <Row gutter={2} style={rowStyle}>
-            <Col span={2} style={labelStyle}>
               活动酬劳：
             </Col>
             <Col span={22}>
               <div>{`￥${task.price}`}</div>
+            </Col>
+          </Row>
+          <Row gutter={2} style={rowStyle}>
+            <Col span={2} style={labelStyle}>
+              创建时间：
+            </Col>
+            <Col span={22}>
+              <div>{moment(task.create_time).format('YYYY-MM-DD HH:mm')}</div>
             </Col>
           </Row>
       </Card>

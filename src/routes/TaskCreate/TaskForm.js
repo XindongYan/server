@@ -161,6 +161,16 @@ export default class TaskForm extends PureComponent {
               <Input placeholder="最多20字" maxLength="20" />
             )}
           </FormItem>
+          <FormItem
+            label="描述"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('desc', {
+            })(
+              <Input.TextArea />
+            )}
+          </FormItem>
           { operation === 'edit' && <FormItem
             label="渠道"
             labelCol={{ span: 4 }}
@@ -189,16 +199,6 @@ export default class TaskForm extends PureComponent {
               <Input maxLength="30" placeholder="最多输入30个字" />
             )}
           </FormItem>}
-          <FormItem
-            label="描述"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('desc', {
-            })(
-              <Input.TextArea />
-            )}
-          </FormItem>
           <FormItem
             label={
               <Tooltip placement="topLeft" title="建议上传pdf格式文件">
