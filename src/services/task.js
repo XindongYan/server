@@ -162,3 +162,7 @@ export async function queryProjectFinanceTasks(params) {
 export async function queryYhhBody(params) {
   return request(`/api/task/yhh/body?${stringify(params)}`);
 }
+
+export async function queryAuctionOrders(params) {
+  return request(`/api/alimama/orders/by/auctionIds?${stringify(params)}`);
+}
