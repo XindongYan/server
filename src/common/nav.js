@@ -187,14 +187,14 @@ export function getNavData(user) {
     if (user.rights.indexOf(RIGHT.writer) >= 0) {
       menuItems.push(square, creation);
     }
+    if (user.rights.indexOf(RIGHT.daren) >= 0) {
+      menuItems.push(publish);
+    }
     if (user.rights.indexOf(RIGHT.approver) >= 0) {
       menuItems.push(approve);
     }
     if (user.rights.indexOf(RIGHT.teamAdmin) >= 0) {
       menuItems.push(team);
-    }
-    if (user.rights.indexOf(RIGHT.daren) >= 0) {
-      menuItems.push(publish);
     }
     if (user.rights.indexOf(RIGHT.projectCreator) >= 0 || user.rights.indexOf(RIGHT.projectAdmin) >= 0) {
       menuItems.push(project);

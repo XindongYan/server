@@ -583,7 +583,7 @@ export default class TableList extends PureComponent {
               </Popconfirm>
               <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <Tooltip placement="top" title="退回到未通过">
+                <Tooltip placement="top" title="退回到写手(状态未通过) ">
                   <a>退回</a>
                 </Tooltip>
               </Popconfirm>
@@ -638,8 +638,8 @@ export default class TableList extends PureComponent {
               { record.approver_id &&  <Divider type="vertical" />}
               { record.approver_id &&
                 <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <a>退回</a>
-              </Popconfirm>}
+                  <a>退回</a>
+                </Popconfirm>}
               { !record.approver_id && <Divider type="vertical" />}
               { !record.approver_id &&
                 <Popconfirm placement="left" title="当前稿子将转移到待完成列表中，编辑后请到待完成中查找。" onConfirm={() => this.handleReturnToTakenAndEdit(record)} okText="确认" cancelText="取消">

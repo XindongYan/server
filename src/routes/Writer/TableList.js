@@ -13,7 +13,7 @@ import TaskIdColumn from '../../components/TaskIdColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, ORIGIN, SOURCE } from '../../constants';
+import { TASK_APPROVE_STATUS, ORIGIN, SOURCE, RIGHT } from '../../constants';
 import styles from './TableList.less';
 import { queryConvertedTasks } from '../../services/task';
 
@@ -582,7 +582,7 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
-              { record.channel_name &&
+              { record.channel_name && currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0 &&
                 <span>
                   <Divider type="vertical" />
                   <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
@@ -626,12 +626,19 @@ export default class TableList extends PureComponent {
               <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
                 外链
               </a>
-              <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
-              </Popconfirm>
             </div>
           );
+          // return (
+          //   <div>
+          //     <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+          //       外链
+          //     </a>
+          //     <Divider type="vertical" />
+          //     <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+          //       <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
+          //     </Popconfirm>
+          //   </div>
+          // );
         // } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
         //   return (
         //     <div>
@@ -712,17 +719,18 @@ export default class TableList extends PureComponent {
         //     </div>
         //   );
         } else {
-          return (
-            <div>
-              <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
-                推广
-              </a>
-              <Divider type="vertical" />
-              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
-                分析
-              </a>
-            </div>
-          );
+          return '';
+          // return (
+          //   <div>
+          //     <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
+          //       推广
+          //     </a>
+          //     <Divider type="vertical" />
+          //     <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+          //       分析
+          //     </a>
+          //   </div>
+          // );
         }
       }
     };
