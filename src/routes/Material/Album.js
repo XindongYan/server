@@ -1,7 +1,14 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
+import AlbumModal from '../../components/AlbumModal';
+import CutpicModal from '../../components/AlbumModal/CutpicModal.js';
+
 import styles from './index.less';
 
+@connect(state => ({
+
+}))
 export default class Album extends PureComponent {
   state = {
     version: '',
@@ -17,6 +24,7 @@ export default class Album extends PureComponent {
       total: 0,
     },
     loading: true,
+    albumKey: 'material',
   }
   componentDidMount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
@@ -36,7 +44,6 @@ export default class Album extends PureComponent {
   }
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
     nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
     nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
   }
@@ -59,7 +66,8 @@ export default class Album extends PureComponent {
     }
     this.setState({
       version: data.version,
-    })
+    });
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   setAlbum = (e) => {
     const data = JSON.parse(e.target.innerText);
@@ -105,8 +113,8 @@ export default class Album extends PureComponent {
     },() => {
       this.setState({
         previewImage: '',
-      })
-    })
+      });
+    });
   }
 
   handlePreview = (photo) => {
@@ -141,7 +149,7 @@ export default class Album extends PureComponent {
         current,
         pageSize,
       }
-    })
+    });
     if (this.state.nicaiCrx) {
       this.setState({ loading: true });
       this.handleLoadAlbum({
@@ -168,17 +176,37 @@ export default class Album extends PureComponent {
       }
     }
   }
+  handleShowAlbumModal = () => {
+    this.props.dispatch({
+      type: 'album/show',
+      payload: { currentKey: this.state.albumKey }
+    });
+  }
+  handleChooseCutImg = (imgs) => {
+    if (imgs && imgs.length > 0) {
+      this.props.dispatch({
+        type: 'album/showCutpic',
+        payload: {
+          currentKey: this.state.albumKey,
+          image: imgs[0],
+          src: imgs[0].url,
+        }
+      });
+    }
+  }
   render() {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
-    const extra = (
-      <div className={styles.fileInpBox}>
-        <label htmlFor="upload">添加图片</label>
-        <input id="upload" className={styles.fileInp} type="file" onChange={this.beforeUpload} />
-      </div>
-    );
     return (
       <div>
-        {extra}
+        <div>
+          <div className={styles.fileInpBox}>
+            <label htmlFor="upload">添加图片</label>
+            <input id="upload" className={styles.fileInp} type="file" onChange={this.beforeUpload} />
+          </div>
+          <div style={{ display: 'inline-block', marginLeft: 10 }}>
+            <Button onClick={this.handleShowAlbumModal}>智能抠图</Button>
+          </div>
+        </div>
         <Spin spinning={loading}>
           {itemList.map(this.renderPhoto)}
         </Spin>
@@ -200,6 +228,9 @@ export default class Album extends PureComponent {
         <Modal closable={false} footer={null} visible={ProgressVisible} onCancel={this.handleProCancel}>
           <Progress percent={ProgressPercent} status="active" />
         </Modal>
+
+        <AlbumModal mode="single" k={this.state.albumKey} onOk={this.handleChooseCutImg}/>
+        <CutpicModal k={this.state.albumKey}/>
       </div>
     );
   }
