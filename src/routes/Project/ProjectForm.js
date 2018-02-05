@@ -178,6 +178,7 @@ export default class ProjectForm extends PureComponent {
               >
                 <Option value={1} key={1}>接单活动</Option>
                 <Option value={2} key={2}>投稿活动</Option>
+                <Option value={3} key={3}>派单活动</Option>
               </Select>
             )}
           </FormItem>

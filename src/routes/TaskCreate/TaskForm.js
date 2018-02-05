@@ -4,7 +4,7 @@ import { Card, Form, Input, Select, Icon, Button, Upload, message, Tooltip } fro
 import path from 'path';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, SOURCE } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, SOURCE, CHANNEL_NAMES } from '../../constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -32,6 +32,7 @@ export default class TaskForm extends PureComponent {
         desc: formData.desc,
         attachments: formData.attachments,
         price: formData.price,
+        channel_name: formData.channel_name,
       });
     }
     this.props.dispatch({
@@ -45,6 +46,7 @@ export default class TaskForm extends PureComponent {
         desc: nextProps.formData.desc,
         attachments: nextProps.formData.attachments,
         price: nextProps.formData.price,
+        channel_name: nextProps.formData.channel_name,
       });
     }
   }
@@ -151,6 +153,21 @@ export default class TaskForm extends PureComponent {
               }],
             })(
               <Input placeholder="最多20字" maxLength="20" />
+            )}
+          </FormItem>
+          <FormItem
+            label="渠道"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('channel_name', {
+              rules: [{ required: true, message: '请选择渠道！' }],
+            })(
+              <Select
+                placeholder="选择渠道"
+              >
+                {CHANNEL_NAMES.map(item => <Option value={item} key={item}>{item}</Option>)}
+              </Select>
             )}
           </FormItem>
           <FormItem
