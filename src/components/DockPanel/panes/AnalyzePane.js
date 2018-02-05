@@ -133,12 +133,12 @@ export default class AnalyzePane extends PureComponent {
       {
         title: '付款金额',
         dataIndex: 'totalAlipayFee',
-        render: (val) => `￥${val.toFixed(2)}`,
+        render: (val) => val > 0 ? `￥${val.toFixed(2)}` : '--',
       },
       {
-        title: '淘客佣金',
+        title: '效果预估',
         dataIndex: 'fee',
-        render: (val) => `￥${val.toFixed(2)}`,
+        render: (val) => val > 0 ? `￥${val.toFixed(2)}` : '--',
       },
     ];
     return (
@@ -173,8 +173,8 @@ export default class AnalyzePane extends PureComponent {
           </Card.Grid>
           <Card.Grid style={{ width: `50%`, textAlign: 'center' }}>
             <div>
-              淘客佣金
-              <Tooltip placement="top" title="【订单结算】与【订单付款】的淘客佣金之和">
+              效果预估
+              <Tooltip placement="top" title="【订单结算】与【订单付款】的效果预估之和">
                 <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
               </Tooltip>
             </div>
