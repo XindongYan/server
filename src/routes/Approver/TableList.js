@@ -745,7 +745,7 @@ export default class TableList extends PureComponent {
                   </Tooltip>
                   <Search
                     style={{ width: 260, float: 'right'}}
-                    placeholder="ID／名称／商家标签"
+                    placeholder="ID／名称／商家标签／昵称"
                     onSearch={(value) => this.handleSearch(value, 'search')}
                     enterButton
                   />
