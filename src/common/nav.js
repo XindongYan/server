@@ -187,9 +187,9 @@ export function getNavData(user) {
     if (user.rights.indexOf(RIGHT.writer) >= 0) {
       menuItems.push(square, creation);
     }
-    if (user.rights.indexOf(RIGHT.daren) >= 0) {
-      menuItems.push(publish);
-    }
+    // if (user.rights.indexOf(RIGHT.daren) >= 0) {
+    //   menuItems.push(publish);
+    // }
     if (user.rights.indexOf(RIGHT.approver) >= 0) {
       menuItems.push(approve);
     }
