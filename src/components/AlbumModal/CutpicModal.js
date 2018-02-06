@@ -47,10 +47,12 @@ export default class CutpicModal extends PureComponent {
       this.setState({
         loading: true,
         cutpicUrl: '',
-      })
+        confirmLoading: false,
+      });
       const nicaiCrx = document.getElementById('nicaiCrx');
       nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
       nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
+      message.destroy();
     }
   }
   setVersion = (e) => {
@@ -120,8 +122,10 @@ export default class CutpicModal extends PureComponent {
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('uploadImg', true, true);
     nicaiCrx.dispatchEvent(customEvent);
-    message.destroy();
-    message.loading('上传中 ...', 60 * 60);
+    if (this.props.visible) {
+      message.destroy();
+      message.loading('上传中 ...', 60 * 60);
+    }
   }
   handleGetBase64 = (img) =>{
     var canvas = document.createElement("canvas");
