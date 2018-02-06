@@ -447,9 +447,9 @@ export default class TableList extends PureComponent {
         render: val => val ? <TrimSpan text={val} length={10}/> : '',
       },
     ];
-    const approver = {
-      title: '审核人',
-      dataIndex: 'approver_id',
+    const daren = {
+      title: '达人',
+      dataIndex: 'daren_id',
       render: value => value ? value.nickname : '',
     };
     const pushStatusText = {
@@ -663,11 +663,13 @@ export default class TableList extends PureComponent {
       },
     }
     if (data.approve_status === 'all') {
-      columns.push(status);
+      columns.push(daren, status);
+    } else if (data.approve_status === 'waitingToTaobao') {
+      columns.push(daren);
     } else if (data.approve_status === 'publishedToTaobao' || data.approve_status === 'taobaoRejected' || data.approve_status === 'taobaoAccepted') {
-      columns.push(pushStatusText, recruitColumn);
+      columns.push(daren, pushStatusText, recruitColumn);
     } else {
-      columns.push(approver, approveTime);
+      columns.push(approveTime);
     }
     columns.push(opera);
     const rowSelection = {
@@ -685,7 +687,7 @@ export default class TableList extends PureComponent {
             <Tooltip placement="top" title="需要你审核的">
               <RadioButton value="waitingForApprove">待审核</RadioButton>
             </Tooltip>
-            <Tooltip placement="top" title="多轮审核，当前在由他人审核">
+            <Tooltip placement="top" title="等待其他审核人员审核">
               <RadioButton value="approving">审核中</RadioButton>
             </Tooltip>
             <RadioButton value="rejected">未通过</RadioButton>
