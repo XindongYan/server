@@ -307,6 +307,7 @@ export default class AlbumModal extends PureComponent {
           width="992px"
           visible={k === currentKey && visible}
           bodyStyle={{ padding: '5px 20px' }}
+          onCancel={this.handleCancel}
           footer={choosen && choosen.length === 1 ? [
             <Button key="cutpic" onClick={this.handleToCutpic}>抠图</Button>,
             <Button key="cropper" onClick={this.handleToCropper} style={{marginRight: 20}}>裁图</Button>,
