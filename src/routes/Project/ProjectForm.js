@@ -247,7 +247,7 @@ export default class ProjectForm extends PureComponent {
           >
             {getFieldDecorator('desc', {
             })(
-              <Input.TextArea />
+              <Input.TextArea rows={6} />
             )}
           </FormItem>
           <FormItem
