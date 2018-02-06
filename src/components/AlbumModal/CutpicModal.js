@@ -34,7 +34,7 @@ export default class CutpicModal extends PureComponent {
           }, 1000);
         });
       } else if (this.state.version && this.props.src) {
-        this.getCutpic(this.props.src);
+        this.getCutpic(nextProps.src);
       }
       // setTimeout(() => {
       //   if(!this.state.version){
