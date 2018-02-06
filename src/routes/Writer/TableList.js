@@ -789,14 +789,14 @@ export default class TableList extends PureComponent {
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />
-              { selectedRows.length > 0 && (
+              {/* selectedRows.length > 0 && (
                 <span>
                   <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={this.handlePublishAll} okText="确认" cancelText="取消">
                     <Button icon="user-add" type="default">批量发布</Button>
                   </Popconfirm>
                 </span>
                 )
-              }
+              */}
             </div>
             <Table
               loading={loading}
