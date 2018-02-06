@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Modal, message, Tabs, Icon, Upload, Button, Pagination, Spin} from 'antd';
 import styles from './index.less';
+import CropperModal from './CropperModal';
+import CutpicModal from './CutpicModal';
 const TabPane = Tabs.TabPane;
 
 @connect(state => ({
@@ -52,7 +54,6 @@ export default class AlbumModal extends PureComponent {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
         nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
-        nicaiCrx.removeEventListener('setVersion', this.setVersion);
       }
     }
   }
@@ -108,7 +109,8 @@ export default class AlbumModal extends PureComponent {
     }
     this.setState({
       version: data.version,
-    })
+    });
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   handleLoadAlbum = (params) => {
     this.state.nicaiCrx.innerText = JSON.stringify(params);
@@ -124,8 +126,24 @@ export default class AlbumModal extends PureComponent {
   }
   handleOk = () => {
     if (this.state.choosen.length > 0) {
-      if (this.props.onOk) this.props.onOk(this.state.choosen);
-      this.setState({ choosen: [] });
+      if (this.props.minSize) {
+        this.props.dispatch({
+          type: 'album/showCropper',
+          payload: {
+            visible: true,
+            src: this.state.choosen[0].url,
+            width: this.props.minSize.width,
+            height: this.props.minSize.height,
+            picHeight: this.state.choosen[0].picHeight,
+            picWidth: this.state.choosen[0].picWidth,
+            cropperKey: this.props.currentKey,
+          }
+        });
+        this.setState({ choosen: [] });
+      } else {
+        if (this.props.onOk) this.props.onOk(this.state.choosen);
+        this.setState({ choosen: [] });
+      }
     }
     this.props.dispatch({
       type: 'album/hide',
@@ -238,49 +256,106 @@ export default class AlbumModal extends PureComponent {
       }
     }
   }
- 
+  handleToCropper = () => {
+    if (this.props.minSize) {
+      this.handleOk();
+    } else {
+      this.props.dispatch({
+        type: 'album/showCropper',
+        payload: {
+          visible: true,
+          src: this.state.choosen[0].url,
+          width: 0,
+          height: 0,
+          picHeight: this.state.choosen[0].picHeight,
+          picWidth: this.state.choosen[0].picWidth,
+          cropperKey: this.props.currentKey,
+        }
+      });
+      this.setState({ choosen: [] });
+      this.props.dispatch({
+        type: 'album/hide',
+      });
+    }
+  }
+  handleToCutpic = () => {
+    this.props.dispatch({
+      type: 'album/showCutpic',
+      payload: {
+        cutpicKey: this.props.currentKey,
+        src: this.state.choosen[0].url,
+      }
+    });
+    // this.props.dispatch({
+    //   type: 'album/hide',
+    // });
+  }
+  handleCropperOk = (img) => {
+    if (this.props.onOk) this.props.onOk([img]);
+  }
+  handleCutpicOk = (img) => {
+    const { choosen, pagination } = this.state;
+    // if (this.props.onOk) this.props.onOk([img]);
+    this.setState({ choosen: [ choosen, img] });
+    this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
+  }
   render() {
     const { visible, k, currentKey, minSize } = this.props;
     const { choosen, previewImage, itemList, pagination, loading } = this.state;
     return (
-      <Modal
-        title="素材"
-        width="992px"
-        visible={k === currentKey && visible}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
-        bodyStyle={{ padding: '5px 20px' }}
-      >
-        <Tabs defaultActiveKey="album" onChange={this.changeTab}>
-          <TabPane tab={<span><Icon type="picture" />素材库</span>} key="album">
-            <Spin spinning={loading}>
-              <div>
-                {itemList.map(this.renderPhoto)}
-              </div>
-              <Pagination
-                {...pagination}
-                onChange={this.changeAlbumPage}
-                style={{float: 'right', margin: '10px 20px'}}
-              />
-            </Spin>
-          </TabPane>
-          <TabPane tab={<span><Icon type="upload" />上传</span>} key="upload">
-            <div>
-              <div className={styles.uploadInpBox}>
-                <div className={styles.uploadViewBox}>
-                  <Icon type="plus" style={{ fontSize: 32, color: '#6AF' }} />
-                  <p>直接拖拽文件到虚线框内即可上传</p>
+      <div>
+        <Modal
+          title="素材"
+          width="992px"
+          visible={k === currentKey && visible}
+          bodyStyle={{ padding: '5px 20px' }}
+          footer={choosen && choosen.length === 1 ? [
+            <Button key="cutpic" onClick={this.handleToCutpic}>抠图</Button>,
+            <Button key="cropper" onClick={this.handleToCropper} style={{marginRight: 20}}>裁图</Button>,
+            <Button key="cancel" onClick={this.handleCancel}>取消</Button>,
+            <Button type="primary" key="ok" onClick={this.handleOk}>确定</Button>,
+          ] : [
+            <Button key="cancel" onClick={this.handleCancel}>取消</Button>,
+            <Button type="primary" key="ok" onClick={this.handleOk}>确定</Button>,
+          ]}
+        >
+          <Tabs defaultActiveKey="album" onChange={this.changeTab}>
+            <TabPane tab={<span><Icon type="picture" />素材库</span>} key="album">
+              <Spin spinning={loading}>
+                <div>
+                  {itemList.map(this.renderPhoto)}
                 </div>
-                <input className={styles.fileInp} type="file" onChange={this.handleUpload} />
+                <Pagination
+                  {...pagination}
+                  onChange={this.changeAlbumPage}
+                  style={{float: 'right', margin: '10px 20px'}}
+                />
+              </Spin>
+            </TabPane>
+            <TabPane tab={<span><Icon type="upload" />上传</span>} key="upload">
+              <div>
+                <div className={styles.uploadInpBox}>
+                  <div className={styles.uploadViewBox}>
+                    <Icon type="plus" style={{ fontSize: 32, color: '#6AF' }} />
+                    <p>直接拖拽文件到虚线框内即可上传</p>
+                  </div>
+                  <input className={styles.fileInp} type="file" onChange={this.handleUpload} />
+                </div>
+                <p style={{ fontSize: 12 }}>请选择大小不超过 3 MB 的文件</p>
+                <div className={styles.previewBox}>           
+                  {choosen.map(this.previewPhoto)}
+                </div>
               </div>
-              <p style={{ fontSize: 12 }}>请选择大小不超过 3 MB 的文件</p>
-              <div className={styles.previewBox}>           
-                {choosen.map(this.previewPhoto)}
-              </div>
-            </div>
-          </TabPane>
-        </Tabs>
-      </Modal>
+            </TabPane>
+          </Tabs>
+        </Modal>
+        { k === currentKey &&
+          <CropperModal k={currentKey} onOk={this.handleCropperOk} />
+        }
+        { k === currentKey &&
+          <CutpicModal k={currentKey} onOk={this.handleCutpicOk} />
+        }
+      </div>
     );
   }
 }

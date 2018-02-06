@@ -4,7 +4,6 @@ import { Input, Icon, message } from 'antd';
 import styles from './WeitaoForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
-import CropperModal from '../AlbumModal/CropperModal';
 import CascaderSelect from './FormParts/CascaderSelect';
 import CoverImage from './FormParts/CoverImage';
 

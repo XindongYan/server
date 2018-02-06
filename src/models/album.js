@@ -13,7 +13,6 @@ export default {
     loading: true,
     visible: false,
     currentKey: '',
-
     cropperModal: {
       visible: false,
       src: '',
@@ -28,9 +27,8 @@ export default {
     },
     cutpicModal: {
       visible: false,
-      currentKey: '',
+      cutpicKey: '',
       src: '',
-      image: {},
     }
   },
 
@@ -95,6 +93,7 @@ export default {
       });
     },
     *showCutpic({ payload, callback }, { call, put }) {
+      console.log(payload)
       yield put({
         type: 'changeCutpicModal',
         payload: { visible: true, ...payload },

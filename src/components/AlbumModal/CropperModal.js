@@ -25,37 +25,44 @@ export default class CropperModal extends PureComponent {
   componentDidMount() {
   }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.visible && nextProps.visible) {
-      const nicaiCrx = document.getElementById('nicaiCrx');
-      nicaiCrx.addEventListener('uploadResult', this.uploadResult);
-      nicaiCrx.addEventListener('setVersion', this.setVersion);
-      if (!this.state.nicaiCrx) {
-        this.setState({ nicaiCrx }, () => {
-          setTimeout(() => {
-            this.handleGetVersion();
-          }, 600);
-        });
-      }
-      setTimeout(() => {
-        if(!this.state.version){
-          message.destroy();
-          message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
-          this.setState({ loading: false });
+    if (nextProps.k === nextProps.cropperKey) {
+      if (!this.props.visible && nextProps.visible) {
+        const nicaiCrx = document.getElementById('nicaiCrx');
+        nicaiCrx.addEventListener('uploadResult', this.uploadResult);
+        nicaiCrx.addEventListener('setVersion', this.setVersion);
+        if (!this.state.nicaiCrx) {
+          this.setState({ nicaiCrx }, () => {
+            setTimeout(() => {
+              this.handleGetVersion();
+            }, 600);
+          });
         }
-      }, 3000);
-    } else if (this.props.visible && !nextProps.visible) {
-      const nicaiCrx = document.getElementById('nicaiCrx');
-      nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
-      nicaiCrx.removeEventListener('setVersion', this.setVersion);
+        setTimeout(() => {
+          if(!this.state.version){
+            message.destroy();
+            message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+            this.setState({ loading: false });
+          }
+        }, 3000);
+      } else if (this.props.visible && !nextProps.visible) {
+        const nicaiCrx = document.getElementById('nicaiCrx');
+        nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
+        nicaiCrx.removeEventListener('setVersion', this.setVersion);
+      }
     }
   }
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);
-    if (!result.errorCode) {
+    if (!result.errorCode && result.data.length > 0) {
       this.setState({ confirmLoading: false });
       message.destroy();
       message.success('上传成功');
-      if (this.props.onOk) this.props.onOk(result.data[0].url);
+      if (this.props.onOk) this.props.onOk({
+        materialId: result.data[0].materialId,
+        picWidth: result.data[0].picWidth,
+        picHeight: result.data[0].picHeight,
+        url: result.data[0].url,
+      });
       this.setState({ dataUrl: '' });
       this.props.dispatch({
         type: 'album/hideCropper',
@@ -101,7 +108,10 @@ export default class CropperModal extends PureComponent {
         if (n < 0.1) {
           n = 0.1;
         }
-        const newDataUrl = this.refs.cropper.getCroppedCanvas().toDataURL("image/jpeg", n);
+        const canvas = this.refs.cropper.getCroppedCanvas();
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        const newDataUrl = canvas.toDataURL("image/jpeg", n);
         this.handleSubmit(newDataUrl);
       } else {
         this.handleSubmit(this.state.dataUrl);
@@ -131,39 +141,44 @@ export default class CropperModal extends PureComponent {
     this.setState({ dataUrl: dataUrl });
   }
   render() {
-    const { visible, src, width, height, picWidth, picHeight, cropperKey } = this.props;
+    const { visible, src, width, height, picWidth, picHeight, cropperKey, k } = this.props;
     const { dataUrl, confirmLoading } = this.state;
     let rate = 1;
+    let aspectRatio = 0;
+    if (width > 0) {
+      aspectRatio = width / height;
+    }
     // const frameWidth = (992-40) * 0.62;
     const frameHeight = 400;
     // if (picWidth/frameWidth > picHeight / frameHeight) {
     //   rate = picWidth/frameWidth;
     // } else {
-      rate = picHeight / frameHeight;
+    rate = picHeight / frameHeight;
     // }
     return (
       <Modal
         title="裁切"
         width="992px"
-        visible={visible}
+        visible={k === cropperKey && visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         bodyStyle={{ padding: '5px 20px' }}
         maskClosable={false}
         confirmLoading={confirmLoading}
       >
-        {visible &&
+        {k === cropperKey && visible &&
           <Cropper
             ref='cropper'
             src={src}
             style={{height: 400, display: 'inline-block', verticalAlign: 'middle'}}
             crossOrigin="anonymous"
             // Cropper.js options
-            aspectRatio={width / height}
+            aspectRatio={aspectRatio}
             minCropBoxWidth={width / rate}
             minCropBoxHeight={height / rate}
             zoomable={false}
             guides={false}
+            fillStyle="#fff"
             crop={this._crop.bind(this)} />
         }
         <div style={{ width: '38%', display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, paddingTop: 10}}>

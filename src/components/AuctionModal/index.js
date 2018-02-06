@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import url from 'url';
+import querystring from 'querystring';
 import $ from 'jquery';
 import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag, Switch } from 'antd';
 import styles from './index.less';
@@ -159,7 +161,9 @@ export default class AuctionModal extends PureComponent {
       this.setState({
         addLoading: true,
       });
-      this.handleSetTags(value);
+      const urlobject = url.parse(value);
+      const urlQuery = querystring.parse(urlobject.query);
+      this.handleSetTags(value, urlQuery.id);
       this.state.nicaiCrx.innerText = JSON.stringify(value);
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('uploadAuction', true, true);
@@ -203,7 +207,6 @@ export default class AuctionModal extends PureComponent {
   }
   resultAuction = async (e) => {
     const result = JSON.parse(e.target.innerText);
-    console.log(result)
     if (this.props.k === this.props.currentKey) {
       if (result.error) {
         message.error(result.msg)
@@ -215,7 +218,7 @@ export default class AuctionModal extends PureComponent {
       }
     }
   }
-  handleSetTags = async (url) => {
+  handleSetTags = async (url, id) => {
     let newUrl = url;
     if (!/^((http:)|(https:))/.test(newUrl)) {
       newUrl = `https:${newUrl}`;
@@ -223,11 +226,11 @@ export default class AuctionModal extends PureComponent {
     const sevenResult = await searchNew7({text: newUrl});
     const qumaiResult = await queryQumai({text: newUrl});
     if ( this.props.k === 'havegoods') {
-      const yhhResult = await queryYhhBody({resourceUrl: newUrl});
+      const yhhResult = await queryYhhBody({itemId: id});
       const yhhList = yhhResult.list && yhhResult.list.length > 0 ? true : false;
       if (yhhList) {
         Modal.warning({
-          title: '该商品在平台内已经被其它人写过，请选择其它商品。',
+          title: '该商品在平台内已经被其它人写过，建议选择其它商品。',
         });
       }
     }
@@ -275,7 +278,7 @@ export default class AuctionModal extends PureComponent {
       choose: auction.images && auction.images.length > 0 ? auction.images[0] : auction.coverUrl,
       search: auction.item ? auction.item.itemUrl : '',
     });
-    this.handleSetTags(auction.item.itemUrl);
+    this.handleSetTags(auction.item.itemUrl, auction.item.itemId);
   }
 
   handleChangeTab = (e) =>{
@@ -289,9 +292,7 @@ export default class AuctionModal extends PureComponent {
   handleChangeTabpane = () =>{
     this.setState({
       activeKey: 'add'
-    }, () => {
-      console.log(this.state.activeKey)
-    })
+    });
   }
   handelCutout = () => {
     

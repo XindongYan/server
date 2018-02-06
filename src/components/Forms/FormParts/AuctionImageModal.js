@@ -140,7 +140,7 @@ export default class AuctionImageModal extends PureComponent {
   setCutpic = (e) => {
     const response = JSON.parse(e.target.innerText);
     const { cutCoverUrl } = this.state;
-    if (!response.error) {response
+    if (!response.error) {
       const data = response.data;
       if (data.result && response.index >= 0) {
         const arr = cutCoverUrl;
@@ -150,7 +150,10 @@ export default class AuctionImageModal extends PureComponent {
         });
       }
     } else {
-      message.warn(data.msg);
+      message.warn(response.msg);
+      this.setState({
+        checkedCutpic: false,
+      });
     }
     this.setState({
       checkedLoading: false,
@@ -237,26 +240,28 @@ export default class AuctionImageModal extends PureComponent {
       });
     }
   }
-  handleAddCoverImg = (url) => {
-    if (this.state.k === 'bgImage') {
-      const arr = [...this.state.images];
-      if (arr.length === this.props.formData.images.length) {
-        arr.push(url);
-      } else {
-        arr.splice(arr.length - 1, 1, url);
+  handleAddCoverImg = (imgs) => {
+    if (imgs && imgs.length > 0) {
+      if (this.state.k === 'bgImage') {
+        const arr = [...this.state.images];
+        if (arr.length === this.props.formData.images.length) {
+          arr.push(imgs[0].url);
+        } else {
+          arr.splice(arr.length - 1, 1, imgs[0].url);
+        }
+        this.setState({
+          uploadBgImage: imgs[0].url,
+          coverUrl: imgs[0].url,
+          images: arr,
+          checkedCutpic: false,
+        });
+      } else if (this.state.k === 'extraImage') {
+        const arr = [...this.state.extraBanners];
+        arr.push(imgs[0].url);
+        this.setState({
+          extraBanners: arr,
+        });
       }
-      this.setState({
-        uploadBgImage: url,
-        coverUrl: url,
-        images: arr,
-        checkedCutpic: false,
-      });
-    } else if (this.state.k === 'extraImage') {
-      const arr = [...this.state.extraBanners];
-      arr.push(url);
-      this.setState({
-        extraBanners: arr,
-      });
     }
   }
   render() {
@@ -327,8 +332,7 @@ export default class AuctionImageModal extends PureComponent {
           </div>
         } 
         </Modal>
-        <AlbumModal mode="single" minSize={this.state.minSize} k={this.state.k} onOk={this.handleCropCoverImg}/>
-        <CropperModal k={this.state.k} onOk={this.handleAddCoverImg}/>
+        <AlbumModal mode="single" minSize={this.state.minSize} k={this.state.k} onOk={this.handleAddCoverImg}/>
       </div>
     );
   }

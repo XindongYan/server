@@ -4,7 +4,6 @@ import { Input, Icon, message, Tag, Tooltip, Form, Popover, Anchor, Button } fro
 import styles from './GoodProductionForm.less';
 import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
-import CropperModal from '../AlbumModal/CropperModal';
 
 import { CascaderSelect, BodyStructContent, AuctionImageModal } from './FormParts/index';
 
