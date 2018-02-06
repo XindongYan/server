@@ -380,20 +380,26 @@ export default class TaskForm extends PureComponent {
       }
       const values = {};
       const channel_name = this.getChannelName();
+      let auctionIds = [];
       if (channel_name === '有好货') {
         values.haveGoods = this.state.haveGoods;
       } else if (channel_name === '生活研究所') {
         values.lifeResearch = this.state.lifeResearch;
+        auctionIds = this.extractAuctionIds(values.lifeResearch.task_desc);
       } else if (channel_name === '全球时尚') {
         values.globalFashion = this.state.globalFashion;
+        auctionIds = this.extractAuctionIds(values.globalFashion.task_desc);
       } else if (channel_name === 'ifashion') {
         values.ifashion = this.state.ifashion;
       } else if (channel_name === '买遍全球') {
         values.buyWorld = this.state.buyWorld;
+        auctionIds = this.extractAuctionIds(values.buyWorld.task_desc);
       } else if (channel_name === '微淘') {
         values.weitao = this.state.weitao;
+        auctionIds = this.extractAuctionIds(values.weitao.task_desc);
       } else if (channel_name === '淘宝头条') {
         values.toutiao = this.state.toutiao;
+        auctionIds = this.extractAuctionIds(values.toutiao.task_desc);
       } else if (channel_name === '直播脚本') {
         values.zhibo = this.state.zhibo;
       }
@@ -402,6 +408,7 @@ export default class TaskForm extends PureComponent {
           type: 'task/update',
           payload: {
             ...values,
+            auctionIds,
             _id: query._id,
             approve_status: TASK_APPROVE_STATUS.taken,
             publisher_id: currentUser._id,
@@ -423,6 +430,7 @@ export default class TaskForm extends PureComponent {
           name: name,
           project_id: query.project_id,
           creator_id: currentUser._id,
+          auctionIds,
         };
         this.props.dispatch({
           type: 'task/add',
