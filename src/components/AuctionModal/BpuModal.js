@@ -50,8 +50,8 @@ const picTextCountFilters = [{
   
 export default class BpuModal extends PureComponent {
   state = {
-    nicaiCrx: null,
-    version: '',
+    // nicaiCrx: null,
+    // version: '',
     activeKey: 'bpuValuesPage',
     bpuValuesPage: {
       selectedRows: [],
@@ -125,59 +125,37 @@ export default class BpuModal extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.k === nextProps.currentKey) {
-      if (!this.props.visible && nextProps.visible) {
-        const nicaiCrx = document.getElementById('nicaiCrx');
-        nicaiCrx.addEventListener('setVersion', this.setVersion);
-        nicaiCrx.addEventListener('setBpuValuesPage', this.setBpuValuesPage);
-        nicaiCrx.addEventListener('setBPUSelectionData', this.setBPUSelectionData);
-        nicaiCrx.addEventListener('setBPUFromMemberStoreData', this.setBPUFromMemberStoreData);
-        nicaiCrx.addEventListener('setBpuFromOnlineData', this.setBpuFromOnlineData);
-        nicaiCrx.addEventListener('setBpuValueById', this.setBpuValueById);
-        if (!this.state.nicaiCrx) {
-          this.setState({ nicaiCrx }, () => {
-            setTimeout(() => {
-              this.handleGetVersion();
-            }, 600);
-          });
-        }
-        setTimeout(() => {
-          if(!this.state.version){
-            message.destroy();
-            message.warn('请安装尼采创作平台插件！');
-            this.setState({ loading: false });
-          }
-        }, 5000);
-      } else if (this.props.visible && !nextProps.visible) {
-        const nicaiCrx = document.getElementById('nicaiCrx');
-        nicaiCrx.removeEventListener('setBpuValueById', this.setBpuValueById);
-        nicaiCrx.removeEventListener('setBpuFromOnlineData', this.setBpuFromOnlineData);
-        nicaiCrx.removeEventListener('setBPUFromMemberStoreData', this.setBPUFromMemberStoreData);
-        nicaiCrx.removeEventListener('setBPUSelectionData', this.setBPUSelectionData);
-        nicaiCrx.removeEventListener('setBpuValuesPage', this.setBpuValuesPage);
-      }
-    }
-  }
-  handleGetVersion = () => {
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getVersion', true, true);
-    this.state.nicaiCrx.dispatchEvent(customEvent);
-  }
-  setVersion = (e) => {
-    const data = JSON.parse(this.state.nicaiCrx.innerText);
-    if (data.version) {
-      this.setState({
-        version: data.version,
-      });
-    }
-    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
-    if (data.error) {
-      message.destroy();
-      message.warn(data.msg, 60 * 60);
-      this.setState({
-        loading: false,
-      });
-    } else {
-      const { pagination, effective} = this.state.bpuValuesPage;
+    //   if (!this.props.visible && nextProps.visible) {
+    //     const nicaiCrx = document.getElementById('nicaiCrx');
+    //     nicaiCrx.addEventListener('setVersion', this.setVersion);
+    //     nicaiCrx.addEventListener('setBpuValuesPage', this.setBpuValuesPage);
+    //     nicaiCrx.addEventListener('setBPUSelectionData', this.setBPUSelectionData);
+    //     nicaiCrx.addEventListener('setBPUFromMemberStoreData', this.setBPUFromMemberStoreData);
+    //     nicaiCrx.addEventListener('setBpuFromOnlineData', this.setBpuFromOnlineData);
+    //     nicaiCrx.addEventListener('setBpuValueById', this.setBpuValueById);
+    //     if (!this.state.nicaiCrx) {
+    //       this.setState({ nicaiCrx }, () => {
+    //         setTimeout(() => {
+    //           this.handleGetVersion();
+    //         }, 600);
+    //       });
+    //     }
+    //     setTimeout(() => {
+    //       if(!this.state.version){
+    //         message.destroy();
+    //         message.warn('请安装尼采创作平台插件！');
+    //         this.setState({ loading: false });
+    //       }
+    //     }, 5000);
+    //   } else if (this.props.visible && !nextProps.visible) {
+    //     const nicaiCrx = document.getElementById('nicaiCrx');
+    //     nicaiCrx.removeEventListener('setBpuValueById', this.setBpuValueById);
+    //     nicaiCrx.removeEventListener('setBpuFromOnlineData', this.setBpuFromOnlineData);
+    //     nicaiCrx.removeEventListener('setBPUFromMemberStoreData', this.setBPUFromMemberStoreData);
+    //     nicaiCrx.removeEventListener('setBPUSelectionData', this.setBPUSelectionData);
+    //     nicaiCrx.removeEventListener('setBpuValuesPage', this.setBpuValuesPage);
+    //   }
+      const { pagination, effective } = this.state.bpuValuesPage;
       this.handleGetBpuValuesPage({
         pageSize: pagination.pageSize,
         currentPage: 1,
@@ -185,6 +163,34 @@ export default class BpuModal extends PureComponent {
       });
     }
   }
+  // handleGetVersion = () => {
+  //   const customEvent = document.createEvent('Event');
+  //   customEvent.initEvent('getVersion', true, true);
+  //   this.state.nicaiCrx.dispatchEvent(customEvent);
+  // }
+  // setVersion = (e) => {
+  //   const data = JSON.parse(this.state.nicaiCrx.innerText);
+  //   if (data.version) {
+  //     this.setState({
+  //       version: data.version,
+  //     });
+  //   }
+  //   this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
+  //   if (data.error) {
+  //     message.destroy();
+  //     message.warn(data.msg, 60 * 60);
+  //     this.setState({
+  //       loading: false,
+  //     });
+  //   } else {
+  //     const { pagination, effective } = this.state.bpuValuesPage;
+  //     this.handleGetBpuValuesPage({
+  //       pageSize: pagination.pageSize,
+  //       currentPage: 1,
+  //       effective,
+  //     });
+  //   }
+  // }
   handleCancel = () => {
     this.props.dispatch({
       type: 'auction/hideBbu',
@@ -237,6 +243,16 @@ export default class BpuModal extends PureComponent {
     const result = await queryBpu({ finalBpuId: record.finalBpuId });
     this.setState({ bpuValue: result.bpu });
   }
+  countImgNum = (text) => {
+    const reg = /((http:|https:)?)\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@\/~\+\!]*[\w\-\@\/~\+\!])+/g;
+    if (text) {
+      const result = text.match(reg);
+      if (result) return result.length;
+      else return 0;
+    } else {
+      return 0;
+    }
+  }
   // ============================================================================================================
   setBpuValuesPage = (e) => {
     const data = JSON.parse(e.target.innerText);
@@ -287,15 +303,13 @@ export default class BpuModal extends PureComponent {
           loading: true,
         }
       });
-      if (this.state.nicaiCrx) {
-        const { effective, searchField, searchValue } = this.state.bpuValuesPage;
-        this.handleGetBpuValuesPage({
-          pageSize: pagination.pageSize,
-          currentPage: pagination.current,
-          effective,
-          [searchField]: searchValue,
-        });
-      }
+      const { effective, searchField, searchValue } = this.state.bpuValuesPage;
+      this.handleGetBpuValuesPage({
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+        effective,
+        [searchField]: searchValue,
+      });
     }
   }
   handleSearchBpuValuesPage = (searchValue) => {
@@ -331,11 +345,11 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '类目',
       dataIndex: 'categoryName',
-      width: 200,
+      width: 150,
     }, {
       title: '品牌',
       dataIndex: 'brandName',
-      width: 200,
+      width: 150,
     }, {
       title: '是否缺内容',
       dataIndex: 'contentRare',
@@ -353,6 +367,11 @@ export default class BpuModal extends PureComponent {
       }],
       filterMultiple: false,
       onFilter: (value, record) => value === 'unlimit' ? true : String(record.contentRare) === value,
+    }, {
+      title: '详情含图',
+      dataIndex: 'htmlDesc',
+      width: 80,
+      render: (val) => this.countImgNum(val),
     }];
     const rowSelection = {
       selectedRowKeys,
@@ -465,15 +484,13 @@ export default class BpuModal extends PureComponent {
           sorter,
         }
       });
-      if (this.state.nicaiCrx) {
-        const { effective, maxPrice, minPrice, searchField, searchValue } = this.state.bPUSelectionData;
-        this.handleGetBPUSelectionData({
-          pageSize: pagination.pageSize,
-          currentPage: pagination.current,
-          effective, maxPrice, minPrice,
-          [searchField]: searchValue,
-        });
-      }
+      const { effective, maxPrice, minPrice, searchField, searchValue } = this.state.bPUSelectionData;
+      this.handleGetBPUSelectionData({
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+        effective, maxPrice, minPrice,
+        [searchField]: searchValue,
+      });
     } else {
       this.setState({
         bPUSelectionData: {
@@ -515,15 +532,15 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '类目',
       dataIndex: 'categoryName',
-      width: 80,
+      width: 60,
     }, {
       title: '品牌',
       dataIndex: 'brandName',
-      width: 80,
+      width: 60,
     }, {
       title: '是否缺内容',
       dataIndex: 'contentRare',
-      width: 80,
+      width: 60,
       render: (val) => val ? '是' : '否',
       filters: [{
         text: '是',
@@ -548,7 +565,7 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '价格',
       dataIndex: 'price',
-      width: 80,
+      width: 60,
       sorter: (a, b) => a.price - b.price,
       sortOrder: sorter.columnKey === 'price' && sorter.order,
     }, {
@@ -587,6 +604,11 @@ export default class BpuModal extends PureComponent {
       },
       sorter: (a, b) => a.picTextCount - b.picTextCount,
       sortOrder: sorter.columnKey === 'picTextCount' && sorter.order,
+    }, {
+      title: '详情含图',
+      dataIndex: 'htmlDesc',
+      width: 40,
+      render: (val) => this.countImgNum(val),
     }];
     const rowSelection = {
       selectedRowKeys,
@@ -710,15 +732,13 @@ export default class BpuModal extends PureComponent {
           sorter,
         }
       });
-      if (this.state.nicaiCrx) {
-        const { effective, maxPrice, minPrice, sellerNick, searchField, searchValue } = this.state.bPUFromMemberStoreData;
-        this.handleGetBPUFromMemberStoreData({
-          pageSize: pagination.pageSize,
-          currentPage: pagination.current,
-          effective, maxPrice, minPrice, sellerNick,
-          [searchField]: searchValue,
-        });
-      }
+      const { effective, maxPrice, minPrice, sellerNick, searchField, searchValue } = this.state.bPUFromMemberStoreData;
+      this.handleGetBPUFromMemberStoreData({
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+        effective, maxPrice, minPrice, sellerNick,
+        [searchField]: searchValue,
+      });
     } else {
       this.setState({
         bPUFromMemberStoreData: {
@@ -760,7 +780,7 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '宝贝ID',
       dataIndex: 'itemId',
-      width: 80,
+      width: 60,
     }, {
       title: '商家昵称',
       dataIndex: 'sellerNick',
@@ -768,15 +788,15 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '类目',
       dataIndex: 'categoryName',
-      width: 80,
+      width: 60,
     }, {
       title: '品牌',
       dataIndex: 'brandName',
-      width: 80,
+      width: 60,
     }, {
       title: '是否缺内容',
       dataIndex: 'contentRare',
-      width: 80,
+      width: 60,
       render: (val) => val ? '是' : '否',
       filters: [{
         text: '是',
@@ -793,13 +813,13 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '价格',
       dataIndex: 'price',
-      width: 80,
+      width: 60,
       sorter: (a, b) => a.price - b.price,
       sortOrder: sorter.columnKey === 'price' && sorter.order,
     }, {
       title: '关联清单数',
       dataIndex: 'albumCount',
-      width: 80,
+      width: 60,
       filters: albumCountFilters,
       filterMultiple: false,
       onFilter: (value, record) => {
@@ -832,6 +852,11 @@ export default class BpuModal extends PureComponent {
       },
       sorter: (a, b) => a.picTextCount - b.picTextCount,
       sortOrder: sorter.columnKey === 'picTextCount' && sorter.order,
+    }, {
+      title: '详情含图',
+      dataIndex: 'htmlDesc',
+      width: 50,
+      render: (val) => this.countImgNum(val),
     }];
     const rowSelection = {
       selectedRowKeys,
@@ -959,15 +984,13 @@ export default class BpuModal extends PureComponent {
           sorter,
         }
       });
-      if (this.state.nicaiCrx) {
-        const { effective, maxPrice, minPrice, searchField, searchValue } = this.state.bpuFromOnlineData;
-        this.handleGetBpuFromOnlineData({
-          pageSize: pagination.pageSize,
-          currentPage: pagination.current,
-          effective, maxPrice, minPrice,
-          [searchField]: searchValue,
-        });
-      }
+      const { effective, maxPrice, minPrice, searchField, searchValue } = this.state.bpuFromOnlineData;
+      this.handleGetBpuFromOnlineData({
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+        effective, maxPrice, minPrice,
+        [searchField]: searchValue,
+      });
     } else {
       this.setState({
         bpuFromOnlineData: {
@@ -1017,7 +1040,7 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '是否缺内容',
       dataIndex: 'contentRare',
-      width: 80,
+      width: 60,
       render: (val) => val ? '是' : '否',
       filters: [{
         text: '是',
@@ -1034,13 +1057,13 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '价格',
       dataIndex: 'price',
-      width: 80,
+      width: 60,
       sorter: (a, b) => a.price - b.price,
       sortOrder: sorter.columnKey === 'price' && sorter.order,
     }, {
       title: '关联清单数',
       dataIndex: 'albumCount',
-      width: 80,
+      width: 60,
       filters: albumCountFilters,
       filterMultiple: false,
       onFilter: (value, record) => {
@@ -1058,7 +1081,7 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '关联长图文数',
       dataIndex: 'picTextCount',
-      width: 80,
+      width: 70,
       filters: picTextCountFilters,
       filterMultiple: false,
       onFilter: (value, record) => {
@@ -1073,6 +1096,11 @@ export default class BpuModal extends PureComponent {
       },
       sorter: (a, b) => a.picTextCount - b.picTextCount,
       sortOrder: sorter.columnKey === 'picTextCount' && sorter.order,
+    }, {
+      title: '详情含图',
+      dataIndex: 'htmlDesc',
+      width: 60,
+      render: (val) => this.countImgNum(val),
     }];
     const rowSelection = {
       selectedRowKeys,
