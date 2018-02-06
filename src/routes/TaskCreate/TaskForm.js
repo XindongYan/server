@@ -133,6 +133,7 @@ export default class TaskForm extends PureComponent {
             },
           });
         }
+        window.scrollTo(0, 0);
       }
     });
   }

@@ -209,6 +209,7 @@ export default class TableList extends PureComponent {
       type: 'task/fetchApproverTasks',
       payload: params,
     });
+    window.scrollTo(0, 0);
   }
   handlePublish = async (record) => {
     const { version } = this.state;

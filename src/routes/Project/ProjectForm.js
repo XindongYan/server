@@ -132,6 +132,7 @@ export default class ProjectForm extends PureComponent {
   }
   handleJump = (project) => {
     this.props.dispatch(routerRedux.push(`/project/list?type=${project.type}`));
+    window.scrollTo(0, 0);
   }
   beforeUpload = (file) => {
     const promise = new Promise(function(resolve, reject) {

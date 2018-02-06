@@ -74,8 +74,15 @@ export default class AnchorImageList extends PureComponent {
     if (this.props.onChange) this.props.onChange({});
   }
   render() {
-    const { formData } = this.props;
+    const { formData, disabled } = this.props;
     const url = formData.body ? formData.body.url : '';
+    const styleDisabled = disabled ? {
+      padding: '60px 0',
+      width: 200,
+      height: 200,
+      border: '1px solid #ccc',
+      color: '#ccc',
+    } : { padding: '60px 0', width: 200, height: 200 };
     return (
       <div style={{ padding: '10px 20px' }}>
         <p style={{ marginBottom: 10 }}>主图</p>
@@ -89,7 +96,7 @@ export default class AnchorImageList extends PureComponent {
               </div>
               }
             </div> :
-            <div className={styles.upCover} style={{ padding: '60px 0', width: 200, height: 200 }} onClick={this.handleCreateJigsaw}>
+            <div className={styles.upCover} style={styleDisabled} onClick={!disabled ? this.handleCreateJigsaw : () => {}}>
               <Icon type="plus" />
               <p style={{ fontSize: 14 }}>添加搭配图</p>
             </div>
