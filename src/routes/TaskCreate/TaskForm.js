@@ -13,6 +13,7 @@ const { Option } = Select;
   teamUser: state.user.teamUser,
   qiniucloud: state.qiniucloud,
   formData: state.task.formData,
+  projectFormData: state.project.formData,
 }))
 @Form.create()
 export default class TaskForm extends PureComponent {
@@ -120,6 +121,11 @@ export default class TaskForm extends PureComponent {
                 message.success(result.msg);
                 if (type === 'next') {
                   this.props.form.resetFields();
+                  const f = {
+                    channel_name: this.props.projectFormData.channel_name,
+                    merchant_tag: this.props.projectFormData.merchant_tag,
+                  };
+                  this.props.form.setFieldsValue(f);
                 } else {
                   this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${query.project_id}`));
                 }
