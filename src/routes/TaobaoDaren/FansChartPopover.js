@@ -48,11 +48,11 @@ export default class FansChartPopover extends PureComponent {
     const minValue = Math.min(...data.list);
     let min = 0;
     if (minValue >=1000 && minValue  < 10000) min = 1000;
-    else  min = Math.floor((minValue / 1000)) * 1000;
+    else if (minValue > 10000) min = Math.floor((minValue / 1000)) * 1000;
     chart.scale('value', {
       min,
       alias: '粉丝',
-      formatter: value => `${value / 10000}万`,
+      formatter: value => value > 10000 ? `${value / 10000}万` : value,
     });
     chart.scale('year', {
       range: [ 0 , 1 ]
