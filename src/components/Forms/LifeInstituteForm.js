@@ -4,7 +4,6 @@ import { Input, Icon, message, Form } from 'antd';
 import styles from './LifeInstituteForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
-import CropperModal from '../AlbumModal/CropperModal';
 
 import { CascaderSelect, EndLink, CoverImage } from './FormParts';
 
@@ -47,22 +46,6 @@ export default class LifeInstituteForm extends PureComponent {
 
   }
 
-  handleCropCoverImg = (imgs) => {
-    if (imgs[0]) {
-      this.props.dispatch({
-        type: 'album/showCropper',
-        payload: {
-          visible: true,
-          src: imgs[0].url,
-          width: 750,
-          height: 422,
-          picHeight: imgs[0].picHeight,
-          picWidth: imgs[0].picWidth,
-          cropperKey: 'cover',
-        }
-      });
-    }
-  }
   handleAddCoverImg = (url) => {
     if (this.props.onChange) this.props.onChange({ cover_img: url });
   }
@@ -197,8 +180,6 @@ export default class LifeInstituteForm extends PureComponent {
             </div>
           </div>
         </div>
-        <AlbumModal mode="single" k="cover" minSize={this.state.minSize} onOk={this.handleCropCoverImg}/>
-        <CropperModal onOk={this.handleAddCoverImg} maxSize={500}/>
       </div>
     );
   }

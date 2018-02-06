@@ -6,7 +6,6 @@ import $ from 'jquery';
 import request from '../../utils/request';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
-import CropperModal from '../AlbumModal/CropperModal';
 import { CascaderSelect, TagPicker, CoverImage, AnchorImageList } from './FormParts';
 import { ORIGIN } from '../../constants';
 

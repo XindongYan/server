@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import $ from 'jquery';
 import { Input, Icon, message, Cascader } from 'antd';
 import AlbumModal from '../../AlbumModal';
-import CropperModal from '../../AlbumModal/CropperModal';
 import styles from './index.less';
 
 @connect(state => ({
@@ -68,8 +67,10 @@ export default class CoverImage extends PureComponent {
   handleDeleteCover = () => {
     if (this.props.onChange) this.props.onChange('');
   }
-  handleChangeCover = (url) => {
-    if (this.props.onChange) this.props.onChange(url);
+  handleChangeCover = (imgs) => {
+    if (imgs && imgs.length > 0) {
+      if (this.props.onChange) this.props.onChange(imgs[0].url);
+    }
   }
   render() {
     const { formData } = this.state;
@@ -125,8 +126,7 @@ export default class CoverImage extends PureComponent {
           }
         </div>
         <p style={{ height: 18, lineHeight: '18px', fontSize: '12px', color: '#999', marginTop: 5 }}>{formData.tips || '请上传尺寸不小于750x422px的图片'}</p>
-        <AlbumModal mode="single" k={formData.name} minSize={formData.minSize} onOk={this.handleCropCoverImg}/>
-        <CropperModal k={this.state.formData.name} onOk={this.handleChangeCover}/>
+        <AlbumModal mode="single" k={formData.name} minSize={formData.minSize} onOk={this.handleChangeCover}/>
       </div>
     );
   }

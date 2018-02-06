@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
-import AlbumModal from '../../components/AlbumModal';
 import CutpicModal from '../../components/AlbumModal/CutpicModal.js';
 
 import styles from './index.less';
@@ -128,8 +127,15 @@ export default class Album extends PureComponent {
       <Card style={{ width: 146, display: 'inline-block', margin: '5px 15px 5px 0' }} bodyStyle={{ padding: 0 }} key={photo.id} >
         <div className={styles.customImageBox}>
           <img className={styles.customImage} src={photo.url} />
-          <div className={styles.customModals}>
-            <Icon type="eye" className={styles.customIcon} onClick={() => this.handlePreview(photo)}/>
+          <div className={styles.customAlbumModals}>
+            <div className={styles.customIconBox} onClick={() => this.handlePreview(photo)}>
+              <Icon type="eye" className={styles.customIcon}/>
+              <span>预览</span>
+            </div>
+            <div className={styles.customIconBox} onClick={() => this.handleCutpic(photo)}>
+              <Icon type="edit" className={styles.customIcon}/>
+              <span>抠图</span>
+            </div>
             {/*
               <Icon type="delete" className={styles.customIcon} onClick={() => console.log('remove')} />
             */}
@@ -176,20 +182,14 @@ export default class Album extends PureComponent {
       }
     }
   }
-  handleShowAlbumModal = () => {
-    this.props.dispatch({
-      type: 'album/show',
-      payload: { currentKey: this.state.albumKey }
-    });
-  }
-  handleChooseCutImg = (imgs) => {
-    if (imgs && imgs.length > 0) {
+  handleCutpic = (img) => {
+    if (img && img.url) {
+    console.log(img);
       this.props.dispatch({
         type: 'album/showCutpic',
         payload: {
-          currentKey: this.state.albumKey,
-          image: imgs[0],
-          src: imgs[0].url,
+          cutpicKey: this.state.albumKey,
+          src: img.url,
         }
       });
     }
@@ -202,9 +202,6 @@ export default class Album extends PureComponent {
           <div className={styles.fileInpBox}>
             <label htmlFor="upload">添加图片</label>
             <input id="upload" className={styles.fileInp} type="file" onChange={this.beforeUpload} />
-          </div>
-          <div style={{ display: 'inline-block', marginLeft: 10 }}>
-            <Button onClick={this.handleShowAlbumModal}>智能抠图</Button>
           </div>
         </div>
         <Spin spinning={loading}>
@@ -228,8 +225,6 @@ export default class Album extends PureComponent {
         <Modal closable={false} footer={null} visible={ProgressVisible} onCancel={this.handleProCancel}>
           <Progress percent={ProgressPercent} status="active" />
         </Modal>
-
-        <AlbumModal mode="single" k={this.state.albumKey} onOk={this.handleChooseCutImg}/>
         <CutpicModal k={this.state.albumKey}/>
       </div>
     );

@@ -8,7 +8,7 @@ const TabPane = Tabs.TabPane;
 @connect(state => ({
   visible: state.album.cutpicModal.visible,
   src: state.album.cutpicModal.src,
-  image: state.album.cutpicModal.image,
+  cutpicKey: state.album.cutpicModal.cutpicKey,
 }))
 
 export default class CutpicModal extends PureComponent {
@@ -31,8 +31,10 @@ export default class CutpicModal extends PureComponent {
         this.setState({ nicaiCrx }, () => {
           setTimeout(() => {
             this.handleGetVersion();
-          }, 600);
+          }, 1000);
         });
+      } else {
+        this.handleGetVersion();
       }
       setTimeout(() => {
         if(!this.state.version){
@@ -42,6 +44,10 @@ export default class CutpicModal extends PureComponent {
         }
       }, 5000);
     } else if (this.props.visible && !nextProps.visible) {
+      this.setState({
+        loading: true,
+        cutpicUrl: '',
+      })
       const nicaiCrx = document.getElementById('nicaiCrx');
       nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
       nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
@@ -55,25 +61,24 @@ export default class CutpicModal extends PureComponent {
     this.setState({
       version: data.version,
     }, () => {
+      nicaiCrx.removeEventListener('setVersion', this.setVersion);
       if (this.props.src) {
         this.getCutpic(this.props.src);
       }
     });
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   setCutpic = (e) => {
     const response = JSON.parse(e.target.innerText);
     const { cutCoverUrl } = this.state;
     if (!response.error) {
       const data = response.data;
-      console.log(data);
       if (data.result) {
         this.setState({
           cutpicUrl: data.result,
         });
       }
     } else {
-      message.warn(data.msg);
+      message.warn(response.msg);
     }
     this.setState({
       loading: false,
@@ -82,7 +87,15 @@ export default class CutpicModal extends PureComponent {
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);
     if (!result.errorCode) {
+      console.log(result.data)
       this.setState({ confirmLoading: false });
+      if (this.props.onOk) this.props.onOk({
+        materialId: result.data[0].materialId,
+        picWidth: result.data[0].picWidth,
+        picHeight: result.data[0].picHeight,
+        url: result.data[0].url,
+        id: result.data[0].id,
+      });
       message.destroy();
       message.success('上传成功');
       this.props.dispatch({
@@ -141,14 +154,13 @@ export default class CutpicModal extends PureComponent {
   }
 
   render() {
-    const { visible, src } = this.props;
+    const { visible, src, cutpicKey, k } = this.props;
     const { confirmLoading } = this.state;
-    
     return (
       <Modal
         title="抠图"
         width="992px"
-        visible={visible}
+        visible={k === cutpicKey && visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         bodyStyle={{ padding: 20 }}
