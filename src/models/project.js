@@ -61,7 +61,7 @@ export default {
       const result = yield call(removeProject, payload);
       if (callback) callback(result);
     },
-    *fetchProject({ payload }, { call, put }) {
+    *fetchProject({ payload, callback }, { call, put }) {
       const response = yield call(queryProject, payload);
       if (!response.error) {
         yield put({
@@ -69,6 +69,7 @@ export default {
           payload: response.project,
         });
       }
+      if (callback) callback(response);
     },
   },
 

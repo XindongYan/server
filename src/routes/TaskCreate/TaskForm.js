@@ -21,8 +21,8 @@ export default class TaskForm extends PureComponent {
   }
   componentDidMount() {
     const { operation, formData } = this.props;
+    const query = querystring.parse(this.props.location.search.substr(1));
     if (operation === 'edit') {
-      const query = querystring.parse(this.props.location.search.substr(1));
       this.props.dispatch({
         type: 'task/fetchTask',
         payload: { _id: query._id },
@@ -35,6 +35,20 @@ export default class TaskForm extends PureComponent {
         channel_name: formData.channel_name,
         merchant_tag: formData.merchant_tag,
       });
+    } else if (operation === 'create') {
+      this.props.dispatch({
+        type: 'project/fetchProject',
+        payload: { _id: query.project_id },
+        callback: (result) => {
+          if (!result.error) {
+            const f = {
+              channel_name: result.project.channel_name,
+              merchant_tag: result.project.merchant_tag,
+            };
+            this.props.form.setFieldsValue(f);
+          }
+        },
+      });
     }
     this.props.dispatch({
       type: 'qiniucloud/fetchUptoken'
@@ -42,17 +56,15 @@ export default class TaskForm extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     const { operation } = nextProps;
-    if (nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
+    if (operation === 'edit' && nextProps.formData._id && this.props.formData._id !== nextProps.formData._id) {
       const f = {
         name: nextProps.formData.name,
         desc: nextProps.formData.desc,
         attachments: nextProps.formData.attachments,
         price: nextProps.formData.price,
+        channel_name: nextProps.formData.channel_name,
+        merchant_tag: nextProps.formData.merchant_tag,
       };
-      if (operation === 'edit') {
-        f.channel_name = nextProps.formData.channel_name;
-        f.merchant_tag = nextProps.formData.merchant_tag;
-      }
       this.props.form.setFieldsValue(f);
     }
   }
@@ -168,10 +180,10 @@ export default class TaskForm extends PureComponent {
           >
             {getFieldDecorator('desc', {
             })(
-              <Input.TextArea />
+              <Input.TextArea rows={6} />
             )}
           </FormItem>
-          { operation === 'edit' && <FormItem
+          <FormItem
             label="渠道"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
@@ -185,8 +197,8 @@ export default class TaskForm extends PureComponent {
                 {CHANNEL_NAMES.map(item => <Option value={item} key={item}>{item}</Option>)}
               </Select>
             )}
-          </FormItem>}
-          { operation === 'edit' && <FormItem
+          </FormItem>
+          <FormItem
             label="商家标签"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
@@ -198,7 +210,7 @@ export default class TaskForm extends PureComponent {
             })(
               <Input maxLength="30" placeholder="最多输入30个字" />
             )}
-          </FormItem>}
+          </FormItem>
           <FormItem
             label={
               <Tooltip placement="topLeft" title="建议上传pdf格式文件">
