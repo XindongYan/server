@@ -108,10 +108,7 @@ export default class CropperModal extends PureComponent {
         if (n < 0.1) {
           n = 0.1;
         }
-        const canvas = this.refs.cropper.getCroppedCanvas();
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#fff';
-        const newDataUrl = canvas.toDataURL("image/jpeg", n);
+        const newDataUrl = this.refs.cropper.getCroppedCanvas({fillColor:'#fff'}).toDataURL("image/jpeg", n);
         this.handleSubmit(newDataUrl);
       } else {
         this.handleSubmit(this.state.dataUrl);
@@ -170,7 +167,7 @@ export default class CropperModal extends PureComponent {
           <Cropper
             ref='cropper'
             src={src}
-            style={{height: 400, display: 'inline-block', verticalAlign: 'middle'}}
+            style={{height: 400, display: 'inline-block', verticalAlign: 'middle', background: '#fff' }}
             crossOrigin="anonymous"
             // Cropper.js options
             aspectRatio={aspectRatio}
