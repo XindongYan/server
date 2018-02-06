@@ -93,7 +93,7 @@ export default class AlimamaOrder extends PureComponent {
       }
     }
     this.getAlimamaInfo();
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   handleOk = () => {
     const { currentUser } = this.props;
