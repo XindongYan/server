@@ -37,13 +37,13 @@ export default class CropperModal extends PureComponent {
             }, 600);
           });
         }
-        setTimeout(() => {
-          if(!this.state.version){
-            message.destroy();
-            message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
-            this.setState({ loading: false });
-          }
-        }, 3000);
+        // setTimeout(() => {
+        //   if(!this.state.version){
+        //     message.destroy();
+        //     message.warn('请安装尼采创作平台插件并用淘宝授权登录！CropperModal', 60 * 60);
+        //     this.setState({ loading: false });
+        //   }
+        // }, 3000);
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('uploadResult', this.uploadResult);

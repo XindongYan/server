@@ -93,7 +93,6 @@ export default {
       });
     },
     *showCutpic({ payload, callback }, { call, put }) {
-      console.log(payload)
       yield put({
         type: 'changeCutpicModal',
         payload: { visible: true, ...payload },

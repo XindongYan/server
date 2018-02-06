@@ -36,13 +36,13 @@ export default class CutpicModal extends PureComponent {
       } else if (this.state.version && this.props.src) {
         this.getCutpic(this.props.src);
       }
-      setTimeout(() => {
-        if(!this.state.version){
-          message.destroy();
-          message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
-          this.setState({ loading: false });
-        }
-      }, 5000);
+      // setTimeout(() => {
+      //   if(!this.state.version){
+      //     message.destroy();
+      //     message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+      //     this.setState({ loading: false });
+      //   }
+      // }, 5000);
     } else if (this.props.visible && !nextProps.visible) {
       this.setState({
         loading: true,
