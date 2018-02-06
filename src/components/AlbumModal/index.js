@@ -109,7 +109,7 @@ export default class AlbumModal extends PureComponent {
     this.setState({
       version: data.version,
     });
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   handleLoadAlbum = (params) => {
     this.state.nicaiCrx.innerText = JSON.stringify(params);

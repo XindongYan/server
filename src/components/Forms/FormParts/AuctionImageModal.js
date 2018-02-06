@@ -95,7 +95,7 @@ export default class AuctionImageModal extends PureComponent {
     this.setState({
       version: data.version,
     });
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   uploadCoverImg = (key) => {
     this.props.dispatch({

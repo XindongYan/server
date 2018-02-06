@@ -66,7 +66,7 @@ export default class Album extends PureComponent {
     this.setState({
       version: data.version,
     });
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   setAlbum = (e) => {
     const data = JSON.parse(e.target.innerText);

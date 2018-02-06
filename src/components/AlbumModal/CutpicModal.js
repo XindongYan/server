@@ -33,8 +33,8 @@ export default class CutpicModal extends PureComponent {
             this.handleGetVersion();
           }, 1000);
         });
-      } else {
-        this.handleGetVersion();
+      } else if (this.state.version && this.props.src) {
+        this.getCutpic(this.props.src);
       }
       setTimeout(() => {
         if(!this.state.version){
@@ -60,12 +60,11 @@ export default class CutpicModal extends PureComponent {
     }
     this.setState({
       version: data.version,
-    }, () => {
-      nicaiCrx.removeEventListener('setVersion', this.setVersion);
-      if (this.props.src) {
-        this.getCutpic(this.props.src);
-      }
     });
+    if (this.props.src) {
+      this.getCutpic(this.props.src);
+    }
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   setCutpic = (e) => {
     const response = JSON.parse(e.target.innerText);
@@ -142,6 +141,8 @@ export default class CutpicModal extends PureComponent {
       image.onload = () => {
         const base64 = this.handleGetBase64(image);
         this.handleSubmit(base64);
+
+        // if(this.props.onOk) this.props.onOk(base64);
       }
     }
   }
