@@ -87,7 +87,6 @@ export default class CutpicModal extends PureComponent {
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);
     if (!result.errorCode) {
-      console.log(result.data)
       this.setState({ confirmLoading: false });
       if (this.props.onOk) this.props.onOk({
         materialId: result.data[0].materialId,
@@ -98,12 +97,12 @@ export default class CutpicModal extends PureComponent {
       });
       message.destroy();
       message.success('上传成功');
-      this.props.dispatch({
-        type: 'album/hideCutpic',
-      });
     } else {
       message.error(result.message);
     }
+    this.props.dispatch({
+      type: 'album/hideCutpic',
+    });
   }
   handleGetVersion = () => {
     const customEvent = document.createEvent('Event');

@@ -47,7 +47,6 @@ export default class CropperModal extends PureComponent {
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
-        nicaiCrx.removeEventListener('setVersion', this.setVersion);
       }
     }
   }
@@ -78,7 +77,8 @@ export default class CropperModal extends PureComponent {
     }
     this.setState({
       version: data.version,
-    })
+    });
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   handleGetVersion = () => {
     const customEvent = document.createEvent('Event');

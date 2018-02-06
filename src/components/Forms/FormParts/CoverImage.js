@@ -74,7 +74,6 @@ export default class CoverImage extends PureComponent {
   }
   render() {
     const { formData } = this.state;
-
     const upCoverStyle = {
       width: '100%',
       height: '100%',
@@ -84,14 +83,14 @@ export default class CoverImage extends PureComponent {
       color: '#6af',
       textAlign: 'center',
       cursor: 'pointer',
-    }
+    };
     const coverPic = {
       position: 'relative',
       width: '100%',
       height: '100%',
       textAlign: 'center',
       lineHeight: '108px',
-    }
+    };
     const coverModal = {
       position: 'absolute',
       bottom: 0,
@@ -105,19 +104,20 @@ export default class CoverImage extends PureComponent {
       fontSize: '18px',
       cursor: 'pointer',
       display: 'none',
-    }
+    };
+    const disabled = this.props.operation === 'view' ? true : false;
     return (
       <div style={{ padding: '10px 20px 0'}}>
         <p className={styles.lineTitleDefult}>{ formData.laybel || '封面图'}</p>
         <div style={{ width: 200, height: 112 }}>
           { !formData.value ?
-            <div className={styles.upCover} onClick={this.uploadCoverImg}>
+            <div className={styles.upCover} onClick={!disabled ? this.uploadCoverImg : ''} style={{border: '1px solid #ccc', color: '#ccc'}}>
               <Icon type="plus" />
               <p style={{ fontSize: 14 }}>上传封面图</p>
             </div> :
             <div className={styles.coverPic}>
               <img src={formData.value} />
-              { this.props.operation !== 'view' &&
+              { !disabled &&
                 <div className={styles.coverModal} onClick={this.handleDeleteCover}>
                   <Icon type="delete" />
                 </div>

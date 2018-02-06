@@ -90,7 +90,6 @@ export default class AlbumModal extends PureComponent {
             choosen: [ ...this.state.choosen, result.data[0] ],
           })
         }
-        
       } else {
         message.error(result.message);
       }
