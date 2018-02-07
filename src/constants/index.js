@@ -1,5 +1,5 @@
-// export const ORIGIN = 'http://test.nicai360.com';
-export const ORIGIN = 'http://www.nicai360.com';
+export const ORIGIN = 'http://testapi.nicai360.com';
+// export const ORIGIN = 'http://api.nicai360.com';
 // export const ORIGIN = `http://${location.hostname}:3000`;
 
 export const RIGHTS = [
