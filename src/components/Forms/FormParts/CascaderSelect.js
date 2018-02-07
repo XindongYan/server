@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import $ from 'jquery';
 import { Input, Icon, message, Cascader, Form } from 'antd';
-import { ORIGIN } from '../../../constants';
 import styles from './index.less';
 
 const FormItem = Form.Item;
@@ -16,7 +15,7 @@ export default class CascaderSelect extends PureComponent {
     residences: [],
   }
   componentDidMount() {
-    $.get(`${ORIGIN}/jsons/we.taobao.json`,(result) => {
+    $.get(`${location.origin}/jsons/we.taobao.json`,(result) => {
       this.setState({
         residences: result,
       })

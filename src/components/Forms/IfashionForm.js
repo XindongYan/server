@@ -7,7 +7,6 @@ import request from '../../utils/request';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 import { CascaderSelect, TagPicker, CoverImage, AnchorImageList } from './FormParts';
-import { ORIGIN } from '../../constants';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -50,7 +49,7 @@ export default class IfashionForm extends PureComponent {
   }
 
   handleGet = async () => {
-    const result = await request(`${ORIGIN}/jsons/classification.json`, {
+    const result = await request(`${location.origin}/jsons/classification.json`, {
       method: 'GET',
     });
     this.setState({

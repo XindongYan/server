@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import fetch from 'dva/fetch';
 import { Card, message } from 'antd';
-import { ORIGIN } from '../../constants';
 import styles from './Clothes.less';
 
 @connect(state => ({
@@ -18,7 +17,7 @@ export default class Clothes extends PureComponent {
   };
 
   async componentDidMount () {
-    const arr = await fetch(`${ORIGIN}/jsons/clothes-list.json`, {
+    const arr = await fetch(`/jsons/clothes-list.json`, {
     }).then(response => response.json());
     this.setState({
       clothList: arr,

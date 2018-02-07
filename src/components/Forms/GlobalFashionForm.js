@@ -5,7 +5,6 @@ import { Input, Icon, message, Form } from 'antd';
 import styles from './WeitaoForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
-import { ORIGIN } from '../../constants';
 
 import { CascaderSelect, EndLink, TagPicker, CoverImage } from './FormParts';
 
@@ -24,7 +23,7 @@ export default class GlobalFashionForm extends PureComponent {
     },
   }
   componentDidMount() {
-    $.get(`${ORIGIN}/jsons/classification.json`,(result) => {
+    $.get(`${location.origin}/jsons/classification.json`,(result) => {
       this.setState({
         dataSource: result.dataSource,
       })
@@ -97,7 +96,7 @@ export default class GlobalFashionForm extends PureComponent {
       <div className={styles.taskBox} style={style}>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
           内容创作
-          <a href={`${ORIGIN}/global_fashion_pic.psd`} download="全球时尚图片模版.psd" style={{float: 'right', marginRight: 20}}>
+          <a href={`${location.origin}/global_fashion_pic.psd`} download="全球时尚图片模版.psd" style={{float: 'right', marginRight: 20}}>
             下载图片模版</a>
         </div>
         { 
