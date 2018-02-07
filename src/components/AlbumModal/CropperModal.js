@@ -185,6 +185,8 @@ export default class CropperModal extends PureComponent {
             dragMode="none"
             viewMode={1}
             crop={this._crop.bind(this)}
+            width={500}
+            height={500}
           />
         }
         <div style={{ width: '40%', display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, textAlign: 'center' }}>

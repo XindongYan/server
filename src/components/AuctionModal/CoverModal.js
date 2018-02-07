@@ -14,7 +14,6 @@ export default class CoverChooseModal extends PureComponent {
   state = {
     coverUrl: '',
     cutCoverUrl: [],
-    extraBanners: [],
     nicaiCrx: null,
     version: '',
     checkedCutpic: false,
@@ -35,9 +34,10 @@ export default class CoverChooseModal extends PureComponent {
     if (!this.props.visible && nextProps.visible) {
       this.setState({
         coverUrl: '',
-        extraBanners: [],
+        cutCoverUrl: [],
         checkedCutpic: false,
-        checkedLoading: false
+        checkedLoading: false,
+        uploadBgImage: '',
       });
       const nicaiCrx = document.getElementById('nicaiCrx');
       // nicaiCrx.addEventListener('setVersion', this.setVersion);
@@ -55,7 +55,6 @@ export default class CoverChooseModal extends PureComponent {
       if (auction.coverUrl) {
         this.setState({
           coverUrl: auction.images[0],
-          extraBanners: auction.extraBanners || [],
         });
       }
       if (auction.images) {
@@ -207,18 +206,12 @@ export default class CoverChooseModal extends PureComponent {
           images: arr,
           checkedCutpic: false,
         });
-      } else if (this.state.k === 'extraImage') {
-        const arr = [...this.state.extraBanners];
-        arr.push(imgs[0].url);
-        this.setState({
-          extraBanners: arr,
-        });
       }
     }
   }
   render() {
     const { auction, visible } = this.props;
-    const { images, extraBanners, checkedCutpic, cutCoverUrl, checkedLoading, uploadBgImage } = this.state;
+    const { images, checkedCutpic, cutCoverUrl, checkedLoading, uploadBgImage } = this.state;
     return (
       <div style={{ padding: '0 0 20px' }}>
         <Modal
