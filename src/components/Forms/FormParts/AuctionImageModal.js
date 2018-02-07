@@ -55,9 +55,8 @@ export default class AuctionImageModal extends PureComponent {
         }
       }, 5000);
       const { formData } = nextProps;
-      if (formData.coverUrl) {
+      if (formData.extraBanners) {
         this.setState({
-          coverUrl: formData.images[0],
           extraBanners: formData.extraBanners || [],
         });
       }
@@ -68,6 +67,7 @@ export default class AuctionImageModal extends PureComponent {
         }
         this.setState({
           cutCoverUrl: arr,
+          coverUrl: formData.images[0],
           images: nextProps.formData.images,
         });
       }
@@ -123,6 +123,7 @@ export default class AuctionImageModal extends PureComponent {
     this.props.dispatch({
       type: 'album/hideAuctionImage',
     });
+    if (this.props.onChange) this.props.onChange(this.state.coverUrl, this.state.extraBanners);
   }
 
   handleChooseExtraBanners = (photo) => {
