@@ -27,6 +27,7 @@ export default class AlbumModal extends PureComponent {
     loading: true,
     version: '',
     activeKey: 'album',
+    firstUrl: '',
   }
   componentDidMount() {
   }
@@ -61,12 +62,18 @@ export default class AlbumModal extends PureComponent {
         this.setState({
           nicaiCrx: null,
         });
+        this.handleClearInp();
       }
     }
   }
   setAlbum = (e) => {
     const data = JSON.parse(e.target.innerText);
     if (!data.error) {
+      if (data.current === 1 && data.itemList.length > 0) {
+        this.setState({
+          firstUrl: data.itemList[0].url,
+        });
+      }
       this.setState({
         itemList: data.itemList || [],
         pagination: {
@@ -224,6 +231,7 @@ export default class AlbumModal extends PureComponent {
     });
     if (e === "album") {
       this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
+      this.handleClearInp();
     }
     this.setState({ choosen: [] });
   }
@@ -235,7 +243,7 @@ export default class AlbumModal extends PureComponent {
   }
   handleUpload = (e) => {
     const { k, minSize } = this.props;
-    const { nicaiCrx } = this.state;
+    const { nicaiCrx, itemList, firstUrl } = this.state;
     const file = e.target.files[0];
     if (file) {
       if (file.size / 1024 / 1024 >= 3) {
@@ -245,7 +253,7 @@ export default class AlbumModal extends PureComponent {
       } else {
         var reader = new FileReader();  
         reader.readAsDataURL(file);
-        //监听文件读取结束后事件  
+        //监听文件读取结束后事件
         reader.onloadend = (e1) => {
           if (minSize) {
             var img = new Image();
@@ -314,6 +322,22 @@ export default class AlbumModal extends PureComponent {
     this.setState({ choosen: [img] });
     this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
   }
+  handleGetBase64 = (img) =>{
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();
+    var dataURL = canvas.toDataURL();
+    return dataURL;
+  }
+  handleClearInp = () => {
+    const fileInp = this.refs.fileInp;
+    if (fileInp) {
+      fileInp.value = '';
+    }
+  }
   render() {
     const { visible, k, currentKey, minSize } = this.props;
     const { choosen, previewImage, itemList, pagination, loading } = this.state;
@@ -355,7 +379,7 @@ export default class AlbumModal extends PureComponent {
                     <Icon type="plus" style={{ fontSize: 32, color: '#6AF' }} />
                     <p>直接拖拽文件到虚线框内即可上传</p>
                   </div>
-                  <input className={styles.fileInp} type="file" onChange={this.handleUpload} />
+                  <input className={styles.fileInp} type="file" onChange={this.handleUpload} ref="fileInp" />
                 </div>
                 <p style={{ fontSize: 12 }}>请选择大小不超过 3 MB 的文件</p>
                 <div className={styles.previewBox}>           
