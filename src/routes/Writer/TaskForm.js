@@ -119,10 +119,6 @@ export default class TaskForm extends PureComponent {
     //   return "确认离开页面?";
     // }
     const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch({
-      type: 'global/changeLayoutCollapsed',
-      payload: true,
-    });
     if (query._id) {
       this.props.dispatch({
         type: 'task/fetchTask',
@@ -181,10 +177,6 @@ export default class TaskForm extends PureComponent {
     }
   }
   componentWillUnmount() {
-    this.props.dispatch({
-      type: 'global/changeLayoutCollapsed',
-      payload: false,
-    });
     this.props.dispatch({
       type: 'task/clearFormData'
     });

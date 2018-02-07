@@ -94,10 +94,6 @@ export default class TaskView extends PureComponent {
       type: 'task/fetchTask',
       payload: query,
     });
-    this.props.dispatch({
-      type: 'global/changeLayoutCollapsed',
-      payload: true,
-    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData.title) {
@@ -150,10 +146,6 @@ export default class TaskView extends PureComponent {
     }
   }
   componentWillUnmount() {
-    this.props.dispatch({
-      type: 'global/changeLayoutCollapsed',
-      payload: false,
-    });
     this.props.dispatch({
       type: 'task/clearFormData'
     });

@@ -432,7 +432,7 @@ export default class BpuModal extends PureComponent {
           scroll={{ y: 380 }}
           bordered={true}
           rowSelection={rowSelection}
-           onRow={(record) => ({
+          onRow={(record) => ({
             onClick: () => this.handleLoadBpuValue(record),
             onDoubleClick: () => {},
             onContextMenu: () => {},
@@ -683,7 +683,7 @@ export default class BpuModal extends PureComponent {
           scroll={{ y: 380 }}
           bordered={true}
           rowSelection={rowSelection}
-           onRow={(record) => ({
+          onRow={(record) => ({
             onClick: () => this.handleLoadBpuValue(record),
             onDoubleClick: () => {},
             onContextMenu: () => {},
@@ -938,7 +938,7 @@ export default class BpuModal extends PureComponent {
           scroll={{ y: 380 }}
           bordered={true}
           rowSelection={rowSelection}
-           onRow={(record) => ({
+          onRow={(record) => ({
             onClick: () => this.handleLoadBpuValue(record),
             onDoubleClick: () => {},
             onContextMenu: () => {},
@@ -1181,7 +1181,7 @@ export default class BpuModal extends PureComponent {
           scroll={{ y: 380 }}
           bordered={true}
           rowSelection={rowSelection}
-           onRow={(record) => ({
+          onRow={(record) => ({
             onClick: () => this.handleLoadBpuValue(record),
             onDoubleClick: () => {},
             onContextMenu: () => {},

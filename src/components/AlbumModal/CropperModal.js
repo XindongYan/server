@@ -21,6 +21,8 @@ export default class CropperModal extends PureComponent {
     nicaiCrx: null,
     version: '',
     confirmLoading: false,
+    outputWidth: 0,
+    outputHeight: 0,
   }
   componentDidMount() {
   }
@@ -134,8 +136,13 @@ export default class CropperModal extends PureComponent {
   }
 
   _crop = () => {
-    const dataUrl = this.refs.cropper.getCroppedCanvas().toDataURL();
-    this.setState({ dataUrl: dataUrl });
+    const canvas = this.refs.cropper.getCroppedCanvas();
+    const dataUrl = canvas.toDataURL();
+    this.setState({
+      dataUrl,
+      outputWidth: canvas.width,
+      outputHeight: canvas.height,
+    });
   }
   render() {
     const { visible, src, width, height, picWidth, picHeight, cropperKey, k } = this.props;
@@ -146,7 +153,7 @@ export default class CropperModal extends PureComponent {
       aspectRatio = width / height;
     }
     // const frameWidth = (992-40) * 0.62;
-    const frameHeight = 400;
+    const frameHeight = 360;
     // if (picWidth/frameWidth > picHeight / frameHeight) {
     //   rate = picWidth/frameWidth;
     // } else {
@@ -164,28 +171,27 @@ export default class CropperModal extends PureComponent {
         confirmLoading={confirmLoading}
       >
         {k === cropperKey && visible &&
-          <Tooltip title="prompt text">
-            <Cropper
-              ref='cropper'
-              src={src}
-              style={{height: 400, display: 'inline-block', verticalAlign: 'middle', background: '#fff' }}
-              crossOrigin="anonymous"
-              // Cropper.js options
-              aspectRatio={aspectRatio}
-              minCropBoxWidth={width / rate}
-              minCropBoxHeight={height / rate}
-              zoomable={false}
-              guides={false}
-              viewMode={1}
-              dragMode="none"
-              crop={this._crop.bind(this)}
-            />
-          </Tooltip>
+          <Cropper
+            ref='cropper'
+            src={src}
+            style={{height: frameHeight, width: '58%', display: 'inline-block', verticalAlign: 'middle', background: '#fff' }}
+            crossOrigin="anonymous"
+            // Cropper.js options
+            aspectRatio={aspectRatio}
+            minCropBoxWidth={width / rate}
+            minCropBoxHeight={height / rate}
+            zoomable={false}
+            guides={false}
+            dragMode="none"
+            viewMode={1}
+            crop={this._crop.bind(this)}
+          />
         }
-        <div style={{ width: '38%', display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, paddingTop: 10}}>
+        <div style={{ width: '40%', display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, textAlign: 'center' }}>
+          <div>{this.state.outputWidth}x{this.state.outputHeight}</div>
           <img
             src={dataUrl}
-            style={{ width: '100%'}}
+            style={{ maxWidth: '100%', maxHeight: frameHeight - 21 }}
           />
         </div>
       </Modal>
