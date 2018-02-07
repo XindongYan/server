@@ -75,6 +75,7 @@ export default class TableList extends PureComponent {
         }, 1000);
       });
     }
+    console.log(process.env);
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = nextProps;

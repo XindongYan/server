@@ -1,6 +1,8 @@
-export const ORIGIN = 'http://testapi.nicai360.com';
-// export const ORIGIN = 'http://api.nicai360.com';
-// export const ORIGIN = `http://${location.hostname}:3000`;
+export const ORIGIN = {
+  production: 'http://api.nicai360.com',
+  test: 'http://testapi.nicai360.com',
+  development: `http://${location.hostname}:3000`,
+}[process.env.NODE_ENV || 'development'];
 
 export const RIGHTS = [
   { label: '写手', value: 1 },
