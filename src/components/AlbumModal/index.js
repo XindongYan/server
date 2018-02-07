@@ -54,6 +54,9 @@ export default class AlbumModal extends PureComponent {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
         nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
+        this.setState({
+          nicaiCrx: null,
+        });
       }
     }
   }
@@ -98,19 +101,23 @@ export default class AlbumModal extends PureComponent {
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
-    const { pagination } = this.state;
-    if (data.error) {
-      message.warn(data.msg);
-      this.setState({
-        loading: false,
-      });
-    } else {
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+    if (this.props.k === this.props.currentKey) {
+      if (data.version) {
+        this.setState({
+          version: data.version,
+        });
+      }
+      this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
+      const { pagination } = this.state;
+      if (data.error) {
+        message.warn(data.msg);
+        this.setState({
+          loading: false,
+        });
+      } else {
+        this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+      }
     }
-    this.setState({
-      version: data.version,
-    });
-    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   handleLoadAlbum = (params) => {
     this.state.nicaiCrx.innerText = JSON.stringify(params);

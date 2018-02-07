@@ -77,6 +77,9 @@ export default class AuctionModal extends PureComponent {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('setAuction', this.setAuction);
         nicaiCrx.removeEventListener('resultAuction', this.resultAuction);
+        this.setState({
+          nicaiCrx: null,
+        });
       }
     }
   }
@@ -93,8 +96,8 @@ export default class AuctionModal extends PureComponent {
       this.setState({
         version: data.version,
       });
-      nicaiCrx.removeEventListener('setVersion', this.setVersion);
     }
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
     if (data.error) {
       message.destroy();
       message.warn(data.msg, 60 * 60);

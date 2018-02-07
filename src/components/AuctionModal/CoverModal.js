@@ -70,6 +70,9 @@ export default class CoverChooseModal extends PureComponent {
     } else if (this.props.visible && !nextProps.visible) {
       const nicaiCrx = this.state.nicaiCrx || document.getElementById('nicaiCrx');
       nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
+      this.setState({
+        nicaiCrx: null,
+      });
     }
   }
 

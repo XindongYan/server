@@ -53,6 +53,9 @@ export default class CutpicModal extends PureComponent {
       nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
       nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
       message.destroy();
+      this.setState({
+        nicaiCrx: null,
+      });
     }
   }
   setVersion = (e) => {
