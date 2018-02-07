@@ -15,10 +15,6 @@ export default class BodyStructContent extends PureComponent {
     title: '',
     desc: '',
     images: [],
-    minSize: {
-      width: 0,
-      height: 0,
-    },
   }
   componentDidMount() {
     if (this.props.formData && this.props.formData.title) {

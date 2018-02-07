@@ -84,6 +84,8 @@ export default class CutpicModal extends PureComponent {
     this.setState({
       loading: false,
     });
+    message.destroy();
+    message.success('抠图完成');
   }
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);

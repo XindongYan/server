@@ -80,15 +80,16 @@ export default class AlbumModal extends PureComponent {
     const result = JSON.parse(e.target.innerText);
     if (this.props.k === this.props.currentKey) {
       if (!result.errorCode) {
+        message.destroy();
         message.success('上传成功');
         if (this.props.k !== 'editor'){
           this.setState({
             choosen: [ result.data[0] ],
-          })
+          });
         } else {
           this.setState({
             choosen: [ ...this.state.choosen, result.data[0] ],
-          })
+          });
         }
       } else {
         message.error(result.message);
@@ -240,21 +241,23 @@ export default class AlbumModal extends PureComponent {
               if (img.height < minSize.height || img.width < minSize.width) {
                 message.warn(`封面图尺寸不能小于${minSize.width}*${minSize.height}px`);
               } else {
-                nicaiCrx.innerText = JSON.stringify({data: e1.target.result});
-                const customEvent = document.createEvent('Event');
-                customEvent.initEvent('uploadImg', true, true);
-                nicaiCrx.dispatchEvent(customEvent);
+                this.handleSubmitImg(e1.target.result);
               }
             }
           } else {
-            nicaiCrx.innerText = JSON.stringify({data: e1.target.result});
-            const customEvent = document.createEvent('Event');
-            customEvent.initEvent('uploadImg', true, true);
-            nicaiCrx.dispatchEvent(customEvent);
+            this.handleSubmitImg(e1.target.result);
           }
         };
       }
     }
+  }
+  handleSubmitImg = (url) => {
+    nicaiCrx.innerText = JSON.stringify({data: url});
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('uploadImg', true, true);
+    nicaiCrx.dispatchEvent(customEvent);
+    message.destroy();
+    message.loading('上传中...', 60 * 60);
   }
   handleToCropper = () => {
     if (this.props.minSize) {
