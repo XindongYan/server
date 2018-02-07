@@ -106,11 +106,17 @@ export default class CoverChooseModal extends PureComponent {
     if (this.props.onOk) this.props.onOk(coverUrl);
     this.props.dispatch({
       type: 'album/hideCover',
+      payload: {
+        auction: {},
+      }
     });
   }
   handleCancel = () => {
     this.props.dispatch({
       type: 'album/hideCover',
+      payload: {
+        auction: {},
+      }
     });
   }
 

@@ -266,7 +266,6 @@ export default class GoodProductionForm extends PureComponent {
   }
   handleChangeBodyImg = (coverUrl, extraBanners) => {
     const json = this.props.formData.body[0];
-    console.log(json)
     if (this.props.onChange) this.props.onChange({ body: [{ ...this.props.formData.body[0], coverUrl, extraBanners }] });
   }
   handleDeleteContent = (index) => {

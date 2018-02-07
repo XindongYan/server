@@ -108,13 +108,9 @@ export default class Editor extends PureComponent {
   }
   handleAddImg = (imgs) => {
     imgs.forEach((item) => {
-      this.state.ue.execCommand('insertimage', {
-        src: item.url,
-        maxWidth: '60%',
-        height: 'auto',
-      });
+      const html = `<p><img src="${item.url}" /></p>`;
+      this.state.ue.execCommand('inserthtml', html);
     });
-    // this.state.ue.execCommand('inserthtml', html);
   }
   handleAddProduct = (auction) => {
     const data = {
@@ -133,7 +129,7 @@ export default class Editor extends PureComponent {
       type: 'SIDEBARSEARCHITEM',
     };
     const text = encodeURIComponent(JSON.stringify(data));
-    const html = `<a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}" _data="${text}"><img src="${auction.coverUrl}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a>`;
+    const html = `<p><a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}" _data="${text}"><img src="${auction.coverUrl}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a></p>`;
     this.state.ue.execCommand('inserthtml', html, true);
   }
   handleAddBpu = (products) => {

@@ -26,12 +26,16 @@ export default class AlbumModal extends PureComponent {
     },
     loading: true,
     version: '',
+    activeKey: 'album',
   }
   componentDidMount() {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.k === nextProps.currentKey) {
       if (!this.props.visible && nextProps.visible) {
+        this.setState({
+          activeKey: 'album',
+        });
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.addEventListener('setAlbum', this.setAlbum);
         nicaiCrx.addEventListener('uploadResult', this.uploadResult);
@@ -215,6 +219,9 @@ export default class AlbumModal extends PureComponent {
   }
   changeTab = (e) => {
     const { choosen, pagination } = this.state;
+    this.setState({
+      activeKey: e,
+    });
     if (e === "album") {
       this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
     }
@@ -328,7 +335,7 @@ export default class AlbumModal extends PureComponent {
             <Button type="primary" key="ok" onClick={this.handleOk}>确定</Button>,
           ]}
         >
-          <Tabs defaultActiveKey="album" onChange={this.changeTab}>
+          <Tabs defaultActiveKey="album" onChange={this.changeTab} activeKey={this.state.activeKey}>
             <TabPane tab={<span><Icon type="picture" />素材库</span>} key="album">
               <Spin spinning={loading}>
                 <div>

@@ -248,13 +248,24 @@ export default class AuctionModal extends PureComponent {
     }
   }
   handleOk = () => {
-    if (this.state.auctionChoose) {
+    if (this.state.auctionChoose && this.state.auctionChoose.url) {
+      if (this.props.k !== 'havegoods') {
+        this.props.dispatch({
+          type: 'album/showCover',
+          payload: {
+            coverKey: this.props.currentKey,
+            auction: this.state.auctionChoose,
+          }
+        });
+      } else {
+        if (this.props.onOk) this.props.onOk(this.state.auctionChoose);
+        this.props.dispatch({
+          type: 'auction/hide',
+        });
+      }
+    } else {
       this.props.dispatch({
-        type: 'album/showCover',
-        payload: {
-          coverKey: this.props.currentKey,
-          auction: this.state.auctionChoose,
-        }
+        type: 'auction/hide',
       });
     }
   }
