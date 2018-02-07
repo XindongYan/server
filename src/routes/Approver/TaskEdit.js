@@ -149,17 +149,9 @@ export default class TaskEdit extends PureComponent {
         }
       }
     });
-    this.props.dispatch({
-      type: 'global/changeLayoutCollapsed',
-      payload: true,
-    });
   }
 
   componentWillUnmount() {
-    this.props.dispatch({
-      type: 'global/changeLayoutCollapsed',
-      payload: false,
-    });
     this.props.dispatch({
       type: 'task/clearFormData'
     });

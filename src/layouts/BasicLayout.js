@@ -63,8 +63,8 @@ class BasicLayout extends React.PureComponent {
   constructor(props) {
     super(props);
     // 把一级 Layout 的 children 作为菜单项
+    this.menus = getNavData(props.currentUser).reduce((arr, current) => arr.concat(current.children), []);
     this.state = {
-      menus: getNavData(props.currentUser).reduce((arr, current) => arr.concat(current.children), []),
       openKeys: this.getDefaultCollapsedSubMenus(props),
     };
   }
@@ -98,7 +98,8 @@ class BasicLayout extends React.PureComponent {
       this.props.dispatch(routerRedux.push('/user/login'));
     }
     const menuData = getNavData(nextProps.currentUser).reduce((arr, current) => arr.concat(current.children), []);
-    this.setState({ menus: menuData });
+    // this.setState({ menus: menuData });
+    this.menus = menuData;
   }
   componentWillUnmount() {
     clearTimeout(this.resizeTimeout);
@@ -146,21 +147,21 @@ class BasicLayout extends React.PureComponent {
     }
   }
   getDefaultCollapsedSubMenus(props) {
-    // const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
-    // currentMenuSelectedKeys.splice(-1, 1);
-    // if (currentMenuSelectedKeys.length === 0) {
-      return ['square', 'creation', 'project', 'approve', 'daren', 'team', 'album', 'tool'];
-    // }
-    // return currentMenuSelectedKeys;
+    const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
+    currentMenuSelectedKeys.splice(-1, 1);
+    if (currentMenuSelectedKeys.length === 0) {
+      return ['home'];
+    }
+    return currentMenuSelectedKeys;
   }
-  // getCurrentMenuSelectedKeys(props) {
-  //   const { location: { pathname } } = props || this.props;
-  //   const keys = pathname.split('/').slice(1);
-  //   if (keys.length === 1 && keys[0] === '') {
-  //     return [this.state.menus[0].key];
-  //   }
-  //   return keys;
-  // }
+  getCurrentMenuSelectedKeys(props) {
+    const { location: { pathname } } = props || this.props;
+    const keys = pathname.split('/').slice(1);
+    if (keys.length === 1 && keys[0] === '') {
+      return [this.menus[0].key];
+    }
+    return keys;
+  }
   getNavMenuItems(menusData, parentPath = '') {
     if (!menusData) {
       return [];
@@ -249,9 +250,9 @@ class BasicLayout extends React.PureComponent {
     return groupBy(newNotices, 'type');
   }
   handleOpenChange = (openKeys) => {
-    // const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
+    const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
     this.setState({
-      openKeys,
+      openKeys: latestOpenKey ? [latestOpenKey] : [],
     });
   }
   handleSelect = (e) => {
@@ -333,7 +334,7 @@ class BasicLayout extends React.PureComponent {
             onClick={this.handleSelect}
             style={{ margin: '16px 0', width: '100%' }}
           >
-            {this.getNavMenuItems(this.state.menus)}
+            {this.getNavMenuItems(this.menus)}
           </Menu>
         </Sider>
         <Layout>
