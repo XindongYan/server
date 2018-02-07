@@ -131,7 +131,7 @@ export default class TaskOption extends PureComponent {
       detail: '用户只需要发一行字，一条语音、一张图片，立刻会有最匹配最有经验的一批人，告诉你最符合你需求的好东西，且所有推荐出的商品都有专门买手帮你购买的C2B社会化电商平台。',
     }, {
       name: 'ifashion',
-      box_text: '首页card ifashion',
+      box_text: '智能搭配 - ifashion',
       img: 'https://img.alicdn.com/tfs/TB10zj.SFXXXXadXXXXXXXXXXXX-100-100.png',
       detail: '汇集优质的时尚领域内容，以时尚指南、潮流资讯等栏目打造用户所喜爱的女性内容导购频道。',
     }, {

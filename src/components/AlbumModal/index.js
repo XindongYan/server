@@ -312,7 +312,7 @@ export default class AlbumModal extends PureComponent {
   handleCutpicOk = (img) => {
     const { choosen, pagination } = this.state;
     this.setState({ choosen: [img] });
-    this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
+    this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
   }
   render() {
     const { visible, k, currentKey, minSize } = this.props;
