@@ -4,7 +4,7 @@ import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radi
 Tooltip, Divider, Form, Modal, Popover } from 'antd';
 import { Link } from 'dva/router';
 import moment from 'moment';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, ORIGIN, RIGHT } from '../../constants';
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, RIGHT } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -514,7 +514,7 @@ export default class TableList extends PureComponent {
           if (!record.current_approvers || record.current_approvers.length === 0 || record.current_approvers.indexOf(currentUser._id) >= 0) {
             return (
               <div>
-                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                   外链
                 </a>
                 <Divider type="vertical" />
@@ -530,7 +530,7 @@ export default class TableList extends PureComponent {
           } else {
             return (
               <div>
-                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                   外链
                 </a>
                 <Divider type="vertical" />
@@ -543,7 +543,7 @@ export default class TableList extends PureComponent {
         } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -555,7 +555,7 @@ export default class TableList extends PureComponent {
         } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -571,7 +571,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />

@@ -15,6 +15,9 @@ export default class Login extends Component {
 
   }
   render() {
+    const state = {
+      redirect_uri: `${location.origin}/index.html`,
+    };
     return (
       <div className={styles.main}>
         <div>
@@ -24,14 +27,14 @@ export default class Login extends Component {
           </a>
         </div>
         <div style={{ width: 300, textAlign: 'left', margin: '60px auto 10px' }}>
-          <a href={`${ORIGIN}/nicai.crx`} download="尼采插件.crx">
+          <a href={`${location.origin}/nicai.crx`} download="尼采插件.crx">
             尼采插件下载
           </a>
           <span>(chrome浏览器版本 >= 59.0)</span>
           <p>
-            <a style={{ marginRight: 15 }} href={`${ORIGIN}/userRegister.pdf`} target="_blank">用户注册说明</a>
-            <a style={{ marginRight: 15 }} href={`${ORIGIN}/nicaiTeach.pdf`} target="_blank">插件安装说明</a>
-            <a href={`${ORIGIN}/chromeVersion.pdf`} target="_blank">查看浏览器版本</a>
+            <a style={{ marginRight: 15 }} href={`${location.origin}/userRegister.pdf`} target="_blank">用户注册说明</a>
+            <a style={{ marginRight: 15 }} href={`${location.origin}/nicaiTeach.pdf`} target="_blank">插件安装说明</a>
+            <a href={`${location.origin}/chromeVersion.pdf`} target="_blank">查看浏览器版本</a>
           </p>
         </div>
         

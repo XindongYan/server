@@ -13,7 +13,7 @@ import TaskIdColumn from '../../components/TaskIdColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, ORIGIN, SOURCE } from '../../constants';
+import { TASK_APPROVE_STATUS, SOURCE } from '../../constants';
 import styles from './TableList.less';
 import { queryConvertedTasks } from '../../services/task';
 
@@ -75,6 +75,7 @@ export default class TableList extends PureComponent {
         }, 1000);
       });
     }
+    console.log(process.env);
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = nextProps;
@@ -576,7 +577,7 @@ export default class TableList extends PureComponent {
         if (record.approve_status === TASK_APPROVE_STATUS.taken) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -604,7 +605,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
             </div>
@@ -612,7 +613,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -624,7 +625,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />
@@ -636,7 +637,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />

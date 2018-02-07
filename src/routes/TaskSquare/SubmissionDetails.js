@@ -4,7 +4,6 @@ import querystring from 'querystring';
 import { Card, message, Row, Spin } from 'antd';
 import styles from './index.less';
 import ProjectDetail from '../../components/ProjectDetail';
-import { ORIGIN } from '../../constants';
 import { routerRedux } from 'dva/router';
 
 @connect(state => ({

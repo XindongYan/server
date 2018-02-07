@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import $ from 'jquery';
 import { Input, Icon, message, Cascader, Checkbox, Row, Col, Tag, Tabs } from 'antd';
-import { ORIGIN } from '../../../constants';
 import styles from './index.less';
 
 const CheckboxGroup = Checkbox.Group;

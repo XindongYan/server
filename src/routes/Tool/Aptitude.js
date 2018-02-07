@@ -3,8 +3,6 @@ import { connect } from 'dva';
 import $ from 'jquery';
 import fetch from 'dva/fetch';
 import { Icon, Card, Table, Input, message } from 'antd';
-import querystring from 'querystring';
-import { ORIGIN } from '../../constants';
 import styles from './ShopPool.less';
 
 const Search = Input.Search;

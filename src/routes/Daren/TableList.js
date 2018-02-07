@@ -13,7 +13,7 @@ import TaskIdColumn from '../../components/TaskIdColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, ORIGIN, SOURCE } from '../../constants';
+import { TASK_APPROVE_STATUS, SOURCE } from '../../constants';
 import styles from './TableList.less';
 import { queryConvertedTasks } from '../../services/task';
 
@@ -574,7 +574,7 @@ export default class TableList extends PureComponent {
         if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+              <a target="_blank" href={`/public/task/details?id=${record._id}`}>
                 外链
               </a>
               <Divider type="vertical" />

@@ -5,9 +5,10 @@
   "private": true,
   "scripts": {
     "precommit": "npm run lint-staged",
-    "start": "roadhog server",
+    "start": "NODE_ENV=development roadhog server",
     "start:no-proxy": "NO_PROXY=true roadhog server",
-    "build": "roadhog build",
+    "build": "NODE_ENV=test roadhog build",
+    "build-production": "NODE_ENV=production roadhog build",
     "site": "roadhog-api-doc static",
     "analyze": "roadhog build --analyze",
     "lint:style": "stylelint \"src/**/*.less\" --syntax less",

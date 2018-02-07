@@ -5,7 +5,6 @@ import fetch from 'dva/fetch';
 import { Icon, Card, Table, Input, message } from 'antd';
 import url from 'url';
 import querystring from 'querystring';
-import { ORIGIN } from '../../constants';
 import styles from './ShopPool.less';
 import { searchStatistic } from '../../services/tool';
 
@@ -22,7 +21,7 @@ export default class ShopPool extends PureComponent {
   };
 
   async componentDidMount () {
-    const arr = await fetch(`${ORIGIN}/jsons/shopPool.json`, {
+    const arr = await fetch(`/jsons/shopPool.json`, {
     }).then(response => response.json());
     this.setState({
       shopArr: arr,
