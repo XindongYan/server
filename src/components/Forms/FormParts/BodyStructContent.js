@@ -15,6 +15,10 @@ export default class BodyStructContent extends PureComponent {
     title: '',
     desc: '',
     images: [],
+    minSize: {
+      width: 0,
+      height: 0,
+    },
   }
   componentDidMount() {
     if (this.props.formData && this.props.formData.title) {
@@ -167,7 +171,7 @@ export default class BodyStructContent extends PureComponent {
         <div style={{ height: 40, marginTop: 20 }}>
           <Button onClick={this.handlePushContent} type="primary" style={{ float: 'right' }}>确定</Button>
         </div>
-        <AlbumModal mode="single" k={this.props.index} minSize={this.state.minSize} onOk={this.handleAddImg}/>
+        <AlbumModal mode="single" k={this.props.index} onOk={this.handleAddImg}/>
       </div>
     );
   }

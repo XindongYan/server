@@ -125,6 +125,7 @@ export default class AlbumModal extends PureComponent {
   }
   handleOk = () => {
     if (this.state.choosen.length > 0) {
+      console.log(this.props.minSize)
       if (this.props.minSize) {
         this.props.dispatch({
           type: 'album/showCropper',
@@ -232,7 +233,7 @@ export default class AlbumModal extends PureComponent {
         reader.readAsDataURL(file);
         //监听文件读取结束后事件  
         reader.onloadend = (e1) => {
-          if (k !== 'editor') {
+          if (minSize) {
             var img = new Image();
             img.src = e1.target.result;
             img.onload = function(event) {
