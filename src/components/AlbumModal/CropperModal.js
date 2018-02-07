@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Modal, message, Tabs, Icon, Button} from 'antd';
+import { Card, Modal, message, Tabs, Icon, Button, Tooltip } from 'antd';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 const TabPane = Tabs.TabPane;
@@ -164,19 +164,23 @@ export default class CropperModal extends PureComponent {
         confirmLoading={confirmLoading}
       >
         {k === cropperKey && visible &&
-          <Cropper
-            ref='cropper'
-            src={src}
-            style={{height: 400, display: 'inline-block', verticalAlign: 'middle', background: '#fff' }}
-            crossOrigin="anonymous"
-            // Cropper.js options
-            aspectRatio={aspectRatio}
-            minCropBoxWidth={width / rate}
-            minCropBoxHeight={height / rate}
-            zoomable={false}
-            guides={false}
-            fillStyle="#fff"
-            crop={this._crop.bind(this)} />
+          <Tooltip title="prompt text">
+            <Cropper
+              ref='cropper'
+              src={src}
+              style={{height: 400, display: 'inline-block', verticalAlign: 'middle', background: '#fff' }}
+              crossOrigin="anonymous"
+              // Cropper.js options
+              aspectRatio={aspectRatio}
+              minCropBoxWidth={width / rate}
+              minCropBoxHeight={height / rate}
+              zoomable={false}
+              guides={false}
+              viewMode={1}
+              dragMode="none"
+              crop={this._crop.bind(this)}
+            />
+          </Tooltip>
         }
         <div style={{ width: '38%', display: 'inline-block', verticalAlign: 'middle', marginLeft: 10, paddingTop: 10}}>
           <img

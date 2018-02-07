@@ -29,6 +29,11 @@ export default {
       visible: false,
       cutpicKey: '',
       src: '',
+    },
+    coverModal: {
+      visible: false,
+      coverKey: '',
+      auction: {},
     }
   },
 
@@ -104,6 +109,18 @@ export default {
         payload: { visible: false, ...payload },
       });
     },
+    *showCover({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeCoverModal',
+        payload: { visible: true, ...payload },
+      });
+    },
+    *hideCover({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeCoverModal',
+        payload: { visible: false, ...payload },
+      });
+    },
   },
 
   reducers: {
@@ -148,6 +165,15 @@ export default {
         ...state,
         cutpicModal: {
           ...state.cutpicModal,
+          ...action.payload,
+        },
+      };
+    },
+    changeCoverModal(state, action) {
+      return {
+        ...state,
+        coverModal: {
+          ...state.coverModal,
           ...action.payload,
         },
       };

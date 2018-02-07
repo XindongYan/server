@@ -126,7 +126,6 @@ export default class AlbumModal extends PureComponent {
   }
   handleOk = () => {
     if (this.state.choosen.length > 0) {
-      console.log(this.props.minSize)
       if (this.props.minSize) {
         this.props.dispatch({
           type: 'album/showCropper',
@@ -237,9 +236,9 @@ export default class AlbumModal extends PureComponent {
           if (minSize) {
             var img = new Image();
             img.src = e1.target.result;
-            img.onload = function(event) {
+            img.onload = (event) => {
               if (img.height < minSize.height || img.width < minSize.width) {
-                message.warn(`封面图尺寸不能小于${minSize.width}*${minSize.height}px`);
+                message.warn(`图片尺寸不能小于${minSize.width}*${minSize.height}px`);
               } else {
                 this.handleSubmitImg(e1.target.result);
               }

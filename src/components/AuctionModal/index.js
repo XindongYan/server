@@ -7,6 +7,7 @@ import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagina
 import styles from './index.less';
 import { searchNew7, queryQumai } from '../../services/tool';
 import { queryYhhBody } from '../../services/task';
+import CoverModal from './CoverModal.js'
 
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
@@ -20,7 +21,6 @@ export default class AuctionModal extends PureComponent {
   state = {
     nicaiCrx: null,
     version: '',
-    choose: '',
     addLoading: false,
     actsLoading: true,
     itemList: [],
@@ -30,7 +30,7 @@ export default class AuctionModal extends PureComponent {
       current: 1,
       total: 0,
     },
-    auctionChoose: null,
+    auctionChoose: {},
     q_score: '',
     new7: '',
     search: '',
@@ -43,6 +43,11 @@ export default class AuctionModal extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps.k === nextProps.currentKey) {
       if (!this.props.visible && nextProps.visible) {
+
+        this.setState({
+          auctionChoose: {},
+          search: '',
+        });
         const nicaiCrx = document.getElementById('nicaiCrx');
         if (nextProps.k !== 'material') {
           nicaiCrx.addEventListener('setVersion', this.setVersion);
@@ -72,7 +77,6 @@ export default class AuctionModal extends PureComponent {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('setAuction', this.setAuction);
         nicaiCrx.removeEventListener('resultAuction', this.resultAuction);
-        nicaiCrx.removeEventListener('setVersion', this.setVersion);
       }
     }
   }
@@ -88,7 +92,8 @@ export default class AuctionModal extends PureComponent {
     if (data.version) {
       this.setState({
         version: data.version,
-      })
+      });
+      nicaiCrx.removeEventListener('setVersion', this.setVersion);
     }
     if (data.error) {
       message.destroy();
@@ -111,6 +116,7 @@ export default class AuctionModal extends PureComponent {
           total: data.total,
         },
         actsLoading: false,
+        addLoading: false,
       });
     } else {
       message.destroy();
@@ -134,33 +140,27 @@ export default class AuctionModal extends PureComponent {
   handleSearchChange = (e) => {
     this.setState({
       search: e.target.value,
-    })
+    });
     if (!e.target.value) {
       this.setState({
-        choose: '',
-        auctionChoose: null,
-      })
+        auctionChoose: {},
+      });
     }
   }
   handleClear = () => {
     this.setState({
       search: '',
-      choose: '',
-      auctionChoose: null,
+      auctionChoose: {},
       new7: '',
       q_score: '',
       qumai: '',
-    })
+    });
   }
   handleAddAuction = (value) => {
     this.setState({
-      choose: '',
-      auctionChoose: null,
-    })
+      auctionChoose: {},
+    });
     if (value) {
-      this.setState({
-        addLoading: true,
-      });
       const urlobject = url.parse(value);
       const urlQuery = querystring.parse(urlobject.query);
       this.handleSetTags(value, urlQuery.id);
@@ -196,7 +196,7 @@ export default class AuctionModal extends PureComponent {
         current,
         pageSize,
       }
-    })
+    });
     if (this.state.nicaiCrx) {
       this.setState({ actsLoading: true });
       this.handleGetAuction({
@@ -212,7 +212,6 @@ export default class AuctionModal extends PureComponent {
         message.error(result.msg)
       } else {
         this.setState({
-          choose: result.data.images && result.data.images.length > 0 ? result.data.images[0] : '',
           auctionChoose: result.data,
         });
       }
@@ -239,32 +238,22 @@ export default class AuctionModal extends PureComponent {
     if(sevenResult.data && sevenResult.data.length > 0 ){
       const new7 = sevenResult.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
       this.setState({
-        addLoading: false,
-        actsLoading: false,
         qumai: qumaiResult.data.htmls.substring(index1, index2+1),
         q_score: sevenResult.data[0].q_score,
         new7: new7,
       });
     }
   }
-  handleChooseImg = (photo) => {
-    this.setState({
-      choose: photo,
-    })
-  }
   handleOk = () => {
     if (this.state.auctionChoose) {
-      const img = this.state.choose || this.state.auctionChoose.coverUrl;
-      if (this.props.onOk) this.props.onOk(this.state.auctionChoose, img);
-      this.setState({
-        choose: '',
-        auctionChoose: null,
-        search: '',
-      })
+      this.props.dispatch({
+        type: 'album/showCover',
+        payload: {
+          coverKey: this.props.currentKey,
+          auction: this.state.auctionChoose,
+        }
+      });
     }
-    this.props.dispatch({
-      type: 'auction/hide',
-    });
   }
 
   handleChooseAuction = (auction) => {
@@ -273,9 +262,7 @@ export default class AuctionModal extends PureComponent {
       new7: '',
       q_score: '',
       qumai: '',
-      actsLoading: true,
       auctionChoose: auction,
-      choose: auction.images && auction.images.length > 0 ? auction.images[0] : auction.coverUrl,
       search: auction.item ? auction.item.itemUrl : '',
     });
     this.handleSetTags(auction.item.itemUrl, auction.item.itemId);
@@ -286,8 +273,8 @@ export default class AuctionModal extends PureComponent {
       this.handleGetAuction({ pageSize: this.state.pagination.pageSize, current: 1 });
     }
     this.setState({
-      activeKey: e
-    })
+      activeKey: e,
+    });
   }
   handleChangeTabpane = () =>{
     this.setState({
@@ -297,7 +284,7 @@ export default class AuctionModal extends PureComponent {
   handelCutout = () => {
     
   }
-  addAuction = () => {
+  renderAddAuction = () => {
     const { visible, k } = this.props;
     const { search, itemList, pagination, addLoading, auctionChoose, q_score, new7, qumai } = this.state;
     return (<div style={{ padding: 10, height: 300 }}>
@@ -316,47 +303,37 @@ export default class AuctionModal extends PureComponent {
         />
       </div>
       <Spin spinning={addLoading} style={{ width: '100%', height: 220, lineHeight: '220px' }}>
-        { auctionChoose &&
-          <div>
-            <div style={{ margin: '10px 0' }}>
-              <p>{auctionChoose.title}</p>
-              <div style={{ margin: '5px 0' }}>
-                <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
-                <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
-                { new7 &&
-                  <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
-                }
-                { q_score &&
-                  <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
-                }
-                { qumai &&
-                  <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
-                }
-              </div>
-              { k !== 'material' &&
-                <p>选择商品主图：</p>
+        { auctionChoose && auctionChoose.title &&
+          <div style={{ margin: '10px 0' }}>
+            <p>{auctionChoose.title}</p>
+            <div style={{ margin: '5px 0' }}>
+              <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
+              <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
+              { new7 &&
+                <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
+              }
+              { q_score &&
+                <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
+              }
+              { qumai &&
+                <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
               }
             </div>
-            <div className={styles.showBox}>
-              { k !== 'material' ?
-                 auctionChoose.images.map((item, index) => <div className={styles.imgBox} key={index} onClick={() => this.handleChooseImg(item)}>
-                    <img src={item} />
-                    { item === this.state.choose &&
-                      <div className={styles.imgChoose}>
-                        <Icon type="check" />
-                      </div>
-                    }
-                  </div>)
-                
-              : <a href={auctionChoose.item.itemUrl} target="_blank">
-                <img src={auctionChoose.coverUrl} style={{ width: 120, height: 120, }} />
-              </a>
-              }
-            </div>
+            { auctionChoose && auctionChoose.title &&
+              this.renderAuctions(auctionChoose)
+            }
           </div>
         }
       </Spin>
     </div>)
+  }
+  handleChooseCover = (coverUrl) => {
+    const auction = this.state.auctionChoose;
+    auction.coverUrl = coverUrl;
+    if (this.props.onOk) this.props.onOk(auction);
+    this.props.dispatch({
+      type: 'auction/hide',
+    });
   }
   render() {
     const { visible, k, currentKey } = this.props;
@@ -379,46 +356,46 @@ export default class AuctionModal extends PureComponent {
             onChange={this.handleChangeTab}
           >
             <TabPane tab={<span>添加商品</span>} key="add">
-              {this.addAuction()}
+              {this.renderAddAuction()}
             </TabPane>
             <TabPane tab={<span>商品库</span>} key="commodities">
               <div>
                 <Spin spinning={actsLoading}>
-                { auctionChoose && <div style={{ marginBottom: 10 }}>
-                  <div style={{ margin: '5px 0' }}>
-                    <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
-                    <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
-                    { new7 &&
-                      <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
-                    }
-                    { q_score &&
-                      <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
-                    }
-                    { qumai &&
-                      <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
-                    }
+                  { auctionChoose && auctionChoose.title && <div style={{ marginBottom: 10 }}>
+                    <div style={{ margin: '5px 0' }}>
+                      <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
+                      <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
+                      { new7 &&
+                        <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
+                      }
+                      { q_score &&
+                        <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
+                      }
+                      { qumai &&
+                        <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
+                      }
+                    </div>
                   </div>
-                </div>
-                }
-                <div style={{ height: 300, overflow: 'auto'}}>
-                  {itemList.map(this.renderAuctions)}
-                </div>
-                <Pagination
-                  {...{
-                    showSizeChanger: true,
-                    showQuickJumper: true,
-                    ...pagination,
-                  }}
-                  onChange={this.changeAuctionPage}
-                  onShowSizeChange={this.changeAuctionPage}
-                  style={{float: 'right', margin: '10px 20px'}}
-                />
-
-                  </Spin>
+                  }
+                  <div style={{ height: 300, overflow: 'auto'}}>
+                    {itemList.map(this.renderAuctions)}
+                  </div>
+                  <Pagination
+                    {...{
+                      showSizeChanger: true,
+                      showQuickJumper: true,
+                      ...pagination,
+                    }}
+                    onChange={this.changeAuctionPage}
+                    onShowSizeChange={this.changeAuctionPage}
+                    style={{float: 'right', margin: '10px 20px'}}
+                  />
+                </Spin>
               </div>
+              <CoverModal k={this.props.currentKey} onOk={this.handleChooseCover} />
             </TabPane>
           </Tabs>
-          : this.addAuction()
+          : this.renderAddAuction()
         }
       </Modal>
     );
