@@ -66,6 +66,7 @@ export default class BpuModal extends PureComponent {
       effective: true,
       searchField: 'title',
       searchValue: '',
+      sorter: {},
     },
     bPUSelectionData: {
       selectedRows: [],
@@ -286,6 +287,8 @@ export default class BpuModal extends PureComponent {
     // this.state.nicaiCrx.dispatchEvent(customEvent);
 
     const result = await queryBpus({...params, type: 'bpuValuesPage'});
+    if (result.list)
+      result.list = result.list.map(item => { return {...item, htmlDescCount: this.countImgNum(item.htmlDesc) }; });
     this.setState({
       bpuValuesPage: {
         ...this.state.bpuValuesPage,
@@ -294,13 +297,14 @@ export default class BpuModal extends PureComponent {
       },
     });
   }
-  changeBpuValuesPagePage = (pagination, filters) => {
+  changeBpuValuesPagePage = (pagination, filters, sorter) => {
     if (pagination.current !== this.state.bpuValuesPage.pagination.current || pagination.pageSize !== this.state.bpuValuesPage.pagination.pageSize) {
       this.setState({
         bpuValuesPage: {
           ...this.state.bpuValuesPage,
           pagination,
           loading: true,
+          sorter,
         }
       });
       const { effective, searchField, searchValue } = this.state.bpuValuesPage;
@@ -309,6 +313,13 @@ export default class BpuModal extends PureComponent {
         currentPage: pagination.current,
         effective,
         [searchField]: searchValue,
+      });
+    } else {
+      this.setState({
+        bpuValuesPage: {
+          ...this.state.bpuValuesPage,
+          sorter,
+        }
       });
     }
   }
@@ -328,7 +339,7 @@ export default class BpuModal extends PureComponent {
     this.setState({ bpuValuesPage: { ...this.state.bpuValuesPage, selectedRowKeys, selectedRows } });
   }
   renderBpuValuesPage = () => {
-    const { bpuValuesPage: { list, pagination, loading, searchField, searchValue, selectedRowKeys } } = this.state;
+    const { bpuValuesPage: { list, pagination, loading, searchField, searchValue, selectedRowKeys, sorter } } = this.state;
     const columns = [{
       title: '商品细节',
       dataIndex: 'title',
@@ -345,15 +356,15 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '类目',
       dataIndex: 'categoryName',
-      width: 150,
+      width: 130,
     }, {
       title: '品牌',
       dataIndex: 'brandName',
-      width: 150,
+      width: 130,
     }, {
       title: '是否缺内容',
       dataIndex: 'contentRare',
-      width: 150,
+      width: 130,
       render: (val) => val ? '是' : '否',
       filters: [{
         text: '是',
@@ -368,10 +379,11 @@ export default class BpuModal extends PureComponent {
       filterMultiple: false,
       onFilter: (value, record) => value === 'unlimit' ? true : String(record.contentRare) === value,
     }, {
-      title: '详情含图',
-      dataIndex: 'htmlDesc',
-      width: 80,
-      render: (val) => this.countImgNum(val),
+      title: '详情含图数',
+      dataIndex: 'htmlDescCount',
+      width: 100,
+      sorter: (a, b) => a.htmlDescCount - b.htmlDescCount,
+      sortOrder: sorter.columnKey === 'htmlDescCount' && sorter.order,
     }];
     const rowSelection = {
       selectedRowKeys,
@@ -465,6 +477,8 @@ export default class BpuModal extends PureComponent {
     // this.state.nicaiCrx.dispatchEvent(customEvent);
 
     const result = await queryBpus({...params, type: 'bPUSelectionData'});
+    if (result.list)
+      result.list = result.list.map(item => { return {...item, htmlDescCount: this.countImgNum(item.htmlDesc) }; });
     this.setState({
       bPUSelectionData: {
         ...this.state.bPUSelectionData,
@@ -571,7 +585,7 @@ export default class BpuModal extends PureComponent {
     }, {
       title: '关联清单数',
       dataIndex: 'albumCount',
-      width: 80,
+      width: 70,
       filters: albumCountFilters,
       filterMultiple: false,
       onFilter: (value, record) => {
@@ -605,10 +619,11 @@ export default class BpuModal extends PureComponent {
       sorter: (a, b) => a.picTextCount - b.picTextCount,
       sortOrder: sorter.columnKey === 'picTextCount' && sorter.order,
     }, {
-      title: '详情含图',
-      dataIndex: 'htmlDesc',
-      width: 40,
-      render: (val) => this.countImgNum(val),
+      title: '详情含图数',
+      dataIndex: 'htmlDescCount',
+      width: 60,
+      sorter: (a, b) => a.htmlDescCount - b.htmlDescCount,
+      sortOrder: sorter.columnKey === 'htmlDescCount' && sorter.order,
     }];
     const rowSelection = {
       selectedRowKeys,
@@ -713,6 +728,8 @@ export default class BpuModal extends PureComponent {
     // this.state.nicaiCrx.dispatchEvent(customEvent);
 
     const result = await queryBpus({...params, type: 'bPUFromMemberStoreData'});
+    if (result.list)
+      result.list = result.list.map(item => { return {...item, htmlDescCount: this.countImgNum(item.htmlDesc) }; });
     this.setState({
       bPUFromMemberStoreData: {
         ...this.state.bPUFromMemberStoreData,
@@ -723,7 +740,7 @@ export default class BpuModal extends PureComponent {
   }
   changeBPUFromMemberStoreData = (pagination, filters, sorter) => {
     const { bPUFromMemberStoreData } = this.state;
-    if (pagination.current !== bPUFromMemberStoreData.pagination.current || pagination.pageSize !== bPUSelectionData.pagination.pageSize) {
+    if (pagination.current !== bPUFromMemberStoreData.pagination.current || pagination.pageSize !== bPUFromMemberStoreData.pagination.pageSize) {
       this.setState({
         bPUFromMemberStoreData: {
           ...this.state.bPUFromMemberStoreData,
@@ -853,10 +870,11 @@ export default class BpuModal extends PureComponent {
       sorter: (a, b) => a.picTextCount - b.picTextCount,
       sortOrder: sorter.columnKey === 'picTextCount' && sorter.order,
     }, {
-      title: '详情含图',
-      dataIndex: 'htmlDesc',
+      title: '详情含图数',
+      dataIndex: 'htmlDescCount',
       width: 50,
-      render: (val) => this.countImgNum(val),
+      sorter: (a, b) => a.htmlDescCount - b.htmlDescCount,
+      sortOrder: sorter.columnKey === 'htmlDescCount' && sorter.order,
     }];
     const rowSelection = {
       selectedRowKeys,
@@ -965,6 +983,8 @@ export default class BpuModal extends PureComponent {
     // this.state.nicaiCrx.dispatchEvent(customEvent);
 
     const result = await queryBpus({...params, type: 'bpuFromOnlineData'});
+    if (result.list)
+      result.list = result.list.map(item => { return {...item, htmlDescCount: this.countImgNum(item.htmlDesc) }; });
     this.setState({
       bpuFromOnlineData: {
         ...this.state.bpuFromOnlineData,
@@ -1097,10 +1117,11 @@ export default class BpuModal extends PureComponent {
       sorter: (a, b) => a.picTextCount - b.picTextCount,
       sortOrder: sorter.columnKey === 'picTextCount' && sorter.order,
     }, {
-      title: '详情含图',
-      dataIndex: 'htmlDesc',
+      title: '详情含图数',
+      dataIndex: 'htmlDescCount',
       width: 60,
-      render: (val) => this.countImgNum(val),
+      sorter: (a, b) => a.htmlDescCount - b.htmlDescCount,
+      sortOrder: sorter.columnKey === 'htmlDescCount' && sorter.order,
     }];
     const rowSelection = {
       selectedRowKeys,
