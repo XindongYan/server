@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Modal, message, Tabs, Icon, Button, Tooltip } from 'antd';
+import { Card, Modal, message, Tabs, Icon, Button, Tooltip, Spin } from 'antd';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 const TabPane = Tabs.TabPane;
@@ -23,6 +23,10 @@ export default class CropperModal extends PureComponent {
     confirmLoading: false,
     outputWidth: 0,
     outputHeight: 0,
+    setCropData: true,
+    frameWidth: (992-40) * 0.58,
+    frameHeight: 360,
+    loading: false,
   }
   componentDidMount() {
   }
@@ -46,11 +50,15 @@ export default class CropperModal extends PureComponent {
         //     this.setState({ loading: false });
         //   }
         // }, 5000);
+        this.setState({
+          loading: true,
+        });
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
         this.setState({
           nicaiCrx: null,
+          setCropData: true,
         });
       }
     }
@@ -139,29 +147,49 @@ export default class CropperModal extends PureComponent {
   }
 
   _crop = () => {
+    if (this.state.setCropData) {
+      if (this.props.width === 0) {
+        const { frameWidth, frameHeight} = this.state;
+        const rate = this.handelGetRate();
+        const width = 500 / rate;
+        const height = 500 / rate;
+        this.refs.cropper.setCropBoxData({ width, height, top: (frameHeight-height)/2, left: (frameWidth-width)/2 });
+        this.setState({
+          outputWidth: 500,
+          outputHeight: 500,
+          setCropData: false,
+          loading: false,
+        });
+      }
+    }
     const canvas = this.refs.cropper.getCroppedCanvas();
     const dataUrl = canvas.toDataURL();
     this.setState({
       dataUrl,
       outputWidth: canvas.width,
       outputHeight: canvas.height,
+      loading: false,
     });
+  }
+  handelGetRate = () => {
+    const { picWidth, picHeight } = this.props;
+    const { frameWidth, frameHeight} = this.state;
+    let rate = 1;
+    if (picWidth/frameWidth > picHeight / frameHeight) {
+      rate = picWidth/frameWidth;
+    } else {
+      rate = picHeight / frameHeight;
+    }
+    return rate;
   }
   render() {
     const { visible, src, width, height, picWidth, picHeight, cropperKey, k } = this.props;
-    const { dataUrl, confirmLoading } = this.state;
-    let rate = 1;
+    const { dataUrl, confirmLoading, frameWidth, frameHeight } = this.state;
     let aspectRatio = 0;
     if (width > 0) {
       aspectRatio = width / height;
     }
-    // const frameWidth = (992-40) * 0.62;
-    const frameHeight = 360;
-    // if (picWidth/frameWidth > picHeight / frameHeight) {
-    //   rate = picWidth/frameWidth;
-    // } else {
-    rate = picHeight / frameHeight;
-    // }
+    const rate = this.handelGetRate();
     return (
       <Modal
         title="裁切"
@@ -173,6 +201,7 @@ export default class CropperModal extends PureComponent {
         maskClosable={false}
         confirmLoading={confirmLoading}
       >
+        <Spin spinning={this.state.loading}>
         {k === cropperKey && visible &&
           <Cropper
             ref='cropper'
@@ -197,6 +226,7 @@ export default class CropperModal extends PureComponent {
             style={{ maxWidth: '100%', maxHeight: frameHeight - 21 }}
           />
         </div>
+        </Spin>
       </Modal>
     );
   }
