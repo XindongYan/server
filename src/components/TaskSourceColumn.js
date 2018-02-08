@@ -5,7 +5,7 @@ import { SOURCE } from '../constants';
 export default class TaskSourceColumn extends PureComponent {
   render() {
     const { source } = this.props;
-    if (source === SOURCE.task) {
+    if (source === SOURCE.take) {
       return (<Badge status="processing" text={"赏金任务"} />);
     } else if (source === SOURCE.deliver) {
       return (<Badge status="warning" text={"投稿"} />);
