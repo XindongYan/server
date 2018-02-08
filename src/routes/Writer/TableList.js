@@ -75,7 +75,6 @@ export default class TableList extends PureComponent {
         }, 1000);
       });
     }
-    console.log(process.env);
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = nextProps;
@@ -577,10 +576,6 @@ export default class TableList extends PureComponent {
         if (record.approve_status === TASK_APPROVE_STATUS.taken) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-              <Divider type="vertical" />
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
@@ -594,6 +589,10 @@ export default class TableList extends PureComponent {
               }
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
+              <Divider type="vertical" />
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
               {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) && <Divider type="vertical" />}
               {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) &&
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
@@ -613,33 +612,33 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-              <Divider type="vertical" />
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
+              <Divider type="vertical" />
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-              <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
+              <Divider type="vertical" />
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
+              <Link to={`/approver/task/edit?_id=${record._id}`}>
+                <span>编辑</span>
+              </Link>
               <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
@@ -651,9 +650,9 @@ export default class TableList extends PureComponent {
                 </Tooltip>
               </Popconfirm>
               <Divider type="vertical" />
-              <Link to={`/approver/task/edit?_id=${record._id}`}>
-                <span>编辑</span>
-              </Link>
+              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+                外链
+              </a>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
@@ -683,6 +682,19 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
           return (
             <div>
+              { !record.approver_id &&
+                <Popconfirm placement="left" title="当前稿子将转移到待完成列表中，编辑后请到待完成中查找。" onConfirm={() => this.handleReturnToTakenAndEdit(record)} okText="确认" cancelText="取消">
+                  <a>
+                    编辑
+                  </a>
+                </Popconfirm>
+              }
+              { !record.approver_id && <Divider type="vertical" />}
+              { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id &&
+                <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <a>退回</a>
+              </Popconfirm>}
+              { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id && <Divider type="vertical" />}
               { record.taobao && record.taobao.url &&
                 <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
                   推广
@@ -697,19 +709,6 @@ export default class TableList extends PureComponent {
                 <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
                   查看
                 </a>
-              }
-              { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id && <Divider type="vertical" />}
-              { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id &&
-                <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <a>退回</a>
-              </Popconfirm>}
-              { !record.approver_id && <Divider type="vertical" />}
-              { !record.approver_id &&
-                <Popconfirm placement="left" title="当前稿子将转移到待完成列表中，编辑后请到待完成中查找。" onConfirm={() => this.handleReturnToTakenAndEdit(record)} okText="确认" cancelText="取消">
-                  <a>
-                    编辑
-                  </a>
-                </Popconfirm>
               }
             </div>
           );
