@@ -23,13 +23,13 @@ export default {
     takerTask: {
       list: [],
       pagination: {},
-      approve_status: TASK_APPROVE_STATUS.all,
+      approve_status: TASK_APPROVE_STATUS.taken,
     },
     takerTaskLoading: true,
     approverTask: {
       list: [],
       pagination: {},
-      approve_status: 'all',
+      approve_status: 'waitingForApprove',
     },
     approverTaskLoading: true,
     darenTask: {
