@@ -566,24 +566,36 @@ export default class TaskEdit extends PureComponent {
           { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) &&
             <div className={styles.submitBox}>
               { formData.approve_status !== 1 && formData.approve_status !== 3 ?
-                <div>
+                <div id="subButton">
                   <Popconfirm
+                    overlayClassName={styles.popConfirm}
                     placement="top"
                     title="确认提交？"
                     onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.rejected)}
+                    getPopupContainer={() => document.getElementById('subButton')}
                   >
                     <Button>不通过</Button>
                   </Popconfirm>
                   <Popconfirm
+                    overlayClassName={styles.popConfirm}
                     placement="top"
                     title="确认提交？"
                     onConfirm={() => this.handleSubmit(TASK_APPROVE_STATUS.passed)}
+                    getPopupContainer={() => document.getElementById('subButton')}
                   >
                     <Button>通过</Button>
                   </Popconfirm>
                 </div>
                 :
-                <Popconfirm placement="top" title={`确认退回?`} onConfirm={() => this.handleReject()} okText="确认" cancelText="取消">
+                <Popconfirm
+                    overlayClassName={styles.popConfirm}
+                  placement="top"
+                  title={`确认退回?`}
+                  onConfirm={() => this.handleReject()}
+                  okText="确认"
+                  cancelText="取消"
+                  getPopupContainer={() => document.getElementById('subButton')}
+                >
                   <Button>退回</Button>
                 </Popconfirm>
               }
