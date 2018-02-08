@@ -412,9 +412,9 @@ export default class TableList extends PureComponent {
         title: '名称',
         dataIndex: 'name',
         width: 200,
-        render: (record, task) => (
+        render: (val, record) => (
           <Link to={`${ORIGIN}/public/task/details?id=${record._id}`}>
-            <TaskNameColumn text={record} length={10} />
+            <TaskNameColumn text={val} length={10} />
           </Link>
         )
       },
@@ -522,7 +522,7 @@ export default class TableList extends PureComponent {
                   <a>退回</a>
                 </Popconfirm> }
                 <Divider type="vertical" />
-                <a target="_blank" href={`/approver/task/view?_id=${task._id}`}>
+                <a target="_blank" href={`/approver/task/view?_id=${record._id}`}>
                   查看
                 </a>
               </div>
@@ -530,7 +530,7 @@ export default class TableList extends PureComponent {
           } else {
             return (
               <div>
-                <a target="_blank" href={`/approver/task/view?_id=${task._id}`}>
+                <a target="_blank" href={`/approver/task/view?_id=${record._id}`}>
                   查看
                 </a>
               </div>
@@ -539,7 +539,7 @@ export default class TableList extends PureComponent {
         } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`/approver/task/view?_id=${task._id}`}>
+              <a target="_blank" href={`/approver/task/view?_id=${record._id}`}>
                 查看
               </a>
             </div>
@@ -551,7 +551,7 @@ export default class TableList extends PureComponent {
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <a target="_blank" href={`/approver/task/view?_id=${task._id}`}>
+              <a target="_blank" href={`/approver/task/view?_id=${record._id}`}>
                 查看
               </a>
             </div>
