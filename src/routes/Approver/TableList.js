@@ -413,9 +413,9 @@ export default class TableList extends PureComponent {
         dataIndex: 'name',
         width: 200,
         render: (val, record) => (
-          <Link to={`${ORIGIN}/public/task/details?id=${record._id}`}>
+          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
-          </Link>
+          </a>
         )
       },
       {
@@ -521,27 +521,23 @@ export default class TableList extends PureComponent {
                 { record.approve_step === 0 && <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                   <a>退回</a>
                 </Popconfirm> }
-                <Divider type="vertical" />
-                <a target="_blank" href={`/approver/task/view?_id=${record._id}`}>
-                  查看
-                </a>
               </div>
             );
           } else {
             return (
               <div>
-                <a target="_blank" href={`/approver/task/view?_id=${record._id}`}>
+                <Link to={`/approver/task/view?_id=${record._id}`}>
                   查看
-                </a>
+                </Link>
               </div>
             );
           }
         } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`/approver/task/view?_id=${record._id}`}>
+              <Link to={`/approver/task/view?_id=${record._id}`}>
                 查看
-              </a>
+              </Link>
             </div>
           );
         } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
@@ -551,9 +547,9 @@ export default class TableList extends PureComponent {
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <a target="_blank" href={`/approver/task/view?_id=${record._id}`}>
+              <Link to={`/approver/task/view?_id=${record._id}`}>
                 查看
-              </a>
+              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {

@@ -455,9 +455,9 @@ export default class TableList extends PureComponent {
         title: '名称',
         dataIndex: 'name',
         render: (val, record) => (
-          <Link to={`${ORIGIN}/public/task/details?id=${record._id}`}>
+          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
-          </Link>
+          </a>
         ),
       },
       {
@@ -600,9 +600,9 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
-              <a target="_blank" href={`/writer/task/view?_id=${record._id}`}>
+              <Link to={`/writer/task/view?_id=${record._id}`}>
                 查看
-              </a>
+              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
@@ -620,9 +620,9 @@ export default class TableList extends PureComponent {
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <a target="_blank" href={`/writer/task/view?_id=${record._id}`}>
+              <Link to={`/writer/task/view?_id=${record._id}`}>
                 查看
-              </a>
+              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
