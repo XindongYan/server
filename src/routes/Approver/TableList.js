@@ -413,7 +413,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'name',
         width: 200,
         render: (record, task) => (
-          <Link to={`/approver/task/view?_id=${task._id}`}>
+          <Link to={`${ORIGIN}/public/task/details?id=${record._id}`}>
             <TaskNameColumn text={record} length={10} />
           </Link>
         )
@@ -522,16 +522,16 @@ export default class TableList extends PureComponent {
                   <a>退回</a>
                 </Popconfirm> }
                 <Divider type="vertical" />
-                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                  外链
+                <a target="_blank" href={`/approver/task/view?_id=${task._id}`}>
+                  查看
                 </a>
               </div>
             );
           } else {
             return (
               <div>
-                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                  外链
+                <a target="_blank" href={`/approver/task/view?_id=${task._id}`}>
+                  查看
                 </a>
               </div>
             );
@@ -539,8 +539,8 @@ export default class TableList extends PureComponent {
         } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
+              <a target="_blank" href={`/approver/task/view?_id=${task._id}`}>
+                查看
               </a>
             </div>
           );
@@ -551,8 +551,8 @@ export default class TableList extends PureComponent {
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
+              <a target="_blank" href={`/approver/task/view?_id=${task._id}`}>
+                查看
               </a>
             </div>
           );
@@ -578,10 +578,6 @@ export default class TableList extends PureComponent {
               <Link to={`/approver/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
-              <Divider type="vertical" />
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
@@ -598,14 +594,6 @@ export default class TableList extends PureComponent {
               <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
                 分析
               </a>
-              { record.taobao && record.taobao.url &&
-                <Divider type="vertical" />
-              }
-              {record.taobao && record.taobao.url &&
-                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-                  查看
-                </a>
-              }
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
@@ -626,14 +614,6 @@ export default class TableList extends PureComponent {
               <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
                 分析
               </a>
-              { record.taobao && record.taobao.url &&
-                <Divider type="vertical" />
-              }
-              {record.taobao && record.taobao.url &&
-                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-                  查看
-                </a>
-              }
             </div>
           );
         } else {
