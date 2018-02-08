@@ -59,6 +59,8 @@ export default class CropperModal extends PureComponent {
         this.setState({
           nicaiCrx: null,
           setCropData: true,
+          outputWidth: 0,
+          outputHeight: 0,
         });
       }
     }
