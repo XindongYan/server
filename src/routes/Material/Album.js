@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress } from 'antd';
+import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress, Popconfirm } from 'antd';
 import CutpicModal from '../../components/AlbumModal/CutpicModal.js';
 
 import styles from './index.less';
@@ -157,13 +157,12 @@ export default class Album extends PureComponent {
               <Icon type="edit" className={styles.customIcon}/>
               <span>抠图</span>
             </div>
-            {/*
-              
-            */}
           </div>
-          <div className={styles.deletePicBox} onClick={() => this.handleDeletePhoto(photo)}>
-            <Icon type="delete" />
-          </div>
+          <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDeletePhoto(photo)}>
+            <div className={styles.deletePicBox}>
+              <Icon type="delete" />
+            </div>
+          </Popconfirm>  
         </div>
         <div className={styles.customCard}>
           <p className={styles.customNodes}>{photo.picWidth} * {photo.picHeight}</p>
