@@ -455,9 +455,9 @@ export default class TableList extends PureComponent {
         title: '名称',
         dataIndex: 'name',
         render: (val, record) => (
-          <Link to={`/writer/task/view?_id=${record._id}`}>
+          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
-          </Link>
+          </a>
         ),
       },
       {
@@ -589,10 +589,6 @@ export default class TableList extends PureComponent {
               }
               {!record.project_id && <Divider type="vertical" />}
               {!record.project_id && <a onClick={() => this.handleShowPassModal(record)}>转交</a>}
-              <Divider type="vertical" />
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
               {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) && <Divider type="vertical" />}
               {(record.source === SOURCE.deliver || record.source === SOURCE.create || record.source === SOURCE.pass) &&
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
@@ -604,9 +600,9 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
+              <Link to={`/writer/task/view?_id=${record._id}`}>
+                查看
+              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.rejected) {
@@ -615,10 +611,6 @@ export default class TableList extends PureComponent {
               <Link to={`/writer/task/edit?_id=${record._id}`}>
                 <span>编辑</span>
               </Link>
-              <Divider type="vertical" />
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
@@ -628,9 +620,9 @@ export default class TableList extends PureComponent {
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
+              <Link to={`/writer/task/view?_id=${record._id}`}>
+                查看
+              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
@@ -649,10 +641,6 @@ export default class TableList extends PureComponent {
                   <a>退回</a>
                 </Tooltip>
               </Popconfirm>
-              <Divider type="vertical" />
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {
@@ -669,14 +657,6 @@ export default class TableList extends PureComponent {
               <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
                 分析
               </a>
-              { record.taobao && record.taobao.url &&
-                <Divider type="vertical" />
-              }
-              {record.taobao && record.taobao.url &&
-                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-                  查看
-                </a>
-              }
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
@@ -704,12 +684,6 @@ export default class TableList extends PureComponent {
               <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
                 分析
               </a>
-              { record.taobao && record.taobao.url && <Divider type="vertical" /> }
-              {record.taobao && record.taobao.url &&
-                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-                  查看
-                </a>
-              }
             </div>
           );
         } else {

@@ -412,10 +412,10 @@ export default class TableList extends PureComponent {
         title: '名称',
         dataIndex: 'name',
         width: 200,
-        render: (record, task) => (
-          <Link to={`/approver/task/view?_id=${task._id}`}>
-            <TaskNameColumn text={record} length={10} />
-          </Link>
+        render: (val, record) => (
+          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+            <TaskNameColumn text={val} length={10} />
+          </a>
         )
       },
       {
@@ -514,14 +514,10 @@ export default class TableList extends PureComponent {
           if (!record.current_approvers || record.current_approvers.length === 0 || record.current_approvers.indexOf(currentUser._id) >= 0) {
             return (
               <div>
-                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                  外链
-                </a>
-                <Divider type="vertical" />
                 <Link to={`/approver/task/edit?_id=${record._id}`}>
                   <span>审核</span>
                 </Link>
-                { record.approve_step === 0 && <span className={styles.splitLine} /> }
+                { record.approve_step === 0 && <Divider type="vertical" /> }
                 { record.approve_step === 0 && <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                   <a>退回</a>
                 </Popconfirm> }
@@ -530,12 +526,8 @@ export default class TableList extends PureComponent {
           } else {
             return (
               <div>
-                <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                  外链
-                </a>
-                <Divider type="vertical" />
                 <Link to={`/approver/task/view?_id=${record._id}`}>
-                  <span>详情</span>
+                  查看
                 </Link>
               </div>
             );
@@ -543,38 +535,26 @@ export default class TableList extends PureComponent {
         } else if(record.approve_status === TASK_APPROVE_STATUS.rejected) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-              <Divider type="vertical" />
               <Link to={`/approver/task/view?_id=${record._id}`}>
-                <span>详情</span>
+                查看
               </Link>
             </div>
           );
         } else if(record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-              <Divider type="vertical" />
-              <Link to={`/approver/task/edit?_id=${record._id}`}>
-                <span>详情</span>
-              </Link>
-              <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
+              <Divider type="vertical" />
+              <Link to={`/approver/task/view?_id=${record._id}`}>
+                查看
+              </Link>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
           return (
             <div>
-              <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-                外链
-              </a>
-              <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
@@ -592,7 +572,7 @@ export default class TableList extends PureComponent {
               </Popconfirm>
               <Divider type="vertical" />
               <Link to={`/approver/task/edit?_id=${record._id}`}>
-                <span>详情</span>
+                <span>编辑</span>
               </Link>
             </div>
           );
@@ -610,19 +590,15 @@ export default class TableList extends PureComponent {
               <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
                 分析
               </a>
-              { record.taobao && record.taobao.url &&
-                <Divider type="vertical" />
-              }
-              {record.taobao && record.taobao.url &&
-                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-                  查看
-                </a>
-              }
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
           return (
             <div>
+              <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <a>退回</a>
+              </Popconfirm>
+              <Divider type="vertical" />
               { record.taobao && record.taobao.url &&
                 <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
                   推广
@@ -634,18 +610,6 @@ export default class TableList extends PureComponent {
               <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
                 分析
               </a>
-              { record.taobao && record.taobao.url &&
-                <Divider type="vertical" />
-              }
-              {record.taobao && record.taobao.url &&
-                <a target="_blank" href={record.taobao ? record.taobao.url : ''}>
-                  查看
-                </a>
-              }
-              <Divider type="vertical" />
-              <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <a>退回</a>
-              </Popconfirm>
             </div>
           );
         } else {
