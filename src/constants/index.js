@@ -116,6 +116,7 @@ export const TAOBAO_ACTIVITYID = {
   '1437': 'ifashion',
   '1439': '全球时尚',
   '60': '买遍全球',
+  '6': '淘宝头条',
 };
 
 export const TAOBAO_ACTIVITYID_MIRROR = {
@@ -124,6 +125,7 @@ export const TAOBAO_ACTIVITYID_MIRROR = {
   'ifashion': '1437',
   '全球时尚': '1439',
   '买遍全球': '60',
+  '淘宝头条': '6',
 };
 
 export const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];

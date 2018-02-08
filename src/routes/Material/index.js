@@ -63,7 +63,6 @@ export default class Material extends PureComponent {
   setVersion = (e) => {
     const { pagination } = this.state;
     const data = JSON.parse(e.target.innerText);
-    console.log(data)
     this.setState({
       version: data.version,
     });

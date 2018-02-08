@@ -30,6 +30,7 @@ export default class Album extends PureComponent {
     nicaiCrx.addEventListener('setVersion', this.setVersion);
     nicaiCrx.addEventListener('setAlbum', this.setAlbum);
     nicaiCrx.addEventListener('uploadResult', this.uploadResult);
+    nicaiCrx.addEventListener('deletePhotoResult', this.deletePhotoResult);
     if (!this.state.nicaiCrx) {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
@@ -45,6 +46,7 @@ export default class Album extends PureComponent {
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
     nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
+    nicaiCrx.removeEventListener('deletePhotoResult', this.deletePhotoResult);
   }
 
   handleGetVersion = () => {
@@ -92,6 +94,7 @@ export default class Album extends PureComponent {
     const data = JSON.parse(e.target.innerText);
     const { pagination } = this.state;
     if (!data.errorCode) {
+      message.destroy();
       message.success('上传成功');
       this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
     } else {
@@ -122,6 +125,24 @@ export default class Album extends PureComponent {
       previewVisible: true,
     });
   }
+  deletePhotoResult = (e) => {
+    const data = JSON.parse(e.target.innerText);
+    const { pagination } = this.state;
+    if (!data.error) {
+      message.success(data.msg);
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+    } else {
+      message.error(data.msg);
+    }
+  }
+  handleDeletePhoto = (photo) => {
+    if (photo && photo.id) {
+      this.state.nicaiCrx.innerText = JSON.stringify({ids: photo.id});
+      const customEvent = document.createEvent('Event');
+      customEvent.initEvent('deletePhoto', true, true);
+      this.state.nicaiCrx.dispatchEvent(customEvent);
+    }
+  }
   renderPhoto = (photo) => {
     return (
       <Card style={{ width: 146, display: 'inline-block', margin: '5px 15px 5px 0' }} bodyStyle={{ padding: 0 }} key={photo.id} >
@@ -137,8 +158,11 @@ export default class Album extends PureComponent {
               <span>抠图</span>
             </div>
             {/*
-              <Icon type="delete" className={styles.customIcon} onClick={() => console.log('remove')} />
+              
             */}
+          </div>
+          <div className={styles.deletePicBox} onClick={() => this.handleDeletePhoto(photo)}>
+            <Icon type="delete" />
           </div>
         </div>
         <div className={styles.customCard}>
@@ -178,13 +202,14 @@ export default class Album extends PureComponent {
           const customEvent = document.createEvent('Event');
           customEvent.initEvent('uploadImg', true, true);
           this.state.nicaiCrx.dispatchEvent(customEvent);
+          message.destroy();
+          message.loading('上传中...', 60);
         }
       }
     }
   }
   handleCutpic = (img) => {
     if (img && img.url) {
-    console.log(img);
       this.props.dispatch({
         type: 'album/showCutpic',
         payload: {

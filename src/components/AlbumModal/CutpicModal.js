@@ -39,7 +39,7 @@ export default class CutpicModal extends PureComponent {
       // setTimeout(() => {
       //   if(!this.state.version){
       //     message.destroy();
-      //     message.warn('请安装尼采创作平台插件并用淘宝授权登录！', 60 * 60);
+      //     message.warn('请安装尼采创作平台插件！', 60 * 60);
       //     this.setState({ loading: false });
       //   }
       // }, 5000);
@@ -79,16 +79,21 @@ export default class CutpicModal extends PureComponent {
       if (data.result) {
         this.setState({
           cutpicUrl: data.result,
+        }, () => {
+          const img = new Image();
+          img.src = data.result;
+          img.onload = () => {
+            this.setState({
+              loading: false,
+            });
+            message.destroy();
+            message.success('抠图完成');
+          }
         });
       }
     } else {
       message.warn(response.msg);
     }
-    this.setState({
-      loading: false,
-    });
-    message.destroy();
-    message.success('抠图完成');
   }
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);
@@ -150,7 +155,6 @@ export default class CutpicModal extends PureComponent {
       image.onload = () => {
         const base64 = this.handleGetBase64(image);
         this.handleSubmit(base64);
-
         // if(this.props.onOk) this.props.onOk(base64);
       }
     }
