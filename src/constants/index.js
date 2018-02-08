@@ -104,10 +104,11 @@ export const INVITATION_ROLE = {
 };
 
 export const SOURCE = {
-  task: 1, // 赏金任务
+  take: 1, // 赏金任务
   deliver: 2, // 投稿
   create: 3, // 我的
   pass: 4, // 转交
+  specify: 5, // 指定
 };
 
 export const TAOBAO_ACTIVITYID = {

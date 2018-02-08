@@ -111,7 +111,7 @@ export default class TaskForm extends PureComponent {
             type: 'task/add',
             payload: {
               ...payload,
-              source: SOURCE.task,
+              source: SOURCE.take,
               approve_status: TASK_APPROVE_STATUS.created,
             },
             callback: (result) => {
