@@ -153,6 +153,7 @@ export default class CropperModal extends PureComponent {
         const rate = this.handelGetRate();
         const width = 500 / rate;
         const height = 500 / rate;
+        rate
         this.refs.cropper.setCropBoxData({ width, height, top: (frameHeight-height)/2, left: (frameWidth-width)/2 });
         this.setState({
           outputWidth: 500,
@@ -180,7 +181,9 @@ export default class CropperModal extends PureComponent {
     } else {
       rate = picHeight / frameHeight;
     }
-    return rate;
+    console.log(rate);
+    console.log(rate.toFixed(2));
+    return rate.toFixed(2);
   }
   render() {
     const { visible, src, width, height, picWidth, picHeight, cropperKey, k } = this.props;
