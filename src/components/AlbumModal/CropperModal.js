@@ -24,7 +24,7 @@ export default class CropperModal extends PureComponent {
     outputWidth: 0,
     outputHeight: 0,
     setCropData: true,
-    frameWidth: (992-40) * 0.58,
+    frameWidth: 500,
     frameHeight: 360,
     loading: false,
   }
@@ -59,8 +59,6 @@ export default class CropperModal extends PureComponent {
         this.setState({
           nicaiCrx: null,
           setCropData: true,
-          outputWidth: 0,
-          outputHeight: 0,
         });
       }
     }
@@ -155,7 +153,6 @@ export default class CropperModal extends PureComponent {
         const rate = this.handelGetRate();
         const width = 500 / rate;
         const height = 500 / rate;
-        rate
         this.refs.cropper.setCropBoxData({ width, height, top: (frameHeight-height)/2, left: (frameWidth-width)/2 });
         this.setState({
           outputWidth: 500,
@@ -183,8 +180,6 @@ export default class CropperModal extends PureComponent {
     } else {
       rate = picHeight / frameHeight;
     }
-    console.log(rate);
-    console.log(rate.toFixed(2));
     return rate.toFixed(2);
   }
   render() {
@@ -211,7 +206,7 @@ export default class CropperModal extends PureComponent {
           <Cropper
             ref='cropper'
             src={src}
-            style={{height: frameHeight, width: '58%', display: 'inline-block', verticalAlign: 'middle', background: '#fff' }}
+            style={{height: frameHeight, width: 500, display: 'inline-block', verticalAlign: 'middle', background: '#fff' }}
             crossOrigin="anonymous"
             // Cropper.js options
             aspectRatio={aspectRatio}
