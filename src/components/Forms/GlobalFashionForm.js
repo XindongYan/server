@@ -32,6 +32,7 @@ export default class GlobalFashionForm extends PureComponent {
     if (formData && formData.title) {
       const fieldsValue = {
         title: formData.title,
+        summary: formData.summary,
       };
       if (this.props.channel_name === '买遍全球') {
         fieldsValue.sub_title = formData.sub_title;
@@ -59,6 +60,9 @@ export default class GlobalFashionForm extends PureComponent {
   }
   handleTitleChange = (e) => {
     if (this.props.onChange) this.props.onChange({ title: e.target.value });
+  }
+  handleSummaryChange = (e) => {
+    if (this.props.onChange) this.props.onChange({ summary: e.target.value });
   }
   handleSubTitleChange = (e) => {
     if (this.props.onChange) this.props.onChange({ sub_title: e.target.value });
@@ -99,7 +103,6 @@ export default class GlobalFashionForm extends PureComponent {
           <a href={`${location.origin}/global_fashion_pic.psd`} download="全球时尚图片模版.psd" style={{float: 'right', marginRight: 20}}>
             下载图片模版</a>
         </div>
-        { 
           <div className={styles.taskContentBox}>
             <div className={styles.taskList}>
               <div className={styles.taskListInp}>
@@ -122,6 +125,31 @@ export default class GlobalFashionForm extends PureComponent {
                   )}
                 </FormItem>
                 <span style={{ color: formData.title && formData.title.length > 19 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/19</span>
+              </div>
+            </div>
+            <div className={styles.taskList}>
+              <div className={styles.taskListInp}>
+                <FormItem>
+                  {getFieldDecorator('summary', {
+                    rules: [{
+                      required: true, message: '标题不能为空',
+                    }, {
+                      max: 100, message: '文字长度太长, 要求长度最大为100',
+                    }, {
+                      min: 10, message: '文字长度太短, 要求长度最小为10',
+                    }, {
+                      whitespace: true, message: '标题不能为空格'
+                    }],
+                  })(
+                    <Input.TextArea
+                      disabled={disabled}
+                      style={{ fontSize: '16px', border: 'none' }}
+                      onChange={this.handleSummaryChange}
+                      placeholder="请在这里输入10-100个字的引文"
+                    />
+                  )}
+                </FormItem>
+                <span style={{ color: formData.summary && formData.summary.length > 100 ? '#f00' : '#444' }}>{ formData.summary ? formData.summary.length : 0}/100</span>
               </div>
             </div>
             { this.props.channel_name === '买遍全球' &&
@@ -178,7 +206,6 @@ export default class GlobalFashionForm extends PureComponent {
             	<TagPicker disabled={disabled} dataParent={dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
             </div>
           </div>
-        }
       </div>
     );
   }

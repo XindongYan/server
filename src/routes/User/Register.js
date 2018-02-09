@@ -145,29 +145,15 @@ export default class Register extends Component {
             this.renderMessage(register.msg)
           }
           <FormItem>
-            <InputGroup size="large" className={styles.mobileGroup} compact>
-              <FormItem style={{ width: '20%' }}>
-                {getFieldDecorator('prefix', {
-                  initialValue: '86',
-                })(
-                  <Select size="large">
-                    <Option value="86">+86</Option>
-                    <Option value="87">+87</Option>
-                  </Select>
-                )}
-              </FormItem>
-              <FormItem style={{ width: '80%' }}>
-                {getFieldDecorator('phone', {
-                  rules: [{
-                    required: true, message: '请输入手机号！',
-                  }, {
-                    pattern: /^1\d{10}$/, message: '手机号格式错误！',
-                  }],
-                })(
-                  <Input size="large" placeholder="11位手机号" />
-                )}
-              </FormItem>
-            </InputGroup>
+            {getFieldDecorator('phone', {
+              rules: [{
+                required: true, message: '请输入手机号！',
+              }, {
+                pattern: /^1\d{10}$/, message: '手机号格式错误！',
+              }],
+            })(
+              <Input size="large" placeholder="11位手机号" />
+            )}
           </FormItem>
           <FormItem>
             <Row gutter={8}>

@@ -30,6 +30,9 @@ export default class WeitaoForm extends PureComponent {
   handleTitleChange = (e) => {
     if (this.props.onChange) this.props.onChange({ title: e.target.value });
   }
+  handleSummaryChange = (e) => {
+    if (this.props.onChange) this.props.onChange({ summary: e.target.value });
+  }
   handleTaskChange = (value, key) => {
     const data = {};
     data[key] = value;
@@ -82,6 +85,15 @@ export default class WeitaoForm extends PureComponent {
               }
             </div>
             <div className={styles.taskList}>
+              <div className={styles.taskListInp}>
+                <Input.TextArea type="text" id="task-title" value={formData.summary} onChange={this.handleSummaryChange} placeholder="请在这里输入10-100个字的引文"/>
+                <span style={{ color: formData.summary && formData.summary.length > 100 ? '#f00' : '#444' }}>{ formData.summary ? formData.summary.length : 0}/100</span>
+              </div>
+              { formData.summary && formData.summary.length > 100 &&
+                <span className={styles.promptRed}>标题字数不能超过100个字</span>
+              }
+            </div>
+            <div className={styles.taskList}>
               <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
@@ -98,6 +110,9 @@ export default class WeitaoForm extends PureComponent {
           <div className={styles.taskContentBox}>
             <div className={styles.taskList} style={{padding: '30px 0'}}>
               <p style={{ fontSize: 18 }}>{formData.title}</p>
+            </div>
+            <div className={styles.taskList} style={{padding: '30px 0'}}>
+              <p style={{ fontSize: 18 }}>{formData.summary}</p>
             </div>
             <div className={styles.taskList} style={{ minHeight: 558 }}>
               <div className={styles.descBox} dangerouslySetInnerHTML={{__html: formData.task_desc}}>
