@@ -251,7 +251,7 @@ export default class GoodProductionForm extends PureComponent {
   }
   handleAddBodyStruct = () => {
     if (this.props.formData.bodyStruct.length <= 4) {
-      if (this.props.onChange) this.props.onChange({ bodyStruct: [...this.props.formData.bodyStruct, {}] });
+      if (this.props.onChange) this.props.onChange({ bodyStruct: [...this.props.formData.bodyStruct, { title: '', images: [], desc: '' }] });
     }
   }
   handleAddBodyStruct0 = () => {
