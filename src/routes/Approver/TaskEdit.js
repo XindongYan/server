@@ -37,11 +37,13 @@ export default class TaskEdit extends PureComponent {
     weitao: {
       crowd: [],
       title: '',
+      summary: '',
       task_desc: '',
       cover_img: '',
     },
     toutiao: {
       title: '', // '任务标题',
+      summary: '',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',
       crowd: [], // 目标人群
@@ -68,6 +70,7 @@ export default class TaskEdit extends PureComponent {
     },
     globalFashion: {
       title: '', // '任务标题',
+      summary: '',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
       crowd: [], // 目标人群
@@ -83,6 +86,7 @@ export default class TaskEdit extends PureComponent {
     },
     buyWorld: {
       title: '', // '任务标题',
+      summary: '',
       sub_title: '', // '副标题',
       task_desc: '', // '写手提交的稿子内容',
       cover_img: '',//封面
