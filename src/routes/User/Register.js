@@ -112,7 +112,7 @@ export default class Register extends Component {
     if (sms_code && sms_code.length === 6) {
       const phone = this.props.form.getFieldValue('phone');
       const result = await queryUserBySms({ phone, sms_code });
-      if (!result.error && result.user) {
+      if (!result.error && result.user && !(result.user.taobao && result.user.taobao.taobao_user_id)) {
         this.setState({ exists: true });
         this.props.form.setFieldsValue({
           nickname: result.user.nick || result.user.name,
