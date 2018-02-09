@@ -547,8 +547,8 @@ export default class TableList extends PureComponent {
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <Link to={`/approver/task/view?_id=${record._id}`}>
-                查看
+              <Link to={`/approver/task/edit?_id=${record._id}`}>
+                编辑
               </Link>
             </div>
           );
