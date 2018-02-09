@@ -118,6 +118,7 @@ export default class TaskForm extends PureComponent {
     // window.onbeforeunload = () => {
     //   return "确认离开页面?";
     // }
+    // window.addEventListener('popstate',this.closeModal,false);
     const query = querystring.parse(this.props.location.search.substr(1));
     if (query._id) {
       this.props.dispatch({
@@ -180,6 +181,23 @@ export default class TaskForm extends PureComponent {
     this.props.dispatch({
       type: 'task/clearFormData'
     });
+    // window.removeEventListener('popstate',this.closeModal,false);
+  }
+
+  addEventHandler = () => {
+    history.pushState({},'')
+  }
+
+  removeEventHandler = () => {
+  }
+
+  closeModal = (e) => {
+    Modal.confirm({
+      title: '确定吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => history.back(),
+    });
   }
 
   validate = () => {
@@ -207,7 +225,7 @@ export default class TaskForm extends PureComponent {
             bOk = false;
           } else {
             for (var i = haveGoods.bodyStruct.length - 1; i >= 0; i--) {
-              !haveGoods.bodyStruct[i].title ? haveGoods.bodyStruct.splice(i, 1) : '';
+              (!haveGoods.bodyStruct[i] || !haveGoods.bodyStruct[i].title) ? haveGoods.bodyStruct.splice(i, 1) : '';
             }
             if (haveGoods.bodyStruct.length < 2) {
               message.warn('请编写至少2个段落');
