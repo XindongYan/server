@@ -159,6 +159,9 @@ export default class ProjectForm extends PureComponent {
       key: `${file.uid}${extname}`,
     };
   }
+  handleSelectApprove = (item) => {
+    console.log(item);
+  }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData } = this.props;
     const type = getFieldValue('type') || formData.type;
@@ -369,6 +372,7 @@ export default class ProjectForm extends PureComponent {
                       mode="multiple"
                       style={{ width: '100%' }}
                       placeholder={`选择${label}人员`}
+                      onSearch={() => this.handleSelectApprove(item)}
                     >
                       {teamUsers.filter(teamUser => teamUser.user_id && teamUser.approve_roles.indexOf(item) >= 0)
                         .map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option>)}

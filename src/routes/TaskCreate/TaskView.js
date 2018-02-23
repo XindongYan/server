@@ -36,9 +36,10 @@ export default class TaskForm extends PureComponent {
   }
   render() {
     const { formData, project } = this.props;
+    console.log(formData);
     return (
       <div>
-        { formData.project_id &&
+        { formData.project_id && project && project._id &&
           <ProjectDetail project={project} />
         }
         <Card bordered={false} title="任务详情" style={{ padding: '0 0 40px' }}>
