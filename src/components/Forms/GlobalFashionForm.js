@@ -132,7 +132,7 @@ export default class GlobalFashionForm extends PureComponent {
                 <FormItem>
                   {getFieldDecorator('summary', {
                     rules: [{
-                      required: true, message: '标题不能为空',
+                      required: true, message: '引文不能为空',
                     }, {
                       max: 100, message: '文字长度太长, 要求长度最大为100',
                     }, {

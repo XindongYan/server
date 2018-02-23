@@ -262,7 +262,7 @@ export default class TaskForm extends PureComponent {
       return bOk;
     } else if (channel_name === '全球时尚') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'crowd'], {scroll: {alignWithTop: true}}, (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'crowd', 'summary'], {scroll: {alignWithTop: true}}, (err, val) => {
         if (!err) {
           if (!globalFashion.task_desc) {
             message.warn('请填写内容');
@@ -284,7 +284,7 @@ export default class TaskForm extends PureComponent {
       return bOk;
     } else if (channel_name === '买遍全球') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], {scroll: {alignWithTop: true}}, (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd', 'summary'], {scroll: {alignWithTop: true}}, (err, val) => {
         if (!err) {
           if (!buyWorld.task_desc) {
             message.warn('请填写内容');
@@ -338,6 +338,12 @@ export default class TaskForm extends PureComponent {
       } else if (weitao.title && weitao.title.length > 19) {
         message.warn('标题字数不符合要求');
         return false;
+      } else if (!weitao.summary) {
+        message.warn('请填写引文');
+        return false;
+      } else if (weitao.summary.length > 100 || weitao.summary.length < 10) {
+        message.warn('引文字数必须在10 - 100字之间');
+        return false;
       } else if (!weitao.task_desc) {
         message.warn('请填写内容');
         return false;
@@ -353,6 +359,12 @@ export default class TaskForm extends PureComponent {
         return false;
       } else if (toutiao.title && toutiao.title.length > 19) {
         message.warn('标题字数不符合要求');
+        return false;
+      } else if (!toutiao.summary) {
+        message.warn('请填写引文');
+        return false;
+      } else if (toutiao.summary.length > 100 || toutiao.summary.length < 10) {
+        message.warn('引文字数必须在10 - 100字之间');
         return false;
       } else if (!toutiao.task_desc) {
         message.warn('请填写内容');

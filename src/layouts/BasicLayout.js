@@ -299,6 +299,17 @@ class BasicLayout extends React.PureComponent {
         <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
       </Menu>
     );
+    const bbs = (
+      <Menu className={styles.bbsMenu} selectedKeys={[]}>
+        <Menu.Item><a target="_blank" href="https://daren.bbs.taobao.com/list.html">达人论坛</a></Menu.Item>
+        <Menu.Item><a target="_blank" href="https://live.bbs.taobao.com/list.html">直播论坛</a></Menu.Item>
+        <Menu.Item><a target="_blank" href="https://video.bbs.taobao.com/list.html">短视频论坛</a></Menu.Item>
+        <Menu.Item><a target="_blank" href="https://headline.bbs.taobao.com/list.html">头条论坛</a></Menu.Item>
+        <Menu.Item><a target="_blank" href="https://guang.bbs.taobao.com/list.html">爱逛街论坛</a></Menu.Item>
+        <Menu.Item><a target="_blank" href="https://ifashion.bbs.taobao.com/list.html">ifashion论坛</a></Menu.Item>
+        <Menu.Item><a target="_blank" href="https://weitao.bbs.taobao.com/list.html">微淘论坛</a></Menu.Item>
+      </Menu>
+    );
     const noticeData = this.getNoticeData();
 
     // Don't show popup menu when it is been collapsed
@@ -353,6 +364,13 @@ class BasicLayout extends React.PureComponent {
               <Link target='_blank' to="/taobao_daren/live/list">
                 <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>直播榜单</span>
               </Link>
+            </div>
+            <div className={styles.daren}>
+              <Dropdown overlay={bbs}>
+                <span className={styles.bbsLink}>
+                  <Icon type="link" /> <span style={{ fontSize: 14 }}>论坛链接</span>
+                </span>
+              </Dropdown>
             </div>
             <div className={styles.right}>
               { /* <HeaderSearch

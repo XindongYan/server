@@ -87,10 +87,10 @@ export default class WeitaoForm extends PureComponent {
             <div className={styles.taskList}>
               <div className={styles.taskListInp}>
                 <Input.TextArea type="text" id="task-title" value={formData.summary} onChange={this.handleSummaryChange} placeholder="请在这里输入10-100个字的引文"/>
-                <span style={{ color: formData.summary && formData.summary.length > 100 ? '#f00' : '#444' }}>{ formData.summary ? formData.summary.length : 0}/100</span>
+                <span style={{ color: formData.summary && (formData.summary.length > 100 || formData.summary.length < 10) ? '#f00' : '#444' }}>{ formData.summary ? formData.summary.length : 0}/100</span>
               </div>
               { formData.summary && formData.summary.length > 100 &&
-                <span className={styles.promptRed}>标题字数不能超过100个字</span>
+                <span className={styles.promptRed}>引文字数不能超过100个字</span>
               }
             </div>
             <div className={styles.taskList}>
