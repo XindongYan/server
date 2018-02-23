@@ -34,9 +34,15 @@ export default class AlbumModal extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps.k === nextProps.currentKey) {
       if (!this.props.visible && nextProps.visible) {
-        this.setState({
-          activeKey: 'album',
-        });
+        if (nextProps.k === 'material') {
+          this.setState({
+            activeKey: 'upload',
+          });
+        } else {
+          this.setState({
+            activeKey: 'album',
+          });
+        }
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.addEventListener('setAlbum', this.setAlbum);
         nicaiCrx.addEventListener('uploadResult', this.uploadResult);
@@ -93,16 +99,16 @@ export default class AlbumModal extends PureComponent {
   uploadResult = (e) => {
     const result = JSON.parse(e.target.innerText);
     if (this.props.k === this.props.currentKey) {
-      if (!result.errorCode) {
-        message.destroy();
-        message.success('上传成功');
-        if (this.props.k !== 'editor'){
+      if (!result.errorCode && result.data) {
+        const choosen = [...this.state.choosen];
+        choosen[result.index] = result.data[0];
+        if (this.props.k === 'editor' || this.props.k === 'material'){
           this.setState({
-            choosen: [ result.data[0] ],
+            choosen: choosen,
           });
         } else {
           this.setState({
-            choosen: [ ...this.state.choosen, result.data[0] ],
+            choosen: choosen,
           });
         }
       } else {
@@ -218,11 +224,19 @@ export default class AlbumModal extends PureComponent {
   }
 
   previewPhoto = (photo, index) => {
-    return (
-      <div className={styles.previewImg} key={index}>
-        <img src={photo.url} />
-      </div>
-    );
+    if (photo && photo.url) {
+      return (
+        <div className={styles.previewImg} key={index}>
+          <img src={photo.url} />
+        </div>
+      );
+    } else {
+      return (
+        <div key={index}>
+          <Spin className={styles.previewImg}/>
+        </div>
+      );
+    }
   }
   changeTab = (e) => {
     const { choosen, pagination } = this.state;
@@ -273,12 +287,19 @@ export default class AlbumModal extends PureComponent {
     }
   }
   handleSubmitImg = (url) => {
-    nicaiCrx.innerText = JSON.stringify({data: url});
+    nicaiCrx.innerText = JSON.stringify({data: url, index: this.state.choosen.length});
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('uploadImg', true, true);
     nicaiCrx.dispatchEvent(customEvent);
-    message.destroy();
-    message.loading('上传中...', 60 * 60);
+    if (this.props.k === 'editor' || this.props.k === 'material'){
+      this.setState({
+        choosen: [ ...this.state.choosen, {} ],
+      });
+    } else {
+      this.setState({
+        choosen: [{}],
+      });
+    }
   }
   handleToCropper = () => {
     if (this.props.minSize) {
@@ -360,7 +381,8 @@ export default class AlbumModal extends PureComponent {
           ]}
         >
           <Tabs defaultActiveKey="album" onChange={this.changeTab} activeKey={this.state.activeKey}>
-            <TabPane tab={<span><Icon type="picture" />素材库</span>} key="album">
+            {this.props.k !== 'material' &&
+              <TabPane tab={<span><Icon type="picture" />素材库</span>} key="album">
               <Spin spinning={loading}>
                 <div>
                   {itemList.map(this.renderPhoto)}
@@ -371,7 +393,7 @@ export default class AlbumModal extends PureComponent {
                   style={{float: 'right', margin: '10px 20px'}}
                 />
               </Spin>
-            </TabPane>
+            </TabPane>}
             <TabPane tab={<span><Icon type="upload" />上传</span>} key="upload">
               <div>
                 <div className={styles.uploadInpBox}>

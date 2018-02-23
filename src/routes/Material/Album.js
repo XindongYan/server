@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Icon, message, Modal, Pagination, Spin, Progress, Popconfirm } from 'antd';
 import CutpicModal from '../../components/AlbumModal/CutpicModal.js';
+import AlbumModal from '../../components/AlbumModal';
 
 import styles from './index.less';
 
@@ -29,7 +30,6 @@ export default class Album extends PureComponent {
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.addEventListener('setVersion', this.setVersion);
     nicaiCrx.addEventListener('setAlbum', this.setAlbum);
-    nicaiCrx.addEventListener('uploadResult', this.uploadResult);
     nicaiCrx.addEventListener('deletePhotoResult', this.deletePhotoResult);
     if (!this.state.nicaiCrx) {
       this.setState({ nicaiCrx }, () => {
@@ -45,7 +45,6 @@ export default class Album extends PureComponent {
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
-    nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
     nicaiCrx.removeEventListener('deletePhotoResult', this.deletePhotoResult);
   }
 
@@ -94,8 +93,6 @@ export default class Album extends PureComponent {
     const data = JSON.parse(e.target.innerText);
     const { pagination } = this.state;
     if (!data.errorCode) {
-      message.destroy();
-      message.success('上传成功');
       this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
     } else {
       message.error(data.message);
@@ -130,7 +127,7 @@ export default class Album extends PureComponent {
     const { pagination } = this.state;
     if (!data.error) {
       message.success(data.msg);
-      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+      this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
     } else {
       message.error(data.msg);
     }
@@ -201,8 +198,6 @@ export default class Album extends PureComponent {
           const customEvent = document.createEvent('Event');
           customEvent.initEvent('uploadImg', true, true);
           this.state.nicaiCrx.dispatchEvent(customEvent);
-          message.destroy();
-          message.loading('上传中...', 60);
         }
       }
     }
@@ -218,14 +213,32 @@ export default class Album extends PureComponent {
       });
     }
   }
+  handleShowAlbumModal = () => {
+    this.props.dispatch({
+      type: 'album/show',
+      payload: {
+        currentKey: 'material',
+      }
+    });
+  }
+  handleAddImages = () => {
+    const { pagination } = this.state;
+    this.props.dispatch({
+      type: 'album/hide',
+    });
+    this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
+  }
   render() {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
     return (
       <div>
         <div>
-          <div className={styles.fileInpBox}>
-            <label htmlFor="upload">添加图片</label>
-            <input id="upload" className={styles.fileInp} type="file" onChange={this.beforeUpload} />
+          <div className={styles.fileInpBox} onClick={this.handleShowAlbumModal}>
+          {
+            // <label htmlFor="upload">添加图片</label>
+            // <input id="upload" className={styles.fileInp} type="file" onChange={this.beforeUpload} />
+          }
+            <Button type="primary">添加图片</Button>
           </div>
         </div>
         <Spin spinning={loading}>
@@ -249,6 +262,7 @@ export default class Album extends PureComponent {
         <Modal closable={false} footer={null} visible={ProgressVisible} onCancel={this.handleProCancel}>
           <Progress percent={ProgressPercent} status="active" />
         </Modal>
+        <AlbumModal k="material" onOk={this.handleAddImages} />
         <CutpicModal k={this.state.albumKey}/>
       </div>
     );

@@ -19,7 +19,7 @@ const { Option } = Select;
 @Form.create()
 export default class ProjectForm extends PureComponent {
   state = {
-
+    searchValue: '',
   }
   componentDidMount() {
     const { teamUser } = this.props;
@@ -159,8 +159,17 @@ export default class ProjectForm extends PureComponent {
       key: `${file.uid}${extname}`,
     };
   }
-  handleSelectApprove = (item) => {
-    console.log(item);
+  handleSearchApprove = (e) => {
+    this.setState({
+      searchValue: e,
+    });
+  }
+
+  renderSelectUsers = (item) => {
+    const { teamUsers } = this.props;
+    const { searchValue } = this.state;
+    const selectUsers = searchValue ? teamUsers.filter(teamUser => teamUser.user_id && teamUser.approve_roles.indexOf(item) >= 0 && teamUser.user_id.nickname.indexOf(searchValue) >= 0) : teamUsers.filter(teamUser => teamUser.user_id && teamUser.approve_roles.indexOf(item) >= 0);
+    return selectUsers.map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option>);
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, operation, teamUsers, formData } = this.props;
@@ -372,7 +381,7 @@ export default class ProjectForm extends PureComponent {
                       mode="multiple"
                       style={{ width: '100%' }}
                       placeholder={`选择${label}人员`}
-                      onSearch={() => this.handleSelectApprove(item)}
+                      onSearch={this.handleSearchApprove}
                     >
                       {teamUsers.filter(teamUser => teamUser.user_id && teamUser.approve_roles.indexOf(item) >= 0)
                         .map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option>)}

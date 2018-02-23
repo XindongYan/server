@@ -36,7 +36,6 @@ export default class TaskForm extends PureComponent {
   }
   render() {
     const { formData, project } = this.props;
-    console.log(formData);
     return (
       <div>
         { formData.project_id && project && project._id &&
