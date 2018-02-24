@@ -199,21 +199,7 @@ export default class IfashionForm extends PureComponent {
           <div className={styles.taskList}>
             <TagPicker disabled={disabled} dataParent={this.state.dataParent} dataSource={this.state.dataSource} form={this.props.form} formData={formData.classification} onChange={this.handleClassChange} />
           </div>
-
           <div className={styles.taskList}>
-            <FormItem>
-              {getFieldDecorator('tags', {
-              })(
-                <Select
-                  mode="tags"
-                  disabled={disabled}
-                  style={{ width: '100%' }}
-                  placeholder="选择标签或输入标签"
-                  onChange={(e) => this.handleChange(e, 'tags')}
-                >
-                </Select>
-              )}
-            </FormItem>
             <div style={{ padding: 20 }}>
               <p style={{ marginBottom: 10 }}>
                 标签
@@ -244,7 +230,6 @@ export default class IfashionForm extends PureComponent {
             </div>
             <p className={styles.promptGray}>输入 [回车] 键 完成单个标签添加</p>
           </div>
-            
         </div>
       </div>
     );
