@@ -891,6 +891,7 @@ export default class TaskForm extends PureComponent {
     if (channel_name === '微淘') {
       pushDaren = this.state.weitao.pushDaren;
       form = <WeitaoForm
+              channel_name={channel_name}
               form={this.props.form}
               role="writer"
               operation={operation}
@@ -900,6 +901,7 @@ export default class TaskForm extends PureComponent {
     } else if (channel_name === '淘宝头条') {
       pushDaren = this.state.toutiao.pushDaren;
       form = <WeitaoForm
+              channel_name={channel_name}
               form={this.props.form}
               role="writer"
               operation={operation}

@@ -102,9 +102,11 @@ export default class WeitaoForm extends PureComponent {
               <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
-            <div>
-              <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
-            </div>
+            { this.props.channel_name === '微淘' &&
+              <div>
+                <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
+              </div>
+            }
             <div style={{ background: '#fff', padding: '20px 10px' }}>
               <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
             </div>
