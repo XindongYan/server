@@ -308,6 +308,7 @@ class BasicLayout extends React.PureComponent {
         <Menu.Item><a target="_blank" href="https://guang.bbs.taobao.com/list.html">爱逛街论坛</a></Menu.Item>
         <Menu.Item><a target="_blank" href="https://ifashion.bbs.taobao.com/list.html">ifashion论坛</a></Menu.Item>
         <Menu.Item><a target="_blank" href="https://weitao.bbs.taobao.com/list.html">微淘论坛</a></Menu.Item>
+        <Menu.Item><a target="_blank" href="https://yingxiao.bbs.taobao.com/list.html">营销论坛</a></Menu.Item>
       </Menu>
     );
     const noticeData = this.getNoticeData();
