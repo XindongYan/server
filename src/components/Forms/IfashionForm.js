@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Input, Icon, message, Form, Select } from 'antd';
+import { Input, Icon, message, Form, Select, Tag } from 'antd';
 import styles from './IfashionForm.less';
 import $ from 'jquery';
 import request from '../../utils/request';
@@ -22,13 +22,13 @@ export default class IfashionForm extends PureComponent {
       width: 750,
       height: 422
     },
+    tagsValue: '',
   }
   componentDidMount() {
     const { formData } = this.props;
     const fieldsValue = {
       title: formData.title, // '任务标题',
       summary: formData.summary, // 推荐理由
-      tags: formData.tags,
     };
     this.props.form.setFieldsValue(fieldsValue);
     this.handleGet();
@@ -39,7 +39,6 @@ export default class IfashionForm extends PureComponent {
       const fieldsValue = {
         title: formData.title, // '任务标题',
         summary: formData.summary, // 推荐理由
-        tags: formData.tags,
       };
       this.props.form.setFieldsValue(fieldsValue);
     }
@@ -95,13 +94,44 @@ export default class IfashionForm extends PureComponent {
     data[key] = value;
     if (this.props.onChange) this.props.onChange(data);
   }
+  handleChangeTags = (e) => {
+    this.setState({
+      tagsValue: e.target.value
+    });
+  }
+  handleConfirmTags = () => {
+    const { formData } = this.props;
+    const { tagsValue } = this.state;
+    if (tagsValue && tagsValue.trim().length > 0) {
+      const index = formData.tags.findIndex(item => item === tagsValue);
+      if (index === -1) {
+        if (this.props.onChange) this.props.onChange({ tags: [ ...formData.tags, tagsValue] });  
+      }
+      this.setState({
+        tagsValue: '',
+      }); 
+    }
+  }
+  handleCloseTags = (e, removedTag) => {
+    e.preventDefault();
+    const advantage = this.props.formData.tags.filter(tag => tag !== removedTag);
+    if (this.props.onChange) this.props.onChange({ tags: advantage });
+  }
   render() {
     const { style, operation, formData } = this.props;
+    const { tagsValue } = this.state;
     let getFieldDecorator = null;
     if (this.props.form) {
       getFieldDecorator = this.props.form.getFieldDecorator;
     }
     const disabled = this.props.operation === 'view' ? true : false;
+    const tagStyle = {
+      height: 32,
+      lineHeight: '32px',
+      paddingLeft: 12,
+      background: '#fff',
+      margin: '3px',
+    }
     return (
       <div className={styles.taskBox} style={style}>
         <div className={styles.taskTitBox} style={{lineHeight: '40px',background: '#f5f5f5', textIndent: '1em', fontSize: 14, color: '#333'}}>
@@ -173,7 +203,6 @@ export default class IfashionForm extends PureComponent {
           <div className={styles.taskList}>
             <FormItem>
               {getFieldDecorator('tags', {
-                
               })(
                 <Select
                   mode="tags"
@@ -182,10 +211,37 @@ export default class IfashionForm extends PureComponent {
                   placeholder="选择标签或输入标签"
                   onChange={(e) => this.handleChange(e, 'tags')}
                 >
-                
                 </Select>
               )}
             </FormItem>
+            <div style={{ padding: 20 }}>
+              <p style={{ marginBottom: 10 }}>
+                标签
+              </p>
+              <label className={styles.pointBox}>
+                <span>
+                  { formData.tags.map((tag, index) => {
+                    return (
+                      <Tag style={tagStyle} key={index} closable={!disabled} onClose={(e) => this.handleCloseTags(e, tag)}>
+                        {tag}
+                      </Tag>
+                    );
+                  })}
+                </span>
+                <span>
+                  <Input
+                    ref={this.saveInputRef}
+                    type="text"
+                    style={{ fontSize: 14, width: 150, border: 'none', marginTop: 3 }}
+                    value={tagsValue}
+                    maxLength="64"
+                    onChange={this.handleChangeTags}
+                    onPressEnter={this.handleConfirmTags}
+                    placeholder="选择标签或输入标签"
+                  />
+                </span>
+              </label>
+            </div>
             <p className={styles.promptGray}>输入 [回车] 键 完成单个标签添加</p>
           </div>
             

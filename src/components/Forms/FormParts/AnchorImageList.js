@@ -18,7 +18,7 @@ export default class AnchorImageList extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 600);
+        }, 1000);
       });
     }
     setTimeout(() => {
@@ -26,7 +26,7 @@ export default class AnchorImageList extends PureComponent {
         message.destroy();
         message.warn('请安装尼采创作平台插件！', 60 * 60);
       }
-    }, 3000);
+    }, 5000);
   }
   componentWillReceiveProps(nextProps) {
     
