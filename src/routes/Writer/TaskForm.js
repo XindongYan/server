@@ -335,7 +335,7 @@ export default class TaskForm extends PureComponent {
       if (!weitao.title || !weitao.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');
         return false;
-      } else if (weitao.title && weitao.title.length > 19) {
+      } else if (weitao.title && (weitao.title.length > 19 || weitao.title.length < 4)) {
         message.warn('标题字数不符合要求');
         return false;
       } else if (!weitao.summary) {
@@ -357,7 +357,7 @@ export default class TaskForm extends PureComponent {
       if (!toutiao.title || !toutiao.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');
         return false;
-      } else if (toutiao.title && toutiao.title.length > 19) {
+      } else if (toutiao.title && (toutiao.title.length > 19 || toutiao.title.length < 4)) {
         message.warn('标题字数不符合要求');
         return false;
       } else if (!toutiao.summary) {

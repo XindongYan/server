@@ -45,6 +45,7 @@ export default class GlobalFashionForm extends PureComponent {
       const { formData } = nextProps;
       const fieldsValue = {
         title: formData.title,
+        summary: formData.summary,
       };
       if (this.props.channel_name === '买遍全球') {
         fieldsValue.sub_title = formData.sub_title;
@@ -111,6 +112,8 @@ export default class GlobalFashionForm extends PureComponent {
                     rules: [{
                       required: true, message: '标题不能为空',
                     }, {
+                      min: 4, message: '文字长度太短, 要求长度最小为4',
+                    }, {
                       max: 19, message: '文字长度太长, 要求长度最大为19',
                     }, {
                       whitespace: true, message: '标题不能为空格'
@@ -120,7 +123,7 @@ export default class GlobalFashionForm extends PureComponent {
                       disabled={disabled}
                       style={{ fontSize: '16px', border: 'none' }}
                       onChange={this.handleTitleChange}
-                      placeholder="请在这里输入标题"
+                      placeholder="请在这里输入4-19字标题"
                     />
                   )}
                 </FormItem>

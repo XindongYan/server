@@ -88,9 +88,9 @@ export default class LifeInstituteForm extends PureComponent {
                 rules: [{
                   required: true, message: '标题不能为空',
                 }, {
-                  min: 6, message: '文字长度太短, 要求长度最少为6',
+                  min: 4, message: '文字长度太短, 要求长度最少为4',
                 }, {
-                  max: 18, message: '文字长度太长, 要求长度最大为18',
+                  max: 19, message: '文字长度太长, 要求长度最大为19',
                 }, {
                   whitespace: true, message: '标题不能为空格'
                 }],
@@ -99,7 +99,7 @@ export default class LifeInstituteForm extends PureComponent {
                   disabled={disabled}
                   style={{ fontSize: '16px', border: 'none' }}
                   onChange={(e) => this.handleChange(e.target.value, 'title')}
-                  placeholder="请在这里输入标题"
+                  placeholder="请在这里输入4-19字标题"
                 />
               )}
             </FormItem>
@@ -111,22 +111,20 @@ export default class LifeInstituteForm extends PureComponent {
                 rules: [{
                   required: true, message: '不能为空',
                 }, {
-                  min: 6, message: '文字长度太短, 要求长度最少为6',
+                  max: 40, message: '文字长度太长, 要求长度最大为40',
                 }, {
-                  max: 18, message: '文字长度太长, 要求长度最大为18',
-                }, {
-                  whitespace: true, message: '标题不能为空格'
+                  whitespace: true, message: '副标题不能为空格'
                 }],
               })(
                 <Input
                   disabled={disabled}
                   style={{ fontSize: '16px', border: 'none' }}
                   onChange={(e) => this.handleChange(e.target.value, 'sub_title')}
-                  placeholder="请输入18字内的副标题"
+                  placeholder="请输入40字内的副标题"
                 />
               )}
             </FormItem>
-            <span style={{ color: formData.sub_title && formData.sub_title.length > 18 ? '#f00' : '#444' }}>{ formData.sub_title ? formData.sub_title.length : 0}/18</span>
+            <span style={{ color: formData.sub_title && formData.sub_title.length > 40 ? '#f00' : '#444' }}>{ formData.sub_title ? formData.sub_title.length : 0}/40</span>
           </div>
           <div className={styles.taskList}>
             { disabled ? 

@@ -7,6 +7,8 @@ import AlbumModal from '../AlbumModal';
 import CascaderSelect from './FormParts/CascaderSelect';
 import CoverImage from './FormParts/CoverImage';
 
+import { EndLink } from './FormParts';
+
 @connect(state => ({
 
 }))
@@ -32,6 +34,9 @@ export default class WeitaoForm extends PureComponent {
   }
   handleSummaryChange = (e) => {
     if (this.props.onChange) this.props.onChange({ summary: e.target.value });
+  }
+  handleEndlinkChange = (url, name) => {
+    if (this.props.onChange) this.props.onChange({ end_link: url, end_text: name });
   }
   handleTaskChange = (value, key) => {
     const data = {};
@@ -77,7 +82,7 @@ export default class WeitaoForm extends PureComponent {
           <div className={styles.taskContentBox}>
             <div className={styles.taskList}>
               <div className={styles.taskListInp}>
-                <Input type="text" id="task-title" value={formData.title} onChange={this.handleTitleChange} placeholder="请在这里输入标题"/>
+                <Input type="text" id="task-title" value={formData.title} onChange={this.handleTitleChange} placeholder="请在这里输入4-19字标题"/>
                 <span style={{ color: formData.title && formData.title.length > 19 ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/19</span>
               </div>
               { formData.title && formData.title.length > 19 &&
@@ -97,10 +102,12 @@ export default class WeitaoForm extends PureComponent {
               <p style={{ color: '#f00' }}>*注意：请不要从word中复制内容到正文</p>
               <Editor role={this.props.role} style={{ width: '100%' }} value={formData.task_desc} onChange={this.handleDescChange}/>
             </div>
+            <div>
+              <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
+            </div>
             <div style={{ background: '#fff', padding: '20px 10px' }}>
               <CascaderSelect form={this.props.form} formData={formData} onChange={this.handleTaskChange} rules={false} />
             </div>
-
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
               <CoverImage operation={this.props.operation} onChange={this.handleAddCoverImg} formData={{value: formData.cover_img}} />
             </div>
