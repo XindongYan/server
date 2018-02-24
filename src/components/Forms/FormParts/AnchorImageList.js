@@ -34,7 +34,9 @@ export default class AnchorImageList extends PureComponent {
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.removeEventListener('setJigsaw', this.setJigsaw);
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    this.setState({
+      nicaiCrx: null,
+    });
   }
   setJigsaw = (e) => {
     const result = JSON.parse(e.target.innerText);
@@ -50,6 +52,7 @@ export default class AnchorImageList extends PureComponent {
     this.setState({
       version: data.version,
     });
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
     if (version && version.length > 0) {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);

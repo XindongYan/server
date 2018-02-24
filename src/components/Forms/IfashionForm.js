@@ -228,18 +228,18 @@ export default class IfashionForm extends PureComponent {
                     );
                   })}
                 </span>
-                <span>
-                  <Input
-                    ref={this.saveInputRef}
-                    type="text"
-                    style={{ fontSize: 14, width: 150, border: 'none', marginTop: 3 }}
-                    value={tagsValue}
-                    maxLength="64"
-                    onChange={this.handleChangeTags}
-                    onPressEnter={this.handleConfirmTags}
-                    placeholder="选择标签或输入标签"
-                  />
-                </span>
+                {!disabled && <span>
+                    <Input
+                      ref={this.saveInputRef}
+                      type="text"
+                      style={{ fontSize: 14, width: 150, border: 'none', marginTop: 3 }}
+                      value={tagsValue}
+                      maxLength="64"
+                      onChange={this.handleChangeTags}
+                      onPressEnter={this.handleConfirmTags}
+                      placeholder="选择标签或输入标签"
+                    />
+                  </span>}
               </label>
             </div>
             <p className={styles.promptGray}>输入 [回车] 键 完成单个标签添加</p>
