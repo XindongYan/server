@@ -567,7 +567,7 @@ export default class TaskEdit extends PureComponent {
               onChange={this.changeApproveNode}
             />
           </div>
-          { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) &&
+          { ((formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) || formData.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ) &&
             <div className={styles.submitBox}>
               <div id="subButton">
                 { formData.approve_status !== 1 && formData.approve_status !== 3 ?
