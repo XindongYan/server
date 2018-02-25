@@ -272,7 +272,7 @@ export default class TaskEdit extends PureComponent {
       return bOk;
     } else if (formData.channel_name === '生活研究所') {
       let bOk = true;
-      this.props.form.validateFields(['title','sub_title','summary'], (err, val) => {
+      this.props.form.validateFields(['title', 'sub_title', 'summary'], (err, val) => {
         if (!err) {
           if (!lifeResearch.task_desc) {
             message.warn('请填写内容');
@@ -291,7 +291,7 @@ export default class TaskEdit extends PureComponent {
       return bOk;
     } else if (formData.channel_name === '全球时尚') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd', 'summary'], (err, val) => {
         if (!err) {
           if (!globalFashion.task_desc) {
             message.warn('请填写内容');
@@ -311,7 +311,7 @@ export default class TaskEdit extends PureComponent {
       return bOk;
     } else if (formData.channel_name === '买遍全球') {
       let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd'], (err, val) => {
+      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd', 'summary'], (err, val) => {
         if (!err) {
           if (!buyWorld.task_desc) {
             message.warn('请填写内容');
@@ -333,7 +333,7 @@ export default class TaskEdit extends PureComponent {
       return bOk;
     } else if (formData.channel_name === 'ifashion') {
       let bOk = true;
-      this.props.form.validateFields(['title','sub_title','summary'], (err, val) => {
+      this.props.form.validateFields(['title', 'sub_title', 'summary'], (err, val) => {
         if (!err) {
           if (!ifashion.title || !ifashion.title.replace(/\s+/g, '')) {
             message.warn('请填写标题');
@@ -362,7 +362,7 @@ export default class TaskEdit extends PureComponent {
       if (!weitao.title || !weitao.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');
         return false;
-      } else if (weitao.title && weitao.title.length > 19) {
+      } else if (weitao.title && (weitao.title.length > 19 || weitao.title.length < 4)) {
         message.warn('标题字数不符合要求');
         return false;
       } else if (!weitao.task_desc) {
@@ -378,7 +378,7 @@ export default class TaskEdit extends PureComponent {
       if (!toutiao.title || !toutiao.title.replace(/\s+/g, '')) {
         message.warn('请填写标题');
         return false;
-      } else if (toutiao.title && toutiao.title.length > 19) {
+      } else if (toutiao.title && (toutiao.title.length > 19 || toutiao.title.length < 4)) {
         message.warn('标题字数不符合要求');
         return false;
       } else if (!toutiao.task_desc) {
@@ -567,7 +567,7 @@ export default class TaskEdit extends PureComponent {
               onChange={this.changeApproveNode}
             />
           </div>
-          { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) &&
+          { ((formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) || formData.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ) &&
             <div className={styles.submitBox}>
               <div id="subButton">
                 { formData.approve_status !== 1 && formData.approve_status !== 3 ?

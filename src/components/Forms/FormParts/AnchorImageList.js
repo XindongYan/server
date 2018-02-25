@@ -18,7 +18,7 @@ export default class AnchorImageList extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 600);
+        }, 1000);
       });
     }
     setTimeout(() => {
@@ -26,7 +26,7 @@ export default class AnchorImageList extends PureComponent {
         message.destroy();
         message.warn('请安装尼采创作平台插件！', 60 * 60);
       }
-    }, 3000);
+    }, 5000);
   }
   componentWillReceiveProps(nextProps) {
     
@@ -34,7 +34,9 @@ export default class AnchorImageList extends PureComponent {
   componentWillUnmount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
     nicaiCrx.removeEventListener('setJigsaw', this.setJigsaw);
-    nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    this.setState({
+      nicaiCrx: null,
+    });
   }
   setJigsaw = (e) => {
     const result = JSON.parse(e.target.innerText);
@@ -50,6 +52,7 @@ export default class AnchorImageList extends PureComponent {
     this.setState({
       version: data.version,
     });
+    nicaiCrx.removeEventListener('setVersion', this.setVersion);
     if (version && version.length > 0) {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
