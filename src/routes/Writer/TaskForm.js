@@ -18,6 +18,7 @@ import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 
 import NicaiForm from '../../components/Form/index.js';
+import { queryTaskRender } from '../../services/task';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -178,6 +179,11 @@ export default class TaskForm extends PureComponent {
             }
           }
         }
+      });
+    } else {
+      console.log(query);
+      queryTaskRender({ channel_name: query.channel_name }).then(result => {
+        console.log(result);
       });
     }
   }

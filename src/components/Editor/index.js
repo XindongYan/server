@@ -4,6 +4,9 @@ import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
 import BpuModal from '../AuctionModal/BpuModal.js';
 import styles from './index.less';
+
+import BraftEditor from 'braft-editor'
+import 'braft-editor/dist/braft.css'
 @connect(() => ({
 
 }))
@@ -12,30 +15,30 @@ export default class Editor extends PureComponent {
     ue: null,
   }
   componentDidMount() {
-    let script;
-    if (!document.getElementById('ueditor-config')) {
-      script = document.createElement('script');
-      script.id = 'ueditor-config';
-      script.src = '/ueditor/ueditor.config.js';
-      script.async = true;
-      document.body.appendChild(script);
-      script.onload = () => {
-        if (!document.getElementById('ueditor')) {
-          script = document.createElement('script');
-          script.id = 'ueditor';
-          script.src = '/ueditor/ueditor.all.js';
-          script.async = true;
-          document.body.appendChild(script);
-          script.onload = () => {
-            this.showUeditor();
-          };
-          script.onreadystatechange = script.onload;
-        }
-      };
-      script.onreadystatechange = script.onload;
-    } else {
-      this.showUeditor();
-    }
+    // let script;
+    // if (!document.getElementById('ueditor-config')) {
+    //   script = document.createElement('script');
+    //   script.id = 'ueditor-config';
+    //   script.src = '/ueditor/ueditor.config.js';
+    //   script.async = true;
+    //   document.body.appendChild(script);
+    //   script.onload = () => {
+    //     if (!document.getElementById('ueditor')) {
+    //       script = document.createElement('script');
+    //       script.id = 'ueditor';
+    //       script.src = '/ueditor/ueditor.all.js';
+    //       script.async = true;
+    //       document.body.appendChild(script);
+    //       script.onload = () => {
+    //         this.showUeditor();
+    //       };
+    //       script.onreadystatechange = script.onload;
+    //     }
+    //   };
+    //   script.onreadystatechange = script.onload;
+    // } else {
+    //   this.showUeditor();
+    // }
   }
   componentWillUnmount() {
     if (this.state.ue) {
@@ -152,14 +155,26 @@ export default class Editor extends PureComponent {
     });
     this.state.ue.execCommand('inserthtml', htmls, true);
   }
-  handleChange = () => {
-    if (this.state.ue) {
-      const content = this.state.ue.getContent();
-      if (this.props.onChange) this.props.onChange(content);
-    }
+  handleChange = (data) => {
+    console.log(data);
+    // if (this.state.ue) {
+    //   const content = this.state.ue.getContent();
+    //   if (this.props.onChange) this.props.onChange(content);
+    // }
   }
   render() {
     const { style } = this.props;
+    const editorProps = {
+      height: 500,
+      initialContent: this.state.content,
+      onChange: this.handleChange,
+      onHTMLChange: this.handleHTMLChange
+    };
+    return (
+      <div className="demo">
+        <BraftEditor {...editorProps}/>
+      </div>
+    );
     return (
       <div style={style}>
         <div id="editor" className={styles.editor} />

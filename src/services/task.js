@@ -170,3 +170,7 @@ export async function queryYhhBody(params) {
 export async function queryAuctionOrders(params) {
   return request(`/api/alimama/orders/by/auctionIds?${stringify(params)}`);
 }
+
+export async function queryTaskRender(params) {
+  return request(`/api/task/render.json?${stringify(params)}`);
+}
