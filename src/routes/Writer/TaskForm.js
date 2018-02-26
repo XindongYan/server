@@ -771,6 +771,8 @@ export default class TaskForm extends PureComponent {
     this.state.form.forEach((item, index) => {
       if (item.component === 'Input') {
         form.push(<NicaiForm.Input key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules}/>);
+      } else if (item.component === 'Editor') {
+        form.push(<NicaiForm.Editor key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules}/>);
       }
     });
     
@@ -806,7 +808,9 @@ export default class TaskForm extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: channel_name === '有好货' ? 730 : 1000 }} ref="taskOuterBox">
           <div style={{ width: channel_name === '有好货' ? 375 : 650 }}>
+            <Card bordered={false} title="" bodyStyle={{ padding: 10 }}>
             {form}
+            </Card>
           </div>
           {formRight}
           { operation !== 'view' && <div className={styles.submitBox}>

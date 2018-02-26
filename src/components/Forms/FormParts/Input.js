@@ -16,9 +16,10 @@ export default class NInput extends PureComponent {
   }
   render() {
     const { name, props, rules } = this.props;
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const value = getFieldValue(name);
     return (
-      <div className={styles.taskBox}>
+      <div className={styles.taskListInp}>
         <FormItem>
           {getFieldDecorator(name, {
             rules,
@@ -28,7 +29,7 @@ export default class NInput extends PureComponent {
             />
           )}
         </FormItem>
-        <span style={{ color: formData.title && formData.title.length > props.maxLength ? '#f00' : '#444' }}>{ formData.title ? formData.title.length : 0}/{props.maxLength}</span>
+        <span style={{ color: value && value.length > props.maxLength ? '#f00' : '#444' }}>{ value ? value.length : 0}/{props.maxLength}</span>
       </div>
     );
   }
