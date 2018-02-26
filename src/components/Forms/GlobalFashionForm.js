@@ -6,7 +6,7 @@ import styles from './WeitaoForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 
-import { CascaderSelect, EndLink, TagPicker, CoverImage } from './FormParts';
+import { CascaderSelect, AddLink, TagPicker, CoverImage } from './FormParts';
 
 const FormItem = Form.Item;
 
@@ -190,7 +190,7 @@ export default class GlobalFashionForm extends PureComponent {
               }
             </div>
             <div>
-              <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
+              <AddLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
             </div>
             <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>
               <CoverImage onChange={this.handleAddCoverImg} formData={{value: formData.cover_img}} operation={this.props.operation} />

@@ -7,7 +7,7 @@ import AlbumModal from '../AlbumModal';
 import CascaderSelect from './FormParts/CascaderSelect';
 import CoverImage from './FormParts/CoverImage';
 
-import { EndLink } from './FormParts';
+import { AddLink } from './FormParts';
 
 @connect(state => ({
 
@@ -105,7 +105,7 @@ export default class WeitaoForm extends PureComponent {
             </div>
             { this.props.channel_name === '微淘' &&
               <div>
-                <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
+                <AddLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
               </div>
             }
             <div style={{ background: '#fff', padding: '20px 10px' }}>

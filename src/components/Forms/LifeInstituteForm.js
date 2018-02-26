@@ -5,7 +5,7 @@ import styles from './LifeInstituteForm.less';
 import Editor from '../Editor';
 import AlbumModal from '../AlbumModal';
 
-import { CascaderSelect, EndLink, CoverImage } from './FormParts';
+import { CascaderSelect, AddLink, CoverImage } from './FormParts';
 
 const TextArea = Input.TextArea;
 const FormItem = Form.Item;
@@ -137,7 +137,7 @@ export default class LifeInstituteForm extends PureComponent {
             }
           </div>
           <div>
-            <EndLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
+            <AddLink formData={formData} operation={this.props.operation} onChange={this.handleEndlinkChange} />
           </div>
 
           <div className={styles.taskList} style={{ marginTop: 10, paddingBottom: 40 }}>

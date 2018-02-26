@@ -10,7 +10,7 @@ const FormItem = Form.Item;
 
 }))
 @Form.create()
-export default class EndLink extends PureComponent {
+export default class AddLink extends PureComponent {
   state = {
     tag: false,
   }
