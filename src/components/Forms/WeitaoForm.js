@@ -27,6 +27,7 @@ export default class WeitaoForm extends PureComponent {
 
   }
   handleDescChange = (content) => {
+    console.log(content);
     if (this.props.onChange) this.props.onChange({ task_desc: content });
   }
   handleTitleChange = (e) => {

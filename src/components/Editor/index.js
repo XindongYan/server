@@ -1,123 +1,56 @@
 import React, { PureComponent } from 'react';
+import {Editor, EditorState, ContentState, SelectionState, RichUtils, convertToRaw, convertFromRaw, AtomicBlockUtils, Entity, Modifier } from 'draft-js';
+import { Icon } from 'antd';
 import { connect } from 'dva';
 import AlbumModal from '../AlbumModal';
 import AuctionModal from '../AuctionModal';
 import BpuModal from '../AuctionModal/BpuModal.js';
 import styles from './index.less';
 
-import BraftEditor from 'braft-editor'
-import 'braft-editor/dist/braft.css'
 @connect(() => ({
 
 }))
-export default class Editor extends PureComponent {
+export default class Editors extends PureComponent {
   state = {
-    ue: null,
+    editorState: EditorState.createEmpty(),
   }
   componentDidMount() {
-    // let script;
-    // if (!document.getElementById('ueditor-config')) {
-    //   script = document.createElement('script');
-    //   script.id = 'ueditor-config';
-    //   script.src = '/ueditor/ueditor.config.js';
-    //   script.async = true;
-    //   document.body.appendChild(script);
-    //   script.onload = () => {
-    //     if (!document.getElementById('ueditor')) {
-    //       script = document.createElement('script');
-    //       script.id = 'ueditor';
-    //       script.src = '/ueditor/ueditor.all.js';
-    //       script.async = true;
-    //       document.body.appendChild(script);
-    //       script.onload = () => {
-    //         this.showUeditor();
-    //       };
-    //       script.onreadystatechange = script.onload;
-    //     }
-    //   };
-    //   script.onreadystatechange = script.onload;
-    // } else {
-    //   this.showUeditor();
-    // }
+    console.log(this.props.value);
   }
-  componentWillUnmount() {
-    if (this.state.ue) {
-      this.state.ue.destroy();
-    }
-  }
-  showUeditor = () => {
-    const forecolor = this.props.role === 'approve' ? 'forecolor' : '';
-    const backcolor = this.props.role === 'approve' ? 'backcolor' : '';
-    const ue = window.UE.getEditor('editor', {
-      toolbars: [
-        [
-          'undo', // 撤销
-          'redo', // 重做
-          'bold', // 加粗
-          'italic', // 斜体
-          'underline', // 下划线
-          'justifyleft', // 居左对齐
-          'justifyright', // 居右对齐
-          'justifycenter', // 居中对齐
-          'justifyjustify', // 两端对齐
-          'picture',
-          'taobao',
-          'bpu',
-          'drafts', // 从草稿箱加载
-          forecolor,
-          backcolor,
-        ]
-      ],
-      autoHeightEnabled: true,
-      scaleEnabled: false
-    });
-    ue.commands.picture = {
-      execCommand: () => {
-        this.props.dispatch({
-          type: 'album/show',
-          payload: {
-            currentKey: 'editor',
-          }
-        });
-      }
-    };
-    ue.commands.taobao = {
-      execCommand: () => {
-        this.props.dispatch({
-          type: 'auction/show',
-          payload: {
-            currentKey: 'editor',
-          }
-        });
-      }
-    };
-    ue.commands.bpu = {
-      execCommand: () => {
-        this.props.dispatch({
-          type: 'auction/showBbu',
-          payload: {
-            currentKey: 'editor'
-          }
-        });
-      }
-    };
-    ue.addListener('contentChange', this.handleChange);
-    ue.addListener('ready', () => {
-      setTimeout(() => {
-        ue.execCommand('inserthtml', this.props.value, true);
-      }, 200);
-    });
-    this.setState({ ue });
-  }
+  
   handleAddImg = (imgs) => {
+    let { editorState } = this.state;
     imgs.forEach((item) => {
-      const html = `<p><img src="${item.url}" /></p>`;
-      this.state.ue.execCommand('inserthtml', html);
+      const contentState = editorState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity(
+        'SIDEBARIMAGE',
+        'MUTABLE',
+        {
+          url: item.url,
+          materialId: item.materialId,
+          name: '1',
+          type: 'SIDEBARIMAGE',
+        }
+      );
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+      editorState = AtomicBlockUtils.insertAtomicBlock(
+        newEditorState,
+        entityKey,
+        ' ',
+      );
+    });
+    this.setState({
+      editorState
     });
   }
   handleAddProduct = (auction) => {
-    const data = {
-      data: {
+    let { editorState } = this.state;
+    const contentState = editorState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity(
+      'SIDEBARSEARCHITEM',
+      'IMMUTABLE',
+      {
         name: '',
         coverUrl: auction.coverUrl,
         images: auction.images,
@@ -127,57 +60,201 @@ export default class Editor extends PureComponent {
         resourceUrl: auction.item.itemUrl,
         title: auction.title,
         type: 'SIDEBARSEARCHITEM',
-      },
-      mutability: 'IMMUTABLE',
-      type: 'SIDEBARSEARCHITEM',
-    };
-    const text = encodeURIComponent(JSON.stringify(data));
-    const html = `<p><a target="_blank" contenteditable="false" class="editor_auctions" href="${auction.item.itemUrl}" _data="${text}"><img src="${auction.coverUrl}" /><i contenteditable="false" class="editor_auctions_details">${auction.title}</i></a></p>`;
-    this.state.ue.execCommand('inserthtml', html, true);
+      }
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+    editorState = AtomicBlockUtils.insertAtomicBlock(
+      newEditorState,
+      entityKey,
+      ' ',
+    );
+    this.setState({
+      editorState
+    });
   }
   handleAddBpu = (products) => {
-    const list = products.map(item => ({
-      data: {
-        coverUrl: item.mainPicUrl,
-        features: "{}",
-        name: "",
-        spuId: item.finalBpuId,
-        title: item.title,
-        type: "SIDEBARADDSPU",
-      },
-      mutability: 'IMMUTABLE',
-      type: 'SIDEBARADDSPU',
-    }));
-    let htmls = '';
-    list.forEach(item => {
-      const text = encodeURIComponent(JSON.stringify(item));
-      htmls += `<p><a contenteditable="false" class="editor_auctions" _data="${text}"><img src="${item.data.coverUrl}" /><i contenteditable="false" class="editor_auctions_details">${item.data.title}</i></a></p>`;
+    let { editorState } = this.state;
+    products.forEach((item) => {
+      console.log(item);
+      const contentState = editorState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity(
+        'SIDEBARADDSPU',
+        'IMMUTABLE',
+        {
+          coverUrl: item.mainPicUrl,
+          features: {},
+          name: "",
+          spuId: item.finalBpuId,
+          title: item.title,
+          type: "SIDEBARADDSPU",
+        }
+      );
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+      editorState = AtomicBlockUtils.insertAtomicBlock(
+        newEditorState,
+        entityKey,
+        ' ',
+      );
     });
-    this.state.ue.execCommand('inserthtml', htmls, true);
+    this.setState({
+      editorState
+    });
   }
-  handleChange = (data) => {
-    console.log(data);
-    // if (this.state.ue) {
-    //   const content = this.state.ue.getContent();
-    //   if (this.props.onChange) this.props.onChange(content);
-    // }
+  customRender = (props) => {
+    const key = props.block.getEntityAt(0);
+    const entity = props.contentState.getEntity(key);
+    const data = entity.getData();
+    const type = entity.getType();
+    if (type === 'SIDEBARIMAGE') {
+      return (
+        <div className={styles.imgBox}>
+          <img
+            style={{ width: '200px', height: 'auto' }}
+            src={data.url}
+            alt="图片"
+          />
+          <span className={styles.closeBox}>
+            <Icon type="close-circle" onClick={() => this.removeBlock(props)} />
+          </span>
+        </div>
+      )
+    } else if (type === 'SIDEBARSEARCHITEM') {
+      return (
+        <div className={styles.auctionBox}>
+          <div className={styles.auctionImgBox}>
+            <img
+              src={data.coverUrl}
+              alt="封面图"
+            />
+          </div>
+          <div className={styles.auctionMsgBox}>
+            <p>{data.title}</p>
+            <p>¥ {data.price}</p>
+          </div>
+          <span className={styles.closeBox}>
+            <Icon type="close-circle" onClick={() => this.removeBlock(props)} />
+          </span>
+        </div>
+      )
+    } else if (type === 'SIDEBARADDSPU') {
+      return (
+        <div className={styles.bpuBox}>
+          <div className={styles.bpuImgBox}>
+            <img
+              src={data.coverUrl}
+              alt="封面图"
+            />
+          </div>
+          <div className={styles.bpuMsgBox}>
+            {data.title}
+          </div>
+          <span className={styles.closeBox}>
+            <Icon type="close-circle" onClick={() => this.removeBlock(props)} />
+          </span>
+        </div>
+      )
+    }
+  }
+  handleChange = (editorState) => {
+    // console.log(convertToRaw(editorState.getCurrentContent()));
+    this.setState({editorState});
+    if (this.props.onChange) this.props.onChange(convertToRaw(editorState.getCurrentContent()));
+  }
+  undo = () => {
+    this.handleChange(EditorState.undo(this.state.editorState));
+  }
+  redo = () => {
+    this.handleChange(EditorState.redo(this.state.editorState));
+  }
+  sidebarimage = () => {
+    this.props.dispatch({
+      type: 'album/show',
+      payload: {
+        currentKey: 'editor',
+      }
+    });
+  }
+  sidebarsearchitem = () => {
+    this.props.dispatch({
+      type: 'auction/show',
+      payload: {
+        currentKey: 'editor',
+      }
+    });
+  }
+  sidebaraddspu = () => {
+    this.props.dispatch({
+      type: 'auction/showBbu',
+      payload: {
+        currentKey: 'editor'
+      }
+    });
+  }
+    
+  removeBlock = (props) => {
+    let nextContentState, nextEditorState;
+    const blockKey = props.block.getKey();
+    const contentState = this.state.editorState.getCurrentContent();
+    nextContentState = Modifier.removeRange(contentState, new SelectionState({
+      anchorKey: blockKey,
+      anchorOffset: 0,
+      focusKey: blockKey,
+      focusOffset: props.block.getLength(),
+    }), 'backward');
+    nextContentState = Modifier.setBlockType(nextContentState, nextContentState.getSelectionAfter(), 'unstyled');
+    nextEditorState = EditorState.push(this.state.editorState, nextContentState, 'remove-range');
+    nextEditorState = EditorState.forceSelection(nextEditorState, nextContentState.getSelectionAfter());
+    this.handleChange(nextEditorState);
+  }
+  myBlockRenderer = (contentBlock) => {
+    const type = contentBlock.getType();
+    if (type === 'atomic') {
+      return {
+        component: this.customRender,  // 指定组件
+        editable: false,  // 这里设置自定义的组件可不可以编辑，因为是图片，这里选择不可编辑
+      };
+    }
+  }
+  handleGetEditor = () => {
+    console.log(convertToRaw(this.state.editorState.getCurrentContent()));
   }
   render() {
     const { style } = this.props;
-    const editorProps = {
-      height: 500,
-      initialContent: this.state.content,
-      onChange: this.handleChange,
-      onHTMLChange: this.handleHTMLChange
+    const toolList = ['UNDO', 'REDO', 'SIDEBARIMAGE', 'SIDEBARSEARCHITEM', 'SIDEBARADDSPU', 'a'];
+    const tools = {
+      UNDO: <span onClick={this.undo} key="UNDO">
+              <Icon type="arrow-left" />
+            </span>,
+      REDO: <span onClick={this.redo} key="REDO">
+              <Icon type="arrow-right" />
+            </span>,
+      SIDEBARIMAGE: <span onClick={this.sidebarimage} key="SIDEBARIMAGE">
+                      <Icon type="picture" />
+                      图片
+                    </span>,
+      SIDEBARSEARCHITEM: <span key="SIDEBARSEARCHITEM" onClick={this.sidebarsearchitem}>
+                          <Icon type="shopping-cart" />
+                          商品
+                        </span>,
+      SIDEBARADDSPU: <span key="SIDEBARADDSPU" onClick={this.sidebaraddspu}>
+                      <Icon type="shop" />
+                      标准品牌商品
+                    </span>,
+      a: <span key="a" onClick={this.handleGetEditor}>
+          获取
+        </span>,
     };
-    return (
-      <div className="demo">
-        <BraftEditor {...editorProps}/>
-      </div>
-    );
+    
     return (
       <div style={style}>
-        <div id="editor" className={styles.editor} />
+        <div className={styles.editorToolsWrap}>
+          {toolList.map(item => tools[item])}
+        </div>
+        <div style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
+          <Editor editorState={this.state.editorState} onChange={this.handleChange} blockRendererFn={this.myBlockRenderer} />
+        </div>
         <AlbumModal k="editor" onOk={this.handleAddImg} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} product={this.props.product} />
         <BpuModal k="editor" onOk={this.handleAddBpu} />

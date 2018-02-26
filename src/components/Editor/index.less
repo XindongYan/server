@@ -1,0 +1,103 @@
+.editorToolsWrap{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	border-bottom: 1px solid #ccc;
+	padding: 0 10px;
+	div{
+		font-size: 20px;
+	}
+	span{
+		padding: 0 10px;
+		cursor: pointer;
+		font-size: 14px;
+		vertical-align: middle;
+		color: #999;
+		i{
+			font-size: 20px;
+        	vertical-align: middle;
+        	margin-right: 4px;
+		}
+	}
+}
+.editor{
+	width: 100%;
+	min-height: 380px;
+	border-bottom: 1px solid #ccc;
+	padding: 8px;
+	outline: none;
+}
+.imgBox{
+	width: 200px;
+	position: relative;
+	
+}
+.auctionBox{
+	cursor: default;
+	width: 160px;
+	border: 1px solid #ccc;
+	position: relative;
+	.auctionImgBox{
+		width: 100%;
+		height: 160px;
+		img{
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.auctionMsgBox{
+		width: 100%;
+		p{
+			height: 24px;
+			line-height: 24px;
+			margin-bottom: 4px;
+			padding: 0 10px;
+			word-wrap:break-word;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+}
+.bpuBox{
+	cursor: default;
+	width: 240px;
+	height: 240px;
+	border: 1px solid #ccc;
+	position: relative;
+	.bpuImgBox{
+		width: 100%;
+		height: 100%;
+		img{
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.bpuMsgBox{
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: 30px;
+		line-height: 30px;
+		padding: 0 5px;
+		background: rgba(0,0,0,0.5);
+		color: #fff;
+		word-wrap:break-word;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+span.closeBox{
+	position: absolute;
+	top: -13px;
+	right: -13px;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	color: #6af;
+	font-size: 22px;
+	text-align: center;
+	cursor: pointer;
+}
