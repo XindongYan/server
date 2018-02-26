@@ -5,3 +5,4 @@ export AnchorImageList from './AnchorImageList';
 export AddLink from './AddLink';
 export BodyStructContent from './BodyStructContent';
 export AuctionImageModal from './AuctionImageModal';
+export Input from './Input';
