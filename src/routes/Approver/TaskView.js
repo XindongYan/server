@@ -3,15 +3,8 @@ import { connect } from 'dva';
 import querystring from 'querystring';
 import { Card, Form } from 'antd';
 import $ from 'jquery';
-import Editor from '../../components/Editor';
 import Annotation from '../../components/Annotation';
 import ApproveLog from '../../components/ApproveLog';
-import WeitaoForm from '../../components/Forms/WeitaoForm';
-import ZhiboForm from '../../components/Forms/ZhiboForm';
-import GoodProductionForm from '../../components/Forms/GoodProductionForm';
-import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
-import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
-import IfashionForm from '../../components/Forms/IfashionForm';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
 import styles from './TableList.less';
@@ -170,72 +163,7 @@ export default class TaskView extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.channel_name === '有好货' ? 730 : 1000 }}>
           <div style={{ width: formData.channel_name === '有好货' ? 375 : 650 }}>
-            { formData.channel_name === '微淘' &&
-              <WeitaoForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.weitao}
-              />
-            }
-            { formData.channel_name === '淘宝头条' &&
-              <WeitaoForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.toutiao}
-              />
-            }
-            { formData.task_type === 3 &&
-              <ZhiboForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.zhibo}
-              />
-            }
-            { formData.channel_name === '有好货' &&
-              <GoodProductionForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.haveGoodsTask}
-              />
-            }
-            { formData.channel_name === '生活研究所' &&
-              <LifeInstituteForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.lifeResearch}
-              />
-            }
-            { formData.channel_name === '全球时尚' &&
-              <GlobalFashionForm
-                channel_name={formData.channel_name}
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.globalFashion}
-              />
-            }
-            { formData.channel_name === '买遍全球' &&
-              <GlobalFashionForm
-                channel_name={formData.channel_name}
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.buyWorld}
-              />
-            }
-            { formData.channel_name === 'ifashion' &&
-              <IfashionForm
-                form={this.props.form}
-                role="approve"
-                operation={operation}
-                formData={this.state.ifashion}
-              />
-            }
+            
           </div>  
           { showAnnotation &&
             <div className={styles.taskComment}>

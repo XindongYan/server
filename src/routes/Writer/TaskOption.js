@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import { Card, Button, Popconfirm, message, Row, Col } from 'antd';
 import { CHANNEL_NAMES, TAOBAO_ACTIVITYID_MIRROR } from '../../constants';
-import WeitaoForm from '../../components/Forms/WeitaoForm';
 import TaskChat from '../../components/TaskChat';
 import styles from './TaskOption.less';
 

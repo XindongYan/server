@@ -5,16 +5,9 @@ import $ from 'jquery';
 import { Card, Button, message, Popover, Slider, Popconfirm, Form } from 'antd';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS } from '../../constants';
 import { routerRedux } from 'dva/router';
-import Editor from '../../components/Editor';
 import TaskChat from '../../components/TaskChat';
 import ApproveLog from '../../components/ApproveLog';
 import styles from './TableList.less';
-import WeitaoForm from '../../components/Forms/WeitaoForm';
-import ZhiboForm from '../../components/Forms/ZhiboForm';
-import GoodProductionForm from '../../components/Forms/GoodProductionForm';
-import LifeInstituteForm from '../../components/Forms/LifeInstituteForm';
-import GlobalFashionForm from '../../components/Forms/GlobalFashionForm';
-import IfashionForm from '../../components/Forms/IfashionForm';
 import Annotation from '../../components/Annotation';
 
 // import styles from './Project.less';
@@ -485,73 +478,7 @@ export default class TaskEdit extends PureComponent {
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const operation = 'edit';
     let form = '';
-    if (formData.channel_name === '微淘') {
-      form = <WeitaoForm
-              form={this.props.form}
-              role="approve"
-              operation={operation}
-              formData={this.state.weitao}
-              onChange={this.handleChangeWeitao}
-            />;
-    } else if (formData.channel_name === '淘宝头条') {
-      form = <WeitaoForm
-              form={this.props.form}
-              role="approve"
-              operation={operation}
-              formData={this.state.toutiao}
-              onChange={this.handleChangeToutiao}
-            />;
-    } else if (!formData.channel_name && formData.task_type === 3) {
-      form = <ZhiboForm
-              form={this.props.form}
-              role="approve"
-              operation={operation}
-              formData={this.state.zhibo}
-              onChange={this.handleChangeZhibo}
-            />;
-    } else if (formData.channel_name === '有好货') {
-      form = <GoodProductionForm
-              form={this.props.form}
-              role="approve"
-              operation={operation}
-              formData={this.state.haveGoodsTask}
-              onChange={this.handleChangeGoods}
-            />
-    } else if (formData.channel_name === '生活研究所') {
-      form = <LifeInstituteForm
-              form={this.props.form}
-              role="approve"
-              operation={operation}
-              formData={this.state.lifeResearch}
-              onChange={this.handleChangeLife}
-            />
-    } else if (formData.channel_name === '全球时尚') {
-      form = <GlobalFashionForm
-              channel_name={formData.channel_name}
-              form={this.props.form}
-              role="approve"
-              operation={operation}
-              formData={this.state.globalFashion}
-              onChange={this.handleChangeGlobal}
-            />
-    } else if (formData.channel_name === '买遍全球') {
-      form = <GlobalFashionForm
-              channel_name={formData.channel_name}
-              form={this.props.form}
-              role="approve"
-              operation={operation}
-              formData={this.state.buyWorld}
-              onChange={this.handleChangeBuyWorld}
-            />
-    } else if (formData.channel_name === 'ifashion') {
-      form = <IfashionForm
-              form={this.props.form}
-              role="approve"
-              operation={operation}
-              formData={this.state.ifashion}
-              onChange={this.handleChangeIfashion}
-            />
-    }
+   
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.channel_name === '有好货' ? 730 : 1000 }}>
