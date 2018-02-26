@@ -1,24 +1,17 @@
 import React, { PureComponent } from 'react';
-import fetch from 'dva/fetch';
-import { Input, Icon, message, Cascader, Form } from 'antd';
+import { Form, Radio, Tooltip, Icon } from 'antd';
 import styles from './index.less';
 
+const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 
-export default class CascaderSelect extends PureComponent {
+export default class NRadioGroup extends PureComponent {
   state = {
     residences: [],
   }
-  componentDidMount() {
-    fetch(`/jsons/we.taobao.json`, {
-    }).then(response => response.json()).then(result => {
-      this.setState({
-        residences: result,
-      })
-    });
-  }
+
   handleChange = (e) => {
-    if (this.props.onChange) this.props.onChange(e, 'crowd')
+    if (this.props.onChange) this.props.onChange(e.target.value)
   }
   render() {
     const { name, props, rules } = this.props;
@@ -34,25 +27,27 @@ export default class CascaderSelect extends PureComponent {
     return (
       <div style={{ padding: '10px 20px 0'}}>
         <p className={styles.lineTitleDefult}>
-          本文目标人群
+          {props.label}
         </p>
         <div>
           <FormItem>
             {getFieldDecorator(name, {
-              initialValue: [firstValue, props.value],
+              initialValue: props.value,
+              rules,
             })(
-              <Cascader
-                placeholder="请选择"
-                style={{ width: '200px' }}
-                onChange={this.handleChange}
-                options={this.state.residences}
-                disabled={this.props.disabled}
-              />
+              <RadioGroup onChange={this.handleChange}>
+                {props.dataSource.map((item, index) =>
+                  <Radio value={item.value} key={index}>
+                    {item.label}
+                    <Tooltip placement="bottom" title={item.labelExtra}>
+                      <Icon type="question-circle-o" style={{ marginLeft: 5 }}/>
+                    </Tooltip>
+                  </Radio>
+                )}
+              </RadioGroup>
             )}
           </FormItem>
         </div>
-        <p className={styles.promptText} dangerouslySetInnerHTML={{__html: props.tips}}>
-        </p>
       </div>
     );
   }

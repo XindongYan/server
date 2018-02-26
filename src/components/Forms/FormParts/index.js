@@ -1,4 +1,4 @@
-export CoverImage from './CoverImage';
+export CreatorAddImage from './CreatorAddImage';
 export TagPicker from './TagPicker';
 export CascaderSelect from './CascaderSelect';
 export AnchorImageList from './AnchorImageList';
@@ -7,3 +7,4 @@ export BodyStructContent from './BodyStructContent';
 export AuctionImageModal from './AuctionImageModal';
 export Input from './Input';
 export Editor from './Editor/index.js';
+export RadioGroup from './RadioGroup';

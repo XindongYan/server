@@ -11,9 +11,6 @@ export default class NInput extends PureComponent {
     const { name, props, rules } = this.props;
     this.props.form.setFieldsValue({ [name]: props.value });
   }
-  componentWillUnmount() {
-
-  }
   render() {
     const { name, props, rules } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -22,6 +19,7 @@ export default class NInput extends PureComponent {
       <div className={styles.taskListInp}>
         <FormItem>
           {getFieldDecorator(name, {
+            initialValue: props.value,
             rules,
           })(
             <Input

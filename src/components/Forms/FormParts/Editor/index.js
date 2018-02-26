@@ -15,7 +15,10 @@ export default class Editors extends PureComponent {
     editorState: EditorState.createEmpty(),
   }
   componentDidMount() {
-    console.log(this.props.value);
+    console.log(this.props.props.value);
+    if (this.props.props && this.props.props.value.blocks.length > 0) {
+      this.setState({ editorState: EditorState.createWithContent(convertFromRaw(this.props.props.value)) });
+    }
   }
   
   handleAddImg = (imgs) => {
