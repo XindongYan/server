@@ -21,6 +21,7 @@ export default class Editors extends PureComponent {
     editorState: EditorState.createEmpty(),
     contentState: (EditorState.createEmpty()).getCurrentContent(),
     selectionState: (EditorState.createEmpty()).getSelection(),
+    inlineStyleList: [],
   }
   componentDidMount() {
     // console.log(this.props.props.value);
@@ -171,17 +172,33 @@ export default class Editors extends PureComponent {
   handleChange = (editorState) => {
     const contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
+    const contentBlock = contentState.getBlockForKey(selectionState.focusKey);
+    const inlineStyle = contentBlock.getInlineStyleAt(selectionState.anchorOffset);
+    const inlineStyleList = [];
+    inlineStyle.forEach(item => inlineStyleList.push(item));
     this.setState({
       editorState,
       contentState,
       selectionState,
+      inlineStyleList,
     });
-    console.log(RichUtils.onBackspace(
-      editorState: editorState
-    ));
     if (this.props.onChange) this.props.onChange(convertToRaw(editorState.getCurrentContent()));
   }
-  
+  undo = () => {
+    
+  }
+  redo = () => {
+    this.handleChange(EditorState.redo(this.state.editorState));
+  }
+  bold = () => {
+    this.toggleInlineStyle('BOLD');
+  }
+  italic = () => {
+    this.toggleInlineStyle('ITALIC');
+  }
+  underline = () => {
+    this.toggleInlineStyle('UNDERLINE');
+  }
   handleTools = (key) => {
     if (key === 'UNDO') {
       this.handleChange(EditorState.undo(this.state.editorState));
@@ -292,6 +309,10 @@ export default class Editors extends PureComponent {
   preventDefault = (e) => {
     e.preventDefault();
   }
+  handleShowInlinStyle = (key) => {
+    const { inlineStyleList } = this.state;
+    return inlineStyleList.findIndex(item => item === key) >= 0 ? '#6af' : '';
+  }
   render() {
     const editorProps = {
       blockRendererFn: this.myBlockRenderer,
@@ -311,10 +332,13 @@ export default class Editors extends PureComponent {
               <Icon type="arrow-right" />
             </span>,
       BOLD: <span onClick={() => this.handleTools('BOLD')} key="BOLD">
-              <span style={{fontSize: 22, fontWeight: 'bold'}}>B</span>
+              <span style={{fontSize: 22, fontWeight: 'bold', color: this.handleShowInlinStyle('BOLD')}}>B</span>
             </span>,
       ITALIC: <span onClick={() => this.handleTools('ITALIC')} key="ITALIC">
-              <span style={{fontSize: 22, fontStyle: 'italic'}}>I</span>
+              <span style={{fontSize: 22, fontStyle: 'italic', color: this.handleShowInlinStyle('ITALIC')}}>I</span>
+            </span>,
+      UNDERLINE: <span onClick={() => this.handleTools('UNDERLINE')} key="UNDERLINE">
+              <span style={{fontSize: 20, textDecoration: 'underline', color: this.handleShowInlinStyle('UNDERLINE')}}>U</span>
             </span>,
       ALIGNLEFT: <span onClick={() => this.handleTools('ALIGNLEFT')} key="ALIGNLEFT">
             <img style={{width: 20, height: 18,}} src={left} />
@@ -327,9 +351,6 @@ export default class Editors extends PureComponent {
             </span>,
       ALIGNJUSTIFY: <span onClick={() => this.handleTools('ALIGNJUSTIFY')} key="ALIGNJUSTIFY">
             <img style={{width: 20, height: 18,}} src={justify} />
-            </span>,
-      UNDERLINE: <span onClick={() => this.handleTools('UNDERLINE')} key="UNDERLINE">
-              <span style={{fontSize: 20, textDecoration: 'underline'}}>U</span>
             </span>,
       SIDEBARIMAGE: <span onClick={this.sidebarimage} key="SIDEBARIMAGE">
                       <Icon type="picture" />
