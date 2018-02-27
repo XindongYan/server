@@ -714,7 +714,6 @@ export default class TaskForm extends PureComponent {
     const { form: { getFieldDecorator }, operation, formData } = this.props;
     const { approveModalVisible, haveGoods, suggestionApproves } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-
     const writeTips = (
       <div className={styles.taskComment} style={{ width: 200, marginRight: operation === 'view' ? 130 : 0 }}>
         <p className={styles.titleDefult}>爆文写作参考</p>
@@ -784,10 +783,19 @@ export default class TaskForm extends PureComponent {
         formRight = writeTips;
       }
     }
+    let outerWidth = 1000;
+    if (channel_name === '有好货') {
+      outerWidth = 730;
+    } else if (formRight === writeTips) {
+      outerWidth = 868;
+    } else {
+      outerWidth = 1000;
+    }
     return (
-      <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} style={{ width: channel_name === '有好货' ? 730 : 1000 }} ref="taskOuterBox">
+      <Card bordered={false} title="" style={{ background: 'none', paddingBottom: 60 }} bodyStyle={{ padding: 0 }}>
+        <div className={styles.taskOuterBox} style={{ width: outerWidth }} ref="taskOuterBox">
           <div style={{ width: channel_name === '有好货' ? 375 : 650 }}>
+            <p className={styles.titleDefult}>内容创作</p>
             <Card bordered={false} title="" bodyStyle={{ padding: 10 }}>
             {form}
             </Card>

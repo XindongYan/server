@@ -40,8 +40,10 @@ export default class CreatorAddImage extends PureComponent {
   //     });
   //   }
   // }
-  handleDeleteCover = () => {
-    if (this.props.onChange) this.props.onChange('');
+  handleDeleteCover = (index) => {
+    const value = Object.assign([], this.props.props.value);
+    value.splice(index, 1);
+    if (this.props.onChange) this.props.onChange(value);
   }
   handleChangeCover = (imgs) => {
     console.log(imgs);
@@ -59,37 +61,6 @@ export default class CreatorAddImage extends PureComponent {
   }
   render() {
     const { name, props, rules } = this.props;
-    const upCoverStyle = {
-      width: '100%',
-      height: '100%',
-      padding: '18px 0',
-      border: '1px dashed #6af',
-      fontSize: '28px',
-      color: '#6af',
-      textAlign: 'center',
-      cursor: 'pointer',
-    };
-    const coverPic = {
-      position: 'relative',
-      width: '100%',
-      height: '100%',
-      textAlign: 'center',
-      lineHeight: '108px',
-    };
-    const coverModal = {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      width: '100%',
-      height:' 40px',
-      lineHeight: '40px',
-      lineHeight: '40px',
-      background: 'rgba(0,0,0,0.5)',
-      color: '#fff',
-      fontSize: '18px',
-      cursor: 'pointer',
-      display: 'none',
-    };
     const disabled = this.props.operation === 'view' ? true : false;
     const coverViewStyles = disabled ? {border: '1px solid #ccc', color: '#ccc'} : {};
     const needAdd = props.value.length < props.max;
@@ -100,7 +71,7 @@ export default class CreatorAddImage extends PureComponent {
             <div className={styles.coverPic} key={index}>
               <img src={item.url} style={{ height: '100%', width: '100%' }}/>
               { !disabled &&
-                <div className={styles.coverModal} onClick={this.handleDeleteCover}>
+                <div className={styles.coverModal} onClick={() => this.handleDeleteCover(index)}>
                   <Icon type="delete" />
                 </div>
               }
