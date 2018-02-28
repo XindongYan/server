@@ -306,10 +306,14 @@ export default class ProjectList extends PureComponent {
                 <Link to={`/project/task/list?project_id=${record._id}`}>任务</Link>
                 <span className={styles.splitLine} />
                 <a onClick={() => this.handleEdit(record)}>修改</a>
-                <span className={styles.splitLine} />
-                <Popconfirm placement="left" title={`确认上架?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                  <a>上架</a>
-                </Popconfirm>
+                { record.type !== 3 &&
+                  <span className={styles.splitLine} />
+                }
+                { record.type !== 3 &&
+                  <Popconfirm placement="left" title={`确认上架?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
+                    <a>上架</a>
+                  </Popconfirm>
+                }
                 <span className={styles.splitLine} />
                 <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
                   <a>删除</a>
