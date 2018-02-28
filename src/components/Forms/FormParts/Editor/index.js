@@ -20,7 +20,7 @@ export default class Editors extends PureComponent {
   }
   componentDidMount() {
     if (this.props.props && this.props.props.value.blocks.length > 0) {
-      this.setState({ editorState: EditorState.createWithContent(convertFromRaw(this.props.props.value)) });
+      this.setState({ editorState: EditorState.createWithContent(convertFromRaw({entityMap: {}, ...this.props.props.value})) });
     }
   }
   
