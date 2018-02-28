@@ -846,15 +846,16 @@ export default class TaskForm extends PureComponent {
             </Card>
           </div>
           {formRight}
-          { operation !== 'view' && pushDaren && <div className={styles.submitBox}>
-            <div style={{ float: 'left', margin: '-6px 50px 0 0' }}>
-              <div style={{ fontSize: 12 }}>推送到</div>
-              <div className={styles.CreatorPush} onClick={() => this.handleChangePushDaren(!pushDaren.props.value)}>
-                <Tooltip placement="top" title={pushDaren.props.value ? pushDaren.props.html : pushDaren.props.html2}>
-                  <img src={pushDaren.props.value ? pushDaren.props.iconActiveUrl : pushDaren.props.iconUrl} style={{ width: '100%' }}/>
-                </Tooltip>
-              </div>
-            </div>
+          { operation !== 'view' && <div className={styles.submitBox}>
+            {pushDaren &&
+              <div style={{ float: 'left', margin: '-6px 50px 0 0' }}>
+                <div style={{ fontSize: 12 }}>推送到</div>
+                <div className={styles.CreatorPush} onClick={() => this.handleChangePushDaren(!pushDaren.props.value)}>
+                  <Tooltip placement="top" title={pushDaren.props.value ? pushDaren.props.html : pushDaren.props.html2}>
+                    <img src={pushDaren.props.value ? pushDaren.props.iconActiveUrl : pushDaren.props.iconUrl} style={{ width: '100%' }}/>
+                  </Tooltip>
+                </div>
+              </div>}
             { (query.project_id || formData.project_id || formData.approve_status === TASK_APPROVE_STATUS.rejected) ?
               <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton')}>
                 <Popconfirm overlayClassName={styles.popConfirm} getPopupContainer={() => document.getElementById('subButton')} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleSubmitTask}>
