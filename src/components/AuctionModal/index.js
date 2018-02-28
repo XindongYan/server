@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import url from 'url';
 import querystring from 'querystring';
-import $ from 'jquery';
 import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag, Switch } from 'antd';
 import styles from './index.less';
 import { searchNew7, queryQumai } from '../../services/tool';
