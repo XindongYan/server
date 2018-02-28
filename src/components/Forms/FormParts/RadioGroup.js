@@ -39,9 +39,10 @@ export default class NRadioGroup extends PureComponent {
                 {props.dataSource.map((item, index) =>
                   <Radio value={item.value} key={index}>
                     {item.label}
-                    <Tooltip placement="bottom" title={item.labelExtra}>
-                      <Icon type="question-circle-o" style={{ marginLeft: 5 }}/>
-                    </Tooltip>
+                    {item.labelExtra &&
+                      <Tooltip placement="bottom" title={<span dangerouslySetInnerHTML={{__html: item.labelExtra}}></span>}>
+                        <Icon type="question-circle-o" style={{ marginLeft: 5 }}/>
+                      </Tooltip>}
                   </Radio>
                 )}
               </RadioGroup>
