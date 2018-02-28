@@ -168,10 +168,6 @@ export default class Editors extends PureComponent {
     }
   }
   handleChange = (editorState) => {
-    const placeholderDiv = document.getElementsByClassName('public-DraftEditorPlaceholder-inner')[0];
-    if (placeholderDiv) {
-      placeholderDiv.style.position = 'absolute';
-    }
     this.getInlineStyleList(editorState);
     this.setState({
       editorState,
@@ -319,6 +315,12 @@ export default class Editors extends PureComponent {
     return blockStyle === key ? '#6af' : '';
   }
   render() {
+    setTimeout(() => {
+      const placeholderDiv = document.getElementsByClassName('public-DraftEditorPlaceholder-root')[0];
+      if (placeholderDiv) {
+        placeholderDiv.style.position = 'absolute';
+      }
+    }, 5);
     const editorProps = {
       blockRendererFn: this.myBlockRenderer,
       blockStyleFn: this.getBlockStyle,
