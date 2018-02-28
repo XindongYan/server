@@ -35,7 +35,7 @@ export default class CreatorAddImage extends PureComponent {
     const coverViewStyles = disabled ? {border: '1px solid #ccc', color: '#ccc'} : {};
     const needAdd = props.value.length < props.max;
     return (
-      <div style={{ padding: '10px 0'}}>
+      <div style={{ padding: 10 }}>
         <div>
           { props.value.map((item, index) =>
             <div className={styles.coverPic} key={index}>

@@ -26,9 +26,11 @@ export default class NRadioGroup extends PureComponent {
     }
     return (
       <div style={{ padding: '10px 20px 0'}}>
-        <p className={styles.lineTitleDefult}>
-          {props.label}
-        </p>
+        { props.label &&
+          <p className={styles.lineTitleDefult}>
+            {props.label}
+          </p>
+        }
         <div>
           <FormItem>
             {getFieldDecorator(name, {
