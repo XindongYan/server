@@ -49,9 +49,7 @@ export default class AddTag extends PureComponent {
     if (this.props.onChange) this.props.onChange(advantage);
   }
   render() {
-    const { name, props, rules, label, operation } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-    const value = getFieldValue(name);
+    const { name, props, rules, operation } = this.props;
     const lengthRules = {};
     let disabled = false;
     const tagStyle = {
@@ -71,7 +69,7 @@ export default class AddTag extends PureComponent {
     return (
       <div style={{ padding: 20 }}>
         <p style={{ marginBottom: 10 }}>
-          {label}
+          {props.label}
         </p>
         <label className={styles.pointBox}>
           <span>

@@ -418,7 +418,7 @@ export default class TaskForm extends PureComponent {
         const form = Object.assign([], this.state.form);
         Object.keys(values).forEach(item => {
           const index = this.state.form.findIndex(item1 => item1.name === item);
-          if (form[index].component === 'CascaderSelect') {
+          if (form[index].name === 'crowdId') {
             form[index].props.value = (values[item] && values[item][1]) ? values[item][1] : '';
           } else {
             form[index].props.value = values[item];
@@ -796,7 +796,7 @@ export default class TaskForm extends PureComponent {
       } else if (item.component === 'CreatorAddSpu') {
         form.push(<NicaiForm.CreatorAddSpu key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'AddTag') {
-        form.push(<NicaiForm.AddTag key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} label={item.label} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
+        form.push(<NicaiForm.AddTag key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'TagPicker') {
         form.push(<NicaiForm.TagPicker key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'AnchorImageList') {
