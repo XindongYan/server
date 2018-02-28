@@ -1,3 +1,9 @@
+@import  "/iconfont/iconfont.css";
+:global(.anticon) {
+  &:before {
+    font-family: "anticon", "anticon-user" !important;
+  }
+}
 .editorToolsWrap{
 	width: 100%;
 	border-bottom: 1px solid #ccc;
@@ -20,12 +26,13 @@
 		}
 	}
 }
-.editor{
-	width: 100%;
-	min-height: 380px;
-	border-bottom: 1px solid #ccc;
-	padding: 8px;
-	outline: none;
+.editorBox{
+	position: relative;
+	&> div{
+		&> div:nth-child(1){
+			position: absolute;
+		}
+	}
 }
 .imgBox{
 	width: 200px;
@@ -116,11 +123,3 @@ span.closeBox{
 	text-align: justify;
 }
 
-.braft-right-aligned-block,
-.braft-right-aligned-block,
-.braft-center-aligned-block,
-.braft-justify-aligned-block{
-	& > div{
-	  display: inline-block;
-	}
-}

@@ -6,7 +6,6 @@ import AlbumModal from '../../../AlbumModal';
 import AuctionModal from '../../../AuctionModal';
 import BpuModal from '../../../AuctionModal/BpuModal.js';
 import styles from './index.less';
-
 import left from './left.png';
 import center from './center.png';
 import right from './right.png';
@@ -88,7 +87,6 @@ export default class Editors extends PureComponent {
   handleAddBpu = (products) => {
     let { editorState } = this.state;
     products.forEach((item) => {
-      console.log(item);
       const contentState = editorState.getCurrentContent();
       const contentStateWithEntity = contentState.createEntity(
         'SIDEBARADDSPU',
@@ -170,36 +168,42 @@ export default class Editors extends PureComponent {
     }
   }
   handleChange = (editorState) => {
-    const contentState = editorState.getCurrentContent();
-    const selectionState = editorState.getSelection();
-    const contentBlock = contentState.getBlockForKey(selectionState.focusKey);
-    const inlineStyle = contentBlock.getInlineStyleAt(selectionState.anchorOffset);
-    const inlineStyleList = [];
-    inlineStyle.forEach(item => inlineStyleList.push(item));
+    const placeholderDiv = document.getElementsByClassName('public-DraftEditorPlaceholder-inner')[0];
+    if (placeholderDiv) {
+      placeholderDiv.style.position = 'absolute';
+    }
+    this.getInlineStyleList(editorState);
     this.setState({
       editorState,
-      contentState,
-      selectionState,
-      inlineStyleList,
     });
     if (this.props.onChange) this.props.onChange(convertToRaw(editorState.getCurrentContent()));
   }
-  undo = () => {
-    
-  }
-  redo = () => {
-    this.handleChange(EditorState.redo(this.state.editorState));
-  }
-  bold = () => {
-    this.toggleInlineStyle('BOLD');
-  }
-  italic = () => {
-    this.toggleInlineStyle('ITALIC');
-  }
-  underline = () => {
-    this.toggleInlineStyle('UNDERLINE');
+  getInlineStyleList = (editorState) => {
+    const inlineStyleList = [];
+    const contentState = editorState.getCurrentContent();
+    const selectionState = editorState.getSelection();
+    const contentBlock = contentState.getBlockForKey(selectionState.focusKey);
+    const blockStyle = contentBlock.getType();
+    const inlineStyle = contentBlock.getInlineStyleAt(selectionState.anchorOffset);
+    const inlineStyleBefor = contentBlock.getInlineStyleAt(selectionState.anchorOffset - 1);
+    inlineStyle.forEach(item => inlineStyleList.push(item));
+    inlineStyleBefor.forEach(item => inlineStyleList.push(item));
+    this.setState({
+      contentState,
+      selectionState,
+      inlineStyleList,
+      blockStyle,
+    });
   }
   handleTools = (key) => {
+    const { inlineStyleList } = this.state;
+    const index = inlineStyleList.findIndex(item => item === key);
+    let newInlineStyleList = [...inlineStyleList];
+    if (index >= 0) {
+      newInlineStyleList.splice(index, 1);
+    } else {
+      newInlineStyleList.push(key);
+    }
     if (key === 'UNDO') {
       this.handleChange(EditorState.undo(this.state.editorState));
     } else if (key === 'REDO') {
@@ -209,6 +213,9 @@ export default class Editors extends PureComponent {
     } else if (key === 'ALIGNLEFT' || key === 'ALIGNCENTER' || key === 'ALIGNRIGHT' || key === 'ALIGNJUSTIFY') {
       this.toggleBlockType(key);
     }
+    this.setState({
+      inlineStyleList: newInlineStyleList,
+    });
   }
   toggleInlineStyle(inlineStyle) {
     this.handleChange(
@@ -276,21 +283,15 @@ export default class Editors extends PureComponent {
     }
   }
   customStyleMap = (block) => {
-    // console.log(block);
-    this.selectBlock(block)
-  }
-
-  selectBlock = (block) => {
     const blockKey = block.getKey()
-
     const a = this.triggerChange(EditorState.forceSelection(this.editorState, new SelectionState({
       anchorKey: blockKey,
       anchorOffset: 0,
       focusKey: blockKey,
       focusOffset: block.getLength()
-    })))
-    console.log(a);
+    })));
   }
+
   getBlockStyle = (block) => {
     switch (block.getType()) {
       case 'ALIGNLEFT': return styles.ineditorAlignLeft;
@@ -313,11 +314,16 @@ export default class Editors extends PureComponent {
     const { inlineStyleList } = this.state;
     return inlineStyleList.findIndex(item => item === key) >= 0 ? '#6af' : '';
   }
+  handleShowBlockStyle = (key) => {
+    const { blockStyle } = this.state;
+    return blockStyle === key ? '#6af' : '';
+  }
   render() {
     const editorProps = {
       blockRendererFn: this.myBlockRenderer,
       blockStyleFn: this.getBlockStyle,
       customStyleMap: this.customStyleMap,
+      placeholder: this.props.props.placeholder,
     }
     const toolList = ['UNDO', 'REDO', 'BOLD', 'ITALIC', 'UNDERLINE', 'ALIGNLEFT', 'ALIGNCENTER', 'ALIGNRIGHT', 'ALIGNJUSTIFY', 'a'];
     const menu = ['SIDEBARIMAGE', 'SIDEBARSEARCHITEM', 'SIDEBARADDSPU'];
@@ -332,26 +338,26 @@ export default class Editors extends PureComponent {
               <Icon type="arrow-right" />
             </span>,
       BOLD: <span onClick={() => this.handleTools('BOLD')} key="BOLD">
-              <span style={{fontSize: 22, fontWeight: 'bold', color: this.handleShowInlinStyle('BOLD')}}>B</span>
+              <Icon type="bold" style={{color: this.handleShowInlinStyle('BOLD')}} />
             </span>,
       ITALIC: <span onClick={() => this.handleTools('ITALIC')} key="ITALIC">
-              <span style={{fontSize: 22, fontStyle: 'italic', color: this.handleShowInlinStyle('ITALIC')}}>I</span>
+              <Icon type="italic" style={{color: this.handleShowInlinStyle('ITALIC')}} />
             </span>,
       UNDERLINE: <span onClick={() => this.handleTools('UNDERLINE')} key="UNDERLINE">
-              <span style={{fontSize: 20, textDecoration: 'underline', color: this.handleShowInlinStyle('UNDERLINE')}}>U</span>
-            </span>,
+                  <Icon type="underline" style={{color: this.handleShowInlinStyle('UNDERLINE')}} />
+                </span>,
       ALIGNLEFT: <span onClick={() => this.handleTools('ALIGNLEFT')} key="ALIGNLEFT">
-            <img style={{width: 20, height: 18,}} src={left} />
-            </span>,
+                    <Icon type="align-left" style={{color: this.handleShowBlockStyle('ALIGNLEFT')}} />
+                  </span>,
       ALIGNCENTER: <span onClick={() => this.handleTools('ALIGNCENTER')} key="ALIGNCENTER">
-            <img style={{width: 20, height: 18,}} src={center} />
-            </span>,
+                      <Icon type="align-center" style={{color: this.handleShowBlockStyle('ALIGNCENTER')}} />
+                    </span>,
       ALIGNRIGHT: <span onClick={() => this.handleTools('ALIGNRIGHT')} key="ALIGNRIGHT">
-            <img style={{width: 20, height: 18,}} src={right} />
-            </span>,
+                    <Icon type="align-right" style={{color: this.handleShowBlockStyle('ALIGNRIGHT')}} />
+                  </span>,
       ALIGNJUSTIFY: <span onClick={() => this.handleTools('ALIGNJUSTIFY')} key="ALIGNJUSTIFY">
-            <img style={{width: 20, height: 18,}} src={justify} />
-            </span>,
+                      <Icon type="align-justify" style={{color: this.handleShowBlockStyle('ALIGNJUSTIFY')}} />
+                    </span>,
       SIDEBARIMAGE: <span onClick={this.sidebarimage} key="SIDEBARIMAGE">
                       <Icon type="picture" />
                       图片
