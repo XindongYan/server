@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Icon } from 'antd';
 import AlbumModal from '../../AlbumModal';
 import AuctionModal from '../../AuctionModal';
+export AuctionImageModal from '../../AuctionModal/AuctionImageModal';
 import styles from './index.less';
 
 const FormItem = Form.Item;

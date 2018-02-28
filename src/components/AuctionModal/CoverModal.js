@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Icon, message, Row, Col, Tag, Button, Modal, Switch, Radio } from 'antd';
-import styles from '../Forms/FormParts/AuctionImageModal.less';
+import styles from './AuctionImageModal.less';
 import AlbumModal from '../AlbumModal';
 const RadioGroup = Radio.Group;
 
