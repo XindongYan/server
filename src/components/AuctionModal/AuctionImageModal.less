@@ -1,6 +1,10 @@
 .imgBox{
 	width: 100%;
 	margin: 20px 0;
+	img{
+		width: 100%;
+		height: 100%;
+	}
 }
 .imgBox:after, .imgShowBox:after{
 	display: block;
@@ -31,25 +35,29 @@
 	background: #f5f5f5;
 	padding: 10px;
 	min-height: 80px;
-}
-.imgShowBox>div{
-	float: left;
-	width: 60px;
-	height: 60px;
-	position: relative;
-	margin-right: 20px;
-}
-.imgShowBox>div>span{
-	position: absolute;
-	top: -10px;
-	right: -10px;
-	width: 20px;
-	height: 20px;
-	line-height: 20px;
-	font-size: 18px;
-	color: #333;
-	text-align: center;
-	cursor: pointer;
+	&> div{
+		float: left;
+		width: 60px;
+		height: 60px;
+		position: relative;
+		margin-right: 20px;
+		&>span{
+			position: absolute;
+			top: -10px;
+			right: -10px;
+			width: 20px;
+			height: 20px;
+			line-height: 20px;
+			font-size: 18px;
+			color: #333;
+			text-align: center;
+			cursor: pointer;
+		}
+	}
+	img{
+		width: 100%;
+		height: 100%;
+	}
 }
 .chooseImgBox{
 	position: absolute;
