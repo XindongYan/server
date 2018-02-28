@@ -128,6 +128,7 @@ export default class Editors extends PureComponent {
     } else if (type === 'SIDEBARSEARCHITEM') {
       return (
         <div className={styles.auctionBox}>
+          <div className={styles.zzBox}></div>
           <div className={styles.auctionImgBox}>
             <img
               src={data.coverUrl}
@@ -146,6 +147,7 @@ export default class Editors extends PureComponent {
     } else if (type === 'SIDEBARADDSPU') {
       return (
         <div className={styles.bpuBox}>
+          <div className={styles.zzBox}></div>
           <div className={styles.bpuImgBox}>
             <img
               src={data.coverUrl}
@@ -309,7 +311,55 @@ export default class Editors extends PureComponent {
     const { blockStyle } = this.state;
     return blockStyle === key ? '#6af' : '';
   }
+  renderTools = (item, index) => {
+    switch (item) {
+      case 'TOOLSPLITLINE': return <span key={index}>
+                                    <Divider type="vertical" style={{height: 30, width: 1}} />
+                                  </span>;
+      case 'UNDO': return <span onClick={() => this.handleTools('UNDO')} key={index}>
+                            <Icon type="arrow-left" />
+                          </span>;
+      case 'REDO': return <span onClick={() => this.handleTools('REDO')} key={index}>
+                            <Icon type="arrow-right" />
+                          </span>;
+      case 'BOLD': return <span onClick={() => this.handleTools('BOLD')} key={index}>
+                            <Icon type="bold" style={{color: this.handleShowInlinStyle('BOLD')}} />
+                          </span>;
+      case 'ITALIC': return <span onClick={() => this.handleTools('ITALIC')} key={index}>
+                              <Icon type="italic" style={{color: this.handleShowInlinStyle('ITALIC')}} />
+                            </span>;
+      case 'UNDERLINE': return <span onClick={() => this.handleTools('UNDERLINE')} key={index}>
+                                <Icon type="underline" style={{color: this.handleShowInlinStyle('UNDERLINE')}} />
+                              </span>;
+      case 'ALIGNLEFT': return <span onClick={() => this.handleTools('ALIGNLEFT')} key={index}>
+                                  <Icon type="align-left" style={{color: this.handleShowBlockStyle('ALIGNLEFT')}} />
+                                </span>;
+      case 'ALIGNCENTER': return <span onClick={() => this.handleTools('ALIGNCENTER')} key={index}>
+                                  <Icon type="align-center" style={{color: this.handleShowBlockStyle('ALIGNCENTER')}} />
+                                </span>;
+      case 'ALIGNRIGHT': return <span onClick={() => this.handleTools('ALIGNRIGHT')} key={index}>
+                                  <Icon type="align-right" style={{color: this.handleShowBlockStyle('ALIGNRIGHT')}} />
+                                </span>;
+      case 'ALIGNJUSTIFY': return <span onClick={() => this.handleTools('ALIGNJUSTIFY')} key={index}>
+                                    <Icon type="align-justify" style={{color: this.handleShowBlockStyle('ALIGNJUSTIFY')}} />
+                                  </span>;
+      case 'SIDEBARIMAGE': return <span onClick={this.sidebarimage} key={index}>
+                                    <Icon type="picture" />
+                                    图片
+                                  </span>;
+      case 'SIDEBARSEARCHITEM': return <span key={index} onClick={this.sidebarsearchitem}>
+                                        <Icon type="shopping-cart" />
+                                        商品
+                                      </span>;
+      case 'SIDEBARADDSPU': return <span key={index} onClick={this.sidebaraddspu}>
+                                      <Icon type="shop" />
+                                      标准品牌商品
+                                    </span>;
+      default: return '';
+    }
+  }
   render() {
+    const { props } = this.props;
     const box = document.getElementsByClassName('DraftEditor-editorContainer')[0];
     if (box) {
       box.style.position = 'relative';
@@ -322,59 +372,12 @@ export default class Editors extends PureComponent {
     }
     const toolList = ['UNDO', 'REDO', 'BOLD', 'ITALIC', 'UNDERLINE', 'ALIGNLEFT', 'ALIGNCENTER', 'ALIGNRIGHT', 'ALIGNJUSTIFY'];
     const menu = ['SIDEBARIMAGE', 'SIDEBARSEARCHITEM', 'SIDEBARADDSPU'];
-    const tools = {
-      TOOLSPLITLINE: <span key="TOOLSPLITLINE">
-                      <Divider type="vertical" />
-                    </span>,
-      UNDO: <span onClick={() => this.handleTools('UNDO')} key="UNDO">
-              <Icon type="arrow-left" />
-            </span>,
-      REDO: <span onClick={() => this.handleTools('REDO')} key="REDO">
-              <Icon type="arrow-right" />
-            </span>,
-      BOLD: <span onClick={() => this.handleTools('BOLD')} key="BOLD">
-              <Icon type="bold" style={{color: this.handleShowInlinStyle('BOLD')}} />
-            </span>,
-      ITALIC: <span onClick={() => this.handleTools('ITALIC')} key="ITALIC">
-              <Icon type="italic" style={{color: this.handleShowInlinStyle('ITALIC')}} />
-            </span>,
-      UNDERLINE: <span onClick={() => this.handleTools('UNDERLINE')} key="UNDERLINE">
-                  <Icon type="underline" style={{color: this.handleShowInlinStyle('UNDERLINE')}} />
-                </span>,
-      ALIGNLEFT: <span onClick={() => this.handleTools('ALIGNLEFT')} key="ALIGNLEFT">
-                    <Icon type="align-left" style={{color: this.handleShowBlockStyle('ALIGNLEFT')}} />
-                  </span>,
-      ALIGNCENTER: <span onClick={() => this.handleTools('ALIGNCENTER')} key="ALIGNCENTER">
-                      <Icon type="align-center" style={{color: this.handleShowBlockStyle('ALIGNCENTER')}} />
-                    </span>,
-      ALIGNRIGHT: <span onClick={() => this.handleTools('ALIGNRIGHT')} key="ALIGNRIGHT">
-                    <Icon type="align-right" style={{color: this.handleShowBlockStyle('ALIGNRIGHT')}} />
-                  </span>,
-      ALIGNJUSTIFY: <span onClick={() => this.handleTools('ALIGNJUSTIFY')} key="ALIGNJUSTIFY">
-                      <Icon type="align-justify" style={{color: this.handleShowBlockStyle('ALIGNJUSTIFY')}} />
-                    </span>,
-      SIDEBARIMAGE: <span onClick={this.sidebarimage} key="SIDEBARIMAGE">
-                      <Icon type="picture" />
-                      图片
-                    </span>,
-      SIDEBARSEARCHITEM: <span key="SIDEBARSEARCHITEM" onClick={this.sidebarsearchitem}>
-                          <Icon type="shopping-cart" />
-                          商品
-                        </span>,
-      SIDEBARADDSPU: <span key="SIDEBARADDSPU" onClick={this.sidebaraddspu}>
-                      <Icon type="shop" />
-                      标准品牌商品
-                    </span>,
-      a: <span key="a" onClick={this.handleGetEditor}>
-          获取
-        </span>,
-    };
     
+        console.log(props.plugins)
     return (
       <div style={{marginBottom: 60}}>
         <div onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
-          <div>{toolList.map(item => tools[item])}</div>
-          <div>{menu.map(item => tools[item])}</div>
+          <div>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
         </div>
         <div className={styles.editorBox} onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
           <Editor ref={instance => {this.setState({editor: instance})}} editorState={this.state.editorState} onChange={this.handleChange} {...editorProps} />
