@@ -85,229 +85,28 @@ export default class TaskForm extends PureComponent {
 
   validate = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { weitao, haveGoods, lifeResearch, globalFashion, ifashion, buyWorld, toutiao, zhibo } = this.state;
     const channel_name = this.getChannelName();
-    if (channel_name === '有好货') {
-      let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title'], {scroll: {alignWithTop: true}}, (err, val) => {
-        if (!err) {
-          if (!haveGoods.body || !haveGoods.body.length) {
-            message.warn('请选择商品宝贝');
-            bOk = false;
-          } else if (!haveGoods.body[0].extraBanners || haveGoods.body[0].extraBanners.length < 3) {
-            message.warn('请选择至少三张封面图');
-            bOk = false;
-          } else if (!haveGoods.bodyStruct0 || haveGoods.bodyStruct0.length < 2) {
-            message.warn('请输入宝贝亮点');
-            bOk = false;
-          } else if (!haveGoods.duanliangdian || haveGoods.duanliangdian.length < 2) {
-            message.warn('请输入至少2条短亮点');
-            bOk = false;
-          } else if (!haveGoods.bodyStruct || haveGoods.bodyStruct.length < 2) {
-            message.warn('请编写至少2个段落');
-            bOk = false;
-          } else {
-            for (var i = haveGoods.bodyStruct.length - 1; i >= 0; i--) {
-              (!haveGoods.bodyStruct[i] || !haveGoods.bodyStruct[i].title) ? haveGoods.bodyStruct.splice(i, 1) : '';
-            }
-            if (haveGoods.bodyStruct.length < 2) {
-              message.warn('请编写至少2个段落');
-              bOk = false;
-            }
-          }
-        } else {
-          bOk = false;
-        }
-      })
-      return bOk;
-    } else if (channel_name === '生活研究所') {
-      let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'summary', 'crowd'], {scroll: {alignWithTop: true}}, (err, val) => {
-        if (!err) {
-          if (!lifeResearch.task_desc) {
-            message.warn('请填写内容');
-            bOk = false;
-          } else if (!lifeResearch.crowd || lifeResearch.crowd.length <= 0) {
-            message.warn('请选择目标人群');
-            bOk = false;
-          } else if (!lifeResearch.cover_img) {
-            message.warn('请上传封面图');
-            bOk = false;
-          }
-        } else {
-          bOk = false;
-        }
-      })
-      return bOk;
-    } else if (channel_name === '全球时尚') {
-      let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'crowd', 'summary'], {scroll: {alignWithTop: true}}, (err, val) => {
-        if (!err) {
-          if (!globalFashion.task_desc) {
-            message.warn('请填写内容');
-            bOk = false;
-          } else if (!globalFashion.cover_img) {
-            message.warn('请选择封面图');
-            bOk = false;
-          } else if (globalFashion.classification.length <= 0) {
-            message.warn('请选择潮流热点分类');
-            bOk = false;
-          } else if (globalFashion.classification && globalFashion.classification.length > 1) {
-            message.warn('潮流热点只能选择一个');
-            bOk = false;
-          }
-        } else {
-          bOk = false;
-        }
-      })
-      return bOk;
-    } else if (channel_name === '买遍全球') {
-      let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title', 'sub_title', 'crowd', 'summary'], {scroll: {alignWithTop: true}}, (err, val) => {
-        if (!err) {
-          if (!buyWorld.task_desc) {
-            message.warn('请填写内容');
-            bOk = false;
-          } else if (!buyWorld.cover_img) {
-            message.warn('请选择封面图');
-            bOk = false;
-          } else if (buyWorld.classification.length <= 0) {
-            message.warn('请选择分类');
-            bOk = false;
-          } else if (buyWorld.classification && buyWorld.classification.length > 1) {
-            message.warn('只能选择一个分类标签');
-            bOk = false;
-          }
-        } else {
-          bOk = false;
-        }
-      })
-      return bOk;
-    } else if (channel_name === 'ifashion') {
-      let bOk = true;
-      this.props.form.validateFieldsAndScroll(['title','sub_title','summary'], {scroll: {alignWithTop: true}}, (err, val) => {
-        if (!err) {
-          if (!ifashion.title || !ifashion.title.replace(/\s+/g, '')) {
-            message.warn('请填写标题');
-            bOk = false;
-          } else if (ifashion.title && ifashion.title.length > 11) {
-            message.warn('标题字数不符合要求');
-            bOk = false;
-          } else if (!ifashion.summary) {
-            message.warn('请填写推荐理由');
-            bOk = false;
-          } else if (ifashion.classification.length <= 0) {
-            message.warn('请选择潮流热点分类');
-            bOk = false;
-          } else if (ifashion.classification && ifashion.classification.length > 1) {
-            message.warn('潮流热点只能选择一个');
-            bOk = false;
-          } else {
-            bOk = true;
-          }
-        } else {
-          bOk = false;
-        }
-      });
-      return bOk;
-    } else if (channel_name === '微淘') {
-      if (!weitao.title || !weitao.title.replace(/\s+/g, '')) {
-        message.warn('请填写标题');
-        return false;
-      } else if (weitao.title && (weitao.title.length > 19 || weitao.title.length < 4)) {
-        message.warn('标题字数不符合要求');
-        return false;
-      } else if (!weitao.summary) {
-        message.warn('请填写引文');
-        return false;
-      } else if (weitao.summary.length > 100 || weitao.summary.length < 10) {
-        message.warn('引文字数必须在10 - 100字之间');
-        return false;
-      } else if (!weitao.task_desc) {
-        message.warn('请填写内容');
-        return false;
-      } else if (!weitao.cover_img) {
-        message.warn('请选择封面图');
-        return false;
-      } else {
-        return true;
-      }
-    } else if (channel_name === '淘宝头条') {
-      if (!toutiao.title || !toutiao.title.replace(/\s+/g, '')) {
-        message.warn('请填写标题');
-        return false;
-      } else if (toutiao.title && (toutiao.title.length > 19 || toutiao.title.length < 4)) {
-        message.warn('标题字数不符合要求');
-        return false;
-      } else if (!toutiao.summary) {
-        message.warn('请填写引文');
-        return false;
-      } else if (toutiao.summary.length > 100 || toutiao.summary.length < 10) {
-        message.warn('引文字数必须在10 - 100字之间');
-        return false;
-      } else if (!toutiao.task_desc) {
-        message.warn('请填写内容');
-        return false;
-      } else if (!toutiao.cover_img) {
-        message.warn('请选择封面图');
-        return false;
-      } else {
-        return true;
-      }
-    } else if (channel_name === '直播脚本') {
-      if (!zhibo.title || !zhibo.title.replace(/\s+/g, '')) {
-        message.warn('请填写标题');
-        return false;
-      } else if (zhibo.title && zhibo.title.length > 19) {
-        message.warn('标题字数不符合要求');
-        return false;
-      } else if (!zhibo.task_desc) {
-        message.warn('请填写内容');
-        return false;
-      } else {
-        return true;
-      }
-    }
+    return true;
   }
   handleSubmitTask = () => {
     if (this.validate()) {
       const query = querystring.parse(this.props.location.search.substr(1));
       const { currentUser, teamUser, operation, formData } = this.props;
-      const { haveGoods, approver_id, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
-      const title = haveGoods.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title;
+      const title = this.state.form.find(item => item.name === 'title').props.value;
       let name;
       if (operation === 'create') {
         name = title;
       } else if (operation === 'edit') {
-        if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
+        if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
           name = title;
         }
       }
-      const values = {};
+      const values = {
+        form: this.state.form,
+      };
       const channel_name = this.getChannelName();
       let auctionIds = [];
-      if (channel_name === '有好货') {
-        values.haveGoods = this.state.haveGoods;
-      } else if (channel_name === '生活研究所') {
-        values.lifeResearch = this.state.lifeResearch;
-        auctionIds = this.extractAuctionIds(values.lifeResearch.task_desc);
-      } else if (channel_name === '全球时尚') {
-        values.globalFashion = this.state.globalFashion;
-        auctionIds = this.extractAuctionIds(values.globalFashion.task_desc);
-      } else if (channel_name === 'ifashion') {
-        values.ifashion = this.state.ifashion;
-      } else if (channel_name === '买遍全球') {
-        values.buyWorld = this.state.buyWorld;
-        auctionIds = this.extractAuctionIds(values.buyWorld.task_desc);
-      } else if (channel_name === '微淘') {
-        values.weitao = this.state.weitao;
-        auctionIds = this.extractAuctionIds(values.weitao.task_desc);
-      } else if (channel_name === '淘宝头条') {
-        values.toutiao = this.state.toutiao;
-        auctionIds = this.extractAuctionIds(values.toutiao.task_desc);
-      } else if (channel_name === '直播脚本') {
-        values.zhibo = this.state.zhibo;
-      }
+      auctionIds = this.extractAuctionIds('');
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
@@ -539,41 +338,21 @@ export default class TaskForm extends PureComponent {
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, operation, formData } = this.props;
-    const { haveGoods, approver_id, lifeResearch, globalFashion, ifashion, buyWorld, weitao, toutiao, zhibo } = this.state;
-    const title = haveGoods.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title;
+    const title = this.state.form.find(item => item.name === 'title').props.value;
     let name;
     if (operation === 'create') {
       name = title;
     } else if (operation === 'edit') {
-      if (formData.source === SOURCE.deliver || formData.source === SOURCE.create) {
+      if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
         name = title;
       }
     }
-    const values = {};
+    const values = {
+      form: this.state.form,
+    };
     const channel_name = this.getChannelName();
     let auctionIds = [];
-    if (channel_name === '有好货') {
-      values.haveGoods = this.state.haveGoods;
-    } else if (channel_name === '生活研究所') {
-      values.lifeResearch = this.state.lifeResearch;
-      auctionIds = this.extractAuctionIds(values.lifeResearch.task_desc);
-    } else if (channel_name === '全球时尚') {
-      values.globalFashion = this.state.globalFashion;
-      auctionIds = this.extractAuctionIds(values.globalFashion.task_desc);
-    } else if (channel_name === 'ifashion') {
-      values.ifashion = this.state.ifashion;
-    } else if (channel_name === '买遍全球') {
-      values.buyWorld = this.state.buyWorld;
-      auctionIds = this.extractAuctionIds(values.buyWorld.task_desc);
-    } else if (channel_name === '微淘') {
-      values.weitao = this.state.weitao;
-      auctionIds = this.extractAuctionIds(values.weitao.task_desc);
-    } else if (channel_name === '淘宝头条') {
-      values.toutiao = this.state.toutiao;
-      auctionIds = this.extractAuctionIds(values.toutiao.task_desc);
-    } else if (channel_name === '直播脚本') {
-      values.zhibo = this.state.zhibo;
-    }
+    auctionIds = this.extractAuctionIds('');
     if (query._id) {
       this.props.dispatch({
         type: 'task/update',
