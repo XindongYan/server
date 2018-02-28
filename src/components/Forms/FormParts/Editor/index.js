@@ -390,8 +390,6 @@ export default class Editors extends PureComponent {
       customStyleMap: this.customStyleMap,
       placeholder: this.props.props.placeholder,
     }
-    const toolList = ['UNDO', 'REDO', 'BOLD', 'ITALIC', 'UNDERLINE', 'ALIGNLEFT', 'ALIGNCENTER', 'ALIGNRIGHT', 'ALIGNJUSTIFY'];
-    const menu = ['SIDEBARIMAGE', 'SIDEBARSEARCHITEM', 'SIDEBARADDSPU'];
     return (
       <div style={{marginBottom: 60}}>
         <div onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
