@@ -40,8 +40,45 @@ export default class AnchorImageList extends PureComponent {
   }
   setJigsaw = (e) => {
     const result = JSON.parse(e.target.innerText);
+    console.log(result);
     if (!result.errorCode) {
-      if (this.props.onChange) this.props.onChange(result);
+      if (this.props.onChange) {
+        const features = {
+          images: [],
+          dapeiParams: {
+            area: result.area,
+            bannerSize: result.size,
+          },
+          dapeiId: result.id
+        }
+        const rawData = JSON.parse(result.rawData);
+        const anchors = [];
+        for (var i = 1; i < rawData.layers.length; i++) {
+          if (rawData.layers[i].type === 8) {
+            const item = rawData.layers[i];
+            anchors.push({
+              data: {
+                coverUrl: item.picUrl,
+                finalPricePc: 0,
+                finalPriceWap: 0,
+                itemId: 0,
+                materialId: "",
+                price: 0,
+                url: 'https://item.taobao.com/item.htm?id=' + item.itemId,
+              },
+              type: "item",
+              x: ((item.width * (item.anchorX / 100) + item.x) / 1200) * 100,
+              y: ((item.height * (item.anchorY / 100) + item.y) / 1200) * 100,
+            })
+          }
+        }
+        this.props.onChange([{
+          anchors: anchors,
+          features: JSON.stringify(features),
+          hotSpaces: [],
+          url: result.url,
+        }]);
+      }
     } else {
       message.error(result.message);
     }
@@ -67,18 +104,19 @@ export default class AnchorImageList extends PureComponent {
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleCreateJigsaw = (e) => {
-    window.open('https://we.taobao.com/mirror/mirror.html?activityId=1437');
+    window.open(`https://we.taobao.com${this.props.props.url}`);
   }
   handleEditJigsaw = (e) => {
-    const { formData } = this.props;
-    window.open(`https://we.taobao.com/mirror/mirror.html?activityId=1437&dapeiId=${formData.body.id}`);
+    const { props } = this.props;
+    const features = JSON.parse(props.value.length > 0 ? props.value[0].features : '{}');
+    window.open(`https://we.taobao.com${this.props.props.url}&dapeiId=${features.dapeiId}`);
   }
   handleDeleteJigsaw = (e) => {
     if (this.props.onChange) this.props.onChange({});
   }
   render() {
-    const { formData, disabled } = this.props;
-    const url = formData.body ? formData.body.url : '';
+    const { props, disabled } = this.props;
+    const url = props.value.length > 0 ? props.value[0].url : '';
     const styleDisabled = disabled ? {
       padding: '60px 0',
       width: 200,
@@ -90,7 +128,7 @@ export default class AnchorImageList extends PureComponent {
       <div style={{ padding: '10px 20px' }}>
         <p style={{ marginBottom: 10 }}>主图</p>
         <div style={{ width: 200, height: 200 }}>
-          {(url) ?
+          {url ?
             <div className={styles.showImgBox}>
               <img src={url}/>
               { !this.props.disabled && <div className={styles.deleteImgBox}>

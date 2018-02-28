@@ -797,6 +797,8 @@ export default class TaskForm extends PureComponent {
         form.push(<NicaiForm.CreatorAddSpu key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'TagPicker') {
         form.push(<NicaiForm.TagPicker key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
+      } else if (item.component === 'AnchorImageList') {
+        form.push(<NicaiForm.AnchorImageList key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       }
     });
     
