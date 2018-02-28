@@ -8,3 +8,4 @@ export Input from './Input';
 export Editor from './Editor/index.js';
 export RadioGroup from './RadioGroup';
 export CreatorAddItem from './CreatorAddItem';
+export CreatorAddSpu from './CreatorAddSpu';

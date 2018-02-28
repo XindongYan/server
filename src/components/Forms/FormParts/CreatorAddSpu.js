@@ -1,15 +1,12 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'dva';
 import { Form, Icon } from 'antd';
 import AuctionModal from '../../AuctionModal';
 import AuctionImageModal from '../../AuctionModal/AuctionImageModal';
 import styles from './index.less';
 
 const FormItem = Form.Item;
-@connect(state => ({
-}))
 
-export default class CreatorAddItem extends PureComponent {
+export default class CreatorAddSpu extends PureComponent {
   state = {
   }
   handleAuctionShow = () => {
@@ -31,7 +28,7 @@ export default class CreatorAddItem extends PureComponent {
         rawTitle: auction.title,
         resourceUrl: auction.item.itemUrl,
         title: auction.title,
-        coverUrl: auction.coverUrl,
+        coverUrl: img,
         // extraBanners: [],
       }]);
     }
@@ -43,21 +40,9 @@ export default class CreatorAddItem extends PureComponent {
       }
     })
   }
-  handleChangeBodyImg = (coverUrl, extraBanners) => {
-    const { props } = this.props;
-    if (this.props.onChange) this.props.onChange([{
-      ...props.value[0],
-      coverUrl: coverUrl,
-      extraBanners: extraBanners,
-    }]);
-  }
   handleEditProduct = () => {
-    const { props } = this.props;
     this.props.dispatch({
       type: 'album/showAuctionImage',
-      payload: {
-        formData: props.value[0] ? props.value[0] : []
-      }
     })
   }
   handleClearProduct = () => {
@@ -65,6 +50,7 @@ export default class CreatorAddItem extends PureComponent {
   }
   render() {
     const { name, props, rules } = this.props;
+
     return (
       <div style={{ marginBottom: 20 }}>
         <div className={styles.task_img_list}>
@@ -80,8 +66,8 @@ export default class CreatorAddItem extends PureComponent {
             <div className={styles.imgShowBox} style={{ width: 120, height: 120 }}>
               <img src={props.value[0].coverUrl} />
               <div className={styles.clearImg}>
-                <div onClick={this.handleEditProduct}>
-                  <Icon type="edit" />
+                <div>
+                  <Icon type="edit" onClick={this.handleEditProduct} />
                 </div>
                 <div onClick={this.handleClearProduct}>
                   <Icon type="delete" />
