@@ -6,10 +6,6 @@ import AlbumModal from '../../../AlbumModal';
 import AuctionModal from '../../../AuctionModal';
 import BpuModal from '../../../AuctionModal/BpuModal.js';
 import styles from './index.less';
-import left from './left.png';
-import center from './center.png';
-import right from './right.png';
-import justify from './justify.png';
 
 @connect(() => ({
 
@@ -23,7 +19,6 @@ export default class Editors extends PureComponent {
     inlineStyleList: [],
   }
   componentDidMount() {
-    // console.log(this.props.props.value);
     if (this.props.props && this.props.props.value.blocks.length > 0) {
       this.setState({ editorState: EditorState.createWithContent(convertFromRaw(this.props.props.value)) });
     }
@@ -315,19 +310,17 @@ export default class Editors extends PureComponent {
     return blockStyle === key ? '#6af' : '';
   }
   render() {
-    setTimeout(() => {
-      const placeholderDiv = document.getElementsByClassName('public-DraftEditorPlaceholder-root')[0];
-      if (placeholderDiv) {
-        placeholderDiv.style.position = 'absolute';
-      }
-    }, 5);
+    const box = document.getElementsByClassName('DraftEditor-editorContainer')[0];
+    if (box) {
+      box.style.position = 'relative';
+    }
     const editorProps = {
       blockRendererFn: this.myBlockRenderer,
       blockStyleFn: this.getBlockStyle,
       customStyleMap: this.customStyleMap,
       placeholder: this.props.props.placeholder,
     }
-    const toolList = ['UNDO', 'REDO', 'BOLD', 'ITALIC', 'UNDERLINE', 'ALIGNLEFT', 'ALIGNCENTER', 'ALIGNRIGHT', 'ALIGNJUSTIFY', 'a'];
+    const toolList = ['UNDO', 'REDO', 'BOLD', 'ITALIC', 'UNDERLINE', 'ALIGNLEFT', 'ALIGNCENTER', 'ALIGNRIGHT', 'ALIGNJUSTIFY'];
     const menu = ['SIDEBARIMAGE', 'SIDEBARSEARCHITEM', 'SIDEBARADDSPU'];
     const tools = {
       TOOLSPLITLINE: <span key="TOOLSPLITLINE">
@@ -383,7 +376,7 @@ export default class Editors extends PureComponent {
           <div>{toolList.map(item => tools[item])}</div>
           <div>{menu.map(item => tools[item])}</div>
         </div>
-        <div onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
+        <div className={styles.editorBox} onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
           <Editor ref={instance => {this.setState({editor: instance})}} editorState={this.state.editorState} onChange={this.handleChange} {...editorProps} />
         </div>
         <AlbumModal k="editor" onOk={this.handleAddImg} />
