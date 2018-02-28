@@ -1,5 +1,11 @@
 @import '~antd/lib/style/v2-compatible-reset.less';
 @import "~antd/lib/style/themes/default.less";
+@import  "/iconfont/iconfont.css";
+:global(.anticon) {
+  &:before {
+    font-family: "anticon", "anticon-user" !important;
+  }
+}
 html, body, :global(#root) {
   height: 100%;
 }
