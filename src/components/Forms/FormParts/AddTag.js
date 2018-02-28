@@ -22,7 +22,7 @@ export default class AddTag extends PureComponent {
       });
     } else if (e.target.value.length < props.minLength || e.target.value.length > props.maxLength) {
       this.setState({
-        errMsg: '标签的字数范围必须6~12',
+        errMsg: `标签的字数范围必须${props.minLength}~${props.maxLength}`,
       });
     } else {
       this.setState({
