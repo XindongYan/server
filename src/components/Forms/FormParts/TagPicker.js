@@ -54,7 +54,7 @@ export default class TagPicker extends PureComponent {
     const { checkData } = this.state;
     if (this.props.onChange) {this.props.onChange(e)}
   }
-  handleCheckbox = () => {
+  renderCheckbox = () => {
     return (<div>
       <CheckboxGroup disabled={this.props.disabled} options={this.state.checkData} onChange={this.handleChange} value={this.props.formData} className={styles.ificationCheck} />
     </div>)
@@ -92,7 +92,7 @@ export default class TagPicker extends PureComponent {
         <div>
           { this.props.dataParent && this.props.dataParent.length > 0 &&
             <Tabs className={styles.ificationTabs} type="card" tabPosition="left" activeKey={tabsKey} onChange={this.handleChangeTabs}>
-              {this.props.dataParent.map((item) => <TabPane tab={item} key={item}>{this.handleCheckbox()}</TabPane>)}
+              {this.props.dataParent.map((item) => <TabPane tab={item} key={item}>{this.renderCheckbox()}</TabPane>)}
             </Tabs>
           }
         </div>

@@ -1,86 +1,45 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'dva';
-import $ from 'jquery';
-import { Input, Icon, message, Row, Col, Tag, Button, Form } from 'antd';
+import { Input, Icon, Row, Col, Tag, Button, Form, Tooltip } from 'antd';
 import styles from './index.less';
 
 const FormItem = Form.Item;
 
-@connect(state => ({
-
-}))
-@Form.create()
 export default class AddLink extends PureComponent {
   state = {
-    tag: false,
-  }
-  componentDidMount() {
-    const { formData } = this.props;
-    if (formData && formData.title && this.props.operation !== 'view') {
-      if (formData.end_link) {
-        this.setState({
-          tag: true
-        })
-      }
-      const fieldsValue = {
-        href: formData.end_link,
-        name: formData.end_text,
-      };
-      this.props.form.setFieldsValue(fieldsValue);
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.formData.title && nextProps.formData.title && this.props.operation !== 'view') {
-      const { formData } = nextProps;
-      if (formData.end_link) {
-        this.setState({
-          tag: true
-        })
-      }
-      const fieldsValue = {
-        href: formData.end_link,
-        name: formData.end_text,
-      };
-      this.props.form.setFieldsValue(fieldsValue);
-    }
-  }
-  componentWillUnmount() {
-
+    names: ['link', 'text'],
   }
   handleAddEndLink = () => {
-  	this.props.form.validateFields((err, val) => {
+  	this.props.form.validateFields(this.state.names, (err, val) => {
       if (!err) {
-        if (this.props.onChange) this.props.onChange(val.href, val.name);
-        this.setState({
-          tag: true,
-        });
-        this.props.form.resetFields();
+        if (this.props.onChange) this.props.onChange([val]);
+        this.props.form.resetFields(this.state.names);
       }
     })
   }
   handleClearInp = () => {
-    this.props.form.resetFields();
+    this.props.form.resetFields(this.state.names);
   }
   handleCloseTag = () => {
-    if (this.props.onChange) this.props.onChange('', '');
-    this.setState({
-      tag: false,
-    })
+    if (this.props.onChange) this.props.onChange([]);
   }
   render() {
-    const { formData, operation, form: { getFieldDecorator } } = this.props;
+    const { operation, name, props, rules } = this.props;
+    const { getFieldDecorator } = this.props.form;
     return (
       <div style={{ padding: '20px', background: '#fff' }}>
         { operation !== 'view' && <div>
           <p className={styles.lineTitleDefult}>
             文末链接
+            <Tooltip placement="right" title={props.labelExtra}>
+              <Icon type="question-circle-o" style={{ marginLeft: 5 }}/>
+            </Tooltip>
           </p>
           <div>
-            { !this.state.tag &&
+            { props.value.length === 0 &&
               <Row gutter={10}>
                 <Col span={10}>
                   <FormItem>
-                    {getFieldDecorator('href', {
+                    {getFieldDecorator('link', {
                       rules: [{
                         required: true, message: '  ',
                       }, {
@@ -96,7 +55,7 @@ export default class AddLink extends PureComponent {
                 </Col>
                 <Col span={8}>
                   <FormItem>
-                    {getFieldDecorator('name', {
+                    {getFieldDecorator('text', {
                       rules: [{
                         required: true, message: '  ',
                       }],
@@ -121,27 +80,29 @@ export default class AddLink extends PureComponent {
               </Row>
             }
             <div>
-              { this.state.tag &&
+              { props.value.length > 0 &&
                 <Tag closable onClose={this.handleCloseTag} style={{ height: 30, lineHeight: '30px', border: 'none', background: '#ECEEF2' }}>
                   <Icon type="link" style={{ float: 'left', margin: '0 5px', height: 30, lineHeight: '30px' }} />
-                  <a target="_blank" href={formData.end_link} style={{ float: 'left', minWidth: 200, color: '#308CE6', maxWidth: 260, overflow: 'hidden' }}>{formData.end_text}</a>
+                  <a target="_blank" href={props.value[0].link} style={{ float: 'left', minWidth: 200, color: '#308CE6', maxWidth: 260, overflow: 'hidden' }}>{props.value[0].text}</a>
                 </Tag>
               }
             </div>
           </div>
           <p className={styles.promptText}>
-            仅支持淘宝、天猫等阿里巴巴旗下网站链接（支付宝除外)
+            {props.tips}
           </p>
         </div>}
-        { operation === 'view' && formData.end_link && <div>
+        { operation === 'view' && <div>
           <p className={styles.lineTitleDefult}>
             文末链接
           </p>
           <div>
-            <Tag style={{ height: 30, lineHeight: '30px', border: 'none', background: '#ECEEF2' }}>
-              <Icon type="link" style={{ margin: '0 5px' }} />
-              <a target="_blank" href={formData.end_link} style={{ paddingRight: 80, color: '#308CE6' }}>{formData.end_text}</a>
-            </Tag>
+            { props.value.length > 0 &&
+              <Tag closable onClose={this.handleCloseTag} style={{ height: 30, lineHeight: '30px', border: 'none', background: '#ECEEF2' }}>
+                <Icon type="link" style={{ float: 'left', margin: '0 5px', height: 30, lineHeight: '30px' }} />
+                <a target="_blank" href={props.value[0].link} style={{ float: 'left', minWidth: 200, color: '#308CE6', maxWidth: 260, overflow: 'hidden' }}>{props.value[0].text}</a>
+              </Tag>
+            }
           </div>
         </div>}
       </div>

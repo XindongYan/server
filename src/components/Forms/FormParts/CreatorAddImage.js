@@ -6,48 +6,18 @@ import styles from './index.less';
 @connect(state => ({
 }))
 export default class CreatorAddImage extends PureComponent {
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.formData != this.props.formData) {
-      this.setState({
-        formData: { ...this.state.formData, ...nextProps.formData }
-      });
-    }
-  }
-  componentWillUnmount() {
-
-  }
-
   uploadCoverImg = () => {
     this.props.dispatch({
       type: 'album/show',
       payload: { currentKey: this.props.name }
     });
   }
-  // handleCropCoverImg = (imgs) => {
-  //   const { formData } = this.state;
-  //   if (imgs[0] && formData.minSize.width) {
-  //     this.props.dispatch({
-  //       type: 'album/showCropper',
-  //       payload: {
-  //         visible: true,
-  //         src: imgs[0].url,
-  //         width: formData.minSize.width,
-  //         height: formData.minSize.height,
-  //         picHeight: imgs[0].picHeight,
-  //         picWidth: imgs[0].picWidth,
-  //         cropperKey: formData.name,
-  //       }
-  //     });
-  //   }
-  // }
   handleDeleteCover = (index) => {
     const value = Object.assign([], this.props.props.value);
     value.splice(index, 1);
     if (this.props.onChange) this.props.onChange(value);
   }
   handleChangeCover = (imgs) => {
-    console.log(imgs);
-    // console.log(this.props.value);
     if (imgs && imgs.length > 0) {
       const value = Object.assign([], this.props.props.value);
       value.push({
