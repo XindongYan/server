@@ -8,3 +8,4 @@ export AuctionImageModal from './AuctionImageModal';
 export Input from './Input';
 export Editor from './Editor/index.js';
 export RadioGroup from './RadioGroup';
+export CreatorAddItem from './CreatorAddItem';

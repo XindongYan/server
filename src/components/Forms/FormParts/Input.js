@@ -1,17 +1,12 @@
 import React, { PureComponent } from 'react';
 import { Input, Form } from 'antd';
 import styles from './index.less';
-import './index.less';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
 export default class NInput extends PureComponent {
   state = {
-  }
-  componentDidMount() {
-    const { name, props, rules } = this.props;
-    this.props.form.setFieldsValue({ [name]: props.value });
   }
   render() {
     const { name, props, rules } = this.props;
