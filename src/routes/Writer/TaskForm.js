@@ -759,8 +759,8 @@ export default class TaskForm extends PureComponent {
         form.push(<NicaiForm.RadioGroup key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'AddLink') {
         form.push(<NicaiForm.AddLink key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      // } else if (item.component === 'CreatorAddItem') {
-      //   form.push(<NicaiForm.CreatorAddItem key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
+      } else if (item.component === 'CreatorAddItem') {
+        form.push(<NicaiForm.CreatorAddItem key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       }
     });
     

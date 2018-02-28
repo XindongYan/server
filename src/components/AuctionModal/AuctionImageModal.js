@@ -7,6 +7,7 @@ const RadioGroup = Radio.Group;
 
 @connect(state => ({
   visible: state.album.auctionImageModal.visible,
+  formData: state.album.auctionImageModal.formData,
 }))
 export default class AuctionImageModal extends PureComponent {
   state = {

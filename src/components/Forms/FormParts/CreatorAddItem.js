@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Icon } from 'antd';
 import AlbumModal from '../../AlbumModal';
 import AuctionModal from '../../AuctionModal';
-export AuctionImageModal from '../../AuctionModal/AuctionImageModal';
+import AuctionImageModal from '../../AuctionModal/AuctionImageModal';
 import styles from './index.less';
 
 const FormItem = Form.Item;
@@ -17,7 +17,8 @@ export default class CreatorAddItem extends PureComponent {
     });
   }
   handleAddProduct = (auction, img) => {
-    if (this.props.onChange) this.props.onChange([{
+    if (this.props.onChange) {
+      this.props.onChange([{
         checked: false,
         finalPricePc:0,
         finalPriceWap:0,
@@ -31,8 +32,13 @@ export default class CreatorAddItem extends PureComponent {
         coverUrl: img,
         // extraBanners: [],
       }]);
+    }
+    const { props } = this.props;
     this.props.dispatch({
       type: 'album/showAuctionImage',
+      payload: {
+        formData: props.value[0] ? props.value[0] : []
+      }
     })
   }
   handleEditProduct = () => {
@@ -72,7 +78,7 @@ export default class CreatorAddItem extends PureComponent {
           }
         </div>
         <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
-        <AuctionImageModal formData={props.value[0] ? props.value[0] : []} onChange={this.handleChangeBodyImg} />
+        <AuctionImageModal onChange={this.handleChangeBodyImg} />
       </div>
     );
   }

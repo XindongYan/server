@@ -24,6 +24,7 @@ export default {
     },
     auctionImageModal: {
       visible: false,
+      formData: {},
     },
     cutpicModal: {
       visible: false,
