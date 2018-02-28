@@ -126,7 +126,7 @@ export default class AnchorImageList extends PureComponent {
     } : { padding: '60px 0', width: 200, height: 200 };
     return (
       <div style={{ padding: '10px 20px' }}>
-        <p style={{ marginBottom: 10 }}>主图</p>
+        <p style={{ marginBottom: 10 }}>{props.label}</p>
         <div style={{ width: 200, height: 200 }}>
           {url ?
             <div className={styles.showImgBox}>
