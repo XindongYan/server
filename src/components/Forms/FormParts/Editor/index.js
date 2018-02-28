@@ -311,7 +311,7 @@ export default class Editors extends PureComponent {
     const { blockStyle } = this.state;
     return blockStyle === key ? '#6af' : '';
   }
-  renderTools = (item, index) => {
+  renderStyleTools = (item, index) => {
     switch (item) {
       case 'TOOLSPLITLINE': return <span key={index}>
                                     <Divider type="vertical" style={{height: 30, width: 1}} />
@@ -358,6 +358,26 @@ export default class Editors extends PureComponent {
       default: return '';
     }
   }
+  renderTools = (item, index) => {
+    if (item.name) {
+      switch (item.name) {
+        case 'SIDEBARIMAGE': return <span onClick={this.sidebarimage} key={index}>
+                                      <Icon type="picture" />
+                                      图片
+                                    </span>;
+        case 'SIDEBARSEARCHITEM': return <span key={index} onClick={this.sidebarsearchitem}>
+                                          <Icon type="shopping-cart" />
+                                          商品
+                                        </span>;
+        case 'SIDEBARADDSPU': return <span key={index} onClick={this.sidebaraddspu}>
+                                        <Icon type="shop" />
+                                        标准品牌商品
+                                      </span>;
+        default: return '';
+      }
+    }
+      
+  }
   render() {
     const { props } = this.props;
     const box = document.getElementsByClassName('DraftEditor-editorContainer')[0];
@@ -372,12 +392,11 @@ export default class Editors extends PureComponent {
     }
     const toolList = ['UNDO', 'REDO', 'BOLD', 'ITALIC', 'UNDERLINE', 'ALIGNLEFT', 'ALIGNCENTER', 'ALIGNRIGHT', 'ALIGNJUSTIFY'];
     const menu = ['SIDEBARIMAGE', 'SIDEBARSEARCHITEM', 'SIDEBARADDSPU'];
-    
-        console.log(props.plugins)
     return (
       <div style={{marginBottom: 60}}>
         <div onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
-          <div>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
+          <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
+          <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
         </div>
         <div className={styles.editorBox} onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
           <Editor ref={instance => {this.setState({editor: instance})}} editorState={this.state.editorState} onChange={this.handleChange} {...editorProps} />
