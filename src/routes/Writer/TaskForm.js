@@ -729,7 +729,39 @@ export default class TaskForm extends PureComponent {
     const pushDaren = this.state.form.find(item => item.name === 'pushDaren');
     const coverCount = this.state.form.find(item => item.name === 'coverCount');
     const itemSpuOption = this.state.form.find(item => item.name === 'itemSpuOption');
-    this.state.form.forEach((item, index) => {
+    const tempForm = [...this.state.form];
+    if (itemSpuOption && itemSpuOption.props.value === 'spu') {
+      tempForm[1] = {
+        "className": "creator-single-item-center creator-no-label",
+        "component": "CreatorAddSpu",
+        "label": "商品SPU",
+        "name": "bodySpu",
+        "props": {
+          "enableExtraBanner": true,
+          "activityId": 414,
+          "min": 1,
+          "max": 1,
+          "addImageProps": {
+            "pixFilter": "500x500"
+          },
+          "triggerTips": "添加一个产品",
+          "className": "creator-single-item-center creator-no-label",
+          "label": "商品SPU",
+          "value": []
+        },
+        "rules": [{
+          "min": 1,
+          "type": "array",
+          "message": "或上传1个产品"
+        }, {
+          "max": 1,
+          "type": "array",
+          "message": "最多允许1个"
+        }],
+        "updateOnChange": "true"
+      };
+    }
+    tempForm.forEach((item, index) => {
       if (item.component === 'Input') {
         form.push(<NicaiForm.Input key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} operation={operation} />);
       } else if (item.component === 'Editor') {
@@ -761,6 +793,8 @@ export default class TaskForm extends PureComponent {
         form.push(<NicaiForm.AddLink key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'CreatorAddItem') {
         form.push(<NicaiForm.CreatorAddItem key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
+      } else if (item.component === 'CreatorAddSpu') {
+        form.push(<NicaiForm.CreatorAddSpu key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       }
     });
     

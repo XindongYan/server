@@ -6,7 +6,7 @@ import styles from './index.less';
 
 const FormItem = Form.Item;
 
-export default class CreatorAddItem extends PureComponent {
+export default class CreatorAddSpu extends PureComponent {
   state = {
   }
   handleAuctionShow = () => {
