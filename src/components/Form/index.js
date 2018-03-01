@@ -1,31 +1,12 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'dva';
-import { message } from 'antd';
-import Input from './Input';
-
-@connect(state => ({
-
-}))
-
-export default class FormParts extends PureComponent {
-  state = {
-
-  }
-  componentDidMount() {
-
-  }
-  componentWillUnmount() {
-
-  }
-  render() {
-    // const { data } = this.props;
-    return (
-      <div>
-        <Input
-          form={this.props.form}
-          // data={data}
-        />
-      </div>
-    );
-  }
-}
+export CreatorAddImage from './CreatorAddImage';
+export TagPicker from './TagPicker';
+export CascaderSelect from './CascaderSelect';
+export AnchorImageList from './AnchorImageList';
+export AddLink from './AddLink';
+export StructCanvas from './StructCanvas/StructCanvas';
+export Input from './Input';
+export Editor from './Editor/index.js';
+export RadioGroup from './RadioGroup';
+export CreatorAddItem from './CreatorAddItem';
+export CreatorAddSpu from './CreatorAddSpu';
+export AddTag from './AddTag';

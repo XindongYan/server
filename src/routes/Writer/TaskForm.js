@@ -3,9 +3,8 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import { Card, Button, Popconfirm, message, Modal, Form, Select, Tooltip, Icon } from 'antd';
-import $ from 'jquery';
 import Annotation from '../../components/Annotation';
-import * as NicaiForm from '../../components/Forms/FormParts/index';
+import * as NicaiForm from '../../components/Form/index';
 
 import { TASK_APPROVE_STATUS, SOURCE } from '../../constants';
 import TaskChat from '../../components/TaskChat';

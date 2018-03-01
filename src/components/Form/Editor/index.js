@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import {Editor, EditorState, ContentState, SelectionState, RichUtils, convertToRaw, convertFromRaw, AtomicBlockUtils, Entity, Modifier } from 'draft-js';
 import { Icon, Divider } from 'antd';
 import { connect } from 'dva';
-import AlbumModal from '../../../AlbumModal';
-import AuctionModal from '../../../AuctionModal';
-import BpuModal from '../../../AuctionModal/BpuModal.js';
+import AlbumModal from '../../AlbumModal';
+import AuctionModal from '../../AuctionModal';
+import BpuModal from '../../AuctionModal/BpuModal.js';
 import styles from './index.less';
 
 @connect(() => ({

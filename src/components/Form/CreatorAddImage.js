@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Icon } from 'antd';
-import AlbumModal from '../../AlbumModal';
+import AlbumModal from '../AlbumModal';
 import styles from './index.less';
 @connect(state => ({
 }))

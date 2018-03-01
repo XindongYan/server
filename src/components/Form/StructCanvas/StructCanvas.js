@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Input, Icon, message, Row, Col, Tag, Button, Form, Anchor, Popover } from 'antd';
 import styles from '../index.less';
-import AlbumModal from '../../../AlbumModal';
+import AlbumModal from '../../AlbumModal';
 import AddTag from '../AddTag';
 import BodyStructContent from './BodyStructContent';
 
