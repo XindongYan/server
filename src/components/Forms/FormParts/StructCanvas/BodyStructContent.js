@@ -17,12 +17,12 @@ export default class BodyStructContent extends PureComponent {
     images: [],
   }
   componentDidMount() {
-    if (this.props.formData && this.props.formData.title) {
-      const { formData } = this.props;
+    if (this.props.value && this.props.value.title) {
+      const { value } = this.props;
       this.setState({
-        title: formData.title,
-        desc: formData.desc,
-        images: formData.images,
+        title: value.title,
+        desc: value.desc,
+        images: value.images,
       }, () => {
         const fieldsValue = {
           title: this.state.title,
@@ -86,7 +86,7 @@ export default class BodyStructContent extends PureComponent {
   }
 
   render() {
-    const { formData, operation, form: { getFieldDecorator } } = this.props;
+    const { value, operation, form: { getFieldDecorator } } = this.props;
     const { images } = this.state;
     return (
       <div style={{ padding: '0 0 20px'}}>

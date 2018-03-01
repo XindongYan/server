@@ -21,9 +21,6 @@ export default class StructCanvas extends PureComponent {
   componentDidMount() {
     
   }
-  componentWillReceiveProps(nextProps) {
-    
-  }
   componentWillUnmount() {
 
   }
@@ -111,7 +108,6 @@ export default class StructCanvas extends PureComponent {
           moduleInfo: {dataSchema: propsData.moduleInfo.dataSchema},
           rule: propsData.moduleInfo.rule,
         }
-        console.log([ ...props.value, data ]);
         if (this.props.onChange) this.props.onChange([ ...props.value, data ]);
       }
     }
@@ -124,6 +120,20 @@ export default class StructCanvas extends PureComponent {
         style={{ position: 'absolute', right: 0, top: 0, fontSize: 18, paddingTop: 6, cursor: 'pointer' }} type="close" />
     </div>)
   }
+  handleChangeBodyStruct = (index, content) => {
+    const { props } = this.props;
+    const newValue = props.value;
+    newValue[index].data = content;
+    if (this.props.onChange) this.props.onChange(newValue);
+    this.setState({
+      paragraphVisible: -1,
+    });
+  }
+  handleDeleteContent = (index) => {
+    const arr = this.props.props.value;
+    arr.splice(index,1);
+    if (this.props.onChange) this.props.onChange(arr);
+  }
   render() {
     const { operation, props } = this.props;
     const { images } = this.state;
@@ -133,7 +143,8 @@ export default class StructCanvas extends PureComponent {
       disabled = true;
     }
     if (props.value.length > 1) {
-      bodyStructArr = props.value.splice(1);
+      bodyStructArr = props.value;
+      bodyStructArr = bodyStructArr.slice(1);
     }
     return (
       <div style={{ padding: '0 0 20px', position: 'relative'}}>
@@ -161,7 +172,7 @@ export default class StructCanvas extends PureComponent {
             <div className={styles.section_show_title}>
               好在哪里
             </div>
-            { props.value[0].data.features ?
+            { props.value[0].data && props.value[0].data.features ?
               <ul>
                 {props.value[0].data.features.map((item, index) => <li key={index} className={styles.longpoint_list_item}>{item}</li>)}
               </ul> :
@@ -176,26 +187,27 @@ export default class StructCanvas extends PureComponent {
             overlayClassName={styles.popover_box}
             placement="right"
             title={this.renderBodyStructTitle()}
-            content={<BodyStructContent onChange={this.handleChangeBodyStruct} index={index} />}
+            content={<BodyStructContent onChange={this.handleChangeBodyStruct} value={item.data} index={index + 1} />}
             trigger="click"
             visible={this.state.paragraphVisible === index ? true : false}
             autoAdjustOverflow={false}
           >
             <div style={{ padding: 20, position: 'relative' }} onClick={() => this.handleShowBodyStruct(index)}>
+              <div className={styles.borderBox} style={{display: this.state.paragraphVisible === index ? 'block' : 'none'}}></div>
               <div className={styles.section_show_title}>
-                { item && item.title ? item.title : '请输入段落标题' }
+                { item.data && item.data.title ? item.data.title : '请输入段落标题' }
               </div>
               <div style={{ marginBottom: 20 }}>
-                { item && item.desc ? item.desc : '请输入段落介绍文本' }
+                { item.data && item.data.desc ? item.data.desc : '请输入段落介绍文本' }
               </div>
               <div>
                 <img
                   style={{ width: '100%', height: 'auto' }}
-                  src={item && item.images && item.images.length > 0 ? item.images[0].picUrl : 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
+                  src={item.data && item.data.images && item.data.images.length > 0 ? item.data.images[0].picUrl : 'https://gw.alicdn.com/tfs/TB1A5.geC_I8KJjy0FoXXaFnVXa-702-688.jpg_790x10000Q75.jpg_.webp'}
                 ></img>
               </div>
               { this.state.paragraphVisible === index &&
-                <div onClick={() => this.handleDeleteContent(index)} className={styles.deleteContentBox}>
+                <div onClick={() => this.handleDeleteContent(index+1)} className={styles.deleteContentBox}>
                   <Icon type="delete" />
                 </div>
               }
