@@ -495,6 +495,7 @@ export default class TaskForm extends PureComponent {
     this.handleChange('pushDaren', value);
   }
   handleChange = (name, value) => {
+    console.log(value);
     const index = this.state.children.findIndex(item => item.name === name);
     if (index >= 0) {
       const children = Object.assign([], this.state.children);

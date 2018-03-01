@@ -35,7 +35,7 @@ export default class AddTag extends PureComponent {
     const { tagsValue, errMsg } = this.state;
     if (tagsValue && tagsValue.trim().length > 0) {
       if (!errMsg) {
-        if (this.props.onChange) this.props.onChange([ ...props.value, tagsValue ]);  
+        if (this.props.onChange) this.props.onChange([ ...props.value, tagsValue ]);
         this.setState({
           tagsValue: '',
         });

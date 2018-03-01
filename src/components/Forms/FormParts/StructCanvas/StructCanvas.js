@@ -98,20 +98,21 @@ export default class StructCanvas extends PureComponent {
   handleAddBodyStruct = (key) => {
     const { props } = this.props;
     const propsData = props.sidebarBlockList.find(item => item.blockName === key);
-    const data = {
-      attrs: propsData.moduleInfo.attrs,
-      data: {},
-      errorMsg: "",
-      guid: "",
-      materialId: propsData.moduleInfo.materialId,
-      name: propsData.moduleInfo.name,
-      resourceId: propsData.moduleInfo.id,
-      moduleInfo: {dataSchema: propsData.moduleInfo.dataSchema},
-      rule: propsData.moduleInfo.rule,
-    }
     if (props.value.length < 5) {
       if (key === 'CustomParagraph') {
-        if (this.props.onChange) this.props.onChange([...props.value, data]);
+        const data = {
+          attrs: propsData.moduleInfo.attrs,
+          data: {},
+          errorMsg: "",
+          guid: "",
+          materialId: propsData.moduleInfo.materialId,
+          name: propsData.moduleInfo.name,
+          resourceId: propsData.moduleInfo.id,
+          moduleInfo: {dataSchema: propsData.moduleInfo.dataSchema},
+          rule: propsData.moduleInfo.rule,
+        }
+        console.log([ ...props.value, data ]);
+        if (this.props.onChange) this.props.onChange([ ...props.value, data ]);
       }
     }
   }
