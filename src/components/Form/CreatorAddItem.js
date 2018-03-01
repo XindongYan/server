@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Form, Icon } from 'antd';
-import AuctionModal from '../../AuctionModal';
-import AuctionImageModal from '../../AuctionModal/AuctionImageModal';
+import AuctionModal from '../AuctionModal';
+import AuctionImageModal from '../AuctionModal/AuctionImageModal';
 import styles from './index.less';
 
 const FormItem = Form.Item;

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Input, Icon, message, Row, Col, Tag, Button, Form } from 'antd';
 import styles from '../index.less';
-import AlbumModal from '../../../AlbumModal';
+import AlbumModal from '../../AlbumModal';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
