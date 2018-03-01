@@ -151,10 +151,6 @@ export async function queryDarenTasks(params) {
   return request(`/api/task/list/daren?${stringify(params)}`);
 }
 
-export async function queryConvertedTasks(params) {
-  return request(`/api/chrome/test.json?${stringify(params)}`);
-}
-
 export async function queryTeamTasks(params) {
   return request(`/api/task/list/team?${stringify(params)}`);
 }
