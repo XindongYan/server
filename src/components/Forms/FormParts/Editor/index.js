@@ -314,7 +314,7 @@ export default class Editors extends PureComponent {
   renderStyleTools = (item, index) => {
     switch (item) {
       case 'TOOLSPLITLINE': return <span key={index}>
-                                    <Divider type="vertical" style={{height: 30, width: 1}} />
+                                    <Divider type="vertical" style={{height: 26, width: 1}} />
                                   </span>;
       case 'UNDO': return <span onClick={() => this.handleTools('UNDO')} key={index}>
                             <Icon type="arrow-left" />
@@ -375,8 +375,14 @@ export default class Editors extends PureComponent {
                                       </span>;
         default: return '';
       }
+    } else {
+      switch (item) {
+        case 'EXTRATOOLSPLITLINE': return <span key={index}>
+                                            <Divider type="vertical" style={{height: 26, width: 1}} />
+                                          </span>;
+        default: return '';
+      }
     }
-      
   }
   render() {
     const { props } = this.props;
