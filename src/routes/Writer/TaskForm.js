@@ -24,7 +24,8 @@ const Option = Select.Option;
 
 export default class TaskForm extends PureComponent {
   state = {
-    form: [],
+    children: [],
+    formData: {},
     approveModalVisible: false,
     approver_id: {
       first: '',
@@ -36,7 +37,7 @@ export default class TaskForm extends PureComponent {
     },
     saveLoading: false,
   }
-  componentDidMount() {
+  componentWillMount() {
     // window.onbeforeunload = () => {
     //   return "确认离开页面?";
     // }
@@ -48,14 +49,14 @@ export default class TaskForm extends PureComponent {
         payload: { _id: query._id },
         callback: (result) => {
           if (!result.error) {
-            this.setState({ form: result.task.form });
+            this.setState({ children: result.task.children, formData: result.task.formData });
           }
         }
       });
     } else {
       queryTaskRender({ channel_name: query.channel_name }).then(result => {
         if (!result.error) {
-          this.setState({ form: result.form });
+          this.setState({ children: result.children, formData: result.formData });
         }
       });
     }
@@ -83,16 +84,45 @@ export default class TaskForm extends PureComponent {
     });
   }
 
-  validate = (form) => {
+  validate = (cb) => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const channel_name = this.getChannelName();
+    const { operation, formData } = this.props;
+    this.props.form.validateFieldsAndScroll(['title'], (err, values) => {
+      if (!err) {
+        const children = Object.assign([], this.state.children);
+        const title = children.find(item => item.name === 'title').props.value;
+        let name;
+        if (operation === 'create') {
+          name = title;
+        } else if (operation === 'edit') {
+          if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
+            name = title;
+          }
+        }
+        
+        let auctionIds = [];
+        auctionIds = this.extractAuctionIds(children);
+        if (!title.trim()) {
+          message.warn('请输入标题');
+        } else {
+          const newChildren = children.map(item => {
+            return {
+              component: item.component,
+              name: item.name,
+              value: item.props.value,
+            };
+          });
+          if (cb) cb(err, { name, children: newChildren, auctionIds });
+        }
+      }
+    });
     return true;
   }
   handleSubmitTask = () => {
-    if (this.validate(this.state.form)) {
+    if (this.validate(this.state.children)) {
       const query = querystring.parse(this.props.location.search.substr(1));
       const { currentUser, teamUser, operation, formData } = this.props;
-      const title = this.state.form.find(item => item.name === 'title').props.value;
+      const title = this.state.children.find(item => item.name === 'title').props.value;
       let name;
       if (operation === 'create') {
         name = title;
@@ -102,11 +132,11 @@ export default class TaskForm extends PureComponent {
         }
       }
       const values = {
-        form: this.state.form,
+        children: this.state.children,
       };
       const channel_name = this.getChannelName();
       let auctionIds = [];
-      auctionIds = this.extractAuctionIds(this.state.form);
+      auctionIds = this.extractAuctionIds(this.state.children);
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
@@ -130,16 +160,18 @@ export default class TaskForm extends PureComponent {
         });
       } else {
         const payload = {
-          source: SOURCE.deliver,
-          name: name,
-          project_id: query.project_id,
-          creator_id: currentUser._id,
-          auctionIds,
+          
         };
         this.props.dispatch({
           type: 'task/add',
           payload: {
-            ...payload,
+            ...values,
+            auctionIds,
+            formData: this.state.formData,
+            source: SOURCE.deliver,
+            name: name,
+            project_id: query.project_id,
+            creator_id: currentUser._id,
           },
           callback: (result) => {
             if (result.error) {
@@ -148,7 +180,6 @@ export default class TaskForm extends PureComponent {
               this.props.dispatch({
                 type: 'task/update',
                 payload: {
-                  ...values,
                   _id: result.task._id,
                   approve_status: TASK_APPROVE_STATUS.taken,
                   publisher_id: currentUser._id,
@@ -194,9 +225,9 @@ export default class TaskForm extends PureComponent {
       approveModalVisible: !!flag,
     });
   }
-  extractAuctionIds = (form) => {
+  extractAuctionIds = (children) => {
     const auctionIds = [];
-    const body = form.find(item => item.name === 'body');
+    const body = children.find(item => item.name === 'body');
     if (body) {
       if (body.component === 'Editor' && body.props.value.entityMap) {
         const entityMap = body.props.value.entityMap;
@@ -220,47 +251,51 @@ export default class TaskForm extends PureComponent {
   }
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { currentUser, teamUser, operation, formData } = this.props;
-    this.props.form.validateFieldsAndScroll(['title'], (err, values) => {
+    const { currentUser, teamUser } = this.props;
+    const channel_name = this.getChannelName();
+    this.validate((err, values) => {
       console.log(err);
       console.log(values);
       if (!err) {
-        const form = Object.assign([], this.state.form);
-        Object.keys(values).forEach(item => {
-          const index = this.state.form.findIndex(item1 => item1.name === item);
-          if (form[index].name === 'crowdId') {
-            form[index].props.value = (values[item] && values[item][1]) ? values[item][1] : '';
-          } else {
-            form[index].props.value = values[item];
-          }
-        });
-        const title = this.state.form.find(item => item.name === 'title').props.value;
-        let name;
-        if (operation === 'create') {
-          name = title;
-        } else if (operation === 'edit') {
-          if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
-            name = title;
-          }
-        }
-        const channel_name = this.getChannelName();
-        
-        let auctionIds = [];
-        auctionIds = this.extractAuctionIds(this.state.form);
-        if (!title.trim()) {
-          message.warn('请输入标题');
+        this.setState({
+          saveLoading: true,
+        })
+        if (query._id) {
+          this.props.dispatch({
+            type: 'task/update',
+            payload: {
+              ...values,
+              _id: query._id,
+            },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                this.setState({
+                  saveLoading: false,
+                })
+                message.success(result.msg);
+              }
+            }
+          });
         } else {
-          this.setState({
-            saveLoading: true,
-          })
-          if (query._id) {
+          if (query.project_id) {
             this.props.dispatch({
-              type: 'task/update',
+              type: 'task/add',
               payload: {
-                form,
-                auctionIds,
-                _id: query._id,
-                name: name,
+                ...values,
+                formData: this.state.formData,
+                source: SOURCE.deliver,
+                approve_status: TASK_APPROVE_STATUS.taken,
+                channel_name: channel_name === '直播脚本' ? '' : channel_name,
+                task_type: channel_name === '直播脚本' ? 3 : 1,
+                team_id: teamUser ? teamUser.team_id : null,
+                publisher_id: currentUser._id,
+                publish_time: new Date(),
+                taker_id: currentUser._id,
+                take_time: new Date(),
+                creator_id: currentUser._id,
+                project_id: query.project_id,
               },
               callback: (result) => {
                 if (result.error) {
@@ -269,87 +304,53 @@ export default class TaskForm extends PureComponent {
                   this.setState({
                     saveLoading: false,
                   })
-                  message.success(result.msg);
+                  message.success('保存成功');
+                  query._id = result.task._id;
+                  this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
+                }
+              },
+            });
+          } else {
+            this.props.dispatch({
+              type: 'task/addByWriter',
+              payload: {
+                ...values,
+                formData: this.state.formData,
+                source: SOURCE.create,
+                approve_status: TASK_APPROVE_STATUS.taken,
+                channel_name: channel_name === '直播脚本' ? '' : channel_name,
+                task_type: channel_name === '直播脚本' ? 3 : 1,
+                team_id: teamUser ? teamUser.team_id : null,
+                publisher_id: currentUser._id,
+                publish_time: new Date(),
+                taker_id: currentUser._id,
+                take_time: new Date(),
+                creator_id: currentUser._id,
+                daren_id: currentUser._id,
+                daren_time: new Date(),
+              },
+              callback: (result) => {
+                if (result.error) {
+                  message.error(result.msg);
+                } else {
+                  this.setState({
+                    saveLoading: false,
+                  })
+                  message.success('保存成功');
+                  query._id = result.task._id;
+                  this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
                 }
               }
             });
-          } else {
-            if (query.project_id) {
-              this.props.dispatch({
-                type: 'task/add',
-                payload: {
-                  form,
-                  auctionIds,
-                  source: SOURCE.deliver,
-                  name: name,
-                  approve_status: TASK_APPROVE_STATUS.taken,
-                  channel_name: channel_name === '直播脚本' ? '' : channel_name,
-                  task_type: channel_name === '直播脚本' ? 3 : 1,
-                  team_id: teamUser ? teamUser.team_id : null,
-                  publisher_id: currentUser._id,
-                  publish_time: new Date(),
-                  taker_id: currentUser._id,
-                  take_time: new Date(),
-                  creator_id: currentUser._id,
-                  project_id: query.project_id,
-                },
-                callback: (result) => {
-                  if (result.error) {
-                    message.error(result.msg);
-                  } else {
-                    this.setState({
-                      saveLoading: false,
-                    })
-                    message.success('保存成功');
-                    query._id = result.task._id;
-                    this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
-                  }
-                },
-              });
-            } else {
-              this.props.dispatch({
-                type: 'task/addByWriter',
-                payload: {
-                  form,
-                  auctionIds,
-                  source: SOURCE.create,
-                  name: name,
-                  approve_status: TASK_APPROVE_STATUS.taken,
-                  channel_name: channel_name === '直播脚本' ? '' : channel_name,
-                  task_type: channel_name === '直播脚本' ? 3 : 1,
-                  team_id: teamUser ? teamUser.team_id : null,
-                  publisher_id: currentUser._id,
-                  publish_time: new Date(),
-                  taker_id: currentUser._id,
-                  take_time: new Date(),
-                  creator_id: currentUser._id,
-                  daren_id: currentUser._id,
-                  daren_time: new Date(),
-                },
-                callback: (result) => {
-                  if (result.error) {
-                    message.error(result.msg);
-                  } else {
-                    this.setState({
-                      saveLoading: false,
-                    })
-                    message.success('保存成功');
-                    query._id = result.task._id;
-                    this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
-                  }
-                }
-              });
-            }
           }
         }
-        this.setState({ form });
       }
     });
   }
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, operation, formData } = this.props;
-    const title = this.state.form.find(item => item.name === 'title').props.value;
+    const title = this.state.children.find(item => item.name === 'title').props.value;
     let name;
     if (operation === 'create') {
       name = title;
@@ -359,7 +360,7 @@ export default class TaskForm extends PureComponent {
       }
     }
     const values = {
-      form: this.state.form,
+      children: this.state.children,
     };
     const channel_name = this.getChannelName();
     let auctionIds = [];
@@ -389,6 +390,7 @@ export default class TaskForm extends PureComponent {
         type: 'task/addByWriter',
         payload: {
           ...values,
+          formData: this.state.formData,
           auctionIds,
           source: SOURCE.create,
           name: name,
@@ -493,11 +495,11 @@ export default class TaskForm extends PureComponent {
     this.handleChange('pushDaren', value);
   }
   handleChange = (name, value) => {
-    const index = this.state.form.findIndex(item => item.name === name);
+    const index = this.state.children.findIndex(item => item.name === name);
     if (index >= 0) {
-      const form = Object.assign([], this.state.form);
-      form[index].props.value = value;
-      this.setState({ form });
+      const children = Object.assign([], this.state.children);
+      children[index].props.value = value;
+      this.setState({ children });
     }
   }
   render() {
@@ -516,12 +518,12 @@ export default class TaskForm extends PureComponent {
     );
     const channel_name = this.getChannelName();
     let form = [];
-    const pushDaren = this.state.form.find(item => item.name === 'pushDaren');
-    const coverCount = this.state.form.find(item => item.name === 'coverCount');
-    const itemSpuOption = this.state.form.find(item => item.name === 'itemSpuOption');
-    const tempForm = [...this.state.form];
+    const pushDaren = this.state.children.find(item => item.name === 'pushDaren');
+    const coverCount = this.state.children.find(item => item.name === 'coverCount');
+    const itemSpuOption = this.state.children.find(item => item.name === 'itemSpuOption');
+    const tempChildren = [...this.state.children];
     if (itemSpuOption && itemSpuOption.props.value === 'spu') {
-      tempForm[1] = {
+      tempChildren[1] = {
         "className": "creator-single-item-center creator-no-label",
         "component": "CreatorAddSpu",
         "label": "商品SPU",
@@ -551,13 +553,13 @@ export default class TaskForm extends PureComponent {
         "updateOnChange": "true"
       };
     }
-    tempForm.forEach((item, index) => {
+    tempChildren.forEach((item, index) => {
       if (item.component === 'Input') {
-        form.push(<NicaiForm.Input key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} operation={operation} />);
+        form.push(<NicaiForm.Input key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'Editor') {
         form.push(<NicaiForm.Editor key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'CascaderSelect') {
-        form.push(<NicaiForm.CascaderSelect key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} operation={operation} />);
+        form.push(<NicaiForm.CascaderSelect key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'CreatorAddImage') {
         let tempProps = {...item.props};
         let tempRules = item.rules;

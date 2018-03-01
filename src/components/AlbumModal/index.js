@@ -62,7 +62,7 @@ export default class AlbumModal extends PureComponent {
           }
         }, 5000);
       } else if (this.props.visible && !nextProps.visible) {
-        const nicaiCrx = document.getElementById('nicaiCrx');
+        const nicaiCrx = this.state.nicaiCrx;
         nicaiCrx.removeEventListener('setAlbum', this.setAlbum);
         nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
         this.setState({

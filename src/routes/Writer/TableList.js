@@ -15,7 +15,7 @@ import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
 import { TASK_APPROVE_STATUS, SOURCE, ORIGIN } from '../../constants';
 import styles from './TableList.less';
-import { queryConvertedTasks } from '../../services/task';
+import { queryTask } from '../../services/task';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -203,17 +203,10 @@ export default class TableList extends PureComponent {
       if (versionNumber < 108) { // 1.0.4
         message.warn('请更新插件！');
       } else {
-        const tasks = await queryConvertedTasks({
-          _ids: JSON.stringify([record._id]),
+        const result = await queryTask({
+          _id: record._id,
         });
-        const taobao = tasks.list[0].taobao;
-        if (tasks.list[0].channel_name === '微淘') {
-          this.handlePublishToTaobao({ ...tasks.list[0].weitao, _id: tasks.list[0]._id, channel_name: tasks.list[0].channel_name, taobao: taobao});
-        } else if (tasks.list[0].channel_name === '淘宝头条') {
-          this.handlePublishToTaobao({ ...tasks.list[0].toutiao, _id: tasks.list[0]._id, channel_name: tasks.list[0].channel_name, taobao: taobao});
-        } else {
-          this.handlePublishToTaobao(tasks.list[0]);
-        }
+        this.handlePublishToTaobao(result.task);
         message.destroy();
         message.loading('发布中 ...', 60);
       }
@@ -227,10 +220,10 @@ export default class TableList extends PureComponent {
     const _ids = [];
     selectedRows.filter(val => { _ids.push(val._id) });
     if (this.state.version) {
-      const tasks = await queryConvertedTasks({
-        _ids: JSON.stringify(_ids),
+      const result = await queryTask({
+        _id: record._id,
       });
-      this.handlePublishToTaobao(tasks.list[0]);
+      this.handlePublishToTaobao(result.task);
       const arr = tasks.list.splice(1);
       this.setState({
         queueNumber: tasks.list.length + 1,

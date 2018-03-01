@@ -17,8 +17,8 @@ export default class CascaderSelect extends PureComponent {
       })
     });
   }
-  handleChange = (e) => {
-    if (this.props.onChange) this.props.onChange(e, 'crowd')
+  handleChange = (value) => {
+    if (this.props.onChange) this.props.onChange(value.length === 2 ? value[1] : '')
   }
   render() {
     const { name, props, rules } = this.props;

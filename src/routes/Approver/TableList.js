@@ -12,7 +12,7 @@ import PublisherChannelsPopover from '../../components/PublisherChannelsPopover'
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
 import styles from './TableList.less';
-import { queryConvertedTasks } from '../../services/task';
+import { queryTask } from '../../services/task';
 
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
@@ -219,17 +219,10 @@ export default class TableList extends PureComponent {
       if (versionNumber < 108) { // 1.0.4
         message.warn('请更新插件！');
       } else {
-        const tasks = await queryConvertedTasks({
-          _ids: JSON.stringify([record._id]),
+        const result = await queryTask({
+          _id: record._id,
         });
-        const taobao = tasks.list[0].taobao;
-        if (tasks.list[0].channel_name === '微淘') {
-          this.handlePublishToTaobao({ ...tasks.list[0].weitao, _id: tasks.list[0]._id, channel_name: tasks.list[0].channel_name});
-        } else if (tasks.list[0].channel_name === '淘宝头条') {
-          this.handlePublishToTaobao({ ...tasks.list[0].toutiao, _id: tasks.list[0]._id, channel_name: tasks.list[0].channel_name});
-        } else {
-          this.handlePublishToTaobao(tasks.list[0]);
-        }
+        this.handlePublishToTaobao(result.task);
         message.destroy();
         message.loading('发布中 ...', 60);
       }

@@ -49,7 +49,7 @@ export default class CutpicModal extends PureComponent {
         cutpicUrl: '',
         confirmLoading: false,
       });
-      const nicaiCrx = document.getElementById('nicaiCrx');
+      const nicaiCrx = this.state.nicaiCrx;
       nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
       nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
       message.destroy();

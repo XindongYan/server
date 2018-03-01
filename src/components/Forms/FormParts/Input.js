@@ -8,6 +8,9 @@ const { TextArea } = Input;
 export default class NInput extends PureComponent {
   state = {
   }
+  handleChange = (e) => {
+    if (this.props.onChange) this.props.onChange(e.target.value)
+  }
   render() {
     const { name, props, rules } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -23,7 +26,7 @@ export default class NInput extends PureComponent {
               rules,
             })(
               <Input
-                // style={{border: 'none'}}
+                onChange={this.handleChange}
                 placeholder={props.placeholder}
               />
             )}
@@ -34,6 +37,7 @@ export default class NInput extends PureComponent {
               rules,
             })(
               <TextArea
+                onChange={this.handleChange}
                 autosize={{ minRows: props.rows, maxRows: props.rows }}
                 placeholder={props.placeholder}
               />

@@ -54,7 +54,7 @@ export default class CropperModal extends PureComponent {
           loading: true,
         });
       } else if (this.props.visible && !nextProps.visible) {
-        const nicaiCrx = document.getElementById('nicaiCrx');
+        const nicaiCrx = this.state.nicaiCrx;
         nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
         this.setState({
           nicaiCrx: null,
