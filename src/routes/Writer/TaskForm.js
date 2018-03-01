@@ -472,7 +472,7 @@ export default class TaskForm extends PureComponent {
     const { approveModalVisible, haveGoods, suggestionApproves } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const writeTips = (
-      <div className={styles.taskComment} style={{ width: 200, marginRight: operation === 'view' ? 130 : 0 }}>
+      <div className={styles.taskComment} style={{ width: 200, marginRight: 0 }}>
         <p className={styles.titleDefult}>爆文写作参考</p>
         <ul className={styles.tPrompt}>
           <li>1. 从小知识小技巧着手. 淘宝头条讲了个概念叫”随手有用书”,即生活中有很多一般人不注意的小知识小技巧. 比如大部分人都晾错内衣, 尤其是第二种方式这条,结合着推内衣这个点很不错.</li>
@@ -484,8 +484,10 @@ export default class TaskForm extends PureComponent {
     const channel_name = this.getChannelName();
     const pushDaren = this.state.children.find(item => item.name === 'pushDaren');
     let formRight = null;
+    let outerWidth = 1000;
     if (operation === 'create') {
       formRight = writeTips;
+      outerWidth = 868;
     } else if (operation === 'edit') {
       if (this.props.formData.approve_status === TASK_APPROVE_STATUS.rejected) {
         formRight = (
@@ -495,6 +497,7 @@ export default class TaskForm extends PureComponent {
         );
       } else if (this.props.formData.approve_status === TASK_APPROVE_STATUS.taken) {
         formRight = writeTips;
+        outerWidth = 868;
       }
     } else if (operation === 'view') {
       if (formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected) {
@@ -505,15 +508,11 @@ export default class TaskForm extends PureComponent {
         );
       } else {
         formRight = writeTips;
+        outerWidth = 868;
       }
     }
-    let outerWidth = 1000;
     if (channel_name === '有好货') {
       outerWidth = 730;
-    } else if (formRight === writeTips) {
-      outerWidth = 868;
-    } else {
-      outerWidth = 1000;
     }
     return (
       <Card bordered={false} title="" style={{ background: 'none', paddingBottom: 60 }} bodyStyle={{ padding: 0 }}>
