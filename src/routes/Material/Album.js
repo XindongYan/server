@@ -228,6 +228,10 @@ export default class Album extends PureComponent {
     });
     this.handleLoadAlbum({ pageSize: pagination.pageSize, current: 1 });
   }
+  handleCutResult = () => {
+    const { pagination } = this.state;
+    this.handleLoadAlbum({ pageSize: pagination.pageSize, current: pagination.current });
+  }
   render() {
     const { previewVisible, previewImage, ProgressVisible, ProgressPercent, itemList, pagination, loading } = this.state;
     return (
@@ -263,7 +267,7 @@ export default class Album extends PureComponent {
           <Progress percent={ProgressPercent} status="active" />
         </Modal>
         <AlbumModal k="material" onOk={this.handleAddImages} />
-        <CutpicModal k={this.state.albumKey}/>
+        <CutpicModal k={this.state.albumKey} onOk={this.handleCutResult} />
       </div>
     );
   }

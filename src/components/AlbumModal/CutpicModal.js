@@ -188,10 +188,12 @@ export default class CutpicModal extends PureComponent {
               />
             </Col>
             <Col span={12}>
-              <img
-                style={{ border: '1px solid #6af' }}
-                src={this.state.cutpicUrl}
-              />
+              {this.state.cutpicUrl &&
+                <img
+                  style={{ border: '1px solid #6af' }}
+                  src={this.state.cutpicUrl}
+                />
+              }
             </Col>
           </Row>
         </Spin>
