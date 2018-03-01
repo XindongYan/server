@@ -61,7 +61,7 @@ export default class AnchorImageList extends PureComponent {
                 coverUrl: item.picUrl,
                 finalPricePc: 0,
                 finalPriceWap: 0,
-                itemId: 0,
+                itemId: item.itemId,
                 materialId: "",
                 price: 0,
                 url: 'https://item.taobao.com/item.htm?id=' + item.itemId,
