@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import { Card, Button, Popconfirm, message, Modal, Form, Select, Tooltip, Icon } from 'antd';
 import Annotation from '../../components/Annotation';
-import * as NicaiForm from '../../components/Form/index';
+import NicaiForm from '../../components/Form/index';
 
 import { TASK_APPROVE_STATUS, SOURCE } from '../../constants';
 import TaskChat from '../../components/TaskChat';
@@ -464,14 +464,8 @@ export default class TaskForm extends PureComponent {
   handleChangePushDaren = (value) => {
     this.handleChange('pushDaren', value);
   }
-  handleChange = (name, value) => {
-    console.log(value);
-    const index = this.state.children.findIndex(item => item.name === name);
-    if (index >= 0) {
-      const children = Object.assign([], this.state.children);
-      children[index].props.value = value;
-      this.setState({ children });
-    }
+  handleChange = (children) => {
+    this.setState({ children });
   }
   render() {
     const { form: { getFieldDecorator }, operation, formData } = this.props;
@@ -488,87 +482,7 @@ export default class TaskForm extends PureComponent {
       </div>
     );
     const channel_name = this.getChannelName();
-    let form = [];
     const pushDaren = this.state.children.find(item => item.name === 'pushDaren');
-    const coverCount = this.state.children.find(item => item.name === 'coverCount');
-    const itemSpuOption = this.state.children.find(item => item.name === 'itemSpuOption');
-    const tempChildren = [...this.state.children];
-    if (itemSpuOption && itemSpuOption.props.value === 'spu') {
-      tempChildren[1] = {
-        "className": "creator-single-item-center creator-no-label",
-        "component": "CreatorAddSpu",
-        "label": "商品SPU",
-        "name": "bodySpu",
-        "props": {
-          "enableExtraBanner": true,
-          "activityId": 414,
-          "min": 1,
-          "max": 1,
-          "addImageProps": {
-            "pixFilter": "500x500"
-          },
-          "triggerTips": "添加一个产品",
-          "className": "creator-single-item-center creator-no-label",
-          "label": "商品SPU",
-          "value": []
-        },
-        "rules": [{
-          "min": 1,
-          "type": "array",
-          "message": "或上传1个产品"
-        }, {
-          "max": 1,
-          "type": "array",
-          "message": "最多允许1个"
-        }],
-        "updateOnChange": "true"
-      };
-    }
-    tempChildren.forEach((item, index) => {
-      if (item.component === 'Input') {
-        form.push(<NicaiForm.Input key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'Editor') {
-        form.push(<NicaiForm.Editor key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'CascaderSelect') {
-        form.push(<NicaiForm.CascaderSelect key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'CreatorAddImage') {
-        let tempProps = {...item.props};
-        let tempRules = item.rules;
-        if (coverCount) {
-          tempProps.min = Number(coverCount.props.value);
-          tempProps.max = Number(coverCount.props.value);
-        }
-        if (coverCount && Number(coverCount.props.value) === 3) {
-          tempRules = [{
-            "min": 3,
-            "type": "array",
-            "message": "至少要有3个"
-          }, {
-            "max": 3,
-            "type": "array",
-            "message": "最多允许3个"
-          }];
-        }
-        form.push(<NicaiForm.CreatorAddImage key={index} form={this.props.form} name={item.name} props={tempProps} rules={tempRules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'RadioGroup') {
-        form.push(<NicaiForm.RadioGroup key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'AddLink') {
-        form.push(<NicaiForm.AddLink key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'CreatorAddItem') {
-        form.push(<NicaiForm.CreatorAddItem key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'CreatorAddSpu') {
-        form.push(<NicaiForm.CreatorAddSpu key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'AddTag') {
-        form.push(<NicaiForm.AddTag key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'TagPicker') {
-        form.push(<NicaiForm.TagPicker key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'AnchorImageList') {
-        form.push(<NicaiForm.AnchorImageList key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      } else if (item.component === 'StructCanvas') {
-        form.push(<NicaiForm.StructCanvas key={index} form={this.props.form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
-      }
-    });
-    
     let formRight = null;
     if (operation === 'create') {
       formRight = writeTips;
@@ -607,7 +521,7 @@ export default class TaskForm extends PureComponent {
           <div style={{ width: channel_name === '有好货' ? 375 : 650 }}>
             <p className={styles.titleDefult}>内容创作</p>
             <Card bordered={false} title="" bodyStyle={{ padding: channel_name === '有好货' ? 0 : '20px 20px 60px' }}>
-              {form}
+              <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange}/>
             </Card>
           </div>
           {formRight}

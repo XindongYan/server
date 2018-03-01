@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import querystring from 'querystring';
 import { Card, Form } from 'antd';
-import $ from 'jquery';
 import Annotation from '../../components/Annotation';
 import ApproveLog from '../../components/ApproveLog';
 import TaskChat from '../../components/TaskChat';
 import { TASK_APPROVE_STATUS } from '../../constants';
+import NicaiForm from '../../components/Form/index';
 import styles from './TableList.less';
 
 
@@ -19,128 +19,23 @@ import styles from './TableList.less';
 
 export default class TaskView extends PureComponent {
   state = {
-    task: {
-      crowd: [],
-      title: '',
-      task_desc: '',
-      cover_img: '',
-    },
-    weitao: {
-      crowd: [],
-      title: '',
-      summary: '',
-      task_desc: '',
-      cover_img: '',
-    },
-    toutiao: {
-      title: '', // '任务标题',
-      summary: '',
-      task_desc: '', // '写手提交的稿子内容',
-      cover_img: '',
-      crowd: [], // 目标人群
-    },
-    zhibo: {
-      title: '', // '任务标题',
-      task_desc: '', // '写手提交的稿子内容',
-    },
-    haveGoodsTask: {
-      body: [],
-      title: '', // '任务标题',
-      bodyStruct: [],
-      bodyStruct0: [],
-      duanliangdian: [], // ['']
-      crowdId: '',
-    },
-    lifeResearch: {
-      title: '', // '任务标题',
-      sub_title: '', // '副标题',
-      task_desc: '', // '写手提交的稿子内容',
-      cover_img: '',//封面
-      crowd: [], // 目标人群
-      summary: '', // 目标人群
-    },
-    globalFashion: {
-      title: '', // '任务标题',
-      summary: '',
-      task_desc: '', // '写手提交的稿子内容',
-      cover_img: '',//封面
-      crowd: [], // 目标人群
-      classification: [], // 分类
-    },
-    ifashion: {
-      title: '', // '任务标题',
-      summary: '', // 推荐理由
-      cover_img: '',//封面
-      crowd: [], // 目标人群
-      classification: [], // 分类
-      tags: [], // 标签
-    },
-    buyWorld: {
-      title: '', // '任务标题',
-      summary: '',
-      sub_title: '', // '副标题',
-      task_desc: '', // '写手提交的稿子内容',
-      cover_img: '',//封面
-      classification: [], // 分类
-    },
+    children: [],
     approve_notes: [],
   }
-  componentDidMount() {
+  componentWillMount() {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.dispatch({
       type: 'task/fetchTask',
       payload: query,
-    });
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.formData.title) {
-      if (nextProps.formData.channel_name === '微淘' ) {
-        this.setState({
-          weitao: {
-            crowd: nextProps.formData.crowd,
-            title: nextProps.formData.title,
-            task_desc: nextProps.formData.task_desc,
-            cover_img: nextProps.formData.cover_img,
-          }
-        });
-      } else if (nextProps.formData.channel_name === '淘宝头条') {
-        this.setState({
-          toutiao: {
-            crowd: nextProps.formData.crowd,
-            title: nextProps.formData.title,
-            task_desc: nextProps.formData.task_desc,
-            cover_img: nextProps.formData.cover_img,
-          }
-        });
-      } else if (nextProps.formData.task_type === 3) {
-        this.setState({
-          toutiao: {
-            title: nextProps.formData.title,
-            task_desc: nextProps.formData.task_desc,
-          }
-        });
-      }
-      const query = querystring.parse(nextProps.location.search.substr(1));
-      this.props.dispatch({
-        type: 'task/update',
-        payload: {
-          ...this.state.task,
-          _id: query._id,
+      callback: (result) => {
+        if (!result.error) {
+          this.setState({
+            children: result.task.children,
+            approve_notes: result.task.approve_notes || [],
+          });
         }
-      });
-    } else {
-      this.setState({
-        weitao: nextProps.formData.weitao,
-        toutiao: nextProps.formData.toutiao,
-        zhibo: nextProps.formData.zhibo,
-        haveGoodsTask: nextProps.formData.haveGoods,
-        lifeResearch: nextProps.formData.lifeResearch,
-        globalFashion: nextProps.formData.globalFashion,
-        ifashion: nextProps.formData.ifashion,
-        buyWorld: nextProps.formData.buyWorld,
-        approve_notes: nextProps.formData.approve_notes || [],
-      });
-    }
+      }
+    });
   }
   componentWillUnmount() {
     this.props.dispatch({
@@ -148,10 +43,6 @@ export default class TaskView extends PureComponent {
     });
   }
   handleSubmit = () => {
-  }
-  handleChange = (task) => {
-    this.setState({ task: { ...this.state.task, ...task } }, () => {
-    });
   }
   render() {
     const { formData, approveData, currentUser } = this.props;
@@ -163,7 +54,7 @@ export default class TaskView extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.channel_name === '有好货' ? 730 : 1000 }}>
           <div style={{ width: formData.channel_name === '有好货' ? 375 : 650 }}>
-            
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation}/>
           </div>  
           { showAnnotation &&
             <div className={styles.taskComment}>
