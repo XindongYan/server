@@ -130,7 +130,7 @@ export default class AnchorImageList extends PureComponent {
         <div style={{ width: 200, height: 200 }}>
           {url ?
             <div className={styles.showImgBox}>
-              <img src={url}/>
+              <img style={{ width: '100%', height: '100%' }} src={url}/>
               { !this.props.disabled && <div className={styles.deleteImgBox}>
                 <Icon type="edit" className={styles.editIcon} onClick={this.handleEditJigsaw} />
                 <Icon type="delete" className={styles.deleteIcon} onClick={this.handleDeleteJigsaw} />
