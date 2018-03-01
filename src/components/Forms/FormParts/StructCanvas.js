@@ -10,7 +10,7 @@ const { TextArea } = Input;
 
 }))
 @Form.create()
-export default class BodyStructContent extends PureComponent {
+export default class StructCanvas extends PureComponent {
   state = {
     title: '',
     desc: '',
