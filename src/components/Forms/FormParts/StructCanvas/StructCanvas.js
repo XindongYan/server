@@ -19,7 +19,11 @@ export default class StructCanvas extends PureComponent {
     spot: [],
   }
   componentDidMount() {
-    
+    if (this.props.props.value[0].data.features) {
+      this.setState({
+        spot: this.props.props.value[0].data.features,
+      });
+    }
   }
   componentWillUnmount() {
 
