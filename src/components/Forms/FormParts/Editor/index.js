@@ -343,18 +343,6 @@ export default class Editors extends PureComponent {
       case 'ALIGNJUSTIFY': return <span onClick={() => this.handleTools('ALIGNJUSTIFY')} key={index}>
                                     <Icon type="align-justify" style={{color: this.handleShowBlockStyle('ALIGNJUSTIFY')}} />
                                   </span>;
-      case 'SIDEBARIMAGE': return <span onClick={this.sidebarimage} key={index}>
-                                    <Icon type="picture" />
-                                    图片
-                                  </span>;
-      case 'SIDEBARSEARCHITEM': return <span key={index} onClick={this.sidebarsearchitem}>
-                                        <Icon type="shopping-cart" />
-                                        商品
-                                      </span>;
-      case 'SIDEBARADDSPU': return <span key={index} onClick={this.sidebaraddspu}>
-                                      <Icon type="shop" />
-                                      标准品牌商品
-                                    </span>;
       default: return '';
     }
   }
@@ -367,7 +355,7 @@ export default class Editors extends PureComponent {
                                     </span>;
         case 'SIDEBARSEARCHITEM': return <span key={index} onClick={this.sidebarsearchitem}>
                                           <Icon type="shopping-cart" />
-                                          商品
+                                          宝贝
                                         </span>;
         case 'SIDEBARADDSPU': return <span key={index} onClick={this.sidebaraddspu}>
                                         <Icon type="shop" />
