@@ -606,7 +606,7 @@ export default class TaskForm extends PureComponent {
         <div className={styles.taskOuterBox} style={{ width: outerWidth }} ref="taskOuterBox">
           <div style={{ width: channel_name === '有好货' ? 375 : 650 }}>
             <p className={styles.titleDefult}>内容创作</p>
-            <Card bordered={false} title="" bodyStyle={{ padding: '20px 20px 60px' }}>
+            <Card bordered={false} title="" bodyStyle={{ padding: channel_name === '有好货' ? 0 : '20px 20px 60px' }}>
               {form}
             </Card>
           </div>
