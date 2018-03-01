@@ -210,7 +210,7 @@ export default class TaskForm extends PureComponent {
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, operation, formData } = this.props;
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    this.props.form.validateFieldsAndScroll(['title'], (err, values) => {
       console.log(err);
       console.log(values);
       if (!err) {
@@ -333,7 +333,6 @@ export default class TaskForm extends PureComponent {
         this.setState({ form });
       }
     });
-    
   }
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
