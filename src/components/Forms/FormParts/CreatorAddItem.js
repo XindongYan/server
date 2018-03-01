@@ -32,7 +32,7 @@ export default class CreatorAddItem extends PureComponent {
         resourceUrl: auction.item.itemUrl,
         title: auction.title,
         coverUrl: auction.coverUrl,
-        // extraBanners: [],
+        extraBanners: [],
       }]);
     }
     const { props } = this.props;

@@ -31,7 +31,10 @@ export default class TaskOption extends PureComponent {
   componentWillReceiveProps(nextProps) {
 
   }
-
+  componentWillUnmount() {
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.removeEventListener('setChannel', this.setChannel);
+  }
   handleGetVersion = () => {
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getVersion', true, true);

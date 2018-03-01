@@ -83,13 +83,13 @@ export default class TaskForm extends PureComponent {
     });
   }
 
-  validate = () => {
+  validate = (form) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const channel_name = this.getChannelName();
     return true;
   }
   handleSubmitTask = () => {
-    if (this.validate()) {
+    if (this.validate(this.state.form)) {
       const query = querystring.parse(this.props.location.search.substr(1));
       const { currentUser, teamUser, operation, formData } = this.props;
       const title = this.state.form.find(item => item.name === 'title').props.value;
@@ -106,7 +106,7 @@ export default class TaskForm extends PureComponent {
       };
       const channel_name = this.getChannelName();
       let auctionIds = [];
-      auctionIds = this.extractAuctionIds('');
+      auctionIds = this.extractAuctionIds(this.state.form);
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
@@ -194,17 +194,28 @@ export default class TaskForm extends PureComponent {
       approveModalVisible: !!flag,
     });
   }
-  extractAuctionIds = (task_desc) => {
+  extractAuctionIds = (form) => {
     const auctionIds = [];
-    const result = $(task_desc);
-    result.each((index, e) => {
-      if (e.children && e.children[0] && e.children[0].tagName === 'A' && $(e.children[0]).attr('_data')) {
-        const _data = $(e.children[0]).attr('_data');
-        const data = JSON.parse(decodeURIComponent(_data));
-        console.log(data);
-        auctionIds.push(Number(data.data.itemId || data.data.spuId));
+    const body = form.find(item => item.name === 'body');
+    if (body) {
+      if (body.component === 'Editor' && body.props.value.entityMap) {
+        const entityMap = body.props.value.entityMap;
+        Object.keys(entityMap).forEach(item => {
+          if (entityMap[item].type === 'SIDEBARSEARCHITEM') {
+            auctionIds.push(Number(entityMap[item].data.itemId));
+          } else if (entityMap[item].type === 'SIDEBARADDSPU') {
+            auctionIds.push(Number(entityMap[item].data.spuId));
+          }
+        });
+      } else if (body.component === 'AnchorImageList' && body.props.value[0]) {
+        const anchors = body.props.value[0].anchors;
+        anchors.forEach(item => {
+          auctionIds.push(item.data.itemId);
+        });
+      } else if (body.component === 'CreatorAddItem' && body.props.value[0]) {
+        auctionIds.push(body.props.value[0].itemId);
       }
-    });
+    }
     return auctionIds;
   }
   handleSave = () => {
@@ -233,8 +244,9 @@ export default class TaskForm extends PureComponent {
           }
         }
         const channel_name = this.getChannelName();
+        
         let auctionIds = [];
-        auctionIds = this.extractAuctionIds('');
+        auctionIds = this.extractAuctionIds(this.state.form);
         if (!title.trim()) {
           message.warn('请输入标题');
         } else {
