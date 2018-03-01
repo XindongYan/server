@@ -84,7 +84,7 @@ export default class TaskForm extends PureComponent {
     });
   }
 
-  validate = (cb) => {
+  validate = (callback) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { operation, formData } = this.props;
     this.props.form.validateFieldsAndScroll(['title'], (err, values) => {
@@ -112,37 +112,21 @@ export default class TaskForm extends PureComponent {
               value: item.props.value,
             };
           });
-          if (cb) cb(err, { name, children: newChildren, auctionIds });
+          if (callback) callback(err, { name, children: newChildren, auctionIds });
         }
       }
     });
     return true;
   }
   handleSubmitTask = () => {
-    if (this.validate(this.state.children)) {
+    this.validate((err, values) => {
       const query = querystring.parse(this.props.location.search.substr(1));
-      const { currentUser, teamUser, operation, formData } = this.props;
-      const title = this.state.children.find(item => item.name === 'title').props.value;
-      let name;
-      if (operation === 'create') {
-        name = title;
-      } else if (operation === 'edit') {
-        if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
-          name = title;
-        }
-      }
-      const values = {
-        children: this.state.children,
-      };
-      const channel_name = this.getChannelName();
-      let auctionIds = [];
-      auctionIds = this.extractAuctionIds(this.state.children);
+      const { currentUser } = this.props;
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
           payload: {
             ...values,
-            auctionIds,
             _id: query._id,
             approve_status: TASK_APPROVE_STATUS.taken,
             publisher_id: currentUser._id,
@@ -166,7 +150,6 @@ export default class TaskForm extends PureComponent {
           type: 'task/add',
           payload: {
             ...values,
-            auctionIds,
             formData: this.state.formData,
             source: SOURCE.deliver,
             name: name,
@@ -198,12 +181,10 @@ export default class TaskForm extends PureComponent {
           },
         });
       }
-    }
-      
+    });  
   }
   
   handleSpecifyApprover = () => {
-    const { dispatch } = this.props;
     const { approver_id } = this.state;
     this.props.form.validateFields(['approver', 'approver2'], (err, values) => {
       if (!err) {
@@ -349,75 +330,63 @@ export default class TaskForm extends PureComponent {
   }
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { currentUser, teamUser, operation, formData } = this.props;
-    const title = this.state.children.find(item => item.name === 'title').props.value;
-    let name;
-    if (operation === 'create') {
-      name = title;
-    } else if (operation === 'edit') {
-      if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
-        name = title;
-      }
-    }
-    const values = {
-      children: this.state.children,
-    };
-    const channel_name = this.getChannelName();
-    let auctionIds = [];
-    auctionIds = this.extractAuctionIds('');
-    if (query._id) {
-      this.props.dispatch({
-        type: 'task/update',
-        payload: {
-          _id: query._id,
-          take_time: new Date(),
-          current_approvers: approvers[0],
-          approvers: approvers,
-          name: name,
-          auctionIds,
-          ...values,
-        },
-        callback: (result) => {
-          if (result.error) {
-            message.error(result.msg);
-          } else {
-            this.handleHandin(query._id);
-          }
-        },
-      });
-    } else {
-      this.props.dispatch({
-        type: 'task/addByWriter',
-        payload: {
-          ...values,
-          formData: this.state.formData,
-          auctionIds,
-          source: SOURCE.create,
-          name: name,
-          approve_status: TASK_APPROVE_STATUS.taken,
-          channel_name: channel_name === '直播脚本' ? '' : channel_name,
-          task_type: query.task_type ? Number(query.task_type) : 1,
-          team_id: teamUser ? teamUser.team_id : null,
-          publisher_id: currentUser._id,
-          publish_time: new Date(),
-          taker_id: currentUser._id,
-          take_time: new Date(),
-          creator_id: currentUser._id,
-          daren_id: currentUser._id,
-          daren_time: new Date(),
-          project_id: query.project_id || undefined,
-          current_approvers: approvers[0],
-          approvers: approvers,
-        },
-        callback: (result) => {
-          if (result.error) {
-            message.error(result.msg);
-          } else {
-            this.handleHandin(result.task._id);
-          }
+    const { currentUser, teamUser } = this.props;
+    this.validate((err, values) => {
+      console.log(err);
+      console.log(values);
+      if (!err) {
+        const channel_name = this.getChannelName();
+        if (query._id) {
+          this.props.dispatch({
+            type: 'task/update',
+            payload: {
+              ...values,
+              _id: query._id,
+              take_time: new Date(),
+              current_approvers: approvers[0],
+              approvers: approvers,
+            },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                this.handleHandin(query._id);
+              }
+            },
+          });
+        } else {
+          this.props.dispatch({
+            type: 'task/addByWriter',
+            payload: {
+              ...values,
+              formData: this.state.formData,
+              source: SOURCE.create,
+              approve_status: TASK_APPROVE_STATUS.taken,
+              channel_name: channel_name === '直播脚本' ? '' : channel_name,
+              task_type: query.task_type ? Number(query.task_type) : 1,
+              team_id: teamUser ? teamUser.team_id : null,
+              publisher_id: currentUser._id,
+              publish_time: new Date(),
+              taker_id: currentUser._id,
+              take_time: new Date(),
+              creator_id: currentUser._id,
+              daren_id: currentUser._id,
+              daren_time: new Date(),
+              project_id: query.project_id || undefined,
+              current_approvers: approvers[0],
+              approvers: approvers,
+            },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                this.handleHandin(result.task._id);
+              }
+            }
+          });
         }
-      });
-    }
+      }
+    });
   }
   handleHandin = (_id, callback) => {
     const { currentUser } = this.props;
@@ -437,9 +406,11 @@ export default class TaskForm extends PureComponent {
   }
   handleShowSpecifyApproversModal = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    if (this.validate()) {
-      this.setState({ approveModalVisible: true, });
-    }
+    this.validate((err, values) => {
+      if (!err) {
+        this.setState({ approveModalVisible: true, });
+      }
+    });
   }
   handleApproveSearch = (value, key) => {
     const { teamUser } = this.props;
