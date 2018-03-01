@@ -56,7 +56,7 @@ export default class TaskEdit extends PureComponent {
     const { formData } = this.props;
     const { approve_notes } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const name = haveGoodsTask.title || lifeResearch.title || globalFashion.title || ifashion.title || buyWorld.title || weitao.title || toutiao.title || zhibo.title || '';
+    const name = '';
     if (name.trim()) {
       const values = {
         _id: query._id,
@@ -64,7 +64,7 @@ export default class TaskEdit extends PureComponent {
       }
 
       if (!formData.project_id) {
-        values.name =  name;
+        // values.name =  name;
       }
       this.props.dispatch({
         type: 'task/update',
@@ -110,7 +110,7 @@ export default class TaskEdit extends PureComponent {
                 _id: query._id,
                 approve_status: status,
                 approver_id: this.props.currentUser._id,
-                approve_notes: approve_notes,
+                approve_notes: this.state.approve_notes,
               },
               callback: (result1) => {
                 if (result1.error) {
