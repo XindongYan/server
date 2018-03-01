@@ -94,6 +94,7 @@ export default class AddTag extends PureComponent {
             </span>}
         </label>
         <span className={styles.errMsg}>{this.state.errMsg}</span>
+        <span className={styles.errMsg}>{this.props.errMsg}</span>
       </div>
     );
   }
