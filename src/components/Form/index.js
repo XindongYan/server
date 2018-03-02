@@ -72,20 +72,22 @@ export default class TaskForm extends PureComponent {
       } else if (item.component === 'CreatorAddImage') {
         let tempProps = {...item.props};
         let tempRules = item.rules;
-        if (coverCount) {
-          tempProps.min = Number(coverCount.props.value);
-          tempProps.max = Number(coverCount.props.value);
-        }
-        if (coverCount && Number(coverCount.props.value) === 3) {
-          tempRules = [{
-            "min": 3,
-            "type": "array",
-            "message": "至少要有3个"
-          }, {
-            "max": 3,
-            "type": "array",
-            "message": "最多允许3个"
-          }];
+        if (item.name === 'standardCoverUrl') {
+          if (coverCount) {
+            tempProps.min = Number(coverCount.props.value);
+            tempProps.max = Number(coverCount.props.value);
+          }
+          if (coverCount && Number(coverCount.props.value) === 3) {
+            tempRules = [{
+              "min": 3,
+              "type": "array",
+              "message": "至少要有3个"
+            }, {
+              "max": 3,
+              "type": "array",
+              "message": "最多允许3个"
+            }];
+          }
         }
         formComponents.push(<CreatorAddImage key={index} form={form} name={item.name} props={tempProps} rules={tempRules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'RadioGroup') {
