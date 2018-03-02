@@ -170,7 +170,7 @@ export default class AnalyzePane extends PureComponent {
             {summary.updateTime && <span><span>数据更新时间：</span><span>{moment(new Date(summary.updateTime)).format('YYYY年MM月DD日')}</span></span>}
           </div>
         </Row>
-        <Row style={{ marginTop: 5, marginBottom: 5 }}>
+        <Row style={{ marginTop: 20 }}>
           <Table
             size="small"
             title={() => '本月预估动态奖励推广费'}
