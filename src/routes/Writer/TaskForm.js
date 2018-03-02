@@ -462,7 +462,12 @@ export default class TaskForm extends PureComponent {
     return formData.channel_name;
   }
   handleChangePushDaren = (value) => {
-    this.handleChange('pushDaren', value);
+    const index = this.state.children.findIndex(item => item.name === 'pushDaren');
+    if (index >= 0) {
+      const children = Object.assign([], this.state.children);
+      children[index].props.value = value;
+      this.handleChange(children);;
+    }
   }
   handleChange = (children) => {
     this.setState({ children });
