@@ -72,7 +72,7 @@ export default class AnalyzePane extends PureComponent {
   render() {
     const { task } = this.props;
     const orders = this.state.auctionOrders.filter(item => item.payStatus === 3 || item.payStatus === 12);
-    const summary = task.taobao && task.taobao.summary ? task.taobao.summary : {};
+    const summary = (task.taobao && task.taobao.summary) ? task.taobao.summary : {};
     const alias = [{
       "value": "sumShareCnt",
       "type": "Integer",
@@ -141,6 +141,17 @@ export default class AnalyzePane extends PureComponent {
         render: (val) => val > 0 ? `￥${val.toFixed(2)}` : '--',
       },
     ];
+    const incomeRewardcolumns = [
+      {
+        title: '动态奖励推广费',
+        dataIndex: 'fee',
+        render: (val) => val > 0 ? `￥${val.toFixed(2)}` : '--',
+      },
+      {
+        title: '奖励原因',
+        dataIndex: 'reason',
+      },
+    ];
     return (
       <Card>
         <Row>
@@ -159,6 +170,16 @@ export default class AnalyzePane extends PureComponent {
             {summary.updateTime && <span><span>数据更新时间：</span><span>{moment(new Date(summary.updateTime)).format('YYYY年MM月DD日')}</span></span>}
           </div>
         </Row>
+        <Row style={{ marginTop: 5, marginBottom: 5 }}>
+          <Table
+            size="small"
+            title={() => '本月预估动态奖励推广费'}
+            dataSource={(task.taobao && task.taobao.incomeRewards) ? task.taobao.incomeRewards : []}
+            columns={incomeRewardcolumns}
+            rowKey="_id"
+          />
+        </Row>
+
         <Row style={{ marginTop: 20 }}>
           <Card.Grid style={{ width: `50%`, textAlign: 'center' }}>
             <div>
