@@ -177,7 +177,7 @@ export default class AnalyzePane extends PureComponent {
         <Row style={{ marginTop: 20 }}>
           <Table
             size="small"
-            title={() => `本月预估动态奖励推广费 （内容ID: ${task.taobao.contentId}）`}
+            title={() => `本月预估动态奖励推广费 （内容ID: ${task.taobao ? task.taobao.contentId : ''}）`}
             dataSource={(task.taobao && task.taobao.incomeRewards) ? task.taobao.incomeRewards : []}
             columns={incomeRewardcolumns}
             rowKey="_id"
