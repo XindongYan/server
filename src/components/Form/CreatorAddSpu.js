@@ -10,6 +10,7 @@ export default class CreatorAddSpu extends PureComponent {
   state = {
   }
   handleAuctionShow = () => {
+    return ;
     this.props.dispatch({
       type: 'auction/show',
       payload: { currentKey: 'havegoods' }
