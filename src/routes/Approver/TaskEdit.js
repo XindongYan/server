@@ -22,6 +22,7 @@ const FormItem = Form.Item;
 export default class TaskEdit extends PureComponent {
   state = {
     children: [],
+    needValidateFieldNames: [],
     approve_notes: [],
   }
   componentWillMount() {
@@ -33,6 +34,7 @@ export default class TaskEdit extends PureComponent {
         if (!result.error) {
           this.setState({
             children: result.task.children,
+            needValidateFieldNames: result.task.children.filter(item => item.component === 'Input').map(item => item.name),
             approve_notes: result.task.approve_notes || [],
           });
         }
@@ -52,79 +54,118 @@ export default class TaskEdit extends PureComponent {
   handleChange = (children) => {
     this.setState({ children });
   }
+  extractAuctionIds = (children) => {
+    const auctionIds = [];
+    const body = children.find(item => item.name === 'body');
+    if (body) {
+      if (body.component === 'Editor' && body.props.value.entityMap) {
+        const entityMap = body.props.value.entityMap;
+        Object.keys(entityMap).forEach(item => {
+          if (entityMap[item].type === 'SIDEBARSEARCHITEM') {
+            auctionIds.push(Number(entityMap[item].data.itemId));
+          } else if (entityMap[item].type === 'SIDEBARADDSPU') {
+            auctionIds.push(Number(entityMap[item].data.spuId));
+          }
+        });
+      } else if (body.component === 'AnchorImageList' && body.props.value[0]) {
+        const anchors = body.props.value[0].anchors;
+        anchors.forEach(item => {
+          auctionIds.push(item.data.itemId);
+        });
+      } else if (body.component === 'CreatorAddItem' && body.props.value[0]) {
+        auctionIds.push(body.props.value[0].itemId);
+      }
+    }
+    return auctionIds;
+  }
   handleSave = () => {
-    const { formData } = this.props;
     const { approve_notes } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const name = '';
-    if (name.trim()) {
-      const values = {
-        _id: query._id,
-        approve_notes: approve_notes,
-      }
-
-      if (!formData.project_id) {
-        // values.name =  name;
-      }
-      this.props.dispatch({
-        type: 'task/update',
-        payload: values,
-        callback: (result) => {
-          if (result.error) {
-            message.error(result.msg);
-          } else {
-            message.success(result.msg);
+    this.validate(this.state.needValidateFieldNames, (err, values) => {
+      if (!err) {
+        this.props.dispatch({
+          type: 'task/update',
+          payload: {
+            ...values,
+            _id: query._id,
+            approve_notes: approve_notes,
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              message.success(result.msg);
+            }
           }
-        }
-      });
-    } else {
-      message.warn('请输入标题');
-    }
+        });
+      }
+    });
   }
-  validate = () => {
-    
+  validate = (fieldNames, callback) => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const { operation, formData } = this.props;
+    this.props.form.validateFieldsAndScroll(fieldNames, (err, values) => {
+      if (!err) {
+        const children = Object.assign([], this.state.children);
+        const title = children.find(item => item.name === 'title').props.value;
+        let name = formData.name;
+        if (!formData.project_id) {
+          name = title;
+        }
+        
+        let auctionIds = [];
+        auctionIds = this.extractAuctionIds(children);
+        if (!title.trim()) {
+          message.warn('请输入标题');
+        } else {
+          const newChildren = children.map(item => {
+            return {
+              component: item.component,
+              name: item.name,
+              value: item.props.value,
+            };
+          });
+          if (callback) callback(err, { name, children: newChildren, auctionIds });
+        }
+      }
+    });
   }
   handleSubmit = (status) => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { formData } = this.props;
-
-    
-    if (this.validate()) {
-      const values = {
-        _id: query._id,
-      }
-
-      if (!formData.project_id) {
-        values.name =  name;
-      }
-      this.props.dispatch({
-        type: 'task/update',
-        payload: values,
-        callback: (result) => {
-          if (result.error) {
-            message.error(result.msg);
-          } else {
-            this.props.dispatch({
-              type: 'task/approve',
-              payload: {
-                _id: query._id,
-                approve_status: status,
-                approver_id: this.props.currentUser._id,
-                approve_notes: this.state.approve_notes,
-              },
-              callback: (result1) => {
-                if (result1.error) {
-                  message.error(result1.msg);
-                } else {
-                  message.success(result1.msg);
-                  this.props.dispatch(routerRedux.push('/approve/approve-list'));
+    this.validate(this.state.needValidateFieldNames, (err, values) => {
+      if (!err) {
+        this.props.dispatch({
+          type: 'task/update',
+          payload: {
+            ...values,
+            _id: query._id,
+          },
+          callback: (result) => {
+            if (result.error) {
+              message.error(result.msg);
+            } else {
+              this.props.dispatch({
+                type: 'task/approve',
+                payload: {
+                  _id: query._id,
+                  approve_status: status,
+                  approver_id: this.props.currentUser._id,
+                  approve_notes: this.state.approve_notes,
+                },
+                callback: (result1) => {
+                  if (result1.error) {
+                    message.error(result1.msg);
+                  } else {
+                    message.success(result1.msg);
+                    this.props.dispatch(routerRedux.push('/approve/approve-list'));
+                  }
                 }
-              }
-            });
+              });
+            }
           }
-        }
-      });
-    }
+        });
+      }
+    });
   }
   handleReject = () => {
     const { dispatch, formData, currentUser } = this.props;
