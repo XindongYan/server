@@ -149,7 +149,7 @@ export default class AnalyzePane extends PureComponent {
       {
         title: '动态奖励推广费',
         dataIndex: 'fee',
-        render: (val) => val > 0 ? `￥${val.toFixed(2)}` : '--',
+        render: (val) => val >= 0 ? `￥${val.toFixed(2)}` : val,
       },
       {
         title: '奖励原因',
@@ -170,7 +170,7 @@ export default class AnalyzePane extends PureComponent {
             </Card.Grid>)}
           <div style={{ float: 'right', color: 'grey', marginTop: 10 }}>
             {task.taobao && task.taobao.user && <span><span>数据来源于：</span><span>{task.taobao.user.name}</span></span>}
-            {summary.updateTime && <Divider type="vertical" />}
+            {summary.updateTime && task.taobao && task.taobao.user && <Divider type="vertical" />}
             {summary.updateTime && <span><span>数据更新时间：</span><span>{moment(new Date(summary.updateTime)).format('YYYY年MM月DD日')}</span></span>}
           </div>
         </Row>
