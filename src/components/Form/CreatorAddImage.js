@@ -56,6 +56,9 @@ export default class CreatorAddImage extends PureComponent {
           }
         </div>
         <p style={{ height: 18, lineHeight: '18px', fontSize: '12px', color: '#999', marginTop: 5 }} dangerouslySetInnerHTML={{__html: props.tips}}></p>
+        { props.value && props.value.length > 0 && needAdd &&
+          <p className={styles.errMsg}>至少要有{props.max}个</p>
+        }
         <AlbumModal mode="single" k={name} minSize={{ width: 750, height: 422 }} onOk={this.handleChangeCover}/>
       </div>
     );

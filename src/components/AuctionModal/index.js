@@ -351,7 +351,7 @@ export default class AuctionModal extends PureComponent {
   render() {
     const { visible, k, currentKey } = this.props;
     const { itemList, pagination, actsLoading, activeKey, auctionChoose, q_score, new7, qumai } = this.state;
-    const tabBarExtraContent = this.props.product ? this.props.product : 0;
+    const tabBarExtraContent = this.props.product ? this.props.product + "" : "0";
     const kuaixuan = `https://we.taobao.com/material/square/detail?${querystring.stringify({kxuanParam: JSON.stringify({nested: "we", id: tabBarExtraContent})})}`;
     return (
       <Modal
