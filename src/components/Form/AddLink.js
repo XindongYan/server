@@ -26,7 +26,7 @@ export default class AddLink extends PureComponent {
     const { operation, name, props, rules } = this.props;
     const { getFieldDecorator } = this.props.form;
     return (
-      <div style={{ padding: 10, background: '#fff' }}>
+      <div style={{ padding: '10px 20px 0', background: '#fff' }}>
         { operation !== 'view' && <div>
           <p className={styles.lineTitleDefult}>
             文末链接

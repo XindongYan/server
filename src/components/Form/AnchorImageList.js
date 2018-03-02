@@ -18,13 +18,13 @@ export default class AnchorImageList extends PureComponent {
       this.setState({ nicaiCrx }, () => {
         setTimeout(() => {
           this.handleGetVersion();
-        }, 1000);
+        }, 600);
       });
     }
     setTimeout(() => {
       if(!this.state.version){
         message.destroy();
-        message.warn('请安装尼采创作平台插件！', 60 * 60);
+        message.warn('请安装尼采创作平台插件！', 5000);
       }
     }, 5000);
   }

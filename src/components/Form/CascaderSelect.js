@@ -32,7 +32,7 @@ export default class CascaderSelect extends PureComponent {
       }
     }
     return (
-      <div style={{ padding: 10 }}>
+      <div style={{ padding: '10px 20px 0' }}>
         <p className={styles.lineTitleDefult}>
           本文目标人群
         </p>

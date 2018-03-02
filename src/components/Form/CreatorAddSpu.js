@@ -52,7 +52,7 @@ export default class CreatorAddSpu extends PureComponent {
     const { name, props, rules } = this.props;
 
     return (
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ padding: '10px 20px 0' }}>
         <div className={styles.task_img_list}>
           { !(props.value.length > 0) &&
             <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>

@@ -67,7 +67,7 @@ export default class AddTag extends PureComponent {
       lengthRules.max = rules.find(item => item.max).max;
     }
     return (
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: '10px 20px 0' }}>
         <p style={{ marginBottom: 10 }}>
           {props.label}
         </p>

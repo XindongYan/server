@@ -385,7 +385,7 @@ export default class Editors extends PureComponent {
       placeholder: this.props.props.placeholder,
     }
     return (
-      <div style={{marginBottom: 60}}>
+      <div style={{padding: '10px 20px', marginBottom: 60}}>
         <div onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
           <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
           <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>

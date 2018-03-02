@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-
+import { Card } from 'antd';
 import CreatorAddImage from './CreatorAddImage';
 import TagPicker from './TagPicker';
 import CascaderSelect from './CascaderSelect';
@@ -12,6 +12,7 @@ import RadioGroup from './RadioGroup';
 import CreatorAddItem from './CreatorAddItem';
 import CreatorAddSpu from './CreatorAddSpu';
 import AddTag from './AddTag';
+import styles from './index.less';
 
 export default class TaskForm extends PureComponent {
   state = {}
@@ -106,6 +107,13 @@ export default class TaskForm extends PureComponent {
         formComponents.push(<StructCanvas key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       }
     });
-    return formComponents;
+    return (
+      <div>
+        <p className={styles.titleDefult}>内容创作</p>
+        <Card bordered={false} bodyStyle={{ padding: '20px 0 40px' }}>
+          {formComponents}
+        </Card>
+      </div>
+    )
   }
 }
