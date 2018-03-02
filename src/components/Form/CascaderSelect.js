@@ -39,14 +39,14 @@ export default class CascaderSelect extends PureComponent {
         <div>
           <FormItem>
             {getFieldDecorator(name, {
-              initialValue: [firstValue, props.value],
+              initialValue: props.value ? [firstValue, props.value] : '',
             })(
               <Cascader
-                placeholder="请选择"
                 style={{ width: '200px' }}
                 onChange={this.handleChange}
                 options={this.state.residences}
                 disabled={this.props.disabled}
+                placeholder="请选择"
               />
             )}
           </FormItem>
