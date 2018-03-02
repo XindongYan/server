@@ -25,6 +25,7 @@ export default class TaskForm extends PureComponent {
   state = {
     children: [],
     formData: {},
+    needValidateFieldNames: [],
     approveModalVisible: false,
     approver_id: {
       first: '',
@@ -48,14 +49,14 @@ export default class TaskForm extends PureComponent {
         payload: { _id: query._id },
         callback: (result) => {
           if (!result.error) {
-            this.setState({ children: result.task.children, formData: result.task.formData });
+            this.setState({ children: result.task.children, formData: result.task.formData, needValidateFieldNames: result.task.children.filter(item => item.component === 'Input').map(item => item.name) });
           }
         }
       });
     } else {
       queryTaskRender({ channel_name: query.channel_name }).then(result => {
         if (!result.error) {
-          this.setState({ children: result.children, formData: result.formData });
+          this.setState({ children: result.children, formData: result.formData, needValidateFieldNames: result.children.filter(item => item.component === 'Input').map(item => item.name) });
         }
       });
     }
@@ -83,14 +84,14 @@ export default class TaskForm extends PureComponent {
     });
   }
 
-  validate = (callback) => {
+  validate = (fieldNames, callback) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { operation, formData } = this.props;
-    this.props.form.validateFieldsAndScroll(['title'], (err, values) => {
+    this.props.form.validateFieldsAndScroll(fieldNames, (err, values) => {
       if (!err) {
         const children = Object.assign([], this.state.children);
         const title = children.find(item => item.name === 'title').props.value;
-        let name;
+        let name = formData.name;
         if (operation === 'create') {
           name = title;
         } else if (operation === 'edit') {
@@ -115,10 +116,9 @@ export default class TaskForm extends PureComponent {
         }
       }
     });
-    return true;
   }
   handleSubmitTask = () => {
-    this.validate((err, values) => {
+    this.validate(this.state.needValidateFieldNames, (err, values) => {
       const query = querystring.parse(this.props.location.search.substr(1));
       const { currentUser } = this.props;
       if (query._id) {
@@ -233,9 +233,7 @@ export default class TaskForm extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
     const channel_name = this.getChannelName();
-    this.validate((err, values) => {
-      console.log(err);
-      console.log(values);
+    this.validate(this.state.needValidateFieldNames, (err, values) => {
       if (!err) {
         this.setState({
           saveLoading: true,
@@ -267,7 +265,7 @@ export default class TaskForm extends PureComponent {
                 formData: this.state.formData,
                 source: SOURCE.deliver,
                 approve_status: TASK_APPROVE_STATUS.taken,
-                channel_name: channel_name === '直播脚本' ? '' : channel_name,
+                channel_name,
                 task_type: channel_name === '直播脚本' ? 3 : 1,
                 team_id: teamUser ? teamUser.team_id : null,
                 publisher_id: currentUser._id,
@@ -298,7 +296,7 @@ export default class TaskForm extends PureComponent {
                 formData: this.state.formData,
                 source: SOURCE.create,
                 approve_status: TASK_APPROVE_STATUS.taken,
-                channel_name: channel_name === '直播脚本' ? '' : channel_name,
+                channel_name,
                 task_type: channel_name === '直播脚本' ? 3 : 1,
                 team_id: teamUser ? teamUser.team_id : null,
                 publisher_id: currentUser._id,
@@ -330,9 +328,7 @@ export default class TaskForm extends PureComponent {
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
-    this.validate((err, values) => {
-      console.log(err);
-      console.log(values);
+    this.validate(this.state.needValidateFieldNames, (err, values) => {
       if (!err) {
         const channel_name = this.getChannelName();
         if (query._id) {
@@ -361,7 +357,7 @@ export default class TaskForm extends PureComponent {
               formData: this.state.formData,
               source: SOURCE.create,
               approve_status: TASK_APPROVE_STATUS.taken,
-              channel_name: channel_name === '直播脚本' ? '' : channel_name,
+              channel_name,
               task_type: query.task_type ? Number(query.task_type) : 1,
               team_id: teamUser ? teamUser.team_id : null,
               publisher_id: currentUser._id,
@@ -405,7 +401,7 @@ export default class TaskForm extends PureComponent {
   }
   handleShowSpecifyApproversModal = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    this.validate((err, values) => {
+    this.validate(this.state.needValidateFieldNames, (err, values) => {
       if (!err) {
         this.setState({ approveModalVisible: true, });
       }
@@ -446,18 +442,6 @@ export default class TaskForm extends PureComponent {
     const { operation, formData } = this.props;
     if (operation === 'create') {
       return query.channel_name;
-    } else if (operation === 'edit') {
-      if (formData.channel_name) {
-        return formData.channel_name;
-      } else if (formData.task_type === 3) {
-        return '直播脚本';
-      }
-    } else if (operation === 'view') {
-      if (formData.channel_name) {
-        return formData.channel_name;
-      } else if (formData.task_type === 3) {
-        return '直播脚本';
-      }
     }
     return formData.channel_name;
   }

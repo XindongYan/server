@@ -32,8 +32,8 @@ export default class TaskOption extends PureComponent {
 
   }
   componentWillUnmount() {
-    const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.removeEventListener('setChannel', this.setChannel);
+    this.state.nicaiCrx.removeEventListener('setChannel', this.setChannel);
+    this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
   }
   handleGetVersion = () => {
     const customEvent = document.createEvent('Event');
@@ -51,7 +51,7 @@ export default class TaskOption extends PureComponent {
       this.setState({
         version: data.version,
       });
-      nicaiCrx.removeEventListener('setVersion', this.setVersion);
+      this.state.nicaiCrx.removeEventListener('setVersion', this.setVersion);
     }
     if (data.error) {
       message.destroy();
@@ -69,7 +69,6 @@ export default class TaskOption extends PureComponent {
       this.setState({
         channel_list: data.itemList,
       });
-      this.state.nicaiCrx.removeEventListener('setChannel', this.setChannel);
     }
   }
   handleDeliver = (value) => {
