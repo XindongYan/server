@@ -234,8 +234,6 @@ export default class TaskForm extends PureComponent {
     const { currentUser, teamUser } = this.props;
     const channel_name = this.getChannelName();
     this.validate(this.state.needValidateFieldNames, (err, values) => {
-      console.log(err);
-      console.log(values);
       if (!err) {
         this.setState({
           saveLoading: true,
@@ -331,8 +329,6 @@ export default class TaskForm extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
     this.validate(this.state.needValidateFieldNames, (err, values) => {
-      console.log(err);
-      console.log(values);
       if (!err) {
         const channel_name = this.getChannelName();
         if (query._id) {
