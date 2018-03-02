@@ -283,7 +283,7 @@ export default class AuctionImageModal extends PureComponent {
             <div style={{ marginBottom: 40 }}>
               <p>展示图共3-5张（顺序选择第1张指定为封面图）</p>
               <div className={styles.imgBox}>
-                { formData.images.map((item, index) => <div key={index} className={styles.coverImgBox} onClick={() => this.handleChooseExtraBanners(item)}>
+                { formData.images.filter((item, index, self) => self.indexOf(item) === index).map((item, index) => <div key={index} className={styles.coverImgBox} onClick={() => this.handleChooseExtraBanners(item)}>
                     { extraBanners.find(url => url === item) &&
                       <div className={styles.chooseImgBox}>
                         <Icon type="check" />
@@ -313,7 +313,7 @@ export default class AuctionImageModal extends PureComponent {
               <p>首页入口图1张，仅限白底图（用于各内容频道入口资源位展示）</p>
               <div>
                 <RadioGroup className={styles.imgBox} onChange={this.handleChangeCoverImg} value={this.state.coverUrl}>
-                  { formData.images.map((item, index) => <Radio className={styles.radioBox} key={index} value={item}><img src={cutCoverUrl[index]? cutCoverUrl[index] : item} /></Radio>)
+                  { formData.images.filter((item, index, self) => self.indexOf(item) === index).map((item, index) => <Radio className={styles.radioBox} key={index} value={item}><img src={cutCoverUrl[index]? cutCoverUrl[index] : item} /></Radio>)
                   }
                   { !uploadBgImage ? <div onClick={() => this.handleAddImage('bgImage')} className={styles.uploadImgBox} style={{ marginLeft: 20 }}>
                     <div>

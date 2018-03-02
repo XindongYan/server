@@ -235,7 +235,7 @@ export default class CoverChooseModal extends PureComponent {
           <div>
             <div>
               <RadioGroup className={styles.imgBox} onChange={this.handleChangeCoverImg} value={this.state.coverUrl}>
-                { auction.images.map((item, index) => <Radio className={styles.radioBox} key={index} value={item}><img style={{width: '100%', height: '100%'}} src={cutCoverUrl[index]? cutCoverUrl[index] : item} /></Radio>)
+                { auction.images.filter((item, index, self) => self.indexOf(item) === index).map((item, index) => <Radio className={styles.radioBox} key={index} value={item}><img style={{width: '100%', height: '100%'}} src={cutCoverUrl[index]? cutCoverUrl[index] : item} /></Radio>)
                 }
                 { !uploadBgImage ? <div onClick={() => this.handleAddImage('bgImage')} className={styles.uploadImgBox} style={{ marginLeft: 20 }}>
                   <div>
