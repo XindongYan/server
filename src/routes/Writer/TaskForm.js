@@ -446,18 +446,6 @@ export default class TaskForm extends PureComponent {
     const { operation, formData } = this.props;
     if (operation === 'create') {
       return query.channel_name;
-    } else if (operation === 'edit') {
-      if (formData.channel_name) {
-        return formData.channel_name;
-      } else if (formData.task_type === 3) {
-        return '直播脚本';
-      }
-    } else if (operation === 'view') {
-      if (formData.channel_name) {
-        return formData.channel_name;
-      } else if (formData.task_type === 3) {
-        return '直播脚本';
-      }
     }
     return formData.channel_name;
   }
