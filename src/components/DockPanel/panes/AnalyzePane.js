@@ -143,6 +143,10 @@ export default class AnalyzePane extends PureComponent {
     ];
     const incomeRewardcolumns = [
       {
+        title: '日期',
+        dataIndex: 'date',
+      },
+      {
         title: '动态奖励推广费',
         dataIndex: 'fee',
         render: (val) => val > 0 ? `￥${val.toFixed(2)}` : '--',
@@ -173,7 +177,7 @@ export default class AnalyzePane extends PureComponent {
         <Row style={{ marginTop: 20 }}>
           <Table
             size="small"
-            title={() => '本月预估动态奖励推广费'}
+            title={() => `本月预估动态奖励推广费 （内容ID: ${task.taobao.contentId}）`}
             dataSource={(task.taobao && task.taobao.incomeRewards) ? task.taobao.incomeRewards : []}
             columns={incomeRewardcolumns}
             rowKey="_id"
