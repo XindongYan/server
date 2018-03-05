@@ -180,7 +180,7 @@ export default class AnalyzePane extends PureComponent {
             title={() => `动态奖励推广费 （内容ID：${task.taobao ? task.taobao.contentId : ''}）`}
             dataSource={(task.taobao && task.taobao.incomeRewards) ? task.taobao.incomeRewards : []}
             columns={incomeRewardcolumns}
-            rowKey="_id"
+            rowKey="date"
           />
         </Row>
 
