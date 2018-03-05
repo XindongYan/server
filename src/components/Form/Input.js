@@ -15,7 +15,13 @@ export default class NInput extends PureComponent {
     const { name, props, rules } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const value = getFieldValue(name);
-
+    const newRules = [...rules];
+    if (newRules.length > 0 && !newRules.find(item => item.required))
+      newRules.push({
+        "type": "string",
+        "message": "不能为空",
+        "required": true
+      });
     const type = props.rows && props.rows > 0 ? 'textArea' : 'Input';
     return (
       <div className={styles.taskListInp}>
@@ -23,7 +29,7 @@ export default class NInput extends PureComponent {
           <FormItem>
             {getFieldDecorator(name, {
               initialValue: props.value,
-              rules,
+              rules: newRules,
             })(
               <Input
                 onChange={this.handleChange}
@@ -34,7 +40,7 @@ export default class NInput extends PureComponent {
           : <FormItem>
             {getFieldDecorator(name, {
               initialValue: props.value,
-              rules,
+              rules: newRules,
             })(
               <TextArea
                 onChange={this.handleChange}
