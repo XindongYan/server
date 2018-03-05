@@ -274,7 +274,7 @@ export default class teamTasks extends PureComponent {
         dataIndex: 'name',
         render: (val, record) => (
           <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-            <TaskNameColumn text={record} length={10} />
+            <TaskNameColumn text={val} length={10} />
           </a>
         )
       },
