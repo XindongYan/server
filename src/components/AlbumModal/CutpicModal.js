@@ -184,13 +184,14 @@ export default class CutpicModal extends PureComponent {
           <Row gutter={20}>
             <Col span={12}>
               <img
+                style={{maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto'}}
                 src={src}
               />
             </Col>
             <Col span={12}>
               {this.state.cutpicUrl &&
                 <img
-                  style={{ border: '1px solid #6af' }}
+                  style={{maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto',border: '1px solid #6af'}}
                   src={this.state.cutpicUrl}
                 />
               }
