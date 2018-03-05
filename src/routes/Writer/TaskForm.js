@@ -39,10 +39,9 @@ export default class TaskForm extends PureComponent {
     submitLoading: false,
   }
   componentWillMount() {
-    // window.onbeforeunload = () => {
-    //   return "确认离开页面?";
-    // }
-    // window.addEventListener('popstate',this.closeModal,false);
+    window.onbeforeunload = () => {
+      return "确认离开页面?";
+    }
     const query = querystring.parse(this.props.location.search.substr(1));
     if (query._id) {
       this.props.dispatch({
@@ -66,23 +65,7 @@ export default class TaskForm extends PureComponent {
     this.props.dispatch({
       type: 'task/clearFormData'
     });
-    // window.removeEventListener('popstate',this.closeModal,false);
-  }
-
-  addEventHandler = () => {
-    history.pushState({},'')
-  }
-
-  removeEventHandler = () => {
-  }
-
-  closeModal = (e) => {
-    Modal.confirm({
-      title: '确定吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => history.back(),
-    });
+    window.onbeforeunload = null;
   }
 
   validate = (fieldNames, callback) => {
