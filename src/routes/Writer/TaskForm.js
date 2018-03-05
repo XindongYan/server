@@ -109,7 +109,7 @@ export default class TaskForm extends PureComponent {
           children.forEach(child => {
             if (child.component === 'CascaderSelect' && !child.props.value) {
               const required = child.rules.find(r => r.required);
-              msg = required ? required.message : '';
+              if (required) msg = required.message;
             } else if (child.component === 'CreatorAddImage' && child.name === 'standardCoverUrl' && child.props.value.length === 0) {
               msg = '请上传封面图';
             } else if (child.component === 'CreatorAddItem' && child.props.value.length === 0) {
@@ -117,7 +117,10 @@ export default class TaskForm extends PureComponent {
             } else if (child.component === 'CreatorAddSpu' && child.props.value.length === 0) {
               msg = '请添加一个产品';
             } else if (child.component === 'AddTag') {
-              // msg = '请添加一个产品';
+              const min = child.rules.find(item => item.min) ? child.rules.find(item => item.min).min : null;
+              const max = child.rules.find(item => item.max) ? child.rules.find(item => item.max).max : null;
+              if (min && child.props.value.length < min) msg = `请选择至少${min}个${child.label}`;
+              else if (max && child.props.value.length > max) msg = `最多允许${max}个${child.label}`;
             } else if (child.component === 'TagPicker') {
               const min = child.rules.find(item => item.min) ? child.rules.find(item => item.min).min : null;
               const max = child.rules.find(item => item.max) ? child.rules.find(item => item.max).max : null;
@@ -126,7 +129,10 @@ export default class TaskForm extends PureComponent {
             } else if (child.component === 'AnchorImageList' && child.props.value.length === 0) {
               msg = '请添加搭配图';
             } else if (child.component === 'StructCanvas') {
-            
+              const len = child.props.value.length - 1;
+              if (child.props.value[0].data && child.props.value[0].data.features.length === 0) msg = '宝贝亮点最少2条';
+              else if (len < 2) msg = '请添加至少2个宝贝段落';
+              else if (len > 5) msg = '请添加最多5个宝贝段落';
             }
           });
           if (msg) {
