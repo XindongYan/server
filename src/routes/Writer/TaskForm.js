@@ -107,9 +107,9 @@ export default class TaskForm extends PureComponent {
         } else {
           let msg = '';
           children.forEach(child => {
-            const crowdId = child.rules.find(r => r.required);
-            if (child.component === 'CascaderSelect' && crowdId && !crowdId.props.value) {
-              msg = crowdId.message;
+            if (child.component === 'CascaderSelect' && !child.props.value) {
+              const required = child.rules.find(r => r.required);
+              msg = required ? required.message : '';
             } else if (child.component === 'CreatorAddImage' && child.name === 'standardCoverUrl' && child.props.value.length === 0) {
               msg = '请上传封面图';
             } else if (child.component === 'CreatorAddItem' && child.props.value.length === 0) {
