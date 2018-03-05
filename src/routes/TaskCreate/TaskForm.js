@@ -18,7 +18,8 @@ const { Option } = Select;
 @Form.create()
 export default class TaskForm extends PureComponent {
   state = {
-
+    nextLoading: false,
+    finishLoading: false,
   }
   componentDidMount() {
     const { operation, formData } = this.props;
@@ -107,6 +108,15 @@ export default class TaskForm extends PureComponent {
             },
           });
         } else if (this.props.operation === 'create') {
+          if (type === 'next') {
+            this.setState({
+              nextLoading: true,
+            });
+          } else {
+            this.setState({
+              finishLoading: true,
+            });
+          }
           this.props.dispatch({
             type: 'task/add',
             payload: {
@@ -126,8 +136,15 @@ export default class TaskForm extends PureComponent {
                     merchant_tag: this.props.projectFormData.merchant_tag,
                   };
                   this.props.form.setFieldsValue(f);
+
+                  this.setState({
+                    nextLoading: false,
+                  });
                 } else {
                   this.props.dispatch(routerRedux.push(`/project/task/list?project_id=${query.project_id}`));
+                  this.setState({
+                    finishLoading: false,
+                  });
                 }
               }
             },
@@ -262,10 +279,10 @@ export default class TaskForm extends PureComponent {
             }
             { operation === 'create' &&
               <div>
-                <Button type="primary" onClick={() => this.handleSubmit('next')}>
+                <Button type="primary" onClick={() => this.handleSubmit('next')} loading={this.state.nextLoading}>
                   创建下一个
                 </Button>
-                <Button style={{ marginLeft: 80 }} type="primary" onClick={() => this.handleSubmit('finish')}>
+                <Button style={{ marginLeft: 80 }} type="primary" onClick={() => this.handleSubmit('finish')} loading={this.state.finishLoading}>
                   创建完成
                 </Button>
               </div>
