@@ -34,6 +34,7 @@ export default class CreatorAddImage extends PureComponent {
     const disabled = this.props.operation === 'view' ? true : false;
     const coverViewStyles = disabled ? {border: '1px solid #ccc', color: '#ccc'} : {};
     const needAdd = props.value.length < props.max;
+    const pixFilter = props.pixFilter.split('x').map(item => Number(item));
     return (
       <div style={{ padding: '10px 20px 0' }}>
         <div>
@@ -59,7 +60,7 @@ export default class CreatorAddImage extends PureComponent {
         { props.value && props.value.length > 0 && needAdd &&
           <p className={styles.errMsg}>至少要有{props.max}个</p>
         }
-        <AlbumModal mode="single" k={name} minSize={{ width: 750, height: 422 }} onOk={this.handleChangeCover}/>
+        <AlbumModal mode="single" k={name} minSize={{ width: pixFilter[0], height: pixFilter[1] }} onOk={this.handleChangeCover}/>
       </div>
     );
   }
