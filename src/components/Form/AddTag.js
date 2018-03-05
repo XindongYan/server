@@ -63,8 +63,8 @@ export default class AddTag extends PureComponent {
       disabled = true;
     }
     if (rules.length > 0) {
-      lengthRules.min = rules.find(item => item.min).min;
-      lengthRules.max = rules.find(item => item.max).max;
+      lengthRules.min = rules.find(item => item.min) ? rules.find(item => item.min).min : null;
+      lengthRules.max = rules.find(item => item.max) ? rules.find(item => item.max).max : null;
     }
     return (
       <div style={{ padding: '10px 20px 0' }}>

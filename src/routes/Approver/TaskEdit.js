@@ -81,30 +81,8 @@ export default class TaskEdit extends PureComponent {
   handleSave = () => {
     const { approve_notes } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
-    this.validate(this.state.needValidateFieldNames, (err, values) => {
-      if (!err) {
-        this.props.dispatch({
-          type: 'task/update',
-          payload: {
-            ...values,
-            _id: query._id,
-            approve_notes: approve_notes,
-          },
-          callback: (result) => {
-            if (result.error) {
-              message.error(result.msg);
-            } else {
-              message.success(result.msg);
-            }
-          }
-        });
-      }
-    });
-  }
-  validate = (fieldNames, callback) => {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    const { operation, formData } = this.props;
-    this.props.form.validateFieldsAndScroll(fieldNames, (err, values) => {
+    const { formData } = this.props;
+    this.props.form.validateFieldsAndScroll(['title'], (err, vals) => {
       if (!err) {
         const children = Object.assign([], this.state.children);
         const title = children.find(item => item.name === 'title').props.value;
@@ -125,7 +103,79 @@ export default class TaskEdit extends PureComponent {
               value: item.props.value,
             };
           });
-          if (callback) callback(err, { name, children: newChildren, auctionIds });
+          const values = { name, children: newChildren, auctionIds };
+          this.props.dispatch({
+            type: 'task/update',
+            payload: {
+              ...values,
+              _id: query._id,
+              approve_notes: approve_notes,
+            },
+            callback: (result) => {
+              if (result.error) {
+                message.error(result.msg);
+              } else {
+                message.success(result.msg);
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+  validate = (fieldNames, callback) => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const { formData } = this.props;
+    this.props.form.validateFieldsAndScroll(fieldNames, (err, values) => {
+      if (!err) {
+        const children = Object.assign([], this.state.children);
+        const title = children.find(item => item.name === 'title').props.value;
+        let name = formData.name;
+        if (!formData.project_id) {
+          name = title;
+        }
+        
+        let auctionIds = [];
+        auctionIds = this.extractAuctionIds(children);
+        if (!title.trim()) {
+          message.warn('请输入标题');
+        } else {
+          let msg = '';
+          children.forEach(child => {
+            const crowdId = child.rules.find(r => r.required);
+            if (child.component === 'CascaderSelect' && !crowdId.props.value && crowdId) {
+              msg = crowdId.message;
+            } else if (child.component === 'CreatorAddImage' && child.name === 'standardCoverUrl' && child.props.value.length === 0) {
+              msg = '请上传封面图';
+            } else if (child.component === 'CreatorAddItem' && child.props.value.length === 0) {
+              msg = '请添加一个宝贝';
+            } else if (child.component === 'CreatorAddSpu' && child.props.value.length === 0) {
+              msg = '请添加一个产品';
+            } else if (child.component === 'AddTag') {
+              // msg = '请添加一个产品';
+            } else if (child.component === 'TagPicker') {
+              const min = child.rules.find(item => item.min) ? child.rules.find(item => item.min).min : null;
+              const max = child.rules.find(item => item.max) ? child.rules.find(item => item.max).max : null;
+              if (min && child.props.value.length < min) msg = `请选择至少${min}个分类`;
+              else if (max && child.props.value.length > max) msg = `最多允许${max}个分类`;
+            } else if (child.component === 'AnchorImageList' && child.props.value.length === 0) {
+              msg = '请添加搭配图';
+            } else if (child.component === 'StructCanvas') {
+            
+            }
+          });
+          if (msg) {
+            message.warn(msg);
+          } else {
+            const newChildren = children.map(item => {
+              return {
+                component: item.component,
+                name: item.name,
+                value: item.props.value,
+              };
+            });
+            if (callback) callback(err, { name, children: newChildren, auctionIds });
+          }
         }
       }
     });

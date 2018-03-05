@@ -105,14 +105,42 @@ export default class TaskForm extends PureComponent {
         if (!title.trim()) {
           message.warn('请输入标题');
         } else {
-          const newChildren = children.map(item => {
-            return {
-              component: item.component,
-              name: item.name,
-              value: item.props.value,
-            };
+          let msg = '';
+          children.forEach(child => {
+            const crowdId = child.rules.find(r => r.required);
+            if (child.component === 'CascaderSelect' && !crowdId.props.value && crowdId) {
+              msg = crowdId.message;
+            } else if (child.component === 'CreatorAddImage' && child.name === 'standardCoverUrl' && child.props.value.length === 0) {
+              msg = '请上传封面图';
+            } else if (child.component === 'CreatorAddItem' && child.props.value.length === 0) {
+              msg = '请添加一个宝贝';
+            } else if (child.component === 'CreatorAddSpu' && child.props.value.length === 0) {
+              msg = '请添加一个产品';
+            } else if (child.component === 'AddTag') {
+              // msg = '请添加一个产品';
+            } else if (child.component === 'TagPicker') {
+              const min = child.rules.find(item => item.min) ? child.rules.find(item => item.min).min : null;
+              const max = child.rules.find(item => item.max) ? child.rules.find(item => item.max).max : null;
+              if (min && child.props.value.length < min) msg = `请选择至少${min}个分类`;
+              else if (max && child.props.value.length > max) msg = `最多允许${max}个分类`;
+            } else if (child.component === 'AnchorImageList' && child.props.value.length === 0) {
+              msg = '请添加搭配图';
+            } else if (child.component === 'StructCanvas') {
+            
+            }
           });
-          if (callback) callback(err, { name, children: newChildren, auctionIds });
+          if (msg) {
+            message.warn(msg);
+          } else {
+            const newChildren = children.map(item => {
+              return {
+                component: item.component,
+                name: item.name,
+                value: item.props.value,
+              };
+            });
+            if (callback) callback(err, { name, children: newChildren, auctionIds });
+          }
         }
       }
     });
@@ -231,49 +259,43 @@ export default class TaskForm extends PureComponent {
   }
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { currentUser, teamUser } = this.props;
+    const { currentUser, teamUser, formData, operation } = this.props;
     const channel_name = this.getChannelName();
-    this.validate(this.state.needValidateFieldNames, (err, values) => {
+    this.props.form.validateFieldsAndScroll(['title'], (err, vals) => {
       if (!err) {
-        this.setState({
-          saveLoading: true,
-        })
-        if (query._id) {
-          this.props.dispatch({
-            type: 'task/update',
-            payload: {
-              ...values,
-              _id: query._id,
-            },
-            callback: (result) => {
-              if (result.error) {
-                message.error(result.msg);
-              } else {
-                this.setState({
-                  saveLoading: false,
-                })
-                message.success(result.msg);
-              }
-            }
-          });
+        const children = Object.assign([], this.state.children);
+        const title = children.find(item => item.name === 'title').props.value;
+        let name = formData.name;
+        if (operation === 'create') {
+          name = title;
+        } else if (operation === 'edit') {
+          if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
+            name = title;
+          }
+        }
+        
+        let auctionIds = [];
+        auctionIds = this.extractAuctionIds(children);
+        if (!title.trim()) {
+          message.warn('请输入标题');
         } else {
-          if (query.project_id) {
+          const newChildren = children.map(item => {
+            return {
+              component: item.component,
+              name: item.name,
+              value: item.props.value,
+            };
+          });
+          const values = { name, children: newChildren, auctionIds };
+          this.setState({
+            saveLoading: true,
+          });
+          if (query._id) {
             this.props.dispatch({
-              type: 'task/add',
+              type: 'task/update',
               payload: {
                 ...values,
-                formData: this.state.formData,
-                source: SOURCE.deliver,
-                approve_status: TASK_APPROVE_STATUS.taken,
-                channel_name,
-                task_type: channel_name === '直播脚本' ? 3 : 1,
-                team_id: teamUser ? teamUser.team_id : null,
-                publisher_id: currentUser._id,
-                publish_time: new Date(),
-                taker_id: currentUser._id,
-                take_time: new Date(),
-                creator_id: currentUser._id,
-                project_id: query.project_id,
+                _id: query._id,
               },
               callback: (result) => {
                 if (result.error) {
@@ -282,44 +304,75 @@ export default class TaskForm extends PureComponent {
                   this.setState({
                     saveLoading: false,
                   })
-                  message.success('保存成功');
-                  query._id = result.task._id;
-                  this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
+                  message.success(result.msg);
                 }
-              },
+              }
             });
           } else {
-            this.props.dispatch({
-              type: 'task/addByWriter',
-              payload: {
-                ...values,
-                formData: this.state.formData,
-                source: SOURCE.create,
-                approve_status: TASK_APPROVE_STATUS.taken,
-                channel_name,
-                task_type: channel_name === '直播脚本' ? 3 : 1,
-                team_id: teamUser ? teamUser.team_id : null,
-                publisher_id: currentUser._id,
-                publish_time: new Date(),
-                taker_id: currentUser._id,
-                take_time: new Date(),
-                creator_id: currentUser._id,
-                daren_id: currentUser._id,
-                daren_time: new Date(),
-              },
-              callback: (result) => {
-                if (result.error) {
-                  message.error(result.msg);
-                } else {
-                  this.setState({
-                    saveLoading: false,
-                  })
-                  message.success('保存成功');
-                  query._id = result.task._id;
-                  this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
+            if (query.project_id) {
+              this.props.dispatch({
+                type: 'task/add',
+                payload: {
+                  ...values,
+                  formData: this.state.formData,
+                  source: SOURCE.deliver,
+                  approve_status: TASK_APPROVE_STATUS.taken,
+                  channel_name,
+                  task_type: channel_name === '直播脚本' ? 3 : 1,
+                  team_id: teamUser ? teamUser.team_id : null,
+                  publisher_id: currentUser._id,
+                  publish_time: new Date(),
+                  taker_id: currentUser._id,
+                  take_time: new Date(),
+                  creator_id: currentUser._id,
+                  project_id: query.project_id,
+                },
+                callback: (result) => {
+                  if (result.error) {
+                    message.error(result.msg);
+                  } else {
+                    this.setState({
+                      saveLoading: false,
+                    })
+                    message.success('保存成功');
+                    query._id = result.task._id;
+                    this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
+                  }
+                },
+              });
+            } else {
+              this.props.dispatch({
+                type: 'task/addByWriter',
+                payload: {
+                  ...values,
+                  formData: this.state.formData,
+                  source: SOURCE.create,
+                  approve_status: TASK_APPROVE_STATUS.taken,
+                  channel_name,
+                  task_type: channel_name === '直播脚本' ? 3 : 1,
+                  team_id: teamUser ? teamUser.team_id : null,
+                  publisher_id: currentUser._id,
+                  publish_time: new Date(),
+                  taker_id: currentUser._id,
+                  take_time: new Date(),
+                  creator_id: currentUser._id,
+                  daren_id: currentUser._id,
+                  daren_time: new Date(),
+                },
+                callback: (result) => {
+                  if (result.error) {
+                    message.error(result.msg);
+                  } else {
+                    this.setState({
+                      saveLoading: false,
+                    })
+                    message.success('保存成功');
+                    query._id = result.task._id;
+                    this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
+                  }
                 }
-              }
-            });
+              });
+            }
           }
         }
       }
