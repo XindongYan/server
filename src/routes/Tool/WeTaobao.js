@@ -119,12 +119,6 @@ export default class WeTaobao extends PureComponent {
       width: 80,
       dataIndex: 'q_score',
     };
-    const tk_rate_suf = {
-      title: '淘客佣金',
-      dataIndex: 'tk_rate_suf',
-      width: 80,
-      render: (value, record) => `${record.tk_rate_pre}${value}`,
-    };
     const view_price = {
       title: '售价',
       dataIndex: 'view_price',
@@ -136,7 +130,7 @@ export default class WeTaobao extends PureComponent {
       width: 80,
     };
     if (qualitList[0] && qualitList[0].q_score) {
-      columns.push(score, tk_rate_suf, view_price, comment_count);
+      columns.push(score, view_price, comment_count);
     }
     return (
       <Card bordered={false}>
