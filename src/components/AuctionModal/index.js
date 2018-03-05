@@ -176,17 +176,22 @@ export default class AuctionModal extends PureComponent {
   }
   renderAuctions = (auction) => {
     return (
-      <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer' }} onClick={() => this.handleChooseAuction(auction)} bodyStyle={{ padding: 0 }} key={auction.id} >
-        <div className={styles.customImageBox}>
-          <img className={styles.customImage} src={auction.url} />
-          { this.state.auctionChoose && auction.id === this.state.auctionChoose.id &&
-            <div className={styles.customImgZz}><Icon type="check" /></div>
-          }
-        </div>
-        <div className={styles.auctionCard}>
-          <p className={styles.auctionNodes}>{auction.title}</p>
-          <p className={styles.auctionNodes} style={{ margin: '3px 0', color: '#555' }}>¥{auction.item.finalPrice}</p>
-          <p className={styles.auctionNodes}>{auction.item.taoKeDisplayPrice}</p>
+      <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.id} >
+        { auction.item.displayStatus && auction.item.displayStatus !== '正常' &&
+          <div className={styles.displayStatus}>选品不符</div>
+        }
+        <div onClick={() => this.handleChooseAuction(auction)}>
+          <div className={styles.customImageBox}>
+            <img className={styles.customImage} src={auction.url} />
+            { this.state.auctionChoose && auction.id === this.state.auctionChoose.id &&
+              <div className={styles.customImgZz}><Icon type="check" /></div>
+            }
+          </div>
+          <div className={styles.auctionCard}>
+            <p className={styles.auctionNodes}>{auction.title}</p>
+            <p className={styles.auctionNodes} style={{ margin: '3px 0', color: '#555' }}>¥{auction.item.finalPrice || auction.item.reservedPrice}</p>
+            <p className={styles.auctionNodes}>{auction.item.taoKeDisplayPrice}</p>
+          </div>
         </div>
       </Card>
     );
@@ -320,7 +325,7 @@ export default class AuctionModal extends PureComponent {
           <div style={{ margin: '10px 0' }}>
             <p>{auctionChoose.title}</p>
             <div style={{ margin: '5px 0' }}>
-              <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
+              <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice || auction.item.reservedPrice}</Tag>
               <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
               { new7 &&
                 <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
@@ -377,7 +382,7 @@ export default class AuctionModal extends PureComponent {
                 <Spin spinning={actsLoading}>
                   { auctionChoose && auctionChoose.title && <div style={{ marginBottom: 10 }}>
                     <div style={{ margin: '5px 0' }}>
-                      <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice}</Tag>
+                      <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice || auction.item.reservedPrice}</Tag>
                       <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
                       { new7 &&
                         <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
