@@ -19,10 +19,14 @@ export default class StructCanvas extends PureComponent {
     spot: [],
   }
   componentDidMount() {
-    if (this.props.props.value[0].data.features) {
+    if (this.props.props.value[0].data && this.props.props.value[0].data.features) {
       this.setState({
         spot: this.props.props.value[0].data.features,
       });
+    } else {
+      const newValue = this.props.props.value;
+      newValue[0].data = { features: [] };
+      if (this.props.onChange) this.props.onChange(newValue);
     }
   }
   componentWillUnmount() {
@@ -102,7 +106,7 @@ export default class StructCanvas extends PureComponent {
     if (props.value.length < 5) {
       if (key === 'CustomParagraph') {
         const data = {
-          attrs: propsData.moduleInfo.attrs,
+          attrs: propsData.moduleInfo.attrs || {},
           data: {},
           errorMsg: "",
           guid: "",
@@ -176,7 +180,7 @@ export default class StructCanvas extends PureComponent {
             <div className={styles.section_show_title}>
               好在哪里
             </div>
-            { props.value[0].data && props.value[0].data.features ?
+            { props.value[0].data && props.value[0].data.features && props.value[0].data.features.length > 0 ?
               <ul>
                 {props.value[0].data.features.map((item, index) => <li key={index} className={styles.longpoint_list_item}>{item}</li>)}
               </ul> :
