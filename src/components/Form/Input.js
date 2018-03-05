@@ -16,12 +16,6 @@ export default class NInput extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const value = getFieldValue(name);
     const newRules = [...rules];
-    if (newRules.length > 0 && !newRules.find(item => item.required))
-      newRules.push({
-        "type": "string",
-        "message": "不能为空",
-        "required": true
-      });
     const type = props.rows && props.rows > 0 ? 'textArea' : 'Input';
     return (
       <div className={styles.taskListInp}>
