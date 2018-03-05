@@ -512,7 +512,9 @@ export default class TableList extends PureComponent {
                 </Link>
                 { record.approve_step === 0 && <Divider type="vertical" /> }
                 { record.approve_step === 0 && <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                  <a>退回</a>
+                  <Tooltip placement="top" title="退回给写手">
+                    <a>退回</a>
+                  </Tooltip>
                 </Popconfirm> }
               </div>
             );
@@ -588,8 +590,10 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
           return (
             <div>
-              <Popconfirm placement="left" title={`退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <a>退回</a>
+              <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <Tooltip placement="top" title="退回给写手">
+                  <a>退回</a>
+                </Tooltip>
               </Popconfirm>
               <Divider type="vertical" />
               { record.taobao && record.taobao.url &&
