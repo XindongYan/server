@@ -216,7 +216,7 @@ export default class TableList extends PureComponent {
     if (version && version.length > 0) {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
-      if (versionNumber < 108) { // 1.0.4
+      if (versionNumber < 120) { // 1.0.4
         message.warn('请更新插件！');
       } else {
         const result = await queryTask({
