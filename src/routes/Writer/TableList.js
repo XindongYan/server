@@ -630,7 +630,7 @@ export default class TableList extends PureComponent {
               </Popconfirm>
               <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <Tooltip placement="top" title="退回到未通过">
+                <Tooltip placement="top" title="退回给写手">
                   <a>退回</a>
                 </Tooltip>
               </Popconfirm>
@@ -664,7 +664,7 @@ export default class TableList extends PureComponent {
               }
               { !record.approver_id && <Divider type="vertical" />}
               { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id &&
-                <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                 <a>退回</a>
               </Popconfirm>}
               { record.approver_id && record.daren_id && record.daren_id._id === currentUser._id && <Divider type="vertical" />}

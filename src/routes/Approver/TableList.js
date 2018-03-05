@@ -511,7 +511,7 @@ export default class TableList extends PureComponent {
                   <span>审核</span>
                 </Link>
                 { record.approve_step === 0 && <Divider type="vertical" /> }
-                { record.approve_step === 0 && <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                { record.approve_step === 0 && <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                   <a>退回</a>
                 </Popconfirm> }
               </div>
@@ -552,14 +552,14 @@ export default class TableList extends PureComponent {
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
-                <Tooltip placement="top" title="退回到未通过">
+              <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+                <Tooltip placement="top" title="退回给写手">
                   <a>退回</a>
                 </Tooltip>
               </Popconfirm>
               <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleUnSpecifyDaren(record)} okText="确认" cancelText="取消">
-                <Tooltip placement="top" title="撤回到已通过">
+                <Tooltip placement="top" title="从达人撤回">
                   <a>撤回</a>
                 </Tooltip>
               </Popconfirm>
@@ -588,7 +588,7 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
           return (
             <div>
-              <Popconfirm placement="left" title={`将退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+              <Popconfirm placement="left" title={`退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                 <a>退回</a>
               </Popconfirm>
               <Divider type="vertical" />
