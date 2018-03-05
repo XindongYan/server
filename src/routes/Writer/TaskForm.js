@@ -36,6 +36,7 @@ export default class TaskForm extends PureComponent {
       second: [],
     },
     saveLoading: false,
+    submitLoading: false,
   }
   componentWillMount() {
     // window.onbeforeunload = () => {
@@ -155,6 +156,9 @@ export default class TaskForm extends PureComponent {
     this.validate(this.state.needValidateFieldNames, (err, values) => {
       const query = querystring.parse(this.props.location.search.substr(1));
       const { currentUser } = this.props;
+      this.setState({
+        submitLoading: true,
+      });
       if (query._id) {
         this.props.dispatch({
           type: 'task/update',
@@ -172,6 +176,9 @@ export default class TaskForm extends PureComponent {
             } else {
               this.handleHandin(query._id);
             }
+            this.setState({
+              submitLoading: false,
+            });
           }
         });
       } else {
@@ -206,6 +213,9 @@ export default class TaskForm extends PureComponent {
                   } else {
                     this.handleHandin(result.task._id);
                   }
+                  this.setState({
+                    submitLoading: false,
+                  });
                 }
               });
             }
@@ -224,7 +234,10 @@ export default class TaskForm extends PureComponent {
           if(approver_id.second){
             approvers.push([approver_id.second]);
           }
-          this.setState({ modalVisible: false });
+          this.setState({
+            modalVisible: false,
+            submitLoading: true,
+          });
           this.handleSubmit(approvers);
         } else {
           message.warn('请选择审核人')
@@ -404,6 +417,9 @@ export default class TaskForm extends PureComponent {
               } else {
                 this.handleHandin(query._id);
               }
+              this.setState({
+                submitLoading: false,
+              });
             },
           });
         } else {
@@ -580,12 +596,12 @@ export default class TaskForm extends PureComponent {
             { (query.project_id || formData.project_id || formData.approve_status === TASK_APPROVE_STATUS.rejected) ?
               <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton')}>
                 <Popconfirm overlayClassName={styles.popConfirm} getPopupContainer={() => document.getElementById('subButton')} placement="top" title="确认提交审核?" okText="确认" cancelText="取消" onConfirm={this.handleSubmitTask}>
-                  <Button id="subButton">提交审核</Button>
+                  <Button id="subButton" loading={this.state.submitLoading}>提交审核</Button>
                 </Popconfirm>
               </Tooltip>
               :
               <Tooltip placement="top" title="提交到平台审核方进行审核" getPopupContainer={() => document.getElementById('subButton1')}>
-                <Button id="subButton1" onClick={this.handleShowSpecifyApproversModal}>提交审核</Button>
+                <Button id="subButton1" onClick={this.handleShowSpecifyApproversModal} loading={this.state.submitLoading}>提交审核</Button>
               </Tooltip>
             }
             <Tooltip placement="top" title="保存到待完成列表">
@@ -596,8 +612,13 @@ export default class TaskForm extends PureComponent {
         {approveModalVisible && <Modal
           title="选择审核人员"
           visible={approveModalVisible}
-          onOk={this.handleSpecifyApprover}
-          onCancel={() => {this.setState({ approveModalVisible: false })}}
+          onCancel={() => {this.setState({ approveModalVisible: false, submitLoading: false })}}
+          footer={[
+            <Button key="取消" onClick={() => {this.setState({ approveModalVisible: false, submitLoading: false })}}>取消</Button>,
+            <Button key="确定" type="primary" loading={this.state.submitLoading} onClick={this.handleSpecifyApprover}>
+              确定
+            </Button>,
+          ]}
         >
           <FormItem
               label="一审"
