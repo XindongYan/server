@@ -159,7 +159,6 @@ export default class TaskForm extends PureComponent {
             publisher_id: currentUser._id,
             taker_id: currentUser._id,
             take_time: new Date(),
-            name: name,
           },
           callback: (result1) => {
             if (result1.error) {
@@ -179,7 +178,6 @@ export default class TaskForm extends PureComponent {
             ...values,
             formData: this.state.formData,
             source: SOURCE.deliver,
-            name: name,
             project_id: query.project_id,
             creator_id: currentUser._id,
           },
