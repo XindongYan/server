@@ -20,7 +20,9 @@ export default class UserInfo extends Component {
       nickname: '',
       avatar: '',
       phone: '',
-    }
+    },
+    nameChanged: false,
+    nicknameChanged: false,
   }
   componentDidMount() {
     this.props.dispatch({
@@ -94,6 +96,10 @@ export default class UserInfo extends Component {
           } else {
             message.success(result.msg);
           }
+          this.setState({
+            nameChanged: false,
+            nicknameChanged: false,
+          });
         },
       });
     }
@@ -141,11 +147,11 @@ export default class UserInfo extends Component {
                 placeholder="最多10字"
                 maxLength="10"
                 value={currentUser.name}
-                onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value.trim() } })}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, name: e.target.value.trim() }, nameChanged: true })}
               />
             </Col>
             <Col span={4} style={{ textAlign: 'right'}}>
-              <Button type="primary" onClick={() => this.handleSubmit('name')}>保存</Button>
+              <Button type="primary" onClick={() => this.handleSubmit('name')} disabled={!this.state.nameChanged}>保存</Button>
             </Col>
           </Row>
           <Row className={styles.rowBox}>
@@ -158,11 +164,11 @@ export default class UserInfo extends Component {
                 placeholder="最多10字"
                 maxLength="10"
                 value={currentUser.nickname}
-                onChange={(e) => this.setState({ currentUser: { ...currentUser, nickname: e.target.value.trim() } })}
+                onChange={(e) => this.setState({ currentUser: { ...currentUser, nickname: e.target.value.trim() }, nicknameChanged: true })}
               />
             </Col>
             <Col span={4} style={{ textAlign: 'right'}}>
-              <Button type="primary" onClick={() => this.handleSubmit('nickname')}>保存</Button>
+              <Button type="primary" onClick={() => this.handleSubmit('nickname')} disabled={!this.state.nicknameChanged}>保存</Button>
             </Col>
           </Row>
           <Row className={styles.rowBox}>

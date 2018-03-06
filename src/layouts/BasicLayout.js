@@ -289,7 +289,7 @@ class BasicLayout extends React.PureComponent {
     }
   }
   render() {
-    const { currentUser, collapsed, fetchingNotices, teamUser, selectedKeys } = this.props;
+    const { currentUser, collapsed, fetchingNotices, teamUser, team, selectedKeys } = this.props;
 
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
@@ -419,7 +419,7 @@ class BasicLayout extends React.PureComponent {
                 <Dropdown overlay={menu}>
                   <span className={`${styles.action} ${styles.account}`}>
                     <Avatar size="small" className={styles.avatar} src={currentUser.avatar} />
-                    {currentUser.nickname}
+                    {currentUser.nickname}{team.name ? ` @ ${team.name}` : ''}
                   </span>
                 </Dropdown>
               ) : <Spin size="small" style={{ marginLeft: 8 }} />}
