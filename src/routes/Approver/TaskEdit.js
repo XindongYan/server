@@ -249,7 +249,7 @@ export default class TaskEdit extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.formData.activityId === 414 ? 730 : 1000 }}>
           <div style={{ width: formData.formData.activityId === 414 ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange}/>
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={formData.formData.activityId}/>
           </div>
           <div className={styles.taskComment}>
             <Annotation
