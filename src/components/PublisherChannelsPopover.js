@@ -1,16 +1,16 @@
 import React, { PureComponent } from 'react';
 import { Popover, Tag } from 'antd';
-import { TAOBAO_ACTIVITYID, COLORS } from '../constants';
+import { COLORS } from '../constants';
 
 export default class PublisherChannelsPopover extends PureComponent {
   render() {
     const { channel_list } = this.props;
+    console.log(channel_list);
     const list = [];
     channel_list.forEach(item => {
       item.activityList.find(item1 => {
-        if (TAOBAO_ACTIVITYID[item1.id]) {
-          list.push({...item1, text: TAOBAO_ACTIVITYID[item1.id]});
-        }
+        if (item1.remainCount && item1.remainCount > 0)
+          list.push({...item1, text: `${item.name} / ${item1.name}`});
       });
     });
     return (
