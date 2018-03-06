@@ -54,7 +54,7 @@ export default class TaskForm extends PureComponent {
         }
       });
     } else {
-      queryTaskRender({ activityId: query.activityId }).then(result => {
+      queryTaskRender({ activityId: query.activityId, template: query.template }).then(result => {
         if (!result.error) {
           this.setState({ children: result.children, formData: result.formData, needValidateFieldNames: result.children.filter(item => item.component === 'Input').map(item => item.name) });
         }

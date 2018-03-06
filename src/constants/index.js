@@ -42,9 +42,10 @@ export const APPROVE_FLOWS = [
 ];
 
 export const TASK_TYPES = [
-  { value: 1, text: '图文' },
-  { value: 2, text: '视频' },
-  // { value: 3, text: '直播脚本' },
+  { value: 1, text: '帖子', template: 'post', logo: '//img.alicdn.com/tfs/TB1hJ7dRFXXXXcgXFXXXXXXXXXX-140-140.png' },
+  { value: 2, text: '搭配', template: 'collection', logo: '//img.alicdn.com/tfs/TB14jsvRFXXXXcsXpXXXXXXXXXX-140-140.png' },
+  { value: 3, text: '单品', template: 'item', logo: '//img.alicdn.com/tfs/TB1g6cGRFXXXXa9XXXXXXXXXXXX-140-140.png' },
+  { value: 4, text: '视频', template: 'video', logo: '//img.alicdn.com/tfs/TB1dAT8RFXXXXX3aXXXXXXXXXXX-140-140.png' },
 ];
 
 export const PROJECT_LEVELS = [

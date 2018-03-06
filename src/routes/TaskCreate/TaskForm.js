@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Form, Input, Cascader, Icon, Button, Upload, message, Tooltip } from 'antd';
+import { Card, Form, Input, Select, Cascader, Icon, Button, Upload, message, Tooltip } from 'antd';
 import path from 'path';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, SOURCE, CHANNELS_FOR_CASCADER } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, SOURCE, CHANNELS_FOR_CASCADER, TASK_TYPES } from '../../constants';
 
 const FormItem = Form.Item;
+const { Option } = Select;
 
 @connect(state => ({
   teamUser: state.user.teamUser,
@@ -64,6 +65,7 @@ export default class TaskForm extends PureComponent {
         attachments: nextProps.formData.attachments,
         price: nextProps.formData.price,
         channel: nextProps.formData.channel,
+        task_type: nextProps.formData.task_type,
         merchant_tag: nextProps.formData.merchant_tag,
       };
       this.props.form.setFieldsValue(f);
@@ -134,6 +136,7 @@ export default class TaskForm extends PureComponent {
                   this.props.form.resetFields();
                   const f = {
                     channel: this.props.projectFormData.channel,
+                    task_type: this.props.projectFormData.task_type,
                     merchant_tag: this.props.projectFormData.merchant_tag,
                   };
                   this.props.form.setFieldsValue(f);
@@ -217,6 +220,23 @@ export default class TaskForm extends PureComponent {
               rules: [{ required: true, message: '请选择渠道！' }],
             })(
               <Cascader options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" />
+            )}
+          </FormItem>
+          <FormItem
+            label="类型"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('task_type', {
+              initialValue: 1,
+              rules: [{ required: true, message: '请选择任务类型！' }],
+            })(
+              <Select
+                placeholder="请选择任务类型"
+                onChange={this.handleSelectChange}
+              >
+                {TASK_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
+              </Select>
             )}
           </FormItem>
           <FormItem

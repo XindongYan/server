@@ -222,19 +222,6 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="商家标签"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 8 }}
-          >
-            {getFieldDecorator('merchant_tag', {
-              rules: [{ required: true, message: '请输入项目标题！' }, {
-                whitespace: true, message: '商家标签不能为空格！',
-              }],
-            })(
-              <Input maxLength="30" placeholder="最多输入30个字" />
-            )}
-          </FormItem>
-          <FormItem
             label="类型"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
@@ -249,6 +236,19 @@ export default class ProjectForm extends PureComponent {
               >
                 {TASK_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
+            )}
+          </FormItem>
+          <FormItem
+            label="商家标签"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
+          >
+            {getFieldDecorator('merchant_tag', {
+              rules: [{ required: true, message: '请输入项目标题！' }, {
+                whitespace: true, message: '商家标签不能为空格！',
+              }],
+            })(
+              <Input maxLength="30" placeholder="最多输入30个字" />
             )}
           </FormItem>
           <FormItem
