@@ -97,8 +97,7 @@ export default class UserInfo extends Component {
             message.success(result.msg);
           }
           this.setState({
-            nameChanged: false,
-            nicknameChanged: false,
+            [`${field}Changed`]: false,
           });
         },
       });
