@@ -70,18 +70,14 @@ export default class TaskForm extends PureComponent {
 
   validate = (fieldNames, callback) => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { operation, formData } = this.props;
+    const { formData } = this.props;
     this.props.form.validateFieldsAndScroll(fieldNames, (err, values) => {
       if (!err) {
         const children = Object.assign([], this.state.children);
         const title = children.find(item => item.name === 'title').props.value;
         let name = formData.name;
-        if (operation === 'create') {
+        if (!formData.project_id) {
           name = title;
-        } else if (operation === 'edit') {
-          if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
-            name = title;
-          }
         }
         
         let auctionIds = [];
@@ -262,19 +258,15 @@ export default class TaskForm extends PureComponent {
   }
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { currentUser, teamUser, formData, operation } = this.props;
+    const { currentUser, teamUser, formData } = this.props;
     const { channel_name, channel } = this.getChannel();
     this.props.form.validateFieldsAndScroll(['title'], (err, vals) => {
       if (!err) {
         const children = Object.assign([], this.state.children);
         const title = children.find(item => item.name === 'title').props.value;
         let name = formData.name;
-        if (operation === 'create') {
+        if (!formData.project_id) {
           name = title;
-        } else if (operation === 'edit') {
-          if (formData.source === SOURCE.deliver || formData.source === SOURCE.create || formData.source === SOURCE.pass) {
-            name = title;
-          }
         }
         
         let auctionIds = [];
@@ -571,7 +563,7 @@ export default class TaskForm extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none', paddingBottom: 60 }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: outerWidth }} ref="taskOuterBox">
           <div style={{ width: activityId === 414 ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={query.activityId} />
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId} />
           </div>
           {formRight}
           { operation !== 'view' && <div className={styles.submitBox}>

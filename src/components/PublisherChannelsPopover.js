@@ -5,7 +5,6 @@ import { COLORS } from '../constants';
 export default class PublisherChannelsPopover extends PureComponent {
   render() {
     const { channel_list } = this.props;
-    console.log(channel_list);
     const list = [];
     channel_list.forEach(item => {
       item.activityList.find(item1 => {
@@ -18,7 +17,7 @@ export default class PublisherChannelsPopover extends PureComponent {
         placement="left"
         title="可发渠道"
         content={
-          <div style={{ width: 200 }}>
+          <div style={{ width: 250 }}>
             {list.map((item, index) => <div key={index} style={{ margin: '5px 0 5px' }}><Tag color={COLORS[index]}>{item.text}：{item.remainCount}篇</Tag></div>)}
             <strong>注：除【微淘】外，其他渠道需要去阿里创作平台申请</strong>
           </div>}
