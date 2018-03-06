@@ -93,7 +93,7 @@ const CHANNELS_FOR_CASCADER = CHANNELS.map(item => {
   return {
     value: item.id,
     label: item.name,
-    children: item.activityList.map(item1 => ({ value: item.id, label: item.name })),
+    children: item.activityList.map(item1 => ({ value: item1.id, label: item1.name })),
   };
 })
 export { CHANNELS, CHANNELS_FOR_CASCADER };
