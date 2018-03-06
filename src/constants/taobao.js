@@ -39,7 +39,8 @@ const CHANNELS = [{
     "templates": ["collection"]
   }, {
     "id": 413,
-    "name": "首页card潮男养成"
+    "name": "首页card潮男养成",
+    "templates": ["item"]
   }],
   "desc": "潮男养成定位高端有品男装，杂志风男装穿搭＋消费升级引导。",
   "id": 50,
@@ -93,6 +94,7 @@ const CHANNELS = [{
   }, {
     "id": 409,
     "name": "首页card-生活家",
+    "templates": ["post"]
   }],
   "desc": "生活家是为用户提供品质、精致生活好物的内容导购频道，面向中高端购买力人群，覆盖食品、百货、家居、宠物等品类，覆盖的主要内容形式为图文贴。",
   "id": 49,
