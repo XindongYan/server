@@ -515,7 +515,7 @@ export default class TaskForm extends PureComponent {
   }
   render() {
     const { form: { getFieldDecorator }, operation, formData } = this.props;
-    const { approveModalVisible, formData: { activityId }, suggestionApproves } = this.state;
+    const { approveModalVisible, formData: { activityId, template }, suggestionApproves } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const writeTips = (
       <div className={styles.taskComment} style={{ width: 200, marginRight: 0 }}>
@@ -556,13 +556,13 @@ export default class TaskForm extends PureComponent {
         outerWidth = 868;
       }
     }
-    if (activityId === 414) {
+    if (template === 'item2') {
       outerWidth = 730;
     }
     return (
       <Card bordered={false} title="" style={{ background: 'none', paddingBottom: 60 }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: outerWidth }} ref="taskOuterBox">
-          <div style={{ width: activityId === 414 ? 375 : 650 }}>
+          <div style={{ width: template === 'item2' ? 375 : 650 }}>
             <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId} />
           </div>
           {formRight}
