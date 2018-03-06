@@ -80,22 +80,18 @@ export default class TaskOption extends PureComponent {
       this.props.dispatch(routerRedux.push(`/writer/task/channel?channel_name=${value}&task_type=${task_type}`));
     }
   }
-  handleGetRemainCount = (name) => {
+  handleGetRemainCount = (id) => {
     const { channel_list } = this.state;
     if (channel_list && channel_list.length > 0) {
-      if (TAOBAO_ACTIVITYID_MIRROR[name]) {
-        let remainCount = '';
-        channel_list.forEach(item => {
-          item.activityList.find(item1 => {
-            if (item1.id == TAOBAO_ACTIVITYID_MIRROR[name]) {
-              remainCount = item1.remainCount;
-            }
-          });
+      let remainCount = '';
+      channel_list.forEach(item => {
+        item.activityList.find(item1 => {
+          if (item1.id == id) {
+            remainCount = item1.remainCount;
+          }
         });
-        return remainCount ? `今天还可投 ${remainCount} 篇` : '';
-      } else {
-        return '';
-      }
+      });
+      return remainCount ? `今天还可投 ${remainCount} 篇` : '';
     }
     return '';
   }
@@ -148,21 +144,22 @@ export default class TaskOption extends PureComponent {
             <Card key={index} bodyStyle={{ background: '#fff', padding: 20 }} style={{ marginBottom: 20 }}>
               <div className={styles.option_box_top}>
                 <div className={styles.option_box_img}>
-                  <img src={item.img} alt={item.name} />
+                  <img src={item.logo} alt={item.name} />
                 </div>
                 <div className={styles.option_box_detail}>
                   <h3>{item.name}</h3>
-                  <div className={styles.option_desc}>{item.detail}</div>
+                  <div className={styles.option_desc}>{item.desc}</div>
                 </div>
               </div>
               <div className={styles.option_children_title}>
                 投稿到子频道
               </div>
+
               <div style={{ display: 'flex' }}>
-                <div className={styles.option_choose_box} onClick={() => this.handleDeliver(item.name)}>
-                  <p style={{ height: 36, lineHeight: '36px' }}>{item.box_text}</p>
-                  <p style={{ height: 20, fontSize: 12 }}>{this.handleGetRemainCount(item.name)}</p>
-                </div>
+                {item.activityList.map((item1, index1) => <div key={index1} className={styles.option_choose_box} onClick={() => this.handleDeliver(item.name)}>
+                  <p style={{ height: 36, lineHeight: '36px' }}>{item1.name}</p>
+                  <p style={{ height: 20, fontSize: 12 }}>{this.handleGetRemainCount(item.id)}</p>
+                </div>)}
               </div>
             </Card>
           )
