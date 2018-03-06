@@ -243,15 +243,15 @@ export default class TaskEdit extends PureComponent {
   render() {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { approve_notes, formData: { activityId } } = this.state;
+    const { approve_notes, formData: { activityId, template } } = this.state;
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const operation = 'edit';
 
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: activityId === 414 ? 730 : 1000 }}>
-          <div style={{ width: activityId === 414 ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId}/>
+        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: template === 'item2' ? 730 : 1000 }}>
+          <div style={{ width: template === 'item2' ? 375 : 650 }}>
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId} />
           </div>
           <div className={styles.taskComment}>
             <Annotation

@@ -49,15 +49,15 @@ export default class TaskView extends PureComponent {
   render() {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { formData: { activityId } } = this.state;
+    const { formData: { activityId, template } } = this.state;
     const operation = 'view';
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const showAnnotation = showApproveLog;
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.channel_name === '有好货' ? 730 : 1000 }}>
-          <div style={{ width: formData.channel_name === '有好货' ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation}/>
+        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: template === 'item2' ? 730 : 1000 }}>
+          <div style={{ width: template === 'item2' ? 375 : 650 }}>
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} activityId={activityId} />
           </div>  
           { showAnnotation &&
             <div className={styles.taskComment}>
