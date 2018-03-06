@@ -5,7 +5,6 @@ import { COLORS } from '../constants';
 export default class PublisherChannelsPopover extends PureComponent {
   render() {
     const { channel_list } = this.props;
-    console.log(channel_list);
     const list = [];
     channel_list.forEach(item => {
       item.activityList.find(item1 => {
