@@ -43,7 +43,7 @@ export default class UserInfo extends Component {
   componentWillUnmount() {
     
   }
-  handleChange = async ({file}) => {
+  handleChangeAvatar = async ({file}) => {
     const { dispatch, currentUser } = this.props;
     if (file.response && !file.error) {
       const url = `${QINIU_DOMAIN}/${file.response.key}`;
@@ -59,7 +59,7 @@ export default class UserInfo extends Component {
           } else {
             message.success(result.msg);
             this.setState({
-              currentUser: { ...currentUser, avatar: url }
+              currentUser: { ...this.state.currentUser, avatar: url }
             })
           }
         },
@@ -86,8 +86,7 @@ export default class UserInfo extends Component {
         type: 'user/update',
         payload: {
           _id: currentUser._id,
-          name: currentUser.name,
-          nickname: currentUser.nickname,
+          [field]: currentUser[field],
         },
         callback: (result) => {
           if (result.error) {
@@ -124,7 +123,7 @@ export default class UserInfo extends Component {
                   showUploadList={false}
                   action={QINIU_UPLOAD_DOMAIN}
                   data={this.makeUploadData}
-                  onChange={this.handleChange}
+                  onChange={this.handleChangeAvatar}
                   style={{ color: '#40a9ff', cursor: 'pointer' }}
                 >
                   修改
