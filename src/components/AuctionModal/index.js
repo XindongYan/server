@@ -372,6 +372,8 @@ export default class AuctionModal extends PureComponent {
       return "201";
     } else if (activityId == '411') {
       return "202";
+    } else if (activityId == '12') {
+      return "205";
     } else {
       return "0";
     }
