@@ -247,8 +247,8 @@ export default class TaskEdit extends PureComponent {
 
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.channel_name === '有好货' ? 730 : 1000 }}>
-          <div style={{ width: formData.channel_name === '有好货' ? 375 : 650 }}>
+        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.formData.activityId === 414 ? 730 : 1000 }}>
+          <div style={{ width: formData.formData.activityId === 414 ? 375 : 650 }}>
             <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange}/>
           </div>
           <div className={styles.taskComment}>
@@ -260,7 +260,7 @@ export default class TaskEdit extends PureComponent {
               onChange={this.changeApproveNode}
             />
           </div>
-          { ((formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || showApproveLog) || formData.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ) &&
+          { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || formData.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ) &&
             <div className={styles.submitBox}>
               <div id="subButton">
                 { formData.approve_status !== 1 && formData.approve_status !== 3 ?
