@@ -22,11 +22,11 @@ export default class TaskChannel extends PureComponent {
   }
   handleContent = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    if (query.activityId === '淘宝头条') {
+    if (query.activityId === '6') {
       return (
         <span>打造中国最大的生活消费资讯平台，建立一个用户、媒体/自媒体、品牌，触达彼此、互相信任的消费信息生态。如果你热爱生活，对个人消费拥有独到品味和见解，乐于分享专业知识，那不论你是个人，是媒体或是品牌组织，我们都欢迎你来加入。『用内容引领消费！』所需内容类型：不局限于文字、画面、声音、视频等等任何一种载体，只要“优秀”！</span>
       );
-    } else if (query.activityId === '微淘') {
+    } else if (query.activityId === '-11') {
       return (
         <span>有消费引导性的生活资讯文章</span>
       )
@@ -73,11 +73,11 @@ export default class TaskChannel extends PureComponent {
 
   handleRequire = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    if (query.activityId === '淘宝头条') {
+    if (query.activityId === '6') {
       return (
         <span>有消费引导性的生活资讯文章</span>
       )
-    } else if (query.activityId === '微淘') {
+    } else if (query.activityId === '-11') {
       return (
         <span>有消费引导性的生活资讯文章</span>
       )
