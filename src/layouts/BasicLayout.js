@@ -440,7 +440,7 @@ class BasicLayout extends React.PureComponent {
                 )
               }
               <Route path="/project/edit" component={ProjectEdit} />
-              <Route path="/project/task/list" component={TaskCreateList} />
+              <Route path="/project/task/list" component={TaskCreateList} onEnter={() => console.log(123456789)} />
               <Route path="/project/task/create" component={TaskCreate} />
               <Route path="/project/task/view" component={TaskView} />
               <Route path="/project/task/edit" component={TaskEdit} />

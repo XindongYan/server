@@ -5,6 +5,8 @@ export const ORIGIN = {
   // development: `http://${location.hostname}:3000`,
 }[process.env.NODE_ENV || 'development'];
 
+export { CHANNELS, CHANNELS_FOR_CASCADER } from './taobao';
+
 export const RIGHTS = [
   { label: '写手', value: 1 },
   { label: '团队管理', value: 2 },
@@ -130,4 +132,3 @@ export const TAOBAO_ACTIVITYID_MIRROR = {
 };
 
 export const COLORS = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
-
