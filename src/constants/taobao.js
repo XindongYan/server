@@ -1,5 +1,23 @@
 const CHANNELS = [{
   "activityList": [{
+    "id": -11,
+    "name": "微淘"
+  }],
+  "desc": "",
+  "id": -1,
+  "logo": "https://img.alicdn.com/tfs/TB1D3lPSFXXXXX0XXXXXXXXXXXX-180-180.png",
+  "name": "微淘"
+}, {
+  "activityList": [{
+    "id": 6,
+    "name": "日常活动"
+  }],
+  "desc": "打造中国最大的生活消费资讯平台，建立一个用户、媒体/自媒体、品牌，触达彼此、互相信任的消费信息生态。如果你热爱生活，对个人消费拥有独到品味和见解，乐于分享专业知识，那不论你是个人，是媒体或是品牌组织，我们都欢迎你来加入。『用内容引领消费！』所需内容类型：不局限于文字、画面、声音、视频等等任何一种载体，只要“优秀”！！",
+  "id": 1,
+  "logo": "https://img.alicdn.com/tfs/TB15kxjaWagSKJjy0FgXXcRqFXa-200-200.png",
+  "name": "淘宝头条"
+}, {
+  "activityList": [{
     "id": 1437,
     "name": "智能搭配- ifashion",
   // }, {
@@ -30,6 +48,16 @@ const CHANNELS = [{
   "name": "有好货"
 }, {
   "activityList": [{
+    "id": 82,
+    "name": "优质内容频道",
+    "remainCount": 10
+  }],
+  "desc": "淘宝第一个垂直细分的导购产品，不局限于专业货品的挖掘，引导用户在细分垂直人群领域里获得专业知识进阶。 若你在某个细分领域十分专业，欢迎加入我们这个精准的粉丝运营阵地~ 所需内容类型：单品、图文帖子、优选。",
+  "id": 25,
+  "logo": "https://img.alicdn.com/tfs/TB1ahIzRVXXXXb4XXXXXXXXXXXX-200-200.png",
+  "name": "生活研究所"
+}, {
+  "activityList": [{
     "id": 1439,
     "name": "首页card-全球时尚",
   }],
@@ -46,6 +74,15 @@ const CHANNELS = [{
   "id": 26,
   "logo": "https://img.alicdn.com/tfs/TB1YUUFXwvGK1Jjy0FbXXb4vVXa-100-100.png",
   "name": "买遍全球"
+}, {
+  "activityList": [{
+    "id": -21,
+    "name": "直播脚本"
+  }],
+  "desc": "",
+  "id": -2,
+  "logo": "//img.alicdn.com/imgextra/i1/2597324045/TB2SYu2m3vD8KJjSsplXXaIEFXa_!!2597324045-2-daren.png_294x430q90.jpg",
+  "name": "直播脚本"
 }];
 
 const CHANNELS_FOR_CASCADER = CHANNELS.map(item => {
