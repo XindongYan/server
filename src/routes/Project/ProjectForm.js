@@ -19,6 +19,7 @@ const { Option } = Select;
 @Form.create()
 export default class ProjectForm extends PureComponent {
   state = {
+    taskTypeOptions: [...TASK_TYPES],
     searchValue: '',
   }
   componentDidMount() {
@@ -166,7 +167,13 @@ export default class ProjectForm extends PureComponent {
       searchValue: e,
     });
   }
-
+  handleChannelChange = (value) => {
+    const channel = CHANNELS_FOR_CASCADER.find(item => item.value === value[0]);
+    const activity = channel.children.find(item => item.value === value[1]);
+    const taskTypeOptions = activity.templates.map(item => TASK_TYPES.find(item1 => item === item1.template));
+    this.setState({ taskTypeOptions });
+    this.props.form.setFieldsValue({ task_type: taskTypeOptions[0].value });
+  }
   renderSelectUsers = (item) => {
     const { teamUsers } = this.props;
     const { searchValue } = this.state;
@@ -218,7 +225,7 @@ export default class ProjectForm extends PureComponent {
             {getFieldDecorator('channel', {
               rules: [{ required: true, message: '请选择渠道！' }],
             })(
-              <Cascader options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" />
+              <Cascader allowClear={false} showSearch={true} options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" onChange={this.handleChannelChange} />
             )}
           </FormItem>
           <FormItem
@@ -232,9 +239,8 @@ export default class ProjectForm extends PureComponent {
             })(
               <Select
                 placeholder="请选择任务类型"
-                onChange={this.handleSelectChange}
               >
-                {TASK_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
+                {this.state.taskTypeOptions.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
             )}
           </FormItem>
