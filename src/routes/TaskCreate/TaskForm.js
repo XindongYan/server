@@ -35,6 +35,7 @@ export default class TaskForm extends PureComponent {
         attachments: formData.attachments,
         price: formData.price,
         channel: formData.channel,
+        task_type: formData.task_type,
         merchant_tag: formData.merchant_tag,
       });
     } else if (operation === 'create') {
@@ -45,6 +46,7 @@ export default class TaskForm extends PureComponent {
           if (!result.error) {
             const f = {
               channel: result.project.channel,
+              task_type: result.project.task_type,
               merchant_tag: result.project.merchant_tag,
             };
             this.props.form.setFieldsValue(f);
@@ -82,6 +84,7 @@ export default class TaskForm extends PureComponent {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const channel = CHANNELS_FOR_CASCADER.find(item => item.value === values.channel[0]);
+        const task_type = TASK_TYPES.find(item => item.value === values.task_type);
         const payload = {
           ...values,
           attachments: values.attachments ? values.attachments.filter(item => !item.error).map(item => {
@@ -94,6 +97,8 @@ export default class TaskForm extends PureComponent {
           project_id: query.project_id,
           creator_id: teamUser.user_id,
           channel_name: channel.label,
+          'formData.activityId': values.channel[1],
+          'formData.template': task_type.template,
         };
         if (this.props.operation === 'edit') {
           this.props.dispatch({
