@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import fetch from 'dva/fetch';
 import { Input, Icon, message, Cascader, Form } from 'antd';
 import styles from './index.less';
 
@@ -7,15 +6,8 @@ const FormItem = Form.Item;
 
 export default class CascaderSelect extends PureComponent {
   state = {
-    residences: [],
   }
   componentDidMount() {
-    fetch(`/jsons/we.taobao.json`, {
-    }).then(response => response.json()).then(result => {
-      this.setState({
-        residences: result,
-      })
-    });
   }
   handleChange = (value) => {
     if (this.props.onChange) this.props.onChange(value.length === 2 ? value[1] : '')
@@ -24,10 +16,10 @@ export default class CascaderSelect extends PureComponent {
     const { name, props, rules } = this.props;
     const { getFieldDecorator } = this.props.form;
     let firstValue = '';
-    for (let i = 0; i < this.state.residences.length; i ++) {
-      const item = this.state.residences[i].children.find(item1 => item1.value === props.value);
+    for (let i = 0; i < props.dataSource.length; i ++) {
+      const item = props.dataSource[i].children.find(item1 => item1.value === props.value);
       if (item) {
-        firstValue = this.state.residences[i].value;
+        firstValue = props.dataSource[i].value;
         break;
       }
     }
@@ -39,12 +31,12 @@ export default class CascaderSelect extends PureComponent {
         <div>
           <FormItem>
             {getFieldDecorator(name, {
-              initialValue: props.value ? [firstValue, props.value] : '',
+              initialValue: props.value ? [firstValue, props.value] : [],
             })(
               <Cascader
                 style={{ width: '200px' }}
                 onChange={this.handleChange}
-                options={this.state.residences}
+                options={props.dataSource}
                 disabled={this.props.disabled}
                 placeholder="请选择"
               />
