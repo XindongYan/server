@@ -563,7 +563,7 @@ export default class TaskForm extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none', paddingBottom: 60 }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: outerWidth }} ref="taskOuterBox">
           <div style={{ width: activityId === 414 ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={query.activityId} />
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId} />
           </div>
           {formRight}
           { operation !== 'view' && <div className={styles.submitBox}>

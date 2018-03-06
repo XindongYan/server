@@ -22,6 +22,7 @@ const FormItem = Form.Item;
 export default class TaskEdit extends PureComponent {
   state = {
     children: [],
+    formData: {},
     needValidateFieldNames: [],
     approve_notes: [],
   }
@@ -34,6 +35,7 @@ export default class TaskEdit extends PureComponent {
         if (!result.error) {
           this.setState({
             children: result.task.children,
+            formData: result.task.formData,
             needValidateFieldNames: result.task.children.filter(item => item.component === 'Input').map(item => item.name),
             approve_notes: result.task.approve_notes || [],
           });
@@ -241,15 +243,15 @@ export default class TaskEdit extends PureComponent {
   render() {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { approve_notes } = this.state;
+    const { approve_notes, formData: { activityId } } = this.state;
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const operation = 'edit';
 
     return (
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
-        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: formData.formData.activityId === 414 ? 730 : 1000 }}>
-          <div style={{ width: formData.formData.activityId === 414 ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={formData.formData.activityId}/>
+        <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: activityId === 414 ? 730 : 1000 }}>
+          <div style={{ width: activityId === 414 ? 375 : 650 }}>
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId}/>
           </div>
           <div className={styles.taskComment}>
             <Annotation
@@ -260,7 +262,7 @@ export default class TaskEdit extends PureComponent {
               onChange={this.changeApproveNode}
             />
           </div>
-          { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || formData.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ) &&
+          { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ) &&
             <div className={styles.submitBox}>
               <div id="subButton">
                 { formData.approve_status !== 1 && formData.approve_status !== 3 ?
