@@ -23,23 +23,23 @@ export default class TaskChannel extends PureComponent {
   }
   handleContent = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    if (query.channel_name === '淘宝头条') {
+    if (query.activityId === '淘宝头条') {
       return (
         <span>打造中国最大的生活消费资讯平台，建立一个用户、媒体/自媒体、品牌，触达彼此、互相信任的消费信息生态。如果你热爱生活，对个人消费拥有独到品味和见解，乐于分享专业知识，那不论你是个人，是媒体或是品牌组织，我们都欢迎你来加入。『用内容引领消费！』所需内容类型：不局限于文字、画面、声音、视频等等任何一种载体，只要“优秀”！</span>
-      )
-    } else if (query.channel_name === '微淘') {
+      );
+    } else if (query.activityId === '微淘') {
       return (
         <span>有消费引导性的生活资讯文章</span>
       )
-    } else if (query.channel_name === '有好货') {
+    } else if (query.activityId === '414') {
       return (
         <span>有好货是手淘重要的精品导购平台，我们面向高消费力人群，为用户挖掘高格调、高品质、小众、有设计美感的商品。</span>
       )
-    } else if (query.channel_name === '生活研究所') {
+    } else if (query.activityId === '82') {
       return (
         <span>生活研究所是手淘一个垂直细分领域的导购产品！~主要围绕户生命成长周期，基于身份、风格、兴趣、类目偏好、消费偏好等维度构成。产品宗旨：希望能够利用细分垂直领域少数人的智慧，给用户可信赖高品质的货品&知识。</span>
       )
-    } else if (query.channel_name === '全球时尚') {
+    } else if (query.activityId === '1439') {
       return (
         <div>
           <p>全球时尚定位：</p>
@@ -48,31 +48,41 @@ export default class TaskChannel extends PureComponent {
           <p>产品定位：淘内高端时尚内容聚集地的标杆</p>
         </div>
       )
-    } else if (query.channel_name === 'ifashion') {
+    } else if (query.activityId === '1437' || query.activityId === '97') {
       return (
         <span>iFashion定位女性中高端人群的时尚搭配与潮流基地。覆盖类目：女装/女士精品，女鞋，眼镜，女士内衣/家居服，美容护肤/美体/精油，服饰配件/皮带/帽子/围巾，彩妆/香水/美妆工具，珠宝/钻石/翡翠/黄金，饰品/流行首饰/时尚饰品新。</span>
       )
-    } else if (query.channel_name === '买遍全球') {
+    } else if (query.activityId === '60') {
       return (
         <div>
           <p>买遍全球频道为种草拔草一体化的进口好货发现频道，每一位达人都是海淘好货推荐官。如果你对海淘领域非常熟悉，并擅长向用户种草好货，买遍全球是最适合你的选择！</p>
           <p>所需内容类型：单品、帖子、搭配、短视频。</p>
         </div>
       )
+    } else if (query.activityId === '97') {
+      return (
+        <span>
+          iFashion定位女性中高端人群的时尚搭配与潮流基地。覆盖类目：女装/女士精品，女鞋，眼镜，女士内衣/家居服，美容护肤/美体/精油，服饰配件/皮带/帽子/围巾，彩妆/香水/美妆工具，珠宝/钻石/翡翠/黄金，饰品/流行首饰/时尚饰品。
+        </span>
+      )
+    } else {
+      return (
+        ''
+      )
     }
   }
 
   handleRequire = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    if (query.channel_name === '淘宝头条') {
+    if (query.activityId === '淘宝头条') {
       return (
         <span>有消费引导性的生活资讯文章</span>
       )
-    } else if (query.channel_name === '微淘') {
+    } else if (query.activityId === '微淘') {
       return (
         <span>有消费引导性的生活资讯文章</span>
       )
-    } else if (query.channel_name === '有好货') {
+    } else if (query.activityId === '414') {
       return (
         <div className={styles.channel_detail_text}>
           <p>一、基础要求：</p>
@@ -123,7 +133,7 @@ export default class TaskChannel extends PureComponent {
           </div>
         </div>
       )
-    } else if (query.channel_name === '生活研究所') {
+    } else if (query.activityId === '82') {
       return (
         <div className={styles.channel_detail_text}>
           <p>一、基础要求：</p>
@@ -172,7 +182,7 @@ export default class TaskChannel extends PureComponent {
           </div>
         </div>
       )
-    } else if (query.channel_name === '全球时尚') {
+    } else if (query.activityId === '1439') {
       return (
         <div className={styles.channel_detail_text}>
           <p>一、基础要求：</p>
@@ -249,7 +259,7 @@ export default class TaskChannel extends PureComponent {
           </div>
         </div>
       )
-    } else if (query.channel_name === 'ifashion') {
+    } else if (query.activityId === '1437') {
       return (
         <div className={styles.channel_detail_text}>
           <p>一、基础要求：</p>
@@ -329,7 +339,7 @@ export default class TaskChannel extends PureComponent {
           </div>
         </div>
       )
-    } else if (query.channel_name === '买遍全球') {
+    } else if (query.activityId === '60') {
       return (
         <div className={styles.channel_detail_text}>
           <p>一、基础要求：</p>
@@ -359,11 +369,67 @@ export default class TaskChannel extends PureComponent {
           </div>
         </div>
       )
+    } else if (query.activityId === '97') {
+      return (
+        <div className={styles.channel_detail_text}>
+          <p>投稿要求必看：https://daren.bbs.taobao.com/detail.html?postId=8011270</p>
+          <p>内容类型</p>
+          <div>
+            <p>1，什么是好的内容贴？</p>
+            <p>A，回归商品，用心整理时髦有调性商品帮助用户快速找到需要的东西或种草；</p>
+            <p>B，主题针对明确的用户需求场景；</p>
+            <p>C，帮助用户扫盲及介绍如何搭配，如何让自己生活更新潮</p>
+            <p>D， 选购分析的文案写到位，能真正对挑选商品起到帮助作用；</p>
+            <p>2， 内容形式</p>
+            <p><span style={{backgroundColor: 'rgb(255, 153, 0)', color: 'rgb(0, 0, 0)'}}>图文贴</span></p>
+            <p>a， 介绍时髦，新鲜，格调好货，由主题，背景介绍，单品解读构成，视觉如</p>
+          </div>
+          <div>
+            <p><img src="https://img.alicdn.com/imgextra/i3/1130553628/TB2unzGsiRnpuFjSZFCXXX2DXXa_!!0-martrix_bbs.jpg" /></p>
+            <p><img src="https://img.alicdn.com/imgextra/i1/1130553628/TB2dAQypmFjpuFjSspbXXXagVXa_!!0-martrix_bbs.jpg" /></p>
+          </div>
+          <div>
+            <p>三，招稿要求</p>
+            <p>a，达人要求： 潮女搭配师，美妆老师优先，有独立产生专业的相关内容的能力，所有内容均为原创</p>
+            <p>①商品所在店铺DSR评分不低于4.6；</p>
+            <p>②须符合《营销活动规则》</p>
+            <p>必须符合招稿场景</p>
+          </div>
+          <div>
+            <p style={{backgroundColor: 'rgb(255, 255, 0)'}}>选对应符合的分类标签，只能勾选一个（全部只能1个），必须准确，不是越多越好，而是越准越好，这个牵涉到线上的场景投放，需要注意的是所有分类词即是一个场景，所以大家可以根据场景来投稿，如网红小粗跟，线上会有一个场景，里面会有很多关于粗跟鞋的内容贴，就是大家投放通过的内容，所以大家，可以每个场景都可以写内容</p>
+            <p style={{backgroundColor: 'rgb(255, 255, 0)'}}>同时注意：乱沟，取消1个月投稿资格</p>
+            <p><img src="https://img.alicdn.com/imgextra/i2/1130553628/TB2ukjztNtmpuFjSZFqXXbHFpXa_!!2-martrix_bbs.png" /></p>
+            <p style={{backgroundColor: 'rgb(255, 153, 0)', color: 'rgb(0, 0, 0)'}}>B：图文贴</p>
+            <p>1，模板</p>
+            <p>为了让内容更有可阅读性，一定要有吸引人的主题，引人愿意读下去的主题介绍，详细的单品解读</p>
+            <p>2，不要滥用视觉元素，以下尽量避免</p>
+            <p><img src="https://img.alicdn.com/imgextra/i4/1130553628/TB29YbssctnpuFjSZFKXXalFFXa_!!2-martrix_bbs.png" data-spm-anchor-id="a2116r.10393087.0.i26.136d5df1hekYhs" /></p>
+            <p>3，内容结构清晰，便于用户快速获取信息，尽量避免分类下再有分类等复杂结构的内容</p>
+            <p>4、图片比例规范：有的配图都必须是横图或者方图，即高度不高于宽度，可以是拼接图</p>
+            <p>5、封面图规范</p>
+            <p>达人后台在添加封面处上传：</p>
+            <p><img src="https://img.alicdn.com/imgextra/i1/1130553628/TB2H8IJpa8lpuFjy0FpXXaGrpXa_!!2-martrix_bbs.png" /></p>
+            <p>①banner会在必频道瀑布流透出，必须美观清晰、有调性，能明确传达清单内容信息，避免很宽泛抽象的banner；尽量选色调清新的图片；</p>
+            <p>② 请按照16:9比例制作清晰美观的封面图片，大小在700-900kb，审核通过后将进行裁剪，所以确保上下裁剪区域无重要元素，裁剪后图片完整美观。需要注意的是尽可能把重点放在图片中间。</p>
+            <p>6，内容要求</p>
+            <p><img src="https://img.alicdn.com/imgextra/i3/1130553628/TB2O_wAsbJmpuFjSZFwXXaE4VXa_!!2-martrix_bbs.png" /></p>
+            <p>①总计全文文字不低于500个字，单段文字不超过150个字；</p>
+            <p>②文案要求可读性强，联系热点、教程、百科知识、行业趋势、品牌故事、历史背景等，为用户提供新知识；文风有特点，娱乐化、有梗，卖萌都行，希望能体现作者的生活态度（正文的第一句话会在频道瀑布流透出，请尽量引人入胜，点明主题）；</p>
+            <p>③多图片！多图片！多图片！用街拍图/氛围图/知识图等让内容的可读性更高；</p>
+            <p>C、商品要求</p>
+            <p>①商品数量≥6个，建议在6-15个之间；一个帖子必须包含3个店铺以上，每个店铺最多3个商品；</p>
+            <p>②匹配主题，突出精选感，让用户感知到商品是用心整理出来的，不能只是商品的堆砌；</p>
+            <p>③添加商品后，需要优化商品标题，优化至10-25个字之间，无类似关键词堆砌，无包邮、代购等无用信息，让用户一目了然推荐的是什么商品</p>
+          </div>
+        </div>
+      )
+    } else {
+      return '';
     }
   }
   handleDeliver = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch(routerRedux.push(`/writer/task/create?channel_name=${query.channel_name}`));
+    this.props.dispatch(routerRedux.push(`/writer/task/create?channelId=${query.channelId}&activityId=${query.activityId}`));
   }
   render() {
     const query = querystring.parse(this.props.location.search.substr(1));
@@ -371,7 +437,7 @@ export default class TaskChannel extends PureComponent {
       img: 'http://gw.alicdn.com/tfscom/TB1OyT.RVXXXXcpXXXXXXXXXXXX.png',
       text: '帖子',
     }
-    if (query.channel_name === '有好货') {
+    if (query.activityId === '有好货') {
       channelIcon = {
         img: 'http://gw.alicdn.com/tfscom/TB1vDr2RVXXXXb2XpXXXXXXXXXX.png',
         text: '单品',

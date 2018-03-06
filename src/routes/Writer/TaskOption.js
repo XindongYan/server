@@ -5,6 +5,7 @@ import { Card, Button, Popconfirm, message, Row, Col } from 'antd';
 import { CHANNEL_NAMES, TAOBAO_ACTIVITYID_MIRROR } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TaskOption.less';
+import { CHANNELS } from '../../constants/taobao';
 
 @connect(state => ({
 
@@ -71,14 +72,9 @@ export default class TaskOption extends PureComponent {
       });
     }
   }
-  handleDeliver = (value) => {
-    const task_type = value === '直播脚本' ? 3 : 1;
+  handleDeliver = (channelId, activityId) => {
     window.scrollTo(0, 0);
-    if (value === '直播脚本') {
-      this.props.dispatch(routerRedux.push(`/writer/task/create?channel_name=${value}&task_type=${task_type}`));
-    } else {
-      this.props.dispatch(routerRedux.push(`/writer/task/channel?channel_name=${value}&task_type=${task_type}`));
-    }
+    this.props.dispatch(routerRedux.push(`/writer/task/channel?channelId=${channelId}&activityId=${activityId}`));
   }
   handleGetRemainCount = (id) => {
     const { channel_list } = this.state;
@@ -140,7 +136,7 @@ export default class TaskOption extends PureComponent {
     return (
       <div>
         {
-          cardList.map( (item, index) =>
+          CHANNELS.map( (item, index) =>
             <Card key={index} bodyStyle={{ background: '#fff', padding: 20 }} style={{ marginBottom: 20 }}>
               <div className={styles.option_box_top}>
                 <div className={styles.option_box_img}>
@@ -156,9 +152,9 @@ export default class TaskOption extends PureComponent {
               </div>
 
               <div style={{ display: 'flex' }}>
-                {item.activityList.map((item1, index1) => <div key={index1} className={styles.option_choose_box} onClick={() => this.handleDeliver(item.name)}>
-                  <p style={{ height: 36, lineHeight: '36px' }}>{item1.name}</p>
-                  <p style={{ height: 20, fontSize: 12 }}>{this.handleGetRemainCount(item.id)}</p>
+                {item.activityList.map((item1, index1) => <div key={index1} className={styles.option_choose_box} onClick={() => this.handleDeliver(item.id, item1.id)}>
+                  <p>{item1.name}</p>
+                  <p>{this.handleGetRemainCount(item1.id)}</p>
                 </div>)}
               </div>
             </Card>
