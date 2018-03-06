@@ -21,6 +21,7 @@ export default class ProjectForm extends PureComponent {
   state = {
     taskTypeOptions: [...TASK_TYPES],
     searchValue: '',
+    loading: false,
   }
   componentDidMount() {
     const { teamUser } = this.props;
@@ -84,6 +85,9 @@ export default class ProjectForm extends PureComponent {
     const flow = APPROVE_FLOWS.find(item => item.value === getFieldValue('approve_flow'));
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        this.setState({
+          loading: true,
+        });
         const approvers = (flow ? flow.texts : []).map(item => values[`approvers${item}`]);
         const channel = CHANNELS_FOR_CASCADER.find(item => item.value === values.channel[0]);
         const payload = {
@@ -114,6 +118,9 @@ export default class ProjectForm extends PureComponent {
                 message.success(result.msg);
                 this.handleJump(values);
               }
+              this.setState({
+                loading: false,
+              });
             },
           });
         } else if (this.props.operation === 'create') {
@@ -129,6 +136,9 @@ export default class ProjectForm extends PureComponent {
                 message.success(result.msg);
                 this.handleJump(values);
               }
+              this.setState({
+                loading: false,
+              });
             },
           });
         }
@@ -401,7 +411,7 @@ export default class ProjectForm extends PureComponent {
           <FormItem
             wrapperCol={{ span: 8, offset: 4 }}
           >
-            <Button type="primary" onClick={this.handleSubmit}>
+            <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
               {operation === 'create' ? '创建' : '保存'}
             </Button>
           </FormItem>
