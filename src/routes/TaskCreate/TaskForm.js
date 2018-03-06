@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Form, Input, Select, Icon, Button, Upload, message, Tooltip } from 'antd';
+import { Card, Form, Input, Cascader, Icon, Button, Upload, message, Tooltip } from 'antd';
 import path from 'path';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, SOURCE, CHANNEL_NAMES } from '../../constants';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, TASK_APPROVE_STATUS, SOURCE, CHANNELS_FOR_CASCADER } from '../../constants';
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 @connect(state => ({
   teamUser: state.user.teamUser,
@@ -34,7 +33,7 @@ export default class TaskForm extends PureComponent {
         desc: formData.desc,
         attachments: formData.attachments,
         price: formData.price,
-        channel_name: formData.channel_name,
+        channel: formData.channel,
         merchant_tag: formData.merchant_tag,
       });
     } else if (operation === 'create') {
@@ -44,7 +43,7 @@ export default class TaskForm extends PureComponent {
         callback: (result) => {
           if (!result.error) {
             const f = {
-              channel_name: result.project.channel_name,
+              channel: result.project.channel,
               merchant_tag: result.project.merchant_tag,
             };
             this.props.form.setFieldsValue(f);
@@ -64,7 +63,7 @@ export default class TaskForm extends PureComponent {
         desc: nextProps.formData.desc,
         attachments: nextProps.formData.attachments,
         price: nextProps.formData.price,
-        channel_name: nextProps.formData.channel_name,
+        channel: nextProps.formData.channel,
         merchant_tag: nextProps.formData.merchant_tag,
       };
       this.props.form.setFieldsValue(f);
@@ -80,6 +79,7 @@ export default class TaskForm extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        const channel = CHANNELS_FOR_CASCADER.find(item => item.value === values.channel[0]);
         const payload = {
           ...values,
           attachments: values.attachments ? values.attachments.filter(item => !item.error).map(item => {
@@ -91,6 +91,7 @@ export default class TaskForm extends PureComponent {
           }) : [],
           project_id: query.project_id,
           creator_id: teamUser.user_id,
+          channel_name: channel.label,
         };
         if (this.props.operation === 'edit') {
           this.props.dispatch({
@@ -132,7 +133,7 @@ export default class TaskForm extends PureComponent {
                 if (type === 'next') {
                   this.props.form.resetFields();
                   const f = {
-                    channel_name: this.props.projectFormData.channel_name,
+                    channel: this.props.projectFormData.channel,
                     merchant_tag: this.props.projectFormData.merchant_tag,
                   };
                   this.props.form.setFieldsValue(f);
@@ -212,14 +213,10 @@ export default class TaskForm extends PureComponent {
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
-            {getFieldDecorator('channel_name', {
+            {getFieldDecorator('channel', {
               rules: [{ required: true, message: '请选择渠道！' }],
             })(
-              <Select
-                placeholder="选择渠道"
-              >
-                {CHANNEL_NAMES.map(item => <Option value={item} key={item}>{item}</Option>)}
-              </Select>
+              <Cascader options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" />
             )}
           </FormItem>
           <FormItem

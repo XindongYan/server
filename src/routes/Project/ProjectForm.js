@@ -4,8 +4,8 @@ import querystring from 'querystring';
 import path from 'path';
 import moment from 'moment';
 import { routerRedux } from 'dva/router';
-import { Card, Form, Input, Select, Icon, Button, DatePicker, Upload, message, Tooltip } from 'antd';
-import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES, CHANNEL_NAMES } from '../../constants';
+import { Card, Form, Input, Select, Icon, Button, DatePicker, Upload, message, Tooltip, Cascader } from 'antd';
+import { QINIU_DOMAIN, QINIU_UPLOAD_DOMAIN, APPROVE_FLOWS, TASK_TYPES, PROJECT_LEVELS, APPROVE_ROLES, CHANNELS_FOR_CASCADER } from '../../constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -50,7 +50,7 @@ export default class ProjectForm extends PureComponent {
       const fieldsValue = {
         type: nextProps.formData.type,
         name: nextProps.formData.name,
-        channel_name: nextProps.formData.channel_name,
+        channel: nextProps.formData.channel,
         merchant_tag: nextProps.formData.merchant_tag,
         task_type: nextProps.formData.task_type,
         desc: nextProps.formData.desc,
@@ -81,6 +81,7 @@ export default class ProjectForm extends PureComponent {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const approvers = (flow ? flow.texts : []).map(item => values[`approvers${item}`]);
+        const channel = CHANNELS_FOR_CASCADER.find(item => item.value === values.channel[0]);
         const payload = {
           team_id: teamUser.team_id,
           user_id: teamUser.user_id,
@@ -93,6 +94,7 @@ export default class ProjectForm extends PureComponent {
             };
           }) : [],
           approvers,
+          channel_name: channel.label,
         };
         if (this.props.operation === 'edit') {
           this.props.dispatch({
@@ -213,14 +215,10 @@ export default class ProjectForm extends PureComponent {
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
-            {getFieldDecorator('channel_name', {
+            {getFieldDecorator('channel', {
               rules: [{ required: true, message: '请选择渠道！' }],
             })(
-              <Select
-                placeholder="选择渠道"
-              >
-                {CHANNEL_NAMES.map(item => <Option value={item} key={item}>{item}</Option>)}
-              </Select>
+              <Cascader options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" />
             )}
           </FormItem>
           <FormItem

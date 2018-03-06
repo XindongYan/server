@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import { Card, Button, Popconfirm, message, Row, Col } from 'antd';
-import { CHANNEL_NAMES } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 

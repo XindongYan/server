@@ -4,7 +4,7 @@ import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radi
 Tooltip, Divider, Form, Modal, Popover } from 'antd';
 import { Link } from 'dva/router';
 import moment from 'moment';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNEL_NAMES, RIGHT, ORIGIN } from '../../constants';
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNELS, RIGHT, ORIGIN } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -708,7 +708,7 @@ export default class TableList extends PureComponent {
                     optionFilterProp="children"
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
-                    { CHANNEL_NAMES.map(item => <Option key={item} value={item}>{item}</Option>) }
+                    { CHANNELS.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>) }
                   </Select>
                   <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
                   <Tooltip placement="top" title="提交时间">

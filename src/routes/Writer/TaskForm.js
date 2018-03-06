@@ -6,7 +6,7 @@ import { Card, Button, Popconfirm, message, Modal, Form, Select, Tooltip, Icon }
 import Annotation from '../../components/Annotation';
 import NicaiForm from '../../components/Form/index';
 
-import { TASK_APPROVE_STATUS, SOURCE } from '../../constants';
+import { TASK_APPROVE_STATUS, SOURCE, CHANNELS } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 import { queryTaskRender } from '../../services/task';
@@ -54,7 +54,7 @@ export default class TaskForm extends PureComponent {
         }
       });
     } else {
-      queryTaskRender({ channel_name: query.channel_name }).then(result => {
+      queryTaskRender({ activityId: query.activityId }).then(result => {
         if (!result.error) {
           this.setState({ children: result.children, formData: result.formData, needValidateFieldNames: result.children.filter(item => item.component === 'Input').map(item => item.name) });
         }
@@ -136,6 +136,7 @@ export default class TaskForm extends PureComponent {
     });
   }
   handleSubmitTask = () => {
+    const { channel_name, channel } = this.getChannel();
     this.validate(this.state.needValidateFieldNames, (err, values) => {
       const query = querystring.parse(this.props.location.search.substr(1));
       const { currentUser } = this.props;
@@ -172,6 +173,8 @@ export default class TaskForm extends PureComponent {
           type: 'task/add',
           payload: {
             ...values,
+            channel,
+            channel_name,
             formData: this.state.formData,
             source: SOURCE.deliver,
             project_id: query.project_id,
@@ -260,7 +263,7 @@ export default class TaskForm extends PureComponent {
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, formData, operation } = this.props;
-    const channel_name = this.getChannelName();
+    const { channel_name, channel } = this.getChannel();
     this.props.form.validateFieldsAndScroll(['title'], (err, vals) => {
       if (!err) {
         const children = Object.assign([], this.state.children);
@@ -317,8 +320,9 @@ export default class TaskForm extends PureComponent {
                   formData: this.state.formData,
                   source: SOURCE.deliver,
                   approve_status: TASK_APPROVE_STATUS.taken,
+                  channel,
                   channel_name,
-                  task_type: channel_name === '直播脚本' ? 3 : 1,
+                  task_type: 1,
                   team_id: teamUser ? teamUser.team_id : null,
                   publisher_id: currentUser._id,
                   publish_time: new Date(),
@@ -348,8 +352,9 @@ export default class TaskForm extends PureComponent {
                   formData: this.state.formData,
                   source: SOURCE.create,
                   approve_status: TASK_APPROVE_STATUS.taken,
+                  channel,
                   channel_name,
-                  task_type: channel_name === '直播脚本' ? 3 : 1,
+                  task_type: 1,
                   team_id: teamUser ? teamUser.team_id : null,
                   publisher_id: currentUser._id,
                   publish_time: new Date(),
@@ -381,9 +386,9 @@ export default class TaskForm extends PureComponent {
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
+    const { channel_name, channel } = this.getChannel();
     this.validate(this.state.needValidateFieldNames, (err, values) => {
       if (!err) {
-        const channel_name = this.getChannelName();
         if (query._id) {
           this.props.dispatch({
             type: 'task/update',
@@ -413,6 +418,7 @@ export default class TaskForm extends PureComponent {
               formData: this.state.formData,
               source: SOURCE.create,
               approve_status: TASK_APPROVE_STATUS.taken,
+              channel,
               channel_name,
               task_type: query.task_type ? Number(query.task_type) : 1,
               team_id: teamUser ? teamUser.team_id : null,
@@ -493,13 +499,16 @@ export default class TaskForm extends PureComponent {
       approver_id: { ...this.state.approver_id, ...data },
     })
   }
-  getChannelName = () => {
-    const query = querystring.parse(this.props.location.search.substr(1));
+  getChannel = () => {
     const { operation, formData } = this.props;
     if (operation === 'create') {
-      return query.channel_name;
+      const query = querystring.parse(this.props.location.search.substr(1));
+      const channel = CHANNELS.find(item => item.id === Number(query.channelId));
+      const activity = channel.activityList.find(item => item.id === Number(query.activityId));
+      return { channel_name: activity.name, channel: [ Number(query.channelId), Number(query.activityId) ] };
+      
     }
-    return formData.channel_name;
+    return { channel_name: formData.channel_name, channel: formData.channel };
   }
   handleChangePushDaren = (value) => {
     const index = this.state.children.findIndex(item => item.name === 'pushDaren');
@@ -514,7 +523,7 @@ export default class TaskForm extends PureComponent {
   }
   render() {
     const { form: { getFieldDecorator }, operation, formData } = this.props;
-    const { approveModalVisible, haveGoods, suggestionApproves } = this.state;
+    const { approveModalVisible, formData: { activityId }, suggestionApproves } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const writeTips = (
       <div className={styles.taskComment} style={{ width: 200, marginRight: 0 }}>
@@ -526,7 +535,6 @@ export default class TaskForm extends PureComponent {
         </ul>
       </div>
     );
-    const channel_name = this.getChannelName();
     const pushDaren = this.state.children.find(item => item.name === 'pushDaren');
     let formRight = null;
     let outerWidth = 1000;
@@ -556,13 +564,13 @@ export default class TaskForm extends PureComponent {
         outerWidth = 868;
       }
     }
-    if (channel_name === '有好货') {
+    if (activityId === 414) {
       outerWidth = 730;
     }
     return (
       <Card bordered={false} title="" style={{ background: 'none', paddingBottom: 60 }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: outerWidth }} ref="taskOuterBox">
-          <div style={{ width: channel_name === '有好货' ? 375 : 650 }}>
+          <div style={{ width: activityId === 414 ? 375 : 650 }}>
             <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange}/>
           </div>
           {formRight}
