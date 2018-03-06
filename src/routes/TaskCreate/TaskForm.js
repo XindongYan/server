@@ -18,6 +18,7 @@ const { Option } = Select;
 @Form.create()
 export default class TaskForm extends PureComponent {
   state = {
+    taskTypeOptions: [...TASK_TYPES],
     nextLoading: false,
     finishLoading: false,
   }
@@ -38,6 +39,9 @@ export default class TaskForm extends PureComponent {
         task_type: formData.task_type,
         merchant_tag: formData.merchant_tag,
       });
+      if (formData.channel && formData.channel.length >= 2) {
+        this.handleChannelChange(formData.channel);
+      }
     } else if (operation === 'create') {
       this.props.dispatch({
         type: 'project/fetchProject',
@@ -50,6 +54,9 @@ export default class TaskForm extends PureComponent {
               merchant_tag: result.project.merchant_tag,
             };
             this.props.form.setFieldsValue(f);
+            if (result.project.channel && result.project.channel.length >= 2) {
+              this.handleChannelChange(result.project.channel);
+            }
           }
         },
       });
@@ -71,6 +78,9 @@ export default class TaskForm extends PureComponent {
         merchant_tag: nextProps.formData.merchant_tag,
       };
       this.props.form.setFieldsValue(f);
+      if (nextProps.formData.channel && nextProps.formData.channel.length >= 2) {
+        this.handleChannelChange(nextProps.formData.channel);
+      }
     }
   }
   componentWillUnmount() {
@@ -163,6 +173,13 @@ export default class TaskForm extends PureComponent {
       }
     });
   }
+  handleChannelChange = (value) => {
+    const channel = CHANNELS_FOR_CASCADER.find(item => item.value === value[0]);
+    const activity = channel.children.find(item => item.value === value[1]);
+    const taskTypeOptions = activity.templates.map(item => TASK_TYPES.find(item1 => item === item1.template));
+    this.setState({ taskTypeOptions });
+    this.props.form.setFieldsValue({ task_type: taskTypeOptions[0].value });
+  }
   beforeUpload = (file) => {
     const promise = new Promise(function(resolve, reject) {
       const isLt100M = file.size / 1024 / 1024 <= 100;
@@ -224,7 +241,7 @@ export default class TaskForm extends PureComponent {
             {getFieldDecorator('channel', {
               rules: [{ required: true, message: '请选择渠道！' }],
             })(
-              <Cascader options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" />
+              <Cascader allowClear={false} showSearch={true} options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" onChange={this.handleChannelChange} />
             )}
           </FormItem>
           <FormItem
@@ -238,9 +255,8 @@ export default class TaskForm extends PureComponent {
             })(
               <Select
                 placeholder="请选择任务类型"
-                onChange={this.handleSelectChange}
               >
-                {TASK_TYPES.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
+                {this.state.taskTypeOptions.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
             )}
           </FormItem>
