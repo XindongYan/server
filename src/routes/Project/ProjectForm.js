@@ -62,6 +62,9 @@ export default class ProjectForm extends PureComponent {
         project_level: nextProps.formData.project_level,
       };
       this.props.form.setFieldsValue(fieldsValue);
+      if (nextProps.formData.channel && nextProps.formData.channel.length >= 2) {
+        this.handleChannelChange(nextProps.formData.channel);
+      }
       setTimeout(() => {
         if (nextProps.formData.type === 1) {
           approvers.max_take = nextProps.formData.max_take;

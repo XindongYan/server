@@ -39,6 +39,9 @@ export default class TaskForm extends PureComponent {
         task_type: formData.task_type,
         merchant_tag: formData.merchant_tag,
       });
+      if (formData.channel && formData.channel.length >= 2) {
+        this.handleChannelChange(formData.channel);
+      }
     } else if (operation === 'create') {
       this.props.dispatch({
         type: 'project/fetchProject',
@@ -51,6 +54,9 @@ export default class TaskForm extends PureComponent {
               merchant_tag: result.project.merchant_tag,
             };
             this.props.form.setFieldsValue(f);
+            if (result.project.channel && result.project.channel.length >= 2) {
+              this.handleChannelChange(result.project.channel);
+            }
           }
         },
       });
@@ -72,6 +78,9 @@ export default class TaskForm extends PureComponent {
         merchant_tag: nextProps.formData.merchant_tag,
       };
       this.props.form.setFieldsValue(f);
+      if (nextProps.formData.channel && nextProps.formData.channel.length >= 2) {
+        this.handleChannelChange(nextProps.formData.channel);
+      }
     }
   }
   componentWillUnmount() {
