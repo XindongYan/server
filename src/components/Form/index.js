@@ -25,7 +25,7 @@ export default class TaskForm extends PureComponent {
     }
   }
   render() {
-    const { form, children, operation } = this.props;
+    const { form, children, operation, activityId } = this.props;
     const pushDaren = children.find(item => item.name === 'pushDaren');
     const coverCount = children.find(item => item.name === 'coverCount');
     const itemSpuOption = children.find(item => item.name === 'itemSpuOption');
@@ -39,7 +39,7 @@ export default class TaskForm extends PureComponent {
         "name": "bodySpu",
         "props": {
           "enableExtraBanner": true,
-          "activityId": 414,
+          "activityId": activityId,
           "min": 1,
           "max": 1,
           "addImageProps": {
@@ -66,7 +66,7 @@ export default class TaskForm extends PureComponent {
       if (item.component === 'Input') {
         formComponents.push(<Input key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'Editor') {
-        formComponents.push(<Editor key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
+        formComponents.push(<Editor key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} activityId={activityId || 0} />);
       } else if (item.component === 'CascaderSelect') {
         formComponents.push(<CascaderSelect key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'CreatorAddImage') {

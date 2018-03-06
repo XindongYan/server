@@ -77,7 +77,7 @@ export default class CreatorAddSpu extends PureComponent {
             </div>
           }
         </div>
-        <AuctionModal k="havegoods" onOk={this.handleAddProduct} product={292} />
+        <AuctionModal k="havegoods" onOk={this.handleAddProduct} activityId={props.activityId || 0} />
         <AuctionImageModal onChange={this.handleChangeBodyImg} />
       </div>
     );

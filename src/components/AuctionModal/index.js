@@ -354,11 +354,33 @@ export default class AuctionModal extends PureComponent {
       type: 'auction/hide',
     });
   }
+  handleGetKuaixuanId = () => {
+    const { activityId } = this.props;
+    if (activityId === 1437) {
+      return "294";
+    } else if (activityId === 97) {
+      return "210";
+    } else if (activityId === 1413 || activityId === 413) {
+      return "200";
+    } else if (activityId === 414) {
+      return "292";
+    } else if (activityId === 1439) {
+      return "3321";
+    } else if (activityId === 60) {
+      return "3454";
+    } else if (activityId === 1157 || activityId === 409) {
+      return "201";
+    } else if (activityId === 411) {
+      return "202";
+    } else {
+      return "0";
+    }
+  }
   render() {
-    const { visible, k, currentKey } = this.props;
+    const { visible, k, currentKey, activityId } = this.props;
     const { itemList, pagination, actsLoading, activeKey, auctionChoose, q_score, new7, qumai } = this.state;
-    const tabBarExtraContent = this.props.product ? this.props.product + "" : "0";
-    const kuaixuan = `https://we.taobao.com/material/square/detail?${querystring.stringify({kxuanParam: JSON.stringify({nested: "we", id: "0"})})}`;
+    const kuaixuanId = this.handleGetKuaixuanId();
+    const kuaixuan = `https://we.taobao.com/material/square/detail?${querystring.stringify({kxuanParam: JSON.stringify({nested: "we", id: kuaixuanId})})}`;
     return (
       <Modal
         title="添加商品"

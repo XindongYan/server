@@ -394,7 +394,7 @@ export default class Editors extends PureComponent {
           <Editor ref={instance => {this.setState({editor: instance})}} editorState={this.state.editorState} onChange={this.handleChange} {...editorProps} />
         </div>
         <AlbumModal k="editor" onOk={this.handleAddImg} />
-        <AuctionModal k="editor" onOk={this.handleAddProduct} product={this.props.product} />
+        <AuctionModal k="editor" onOk={this.handleAddProduct} activityId={this.props.activityId} />
         <BpuModal k="editor" onOk={this.handleAddBpu} />
       </div>
     );
