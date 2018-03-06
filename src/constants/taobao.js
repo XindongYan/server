@@ -20,9 +20,9 @@ const CHANNELS = [{
   "activityList": [{
     "id": 1437,
     "name": "智能搭配- ifashion",
-  // }, {
-  //   "id": 97,
-  //   "name": "首页card ifashion",
+  }, {
+    "id": 97,
+    "name": "首页card ifashion",
   }],
   "desc": "iFashion是基于中高端年轻化女性时尚社区平台，面对泛90后人群提供潮流新品、流行资讯，搭配，扮美，运动时尚好物。覆盖女装，女鞋，女士内衣，服饰配件，眼镜，珠宝，流行首饰，手表，美容护肤，个人护理，美妆，运动，户外，运动休闲服装，运动鞋等关于女性时尚的一级类目。",
   "id": 34,
@@ -52,8 +52,7 @@ const CHANNELS = [{
 }, {
   "activityList": [{
     "id": 82,
-    "name": "优质内容频道",
-    "remainCount": 10
+    "name": "优质内容频道"
   }],
   "desc": "淘宝第一个垂直细分的导购产品，不局限于专业货品的挖掘，引导用户在细分垂直人群领域里获得专业知识进阶。 若你在某个细分领域十分专业，欢迎加入我们这个精准的粉丝运营阵地~ 所需内容类型：单品、图文帖子、优选。",
   "id": 25,
@@ -77,6 +76,27 @@ const CHANNELS = [{
   "id": 26,
   "logo": "https://img.alicdn.com/tfs/TB1YUUFXwvGK1Jjy0FbXXb4vVXa-100-100.png",
   "name": "买遍全球"
+}, {
+  "activityList": [{
+    "id": 1157,
+    "name": "单品专用入口－生活家",
+  }, {
+    "id": 409,
+    "name": "首页card-生活家",
+  }],
+  "desc": "生活家是为用户提供品质、精致生活好物的内容导购频道，面向中高端购买力人群，覆盖食品、百货、家居、宠物等品类，覆盖的主要内容形式为图文贴。",
+  "id": 49,
+  "logo": "https://img.alicdn.com/tfs/TB1T1jDSFXXXXaFXVXXXXXXXXXX-100-100.png",
+  "name": "生活家"
+}, {
+  "activityList": [{
+    "id": 411,
+    "name": "首页card品质好物",
+  }],
+  "desc": "品质好物是手淘前台我爱我家卡片下推荐优质生活商品的栏目，覆盖食品、百货、家居、家电等多种品类，需要的内容形式主要为单品+清单。",
+  "id": 52,
+  "logo": "https://img.alicdn.com/tfs/TB1rzPLSFXXXXbCXFXXXXXXXXXX-100-100.png",
+  "name": "品质好物"
 }, {
   "activityList": [{
     "id": -21,
