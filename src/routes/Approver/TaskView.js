@@ -20,6 +20,7 @@ import styles from './TableList.less';
 export default class TaskView extends PureComponent {
   state = {
     children: [],
+    formData: {},
     approve_notes: [],
   }
   componentWillMount() {
@@ -31,6 +32,7 @@ export default class TaskView extends PureComponent {
         if (!result.error) {
           this.setState({
             children: result.task.children,
+            formData: result.task.formData,
             approve_notes: result.task.approve_notes || [],
           });
         }
@@ -47,6 +49,7 @@ export default class TaskView extends PureComponent {
   render() {
     const { formData, approveData, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
+    const { formData: { activityId } } = this.state;
     const operation = 'view';
     const showApproveLog = formData.approvers && formData.approvers[0] && formData.approvers[0].indexOf(currentUser._id) >= 0;
     const showAnnotation = showApproveLog;
