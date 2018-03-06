@@ -86,7 +86,7 @@ export default class CreatorAddItem extends PureComponent {
             <label className={styles.uploadImgBox} style={{ width: 120, height: 120 }} onClick={this.handleAuctionShow}>
               <div>
                 <Icon type="plus" className={styles.uploadIcon} />
-                <p>{props.triggerTips}</p>
+                <p>{props.triggerTips || '添加宝贝'}</p>
               </div>
             </label>
           }
