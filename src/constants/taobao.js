@@ -29,15 +29,18 @@ const CHANNELS = [{
   "logo": "https://img.alicdn.com/tfs/TB10zj.SFXXXXadXXXXXXXXXXXX-100-100.png",
   "name": "iFashion"
 }, {
-//   "activityList": [{
-//     "id": 1413,
-//     "name": "搭配专用入口"
-//   }],
-//   "desc": "潮男养成定位高端有品男装，杂志风男装穿搭＋消费升级引导。",
-//   "id": 50,
-//   "logo": "https://img.alicdn.com/tfs/TB1tjZaSFXXXXXFXXXXXXXXXXXX-100-100.png",
-//   "name": "潮男养成"
-// }, {
+  "activityList": [{
+    "id": 1413,
+    "name": "搭配专用入口"
+  }, {
+    "id": 413,
+    "name": "首页card潮男养成"
+  }],
+  "desc": "潮男养成定位高端有品男装，杂志风男装穿搭＋消费升级引导。",
+  "id": 50,
+  "logo": "https://img.alicdn.com/tfs/TB1tjZaSFXXXXXFXXXXXXXXXXXX-100-100.png",
+  "name": "潮男养成"
+}, {
   "activityList": [{
     "id": 414,
     "name": "新单品-测试",
