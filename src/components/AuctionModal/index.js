@@ -356,21 +356,21 @@ export default class AuctionModal extends PureComponent {
   }
   handleGetKuaixuanId = () => {
     const { activityId } = this.props;
-    if (activityId === 1437) {
+    if (activityId == '1437') {
       return "294";
-    } else if (activityId === 97) {
+    } else if (activityId == '97') {
       return "210";
-    } else if (activityId === 1413 || activityId === 413) {
+    } else if (activityId == '1413' || activityId == '413') {
       return "200";
-    } else if (activityId === 414) {
+    } else if (activityId == '414') {
       return "292";
-    } else if (activityId === 1439) {
+    } else if (activityId == '1439') {
       return "3321";
-    } else if (activityId === 60) {
+    } else if (activityId == '60') {
       return "3454";
-    } else if (activityId === 1157 || activityId === 409) {
+    } else if (activityId == '1157' || activityId == '409') {
       return "201";
-    } else if (activityId === 411) {
+    } else if (activityId == '411') {
       return "202";
     } else {
       return "0";
