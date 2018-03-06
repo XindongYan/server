@@ -5,6 +5,9 @@ import querystring from 'querystring';
 import { Card, Button, Popconfirm, message, Row, Col } from 'antd';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
+import { CHANNELS } from '../../constants/taobao';
+import { TASK_TYPES } from '../../constants';
+
 
 @connect(state => ({
 
@@ -426,32 +429,39 @@ export default class TaskChannel extends PureComponent {
       return '';
     }
   }
-  handleDeliver = () => {
+  handleDeliver = (template) => {
     const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch(routerRedux.push(`/writer/task/create?channelId=${query.channelId}&activityId=${query.activityId}`));
+    this.props.dispatch(routerRedux.push(`/writer/task/create?channelId=${query.channelId}&activityId=${query.activityId}&template=${template}`));
+  }
+  handleGetTemplate = () => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    let templates = [];
+    CHANNELS.forEach(item => {
+      item.activityList.forEach(item1 => {
+        if (item1.id == query.activityId) {
+          templates = item1.templates || [];
+        }
+      });
+    });
+    return templates;
+  }
+  renderTemplateBox = (template) => {
+    const taskType = TASK_TYPES.find(item => item.template === template);
+    return (
+      <div key={template} className={styles.channelBox} onClick={() => this.handleDeliver(template)}>
+        <div className={styles.channelImgBox}>
+          <img src={taskType.logo} />
+        </div>
+        <div className={styles.channelNameBox}>{taskType.text}</div>
+      </div>
+    )
   }
   render() {
     const query = querystring.parse(this.props.location.search.substr(1));
-    let channelIcon = {
-      img: 'http://gw.alicdn.com/tfscom/TB1OyT.RVXXXXcpXXXXXXXXXXXX.png',
-      text: '帖子',
-    }
-    if (query.activityId === '有好货') {
-      channelIcon = {
-        img: 'http://gw.alicdn.com/tfscom/TB1vDr2RVXXXXb2XpXXXXXXXXXX.png',
-        text: '单品',
-      }
-    }
     return (
       <div>
         <Card bordered={false} style={{ textAlign: 'center', marginBottom: 20 }} bodyStyle={{ padding: 20 }}>
-          <div className={styles.channelBox} onClick={this.handleDeliver}>
-            <div className={styles.channelImgBox}>
-              <img src={channelIcon.img} />
-            </div>
-            <div className={styles.channelNameBox}>{channelIcon.text}</div>
-          </div>
-          
+          {this.handleGetTemplate().map(item => this.renderTemplateBox(item))}
         </Card>
         <Card bordered={false} bodyStyle={{ padding: 20 }}>
           <div className={styles.channel_box_title}>子频道介绍</div>

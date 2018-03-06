@@ -345,9 +345,10 @@ export default class AuctionModal extends PureComponent {
       </Spin>
     </div>)
   }
-  handleChooseCover = (coverUrl) => {
+  handleChooseCover = (coverUrl, title) => {
     const auction = this.state.auctionChoose;
     auction.coverUrl = coverUrl;
+    auction.title = title;
     if (this.props.onOk) this.props.onOk(auction);
     this.props.dispatch({
       type: 'auction/hide',
@@ -357,7 +358,7 @@ export default class AuctionModal extends PureComponent {
     const { visible, k, currentKey } = this.props;
     const { itemList, pagination, actsLoading, activeKey, auctionChoose, q_score, new7, qumai } = this.state;
     const tabBarExtraContent = this.props.product ? this.props.product + "" : "0";
-    const kuaixuan = `https://we.taobao.com/material/square/detail?${querystring.stringify({kxuanParam: JSON.stringify({nested: "we", id: tabBarExtraContent})})}`;
+    const kuaixuan = `https://we.taobao.com/material/square/detail?${querystring.stringify({kxuanParam: JSON.stringify({nested: "we", id: "0"})})}`;
     return (
       <Modal
         title="添加商品"

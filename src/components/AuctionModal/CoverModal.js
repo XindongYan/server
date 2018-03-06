@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Icon, message, Row, Col, Tag, Button, Modal, Switch, Radio } from 'antd';
+import { Icon, message, Row, Col, Tag, Button, Modal, Switch, Radio, Input } from 'antd';
 import styles from './AuctionImageModal.less';
 import AlbumModal from '../AlbumModal';
 const RadioGroup = Radio.Group;
@@ -25,6 +25,7 @@ export default class CoverChooseModal extends PureComponent {
     k: '',
     uploadBgImage: '',
     images: [],
+    title: '',
   }
 
   componentDidMount() {
@@ -55,6 +56,11 @@ export default class CoverChooseModal extends PureComponent {
       if (auction.coverUrl) {
         this.setState({
           coverUrl: auction.images[0],
+        });
+      }
+      if (auction.title) {
+        this.setState({
+          title: auction.title,
         });
       }
       if (auction.images) {
@@ -103,7 +109,8 @@ export default class CoverChooseModal extends PureComponent {
     if (this.state.cutCoverUrl[index]) {
       coverUrl = this.state.cutCoverUrl[index];
     }
-    if (this.props.onOk) this.props.onOk(coverUrl);
+    const title = this.state.title.trim() ? this.state.title.trim() : auction.title;
+    if (this.props.onOk) this.props.onOk(coverUrl, title);
     this.props.dispatch({
       type: 'album/hideCover',
       payload: {
@@ -233,6 +240,13 @@ export default class CoverChooseModal extends PureComponent {
         >
         { auction && auction.images &&
           <div>
+            <div>
+              <p>宝贝信息</p>
+              <Input
+                value={this.state.title}
+                onChange={(e) => {this.setState({title: e.target.value})}}
+              />
+            </div>
             <div>
               <RadioGroup className={styles.imgBox} onChange={this.handleChangeCoverImg} value={this.state.coverUrl}>
                 { auction.images.filter((item, index, self) => self.indexOf(item) === index).map((item, index) => <Radio className={styles.radioBox} key={index} value={item}><img style={{width: '100%', height: '100%'}} src={cutCoverUrl[index]? cutCoverUrl[index] : item} /></Radio>)
