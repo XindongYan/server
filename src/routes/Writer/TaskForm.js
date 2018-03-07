@@ -6,7 +6,7 @@ import { Card, Button, Popconfirm, message, Modal, Form, Select, Tooltip, Icon }
 import Annotation from '../../components/Annotation';
 import NicaiForm from '../../components/Form/index';
 
-import { TASK_APPROVE_STATUS, SOURCE, CHANNELS } from '../../constants';
+import { TASK_APPROVE_STATUS, SOURCE, CHANNELS, TASK_TYPES } from '../../constants';
 import TaskChat from '../../components/TaskChat';
 import styles from './TableList.less';
 import { queryTaskRender } from '../../services/task';
@@ -259,6 +259,8 @@ export default class TaskForm extends PureComponent {
   handleSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser, formData } = this.props;
+    const { formData: { template } } = this.state;
+    const task_type = TASK_TYPES.find(item => item.template === template);
     const { channel_name, channel } = this.getChannel();
     this.props.form.validateFieldsAndScroll(['title'], (err, vals) => {
       if (!err) {
@@ -314,7 +316,7 @@ export default class TaskForm extends PureComponent {
                   approve_status: TASK_APPROVE_STATUS.taken,
                   channel,
                   channel_name,
-                  task_type: 1,
+                  task_type: task_type.value,
                   team_id: teamUser ? teamUser.team_id : null,
                   publisher_id: currentUser._id,
                   publish_time: new Date(),
@@ -346,7 +348,7 @@ export default class TaskForm extends PureComponent {
                   approve_status: TASK_APPROVE_STATUS.taken,
                   channel,
                   channel_name,
-                  task_type: 1,
+                  task_type: task_type.value,
                   team_id: teamUser ? teamUser.team_id : null,
                   publisher_id: currentUser._id,
                   publish_time: new Date(),
@@ -378,6 +380,8 @@ export default class TaskForm extends PureComponent {
   handleSubmit = (approvers) => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { currentUser, teamUser } = this.props;
+    const { formData: { template } } = this.state;
+    const task_type = TASK_TYPES.find(item => item.template === template);
     const { channel_name, channel } = this.getChannel();
     this.validate(this.state.needValidateFieldNames, (err, values) => {
       if (!err) {
@@ -412,7 +416,7 @@ export default class TaskForm extends PureComponent {
               approve_status: TASK_APPROVE_STATUS.taken,
               channel,
               channel_name,
-              task_type: query.task_type ? Number(query.task_type) : 1,
+              task_type: task_type.value,
               team_id: teamUser ? teamUser.team_id : null,
               publisher_id: currentUser._id,
               publish_time: new Date(),
