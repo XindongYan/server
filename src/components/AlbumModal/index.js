@@ -287,10 +287,10 @@ export default class AlbumModal extends PureComponent {
     }
   }
   handleSubmitImg = (url) => {
-    nicaiCrx.innerText = JSON.stringify({data: url, index: this.state.choosen.length});
+    this.state.nicaiCrx.innerText = JSON.stringify({data: url, index: this.state.choosen.length});
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('uploadImg', true, true);
-    nicaiCrx.dispatchEvent(customEvent);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
     if (this.props.k === 'editor' || this.props.k === 'material'){
       this.setState({
         choosen: [ ...this.state.choosen, {} ],
