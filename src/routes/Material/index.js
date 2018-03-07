@@ -144,6 +144,7 @@ export default class Material extends PureComponent {
   handleAddProduct = () => {
     const { pagination } = this.state;
     this.handleGetAuction({ pageSize: pagination.pageSize, current: 1 });
+    this.setState({ loading: true });
   }
   handleShowModal = () => {
     this.props.dispatch({

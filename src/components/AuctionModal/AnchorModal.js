@@ -19,7 +19,24 @@ export default class AnchorModal extends PureComponent {
     y: -1,
     move: false,
     addVisible: false,
-    anchor: [],
+    anchor: [{
+    "data": {
+      "coverUrl": "//img.alicdn.com/tfscom/i2/2263323894/TB1.L3_bwaTBuNjSszfXXXgfpXa_!!0-item_pic.jpg",
+      "finalPricePc": 0,
+      "finalPriceWap": 0,
+      "images": ["//img.alicdn.com/tfscom/i2/2263323894/TB1.L3_bwaTBuNjSszfXXXgfpXa_!!0-item_pic.jpg", "//img.alicdn.com/tfscom/i2/2263323894/TB2sMC_d2NZWeJjSZFpXXXjBFXa_!!2263323894.jpg", "//img.alicdn.com/tfscom/i2/2263323894/TB27c2qjgoQMeJjy0FoXXcShVXa_!!2263323894.jpg", "//img.alicdn.com/tfscom/i4/2263323894/TB28GrDdERIWKJjSZFgXXboxXXa_!!2263323894.jpg", "//img.alicdn.com/tfscom/i2/2263323894/TB2XnWVhPuhSKJjSspmXXcQDpXa_!!2263323894.jpg"],
+      "itemId": 559717067219,
+      "materialId": "R-20130420269",
+      "price": 1590,
+      "rawTitle": "波斯玻璃刀子金刚石圆规刀厚玻璃多功能滚轮式万用瓷砖切割器自动",
+      "resourceUrl": "//item.taobao.com/item.htm?id=559717067219",
+      "title": "ASDADS",
+      "url": "//item.taobao.com/item.htm?id=559717067219"
+    },
+    "type": "item",
+    "x": 59,
+    "y": 53
+  }],
     anchorData: {
       data: {},
     },
@@ -194,6 +211,14 @@ export default class AnchorModal extends PureComponent {
       anchorData,
     });
   }
+  renderAnchorTagsBox = () => {
+    const { anchor } = this.state;
+    return anchor.map(item => <div className={styles.anchorTagsBox}>
+      <Badge status="warning" className={styles.anchorTagsDian} style={{width}} />
+      <span className={styles.anchorTagsIcon}></span>
+      <span className={styles.anchorTags}>{item.data && item.data.title ? item.data.title : ''}</span>
+    </div>);
+  }
   render() {
     const { image, visible, anchors } = this.props;
     const { x, y, addVisible } = this.state;
@@ -205,7 +230,7 @@ export default class AnchorModal extends PureComponent {
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          bodyStyle={{ padding: '20px' }}
+          bodyStyle={{ padding: 20 }}
           maskClosable={false}
         >
           <div className={styles.anchorOuterBox}>
@@ -222,9 +247,7 @@ export default class AnchorModal extends PureComponent {
                 >
                 </div>
               }
-              <div className={styles.anchorTagsBox}>
-                <Badge status="warning" text={<span className={styles.anchorTags}>aaaaaaa</span>} />
-              </div>
+              {this.renderAnchorTagsBox()}
             </div>
             <div className={styles.anchorInnerBox}>
               { addVisible ?
