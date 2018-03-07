@@ -203,7 +203,7 @@ export default class Editors extends PureComponent {
       this.handleChange(EditorState.redo(this.state.editorState));
     } else if (key === 'BOLD' || key === 'ITALIC' || key === 'UNDERLINE') {
       this.toggleInlineStyle(key);
-    } else if (key === 'ALIGNLEFT' || key === 'ALIGNCENTER' || key === 'ALIGNRIGHT' || key === 'ALIGNJUSTIFY') {
+    } else if (key === 'alignleft' || key === 'alignCenter' || key === 'alignRight' || key === 'alignJustify') {
       this.toggleBlockType(key);
     }
     this.setState({
@@ -219,10 +219,14 @@ export default class Editors extends PureComponent {
     );
   }
   toggleBlockType(blockType) {
+    let type = blockType;
+    if (blockType === 'alignleft') {
+      type = 'unstyled';
+    }
     this.handleChange(
       RichUtils.toggleBlockType(
         this.state.editorState,
-        blockType
+        type
       )
     );
   }
@@ -287,10 +291,10 @@ export default class Editors extends PureComponent {
 
   getBlockStyle = (block) => {
     switch (block.getType()) {
-      case 'ALIGNLEFT': return styles.ineditorAlignLeft;
-      case 'ALIGNCENTER': return styles.ineditorAlignCenter;
-      case 'ALIGNRIGHT': return styles.ineditorAlignRight;
-      case 'ALIGNJUSTIFY': return styles.ineditorAlignJustify;
+      case 'alignleft': return styles.ineditorAlignLeft;
+      case 'alignCenter': return styles.ineditorAlignCenter;
+      case 'alignRight': return styles.ineditorAlignRight;
+      case 'alignJustify': return styles.ineditorAlignJustify;
       default: return null;
     }
   }
@@ -331,17 +335,17 @@ export default class Editors extends PureComponent {
       case 'UNDERLINE': return <span onClick={() => this.handleTools('UNDERLINE')} key={index}>
                                 <Icon type="underline" style={{color: this.handleShowInlinStyle('UNDERLINE')}} />
                               </span>;
-      case 'ALIGNLEFT': return <span onClick={() => this.handleTools('ALIGNLEFT')} key={index}>
-                                  <Icon type="align-left" style={{color: this.handleShowBlockStyle('ALIGNLEFT')}} />
+      case 'ALIGNLEFT': return <span onClick={() => this.handleTools('alignleft')} key={index}>
+                                  <Icon type="align-left" style={{color: this.handleShowBlockStyle('unstyled')}} />
                                 </span>;
-      case 'ALIGNCENTER': return <span onClick={() => this.handleTools('ALIGNCENTER')} key={index}>
-                                  <Icon type="align-center" style={{color: this.handleShowBlockStyle('ALIGNCENTER')}} />
+      case 'ALIGNCENTER': return <span onClick={() => this.handleTools('alignCenter')} key={index}>
+                                  <Icon type="align-center" style={{color: this.handleShowBlockStyle('alignCenter')}} />
                                 </span>;
-      case 'ALIGNRIGHT': return <span onClick={() => this.handleTools('ALIGNRIGHT')} key={index}>
-                                  <Icon type="align-right" style={{color: this.handleShowBlockStyle('ALIGNRIGHT')}} />
+      case 'ALIGNRIGHT': return <span onClick={() => this.handleTools('alignRight')} key={index}>
+                                  <Icon type="align-right" style={{color: this.handleShowBlockStyle('alignRight')}} />
                                 </span>;
-      case 'ALIGNJUSTIFY': return <span onClick={() => this.handleTools('ALIGNJUSTIFY')} key={index}>
-                                    <Icon type="align-justify" style={{color: this.handleShowBlockStyle('ALIGNJUSTIFY')}} />
+      case 'ALIGNJUSTIFY': return <span onClick={() => this.handleTools('alignJustify')} key={index}>
+                                    <Icon type="align-justify" style={{color: this.handleShowBlockStyle('alignJustify')}} />
                                   </span>;
       default: return '';
     }

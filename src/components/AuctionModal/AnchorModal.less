@@ -19,6 +19,8 @@
 	}
 	.offsetBox{
 		position: absolute;
+		top: 0;
+		left: 0;
 		width: 22px;
 		height: 22px;
 		border-radius: 50%;
@@ -26,10 +28,61 @@
 		color: #fff;
 		line-height: 22px;
 		text-align: center;
+		cursor: move;
+		touch-action: none;
+		z-index: 10;
+	}
+	.anchorTagsBox{
+		position: absolute;
+		top: 0;
+		left: 0;
+		border-radius: 5px;
+		.anchorTags{
+			display: inline-block;
+			height: 22px;
+			line-height: 22px;
+			padding: 0 5px;
+			font-size: 12px;
+			background: rgba(0, 0, 0, 0.5);
+			color: #fff;
+		}
 	}
 }
 .anchorInnerBox{
 	width: 100%;
 	height: 300px;
 	padding-left: 300px;
+}
+.outerAddBox{
+	width: 100%;
+	padding: 10px 20px;
+	&> p, &> div{
+		font-size: 14px;
+		margin-bottom: 8px;
+	}
+	.addAuctionBox{
+		width: 120px;
+		height: 120px;
+		background: #fff;
+		.uploadBox{
+			width: 100%;
+			height: 100%;
+			border: 1px dashed #6AF;
+			align-items: center;
+			cursor: pointer;
+			text-align: center;
+			padding-top: 30px;
+			color: #6AF;
+			.uploadIcon{
+				font-size: 38px;
+			}
+		}
+		img{
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.addAuctionTag{
+		
+	}
 }

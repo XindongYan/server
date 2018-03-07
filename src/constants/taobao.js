@@ -114,7 +114,7 @@ const CHANNELS = [{
   "activityList": [{
     "id": 12,
     "name": "首页card极有家",
-    "templates": ["post", /*"collection"*/]
+    "templates": ["post", "collection"]
   }],
   "desc": "极有家致力于帮助年轻人造有品位的家。我们严选物美质优商品，提供专业服务，帮助消费者发现搭配灵感和生活窍门。我们欢迎热爱生活，对家有自己独特的时尚见解，愿意分享的达人、装修设计师、家居媒体入驻。",
   "id": 14,

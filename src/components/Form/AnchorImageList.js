@@ -11,6 +11,7 @@ export default class AnchorImageList extends PureComponent {
   state = {
     nicaiCrx: null,
     version: '',
+    AnchorIndex: 0,
   }
   componentDidMount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
@@ -110,6 +111,9 @@ export default class AnchorImageList extends PureComponent {
     if (props.url) {
       window.open(`https://we.taobao.com${props.url}`);
     } else {
+      this.setState({
+        AnchorIndex: props.value.length,
+      });
       this.props.dispatch({
         type: 'album/show',
         payload: { currentKey: this.props.name }
@@ -122,7 +126,9 @@ export default class AnchorImageList extends PureComponent {
     window.open(`https://we.taobao.com${this.props.props.url}&dapeiId=${features.dapeiId}`);
   }
   handleDeleteJigsaw = (e) => {
-    if (this.props.onChange) this.props.onChange({});
+    const { AnchorIndex } = this.state;
+
+    if (this.props.onChange) this.props.onChange();
   }
 
   handleChangeCover = (imgs) => {
@@ -132,12 +138,18 @@ export default class AnchorImageList extends PureComponent {
         payload: {
           anchorKey: this.props.name,
           image: imgs[0].url,
+          value: {
+            anchors: [],
+            hotSpaces: [],
+            url: imgs[0].url,
+          }
         }
       });
     }
   }
-  handleAddAnchor = () => {
-
+  handleAddAnchor = (anchor) => {
+    console.log(anchor);
+    if (this.props.onChange) this.props.onChange();
   }
   render() {
     const { name, props, disabled } = this.props;
@@ -170,7 +182,7 @@ export default class AnchorImageList extends PureComponent {
           }
         </div>
         <AlbumModal mode="single" k={name} /*minSize={{ width: pixFilter[0], height: pixFilter[1] }}*/ onOk={this.handleChangeCover}/>
-        <AnchorModal k={name} onOk={this.handleAddAnchor} />
+        <AnchorModal k={name} onChange={this.handleAddAnchor} />
       </div>
     );
   }
