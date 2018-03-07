@@ -150,6 +150,24 @@ const CHANNELS = [{
   "name": "装备天地"
 }, {
   "activityList": [{
+    "id": 47,
+    "name": "日常投稿.",
+    "templates": [/*"video",*/ "post", /*"collection"*/]
+  }, {
+    "id": 1377,
+    "name": "拼图 搭配",
+    "templates": ["collection"]
+  // }, {
+  //   "id": 1289,
+  //   "name": "竖版视频.",
+  //   "templates": ["video"]
+  }],
+  "desc": "为年轻人提供时髦、流行的品味消费指 南。年轻妹子流行的女性购物社区。红 人买手、校园搭配师、品牌主理人、90 后模特、时尚博主的买买买经验，一起 挑到颜值最高的好货！",
+  "id": 3,
+  "logo": "https://img.alicdn.com/tfs/TB19Qf1RVXXXXXZaXXXXXXXXXXX-200-200.png",
+  "name": "爱逛街"
+}, {
+  "activityList": [{
     "id": -21,
     "name": "直播脚本",
     "templates": ["post"]
