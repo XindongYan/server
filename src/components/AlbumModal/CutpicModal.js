@@ -128,10 +128,10 @@ export default class CutpicModal extends PureComponent {
   }
   handleSubmit = (url) => {
     this.setState({ confirmLoading: true });
-    nicaiCrx.innerText = JSON.stringify({data: url});
+    this.state.nicaiCrx.innerText = JSON.stringify({data: url});
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('uploadImg', true, true);
-    nicaiCrx.dispatchEvent(customEvent);
+    this.state.nicaiCrx.dispatchEvent(customEvent);
     if (this.props.visible) {
       message.destroy();
       message.loading('上传中 ...', 60 * 60);
