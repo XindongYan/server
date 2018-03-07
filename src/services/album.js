@@ -6,7 +6,7 @@ export async function queryPhotos(params) {
 }
 
 export async function addPhoto(params) {
-  return request(`/api/photo`, {
+  return request('/api/photo', {
     method: 'POST',
     body: {
       ...params,
@@ -15,7 +15,7 @@ export async function addPhoto(params) {
 }
 
 export async function removePhoto(params) {
-  return request(`/api/photo`, {
+  return request('/api/photo', {
     method: 'DELETE',
     body: {
       ...params,

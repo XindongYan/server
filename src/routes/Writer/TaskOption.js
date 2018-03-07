@@ -80,7 +80,7 @@ export default class TaskOption extends PureComponent {
       let remainCount = '';
       channel_list.forEach(item => {
         item.activityList.find(item1 => {
-          if (item1.id == id) {
+          if (item1.id === id) {
             remainCount = item1.remainCount;
           }
         });
@@ -111,7 +111,7 @@ export default class TaskOption extends PureComponent {
               <div style={{ display: 'flex' }}>
                 {item.activityList.map((item1, index1) => <div key={index1} className={styles.option_choose_box} onClick={() => this.handleDeliver(item.id, item1.id)}>
                   <p>{item1.name}</p>
-                  <p style={{fontSize: 12}}>{this.handleGetRemainCount(item1.id)}</p>
+                  <p style={{ fontSize: 12 }}>{this.handleGetRemainCount(item1.id)}</p>
                 </div>)}
               </div>
             </Card>
