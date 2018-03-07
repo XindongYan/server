@@ -5,6 +5,7 @@ import { Card, message, Row, Spin } from 'antd';
 import styles from './index.less';
 import ProjectDetail from '../../components/ProjectDetail';
 import { routerRedux } from 'dva/router';
+import { TASK_TYPES } from '../../constants';
 
 @connect(state => ({
   project: state.taskSquare.project,
@@ -36,7 +37,9 @@ export default class SubmissionDetails extends PureComponent {
   }
   createTaskInto = () => {
     const { project } = this.props;
-    this.props.dispatch(routerRedux.push(`/writer/task/create?project_id=${project._id}&channel_name=${project.channel_name}`));
+    const task_type = TASK_TYPES.find(item => project.task_type === item.value);
+    const template = task_type ? task_type.template : '';
+    this.props.dispatch(routerRedux.push(`/writer/task/create?project_id=${project._id}&activityId=${project.channel[1]}&template=${template}`));
   }
   render() {
     const { project, loading } = this.props;
