@@ -245,7 +245,11 @@ export default class TaskForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="类型"
+            label={
+              <Tooltip placement="topLeft" title="帖子、搭配、单品 ...">
+                类型 <Icon type="question-circle-o" />
+              </Tooltip>
+            }
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -266,9 +270,6 @@ export default class TaskForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('merchant_tag', {
-              rules: [{ required: true, message: '请输入项目标题！' }, {
-                whitespace: true, message: '商家标签不能为空格！',
-              }],
             })(
               <Input maxLength="30" placeholder="最多输入30个字" />
             )}
