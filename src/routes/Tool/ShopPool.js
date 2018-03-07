@@ -42,7 +42,7 @@ export default class ShopPool extends PureComponent {
       valueInp = escape(valueInp);
     }
     let numLine = 0;
-    for (var i = 0; i < shopArr.length; i ++) {
+    for (let i = 0; i < shopArr.length; i ++) {
       const value = shopArr[i];
       const kxuan_uplus_c2c_url = url.parse(value.kxuan_uplus_c2c_url);
       const query = querystring.parse(kxuan_uplus_c2c_url.query);
@@ -67,7 +67,7 @@ export default class ShopPool extends PureComponent {
           const aryAuctions = data["mods"]["itemlist"] ? data["mods"]["itemlist"]["data"]["auctions"] : []; // object
           if (aryAuctions.length >= 1) {
             numLine += 1;
-            var json = {
+            const json = {
               numLine:numLine,
               value:value,
               shopName:value.theme_name,

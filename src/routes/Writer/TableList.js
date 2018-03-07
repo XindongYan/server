@@ -4,9 +4,6 @@ import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, me
 import moment from 'moment';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
-import $ from 'jquery';
-import fetch from 'dva/fetch';
-import { stringify } from 'qs';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import TaskIdColumn from '../../components/TaskIdColumn';
