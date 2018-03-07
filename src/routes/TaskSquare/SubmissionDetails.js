@@ -39,7 +39,7 @@ export default class SubmissionDetails extends PureComponent {
     const { project } = this.props;
     const task_type = TASK_TYPES.find(item => project.task_type === item.value);
     const template = task_type ? task_type.template : '';
-    this.props.dispatch(routerRedux.push(`/writer/task/create?project_id=${project._id}&activityId=${project.channel[1]}&template=${template}`));
+    this.props.dispatch(routerRedux.push(`/writer/task/create?project_id=${project._id}&channelId=${project.channel[0]}&activityId=${project.channel[1]}&template=${template}`));
   }
   render() {
     const { project, loading } = this.props;
