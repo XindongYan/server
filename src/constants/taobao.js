@@ -122,6 +122,34 @@ const CHANNELS = [{
   "name": "极有家"
 }, {
   "activityList": [{
+    "id": 1156,
+    "name": "单品&测评专用入口",
+    "templates": ["post", "item"]
+  }, {
+    "id": 59,
+    "name": "首页card科技前沿",
+    "templates": [/*"video",*/ "post"]
+  }],
+  "desc": "科技前沿频道主要包罗了数码科技、汽车整车等诸多男性周边产品，特别适合对于运动、汽车等领域周边装备非常熟悉的你。在淘宝首页人群市场等重要区域露出。",
+  "id": 6,
+  "logo": "https://img.alicdn.com/tfs/TB1m7vDSFXXXXXQXVXXXXXXXXXX-100-100.png",
+  "name": "科技前沿"
+}, {
+  "activityList": [{
+    "id": 1155,
+    "name": "单品专用入口",
+    "templates": ["item"]
+  }, {
+    "id": 11,
+    "name": "首页card装备天地",
+    "templates": [/*"video",*/ "post"]
+  }],
+  "desc": "装备天地频道主要包罗了运动、汽车、户外等男性周边产品，特别适合对于运动、汽车等领域周边装备非常熟悉的你。在淘宝首页人群市场等重要区域露出。",
+  "id": 59,
+  "logo": "https://img.alicdn.com/tfs/TB1UL6CSFXXXXbbXVXXXXXXXXXX-100-100.png",
+  "name": "装备天地"
+}, {
+  "activityList": [{
     "id": -21,
     "name": "直播脚本",
     "templates": ["post"]
