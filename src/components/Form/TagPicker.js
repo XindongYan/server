@@ -78,7 +78,6 @@ export default class TagPicker extends PureComponent {
             </Tabs>
           }
         </div>
-
         <div style={{ marginTop: 10 }}>
           <p>已选 <a>{props.value.length}</a> 个项目</p>
           <div style={{ padding: '10px 0' }}>

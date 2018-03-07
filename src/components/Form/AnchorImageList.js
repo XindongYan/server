@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Icon, message } from 'antd';
+import AlbumModal from '../AlbumModal';
+import AnchorModal from '../AuctionModal/AnchorModal';
 import styles from './AnchorImageList.less';
 @connect(state => ({
 
@@ -104,7 +106,15 @@ export default class AnchorImageList extends PureComponent {
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleCreateJigsaw = (e) => {
-    window.open(`https://we.taobao.com${this.props.props.url}`);
+    const { props } = this.props;
+    if (props.url) {
+      window.open(`https://we.taobao.com${props.url}`);
+    } else {
+      this.props.dispatch({
+        type: 'album/show',
+        payload: { currentKey: this.props.name }
+      });
+    }
   }
   handleEditJigsaw = (e) => {
     const { props } = this.props;
@@ -114,9 +124,24 @@ export default class AnchorImageList extends PureComponent {
   handleDeleteJigsaw = (e) => {
     if (this.props.onChange) this.props.onChange({});
   }
+
+  handleChangeCover = (imgs) => {
+    if (imgs && imgs.length > 0) {
+      this.props.dispatch({
+        type: 'album/showAnchor',
+        payload: {
+          anchorKey: this.props.name,
+          image: imgs[0].url,
+        }
+      });
+    }
+  }
+  handleAddAnchor = () => {
+
+  }
   render() {
-    const { props, disabled } = this.props;
-    const url = props.value.length > 0 ? props.value[0].url : '';
+    const { name, props, disabled } = this.props;
+    const pixFilter = props.imgSpaceProps.pixFilter.split('x').map(item => Number(item));
     const styleDisabled = disabled ? {
       padding: '60px 0',
       width: 200,
@@ -128,21 +153,24 @@ export default class AnchorImageList extends PureComponent {
       <div style={{ padding: '10px 20px' }}>
         <p style={{ marginBottom: 10 }}>{props.label}</p>
         <div style={{ width: 200, height: 200 }}>
-          {url ?
-            <div className={styles.showImgBox}>
-              <img style={{ width: '100%', height: '100%' }} src={url}/>
+          { props.value && props.value.length > 0 ?
+            props.value.map((item, index) => <div className={styles.showImgBox}>
+              <img style={{ width: '100%', height: '100%' }} src={item.url}/>
               { !this.props.disabled && <div className={styles.deleteImgBox}>
                 <Icon type="edit" className={styles.editIcon} onClick={this.handleEditJigsaw} />
                 <Icon type="delete" className={styles.deleteIcon} onClick={this.handleDeleteJigsaw} />
               </div>
               }
-            </div> :
+            </div>)
+             :
             <div className={styles.upCover} style={styleDisabled} onClick={!disabled ? this.handleCreateJigsaw : () => {}}>
               <Icon type="plus" />
               <p style={{ fontSize: 14 }}>添加搭配图</p>
             </div>
           }
         </div>
+        <AlbumModal mode="single" k={name} /*minSize={{ width: pixFilter[0], height: pixFilter[1] }}*/ onOk={this.handleChangeCover}/>
+        <AnchorModal k={name} onOk={this.handleAddAnchor} />
       </div>
     );
   }

@@ -35,6 +35,12 @@ export default {
       visible: false,
       coverKey: '',
       auction: {},
+    },
+    anchorModal: {
+      visible: false,
+      anchorKey: '',
+      image: '',
+      anchors: [],
     }
   },
 
@@ -122,6 +128,18 @@ export default {
         payload: { visible: false, ...payload },
       });
     },
+    *showAnchor({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeAnchorModal',
+        payload: { visible: true, ...payload },
+      });
+    },
+    *hideAnchor({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeAnchorModal',
+        payload: { visible: false, ...payload },
+      });
+    },
   },
 
   reducers: {
@@ -175,6 +193,15 @@ export default {
         ...state,
         coverModal: {
           ...state.coverModal,
+          ...action.payload,
+        },
+      };
+    },
+    changeAnchorModal(state, action) {
+      return {
+        ...state,
+        anchorModal: {
+          ...state.anchorModal,
           ...action.payload,
         },
       };
