@@ -223,8 +223,8 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入项目标题！' }, {
-                whitespace: true, message: '项目标题不能为空格！',
+              rules: [{ required: true, message: '请输入活动标题！' }, {
+                whitespace: true, message: '活动标题不能为空格！',
               }],
             })(
               <Input placeholder="最多20字" maxLength="20" />
@@ -242,7 +242,11 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="类型"
+            label={
+              <Tooltip placement="topLeft" title="帖子、搭配、单品 ...">
+                类型 <Icon type="question-circle-o" />
+              </Tooltip>
+            }
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
@@ -263,9 +267,6 @@ export default class ProjectForm extends PureComponent {
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('merchant_tag', {
-              rules: [{ required: true, message: '请输入项目标题！' }, {
-                whitespace: true, message: '商家标签不能为空格！',
-              }],
             })(
               <Input maxLength="30" placeholder="最多输入30个字" />
             )}
@@ -327,7 +328,7 @@ export default class ProjectForm extends PureComponent {
             {getFieldDecorator('price', {
               initialValue: 0,
               rules: [{
-                required: true, message: '请输入项目奖励'
+                required: true, message: '请输入活动奖励'
               }, {
                 pattern: /^(\d{1,5}|0)(\.\d{1,2})?$/, message: '请输入整数位5以内，小数位2以内的数字'
               }],
@@ -343,11 +344,11 @@ export default class ProjectForm extends PureComponent {
             {getFieldDecorator('project_level', {
               initialValue: 1,
               rules: [{
-                required: true, message: '请选择项目级别'
+                required: true, message: '请选择活动级别'
               }],
             })(
               <Select
-                placeholder="择项目级别"
+                placeholder="选择活动级别"
               >
                 {PROJECT_LEVELS.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>

@@ -497,7 +497,7 @@ export default class TaskForm extends PureComponent {
       const query = querystring.parse(this.props.location.search.substr(1));
       const channel = CHANNELS.find(item => item.id === Number(query.channelId));
       const activity = channel.activityList.find(item => item.id === Number(query.activityId));
-      return { channel_name: activity.name, channel: [ Number(query.channelId), Number(query.activityId) ] };
+      return { channel_name: channel.name, channel: [ Number(query.channelId), Number(query.activityId) ] };
       
     }
     return { channel_name: formData.channel_name, channel: formData.channel };
