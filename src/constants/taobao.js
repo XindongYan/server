@@ -152,7 +152,7 @@ const CHANNELS = [{
   "activityList": [{
     "id": 47,
     "name": "日常投稿.",
-    "templates": [/*"video",*/ "post", "collection"]
+    "templates": [/*"video",*/ "post", /*"collection"*/]
   }, {
     "id": 1377,
     "name": "拼图 搭配",
