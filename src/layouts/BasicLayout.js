@@ -419,7 +419,7 @@ class BasicLayout extends React.PureComponent {
                 <Dropdown overlay={menu}>
                   <span className={`${styles.action} ${styles.account}`}>
                     <Avatar size="small" className={styles.avatar} src={currentUser.avatar} />
-                    {currentUser.nickname}{team.name ? ` @ ${team.name}` : ''}
+                    {currentUser.nickname}{team ? ` @ ${team.name}` : ''}
                   </span>
                 </Dropdown>
               ) : <Spin size="small" style={{ marginLeft: 8 }} />}
