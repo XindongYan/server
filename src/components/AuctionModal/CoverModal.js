@@ -235,7 +235,7 @@ export default class CoverChooseModal extends PureComponent {
         <Modal
           title="完善商品信息"
           width="850px"
-          visible={visible}
+          visible={visible && this.props.coverKey === this.props.k}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           bodyStyle={{ padding: '5px 20px' }}

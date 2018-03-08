@@ -35,6 +35,7 @@ export default class AuctionModal extends PureComponent {
     search: '',
     qumai: '',
     activeKey: 'add',
+    kuaixuanUrl: '',
   }
   componentDidMount() {
     
@@ -42,7 +43,6 @@ export default class AuctionModal extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps.k === nextProps.currentKey) {
       if (!this.props.visible && nextProps.visible) {
-
         this.setState({
           auctionChoose: {},
           search: '',
@@ -72,6 +72,7 @@ export default class AuctionModal extends PureComponent {
             this.setState({ nicaiCrx });
           }
         }
+        this.handleGetKuaixuanId();
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('setAuction', this.setAuction);
@@ -355,18 +356,19 @@ export default class AuctionModal extends PureComponent {
   }
   handleGetKuaixuanId = async () => {
     const { activityId } = this.props;
+    let url = 'https://we.taobao.com/material/square/detail?kxuanParam=%7B%22nested%22%3A%22we%22%2C%22id%22%3A%220%22%7D';
     const taskChannel = await fetch(`/jsons/taskChannel.json`).then(response => response.json());
-    const kuaixuanUrl = taskChannel.find(item => {return item.selectItemData ? item.selectItemData.url : ''});
-    if (kuaixuanUrl) {
-      return kuaixuanUrl;
-    } else {
-      return 'https://we.taobao.com/material/square/detail?kxuanParam=%7B%22nested%22%3A%22we%22%2C%22id%22%3A%220%22%7D';
+    const data = taskChannel.find(item => item.id === activityId && item.selectItemData);
+    if (data) {
+      url = data.selectItemData.url;
     }
+    this.setState({
+      kuaixuanUrl: url,
+    });
   }
   render() {
     const { visible, k, currentKey, activityId } = this.props;
     const { itemList, pagination, actsLoading, activeKey, auctionChoose, q_score, new7, qumai } = this.state;
-    const kuaixuan = this.handleGetKuaixuanId();
     return (
       <Modal
         title="添加商品"
@@ -379,7 +381,7 @@ export default class AuctionModal extends PureComponent {
       >
         { k !== 'material' ?
           <Tabs
-            tabBarExtraContent={<div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={kuaixuan}>选品池</a></div>}
+            tabBarExtraContent={<div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div>}
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >

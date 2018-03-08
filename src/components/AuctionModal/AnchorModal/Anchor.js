@@ -58,7 +58,7 @@ export default class Anchor extends PureComponent {
   handleShowAuctionModal = () => {
     this.props.dispatch({
       type: 'auction/show',
-      payload: { currentKey: "Anchor" }
+      payload: { currentKey: `Anchor${this.props.k}` }
     });
   }
   handleAddNewAnchor = () => {
@@ -99,7 +99,7 @@ export default class Anchor extends PureComponent {
     this.props.dispatch({
       type: 'album/showCover',
       payload: {
-        coverKey: "Anchor",
+        coverKey: `Anchor${this.props.k}`,
         auction: {...this.state.auction, title: this.state.auction.rawTitle },
       }
     });
@@ -145,8 +145,8 @@ export default class Anchor extends PureComponent {
             <Button onClick={this.handleDeleteAnchor} style={{marginLeft: 20}}>删除此条</Button>
           </div>
         </div>
-        <AuctionModal k="Anchor" onOk={this.handleAddProduct} />
-        <CoverModal k="Anchor" onOk={this.handleChangeProduct} />
+        <AuctionModal k={`Anchor${this.props.k}`} onOk={this.handleAddProduct} />
+        <CoverModal k={`Anchor${this.props.k}`} onOk={this.handleChangeProduct} />
       </div>
     );
   }

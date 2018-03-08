@@ -25,9 +25,20 @@
 	cursor: pointer;
 	z-index: 1;
 }
+.ImageListBox:after{
+	display: block;
+	content: '';
+	clear: both;
+}
 .showImgBox{
 	position: relative;
 	float: left;
+	width: 200px;
+	height: 200px;
+	margin: 0 3px 3px 0;
+}
+.showImgBox:after{
+
 }
 .showImgBox:hover .deleteImgBox{
 	display: block;

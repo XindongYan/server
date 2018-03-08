@@ -185,9 +185,9 @@ export default class AnchorImageList extends PureComponent {
     return (
       <div style={{ padding: '10px 20px' }}>
         <p style={{ marginBottom: 10 }}>{props.label}</p>
-        <div>
+        <div className={styles.ImageListBox}>
           { props.value && props.value.length > 0 &&
-            props.value.map((item, index) => <div key={index} className={styles.showImgBox} style={{ width: 200, height: 200, display: 'inline-block', margin: '0 3px 3px 0' }}>
+            props.value.map((item, index) => <div key={index} className={styles.showImgBox}>
               <img style={{ width: '100%', height: '100%' }} src={item.url}/>
               { !this.props.disabled && <div className={styles.deleteImgBox}>
                 <Icon type="edit" className={styles.editIcon} onClick={(e) => this.handleEditJigsaw(e, index)} />
@@ -223,7 +223,7 @@ export default class AnchorImageList extends PureComponent {
             </div>
           }
         </div>
-        <AlbumModal mode="single" k={name} minSize={{ width: pixFilter[0], height: pixFilter[1] }} onOk={this.handleChangeCover}/>
+        <AlbumModal mode="single" k={name} /*minSize={{ width: pixFilter[0], height: pixFilter[1] }}*/ onOk={this.handleChangeCover}/>
         <AnchorModal props={this.props.props} k={name} onChange={this.handleAddAnchor} />
       </div>
     );

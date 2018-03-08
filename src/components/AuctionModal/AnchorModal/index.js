@@ -179,14 +179,14 @@ export default class AnchorModal extends PureComponent {
     });
   }
   render() {
-    const { props, image, visible } = this.props;
+    const { props, image, visible, k } = this.props;
     const { wh, x, y, addVisible, anchors, outerBoxWh } = this.state;
     return (
       <div>
         <Modal
           title="添加搭配图"
           width="800px"
-          visible={visible}
+          visible={this.props.k === this.props.anchorKey && visible}
           onCancel={this.handleCancel}
           bodyStyle={{ padding: 20 }}
           maskClosable={false}
@@ -233,7 +233,7 @@ export default class AnchorModal extends PureComponent {
             <div className={styles.anchorInnerBox}>
               { addVisible ?
                 <div>
-                  <Anchor onChange={this.handleAddAnchor} data={this.state.anchorData.data || {}} />
+                  <Anchor k={this.props.k} onChange={this.handleAddAnchor} data={this.state.anchorData.data || {}} />
                 </div> :
                 <div style={{padding: '120px 0 0 60px', fontSize: 18, color: '#888'}}>
                   <p>请在左侧选择合适的位置点击添加宝贝标签</p>
