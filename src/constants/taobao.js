@@ -178,6 +178,16 @@ const CHANNELS = [{
   "name": "每日好店"
 }, {
   "activityList": [{
+    "id": 44,
+    "name": "攻略内容招稿",
+    "templates": ["post"]
+  }],
+  "desc": "必买清单是手淘最重要的内容导购阵地之一，提供具体场景下，具体问题的一站式解决方案，介绍实用or新鲜的资讯、知识，并推荐与资讯、知识非常契合的商品。",
+  "id": 4,
+  "logo": "https://img.alicdn.com/tfs/TB1_sjMRVXXXXXhaFXXXXXXXXXX-200-200.png",
+  "name": "必买清单"
+}, {
+  "activityList": [{
     "id": -21,
     "name": "直播脚本",
     "templates": ["post"]
