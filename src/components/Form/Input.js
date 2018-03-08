@@ -20,7 +20,7 @@ export default class NInput extends PureComponent {
     return (
       <div className={styles.taskListInp}>
         { type === 'Input' ?
-          <FormItem>
+          <FormItem colon={false} label={props.className && props.className.indexOf('creator-input-title') >= 0 ? '' : props.label}>
             {getFieldDecorator(name, {
               initialValue: props.value,
               rules: newRules,
@@ -31,7 +31,7 @@ export default class NInput extends PureComponent {
               />
             )}
           </FormItem>
-          : <FormItem>
+          : <FormItem colon={false} label={props.className && props.className.indexOf('creator-input-title') >= 0 ? '' : props.label}>
             {getFieldDecorator(name, {
               initialValue: props.value,
               rules: newRules,

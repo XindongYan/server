@@ -37,6 +37,9 @@ export default class CreatorAddImage extends PureComponent {
     const pixFilter = props.pixFilter.split('x').map(item => Number(item));
     return (
       <div style={{ padding: '10px 20px 0' }}>
+        <div style={{ lineHeight: 2 }}>
+          {props.label}
+        </div>
         <div>
           { props.value.map((item, index) =>
             <div className={styles.coverPic} key={index}>

@@ -12,6 +12,7 @@ import RadioGroup from './RadioGroup';
 import CreatorAddItem from './CreatorAddItem';
 import CreatorAddSpu from './CreatorAddSpu';
 import AddTag from './AddTag';
+import Rating from './Rating';
 import styles from './index.less';
 
 export default class TaskForm extends PureComponent {
@@ -106,6 +107,8 @@ export default class TaskForm extends PureComponent {
         formComponents.push(<AnchorImageList key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       } else if (item.component === 'StructCanvas') {
         formComponents.push(<StructCanvas key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
+      } else if (item.component === 'Rating') {
+        formComponents.push(<Rating key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       }
     });
     return (
