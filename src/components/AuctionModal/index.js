@@ -178,7 +178,7 @@ export default class AuctionModal extends PureComponent {
   renderAuctions = (auction) => {
     return (
       <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.id} >
-        { (auction.item.displayStatus && auction.item.displayStatus !== '正常') || auction.disable &&
+        { ((auction.item.displayStatus && auction.item.displayStatus !== '正常') || auction.disable) &&
           <div className={styles.displayStatus}>选品不符</div>
         }
         <div onClick={() => this.handleChooseAuction(auction)}>
