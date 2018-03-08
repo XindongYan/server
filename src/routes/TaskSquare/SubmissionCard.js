@@ -52,11 +52,9 @@ export default class SubmissionCard extends PureComponent {
     return (
       <Card className={styles.cardCol} style={cardStyle} bodyStyle={{ padding: '0 30px 5px 10px' }}>
         <div className={styles.cardColTop}>
-          <Link to={`/taskSquare/submission/details?project_id=${project._id}`}>
-            <h3 title={project.name} style={{ cursor: 'pointer' }}>
-              {project.name}
-            </h3>
-          </Link>
+          <h3 title={project.name}>
+            {project.name}
+          </h3>
           <div style={{ marginTop: 8 }}>
             <Tooltip title="活动ID">
               <Tag color="green">{ project.id}</Tag>

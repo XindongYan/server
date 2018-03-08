@@ -353,35 +353,20 @@ export default class AuctionModal extends PureComponent {
       type: 'auction/hide',
     });
   }
-  handleGetKuaixuanId = () => {
+  handleGetKuaixuanId = async () => {
     const { activityId } = this.props;
-    if (activityId == '1437') {
-      return "294";
-    } else if (activityId == '97') {
-      return "210";
-    } else if (activityId == '1413' || activityId == '413') {
-      return "200";
-    } else if (activityId == '414') {
-      return "292";
-    } else if (activityId == '1439') {
-      return "3321";
-    } else if (activityId == '60') {
-      return "3454";
-    } else if (activityId == '1157' || activityId == '409') {
-      return "201";
-    } else if (activityId == '411') {
-      return "202";
-    } else if (activityId == '12') {
-      return "205";
+    const taskChannel = await fetch(`/jsons/taskChannel.json`).then(response => response.json());
+    const kuaixuanUrl = taskChannel.find(item => {return item.selectItemData ? item.selectItemData.url : ''});
+    if (kuaixuanUrl) {
+      return kuaixuanUrl;
     } else {
-      return "0";
+      return 'https://we.taobao.com/material/square/detail?kxuanParam=%7B%22nested%22%3A%22we%22%2C%22id%22%3A%220%22%7D';
     }
   }
   render() {
     const { visible, k, currentKey, activityId } = this.props;
     const { itemList, pagination, actsLoading, activeKey, auctionChoose, q_score, new7, qumai } = this.state;
-    const kuaixuanId = this.handleGetKuaixuanId();
-    const kuaixuan = `https://we.taobao.com/material/square/detail?${querystring.stringify({kxuanParam: JSON.stringify({nested: "we", id: kuaixuanId})})}`;
+    const kuaixuan = this.handleGetKuaixuanId();
     return (
       <Modal
         title="添加商品"
