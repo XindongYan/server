@@ -111,7 +111,6 @@ export default class AuctionModal extends PureComponent {
   setAuction = (e) => {
     const data = JSON.parse(e.target.innerText);
     if (!data.error) {
-      console.log(data.itemList);
       this.setState({
         itemList: data.itemList || [],
         pagination: {
