@@ -19,7 +19,7 @@ export default class AnchorModal extends PureComponent {
     y: -1,
     move: false,
     addVisible: false,
-    anchor: [{
+    anchors: [{
     "data": {
       "coverUrl": "//img.alicdn.com/tfscom/i2/2263323894/TB1.L3_bwaTBuNjSszfXXXgfpXa_!!0-item_pic.jpg",
       "finalPricePc": 0,
@@ -46,19 +46,19 @@ export default class AnchorModal extends PureComponent {
 
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.k === nextProps.anchorKey) {
-      if (!this.props.visible && nextProps.visible) {
-        if (nextProps.value) {
-          this.setState({
-            anchor: nextProps.value,
-          });
-        }
-      } else if (this.props.visible && !nextProps.visible) {
-          this.setState({
-            anchor: [],
-          });
-      }
-    }
+    // if (nextProps.k === nextProps.anchorKey) {
+    //   if (!this.props.visible && nextProps.visible) {
+    //     if (nextProps.value && nextProps.value.anchors) {
+    //       this.setState({
+    //         anchors: nextProps.value.anchors,
+    //       });
+    //     }
+    //   } else if (this.props.visible && !nextProps.visible) {
+    //       this.setState({
+    //         anchors: [],
+    //       });
+    //   }
+    // }
   }
   
   handleOk = () => {
@@ -138,20 +138,23 @@ export default class AnchorModal extends PureComponent {
     });
   }
   handleAddNewAnchor = () => {
-    const { anchor, anchorData, anchorData: { data } } = this.state;
+    const { anchors, anchorData, anchorData: { data } } = this.state;
     if (!data.url) {
       message.destroy();
       message.warn('请添加一个商品');
     } else if (!data.title.trim()) {
       message.warn('请输入宝贝标签');
     } else {
-      let newAnchor = Object.assign({}, anchor);
-      const index = anchor.findIndex(item => item.x === anchorData.x && item.y === anchorData.y);
+      let newAnchors = Object.assign([], anchors);
+      const index = anchors.findIndex(item => item.x === anchorData.x && item.y === anchorData.y);
       if (index === -1) {
-        newAnchor.push(this.state.anchorData);
+        newAnchors.push(this.state.anchorData);
       } else {
-        newAnchor[index] = this.state.anchorData;
+        newAnchors[index] = this.state.anchorData;
       }
+      this.setState({
+        anchors: newAnchors,
+      });
     }
   }
   handleShowAuctionModal = () => {
@@ -212,12 +215,20 @@ export default class AnchorModal extends PureComponent {
     });
   }
   renderAnchorTagsBox = () => {
-    const { anchor } = this.state;
-    return anchor.map(item => <div className={styles.anchorTagsBox}>
-      <Badge status="warning" className={styles.anchorTagsDian} style={{width}} />
-      <span className={styles.anchorTagsIcon}></span>
-      <span className={styles.anchorTags}>{item.data && item.data.title ? item.data.title : ''}</span>
-    </div>);
+    const { anchors } = this.state;
+    return (
+      <div style={{width: '100%', height: '100%', position: 'absolute', top: 0, left: 0}}>
+        {anchors && anchors.map((item, index) => {
+          const y = (item.y * 3) + 11;
+          return (
+            <div key={index} className={styles.anchorTagsBox} style={{top: y, left: item.x < 50 ? item.x : 'auto', right: item.x > 50 ? item.x : 'auto'}}>
+            <Tooltip getPopupContainer={(e) => e.parentNode} visible={true} placement={item.x > 50 ? 'left' : 'right'} title={item.data && item.data.title ? item.data.title : ''}>
+              <Badge status="warning" className={styles.anchorTagsDian} style={{float: item.x < 50 ? 'left' : 'right'}} />
+            </Tooltip>
+          </div>)
+        })}
+      </div>
+    )
   }
   render() {
     const { image, visible, anchors } = this.props;
