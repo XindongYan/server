@@ -32,6 +32,12 @@ export default class Anchor extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    this.setState({
+      auction: {},
+      title: '',
+    });
+  }
   handleChangeAuctionTag = (e) => {
     this.setState({
       title: e.target.value,

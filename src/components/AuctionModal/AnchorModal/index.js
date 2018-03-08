@@ -35,6 +35,10 @@ export default class AnchorModal extends PureComponent {
             anchors: nextProps.value.anchors,
           });
         }
+        this.setState({
+          anchors: nextProps.value.anchors,
+          anchorData: {},
+        });
       } else if (this.props.visible && !nextProps.visible) {
         this.setState({
           anchors: [],
