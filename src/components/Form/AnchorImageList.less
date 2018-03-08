@@ -23,9 +23,11 @@
 	display: none;
 	color: #fff;
 	cursor: pointer;
+	z-index: 1;
 }
 .showImgBox{
 	position: relative;
+	float: left;
 }
 .showImgBox:hover .deleteImgBox{
 	display: block;
@@ -45,4 +47,36 @@
 	left: 0;
 	top: 0;
 	line-height: 32px;
+}
+.anchorTagsBox{
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	padding: 0 0 0 10px;
+	height: 22px;
+	.anchorTagsIcon{
+		position: absolute;
+		width: 8px;
+		height: 22px;
+		top: 0;
+		background: url('//gw.alicdn.com/tfs/TB18O4kQFXXXXaoXFXXXXXXXXXX-24-52.png');
+		background-size: 100% 100%;
+	}
+	.anchorTagsDian{
+		height: 22px;
+		line-height: 22px;
+		width: 22px;
+		text-align: center;
+	}
+	.anchorTags{
+		display: inline-block;
+		height: 22px;
+		line-height: 22px;
+		padding: 0 5px;
+		font-size: 12px;
+		background: rgba(0, 0, 0, 0.5);
+		color: #fff;
+		border-radius: 5px;
+	}
 }

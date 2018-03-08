@@ -22,45 +22,48 @@ export default class CutpicModal extends PureComponent {
   componentDidMount() {
   }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.visible && nextProps.visible) {
-      const nicaiCrx = document.getElementById('nicaiCrx');
-      nicaiCrx.addEventListener('setCutpic', this.setCutpic);
-      nicaiCrx.addEventListener('setVersion', this.setVersion);
-      nicaiCrx.addEventListener('uploadResult', this.uploadResult);
-      if (!this.state.nicaiCrx) {
-        this.setState({ nicaiCrx }, () => {
-          setTimeout(() => {
-            this.handleGetVersion();
-          }, 1000);
+    if (nextProps.cutpicKey === nextProps.k) {
+      if (!this.props.visible && nextProps.visible) {
+        const nicaiCrx = document.getElementById('nicaiCrx');
+        nicaiCrx.addEventListener('setCutpic', this.setCutpic);
+        nicaiCrx.addEventListener('setVersion', this.setVersion);
+        nicaiCrx.addEventListener('uploadResult', this.uploadResult);
+        if (!this.state.nicaiCrx) {
+          this.setState({ nicaiCrx }, () => {
+            setTimeout(() => {
+              this.handleGetVersion();
+            }, 1000);
+          });
+        } else if (this.state.version && this.props.src) {
+          this.getCutpic(nextProps.src);
+        }
+        // setTimeout(() => {
+        //   if(!this.state.version){
+        //     message.destroy();
+        //     message.warn('请安装尼采创作平台插件！', 60 * 60);
+        //     this.setState({ loading: false });
+        //   }
+        // }, 5000);
+      } else if (this.props.visible && !nextProps.visible) {
+        this.setState({
+          loading: true,
+          cutpicUrl: '',
+          confirmLoading: false,
         });
-      } else if (this.state.version && this.props.src) {
-        this.getCutpic(nextProps.src);
+        const nicaiCrx = this.state.nicaiCrx;
+        nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
+        nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
+        message.destroy();
+        this.setState({
+          nicaiCrx: null,
+        });
       }
-      // setTimeout(() => {
-      //   if(!this.state.version){
-      //     message.destroy();
-      //     message.warn('请安装尼采创作平台插件！', 60 * 60);
-      //     this.setState({ loading: false });
-      //   }
-      // }, 5000);
-    } else if (this.props.visible && !nextProps.visible) {
-      this.setState({
-        loading: true,
-        cutpicUrl: '',
-        confirmLoading: false,
-      });
-      const nicaiCrx = this.state.nicaiCrx;
-      nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
-      nicaiCrx.removeEventListener('uploadResult', this.uploadResult);
-      message.destroy();
-      this.setState({
-        nicaiCrx: null,
-      });
     }
   }
   setVersion = (e) => {
     const data = JSON.parse(e.target.innerText);
     if (data.error) {
+      message.destroy();
       message.warn(data.msg);
     }
     this.setState({
@@ -92,6 +95,7 @@ export default class CutpicModal extends PureComponent {
         });
       }
     } else {
+      message.destroy();
       message.warn(response.msg);
     }
   }
@@ -109,6 +113,7 @@ export default class CutpicModal extends PureComponent {
       message.destroy();
       message.success('上传成功');
     } else {
+      message.destroy();
       message.error(result.message);
     }
     this.props.dispatch({

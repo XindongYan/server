@@ -253,7 +253,7 @@ export default class AuctionModal extends PureComponent {
   }
   handleOk = () => {
     if (this.state.auctionChoose && this.state.auctionChoose.url) {
-      if (this.props.k === 'material' || this.props.k === 'havegoods') {
+      if (this.props.k === 'material' || this.props.k === 'havegoods' || this.props.k === 'Anchor') {
         if (this.props.onOk) this.props.onOk(this.state.auctionChoose);
         this.props.dispatch({
           type: 'auction/hide',
@@ -262,7 +262,7 @@ export default class AuctionModal extends PureComponent {
         this.props.dispatch({
           type: 'album/showCover',
           payload: {
-            coverKey: this.props.currentKey,
+            coverKey: `auction_${this.props.currentKey}`,
             auction: this.state.auctionChoose,
           }
         });
@@ -275,7 +275,6 @@ export default class AuctionModal extends PureComponent {
   }
 
   handleChooseAuction = (auction) => {
-    // auctionChoose
     this.setState({
       new7: '',
       q_score: '',
@@ -436,7 +435,7 @@ export default class AuctionModal extends PureComponent {
                   />
                 </Spin>
               </div>
-              <CoverModal k={this.props.currentKey} onOk={this.handleChooseCover} />
+              <CoverModal k={`auction_${this.props.k}`} onOk={this.handleChooseCover} />
             </TabPane>
           </Tabs>
           : this.renderAddAuction()

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Icon, message } from 'antd';
+import { Icon, message, Badge } from 'antd';
 import AlbumModal from '../AlbumModal';
 import AnchorModal from '../AuctionModal/AnchorModal';
 import styles from './AnchorImageList.less';
@@ -11,7 +11,7 @@ export default class AnchorImageList extends PureComponent {
   state = {
     nicaiCrx: null,
     version: '',
-    AnchorIndex: 0,
+    url: '',
   }
   componentDidMount() {
     const nicaiCrx = document.getElementById('nicaiCrx');
@@ -43,7 +43,6 @@ export default class AnchorImageList extends PureComponent {
   }
   setJigsaw = (e) => {
     const result = JSON.parse(e.target.innerText);
-    console.log(result);
     if (!result.errorCode) {
       if (this.props.onChange) {
         const features = {
@@ -111,28 +110,42 @@ export default class AnchorImageList extends PureComponent {
     if (props.url) {
       window.open(`https://we.taobao.com${props.url}`);
     } else {
-      this.setState({
-        AnchorIndex: props.value.length,
-      });
       this.props.dispatch({
         type: 'album/show',
         payload: { currentKey: this.props.name }
       });
     }
   }
-  handleEditJigsaw = (e) => {
+  handleEditJigsaw = (e, index) => {
     const { props } = this.props;
-    const features = JSON.parse(props.value.length > 0 ? props.value[0].features : '{}');
-    window.open(`https://we.taobao.com${this.props.props.url}&dapeiId=${features.dapeiId}`);
+    if (props.url) {
+      const features = JSON.parse(props.value.length > 0 ? props.value[0].features : '{}');
+      window.open(`https://we.taobao.com${this.props.props.url}&dapeiId=${features.dapeiId}`);
+    } else {
+      if (props.value[index] && props.value[index].url) {
+        this.props.dispatch({
+          type: 'album/showAnchor',
+          payload: {
+            anchorKey: this.props.name,
+            image: props.value[index].url,
+            value: props.value[index],
+            index: index,
+          }
+        });
+      }
+    }
   }
-  handleDeleteJigsaw = (e) => {
-    const { AnchorIndex } = this.state;
-
-    if (this.props.onChange) this.props.onChange();
+  handleDeleteJigsaw = (e, index) => {
+    const newValue = this.props.props.value;
+    newValue.splice(index, 1);
+    if (this.props.onChange) this.props.onChange(newValue);
   }
 
   handleChangeCover = (imgs) => {
     if (imgs && imgs.length > 0) {
+      this.setState({
+        url: imgs[0].url,
+      });
       this.props.dispatch({
         type: 'album/showAnchor',
         payload: {
@@ -142,18 +155,26 @@ export default class AnchorImageList extends PureComponent {
             anchors: [],
             hotSpaces: [],
             url: imgs[0].url,
-          }
+          },
+          index: -1,
         }
       });
     }
   }
-  handleAddAnchor = (anchor) => {
-    console.log(anchor);
-    if (this.props.onChange) this.props.onChange();
+  handleAddAnchor = (anchorChild, index) => {
+    const anchorList = Object.assign([], this.props.props.value);
+    if (index >= 0) {
+      anchorList.splice(index, 1, anchorChild);
+    } else {
+      anchorList.push(anchorChild);
+    }
+    if (this.props.onChange) this.props.onChange(anchorList);
   }
   render() {
     const { name, props, disabled } = this.props;
     const pixFilter = props.imgSpaceProps.pixFilter.split('x').map(item => Number(item));
+    const outerBoxWh = 200;
+    const wh = 22;
     const styleDisabled = disabled ? {
       padding: '60px 0',
       width: 200,
@@ -164,25 +185,46 @@ export default class AnchorImageList extends PureComponent {
     return (
       <div style={{ padding: '10px 20px' }}>
         <p style={{ marginBottom: 10 }}>{props.label}</p>
-        <div style={{ width: 200, height: 200 }}>
-          { props.value && props.value.length > 0 ?
-            props.value.map((item, index) => <div className={styles.showImgBox}>
+        <div>
+          { props.value && props.value.length > 0 &&
+            props.value.map((item, index) => <div key={index} className={styles.showImgBox} style={{ width: 200, height: 200, display: 'inline-block', margin: '0 3px 3px 0' }}>
               <img style={{ width: '100%', height: '100%' }} src={item.url}/>
               { !this.props.disabled && <div className={styles.deleteImgBox}>
-                <Icon type="edit" className={styles.editIcon} onClick={this.handleEditJigsaw} />
-                <Icon type="delete" className={styles.deleteIcon} onClick={this.handleDeleteJigsaw} />
+                <Icon type="edit" className={styles.editIcon} onClick={(e) => this.handleEditJigsaw(e, index)} />
+                <Icon type="delete" className={styles.deleteIcon} onClick={(e) => this.handleDeleteJigsaw(e, index)} />
               </div>
               }
+              {
+                <div style={{width: '100%', height: '100%', position: 'absolute', top: 0, left: 0}}>
+                  {item.anchors && item.anchors.map((anchor, index) => {
+                    const thisY = (anchor.y / 100 * outerBoxWh) - wh/2;
+                    const thisX = (anchor.x / 100 * outerBoxWh) - wh/2;
+                    return (
+                      <div
+                        key={index}
+                        className={styles.anchorTagsBox}
+                        style={{top: thisY, left: anchor.x < 50 ? thisX : 'auto', right: anchor.x > 50 ? (outerBoxWh - thisX - wh) : 'auto'}}>
+                      <Badge status="warning" className={styles.anchorTagsDian} style={{float: anchor.x < 50 ? 'left' : 'right'}} />
+                      <span className={styles.anchorTags}>
+                        {anchor.data && anchor.data.title ? anchor.data.title : ''}
+                      </span>
+                    </div>)
+                  })}
+                </div>
+              }
             </div>)
-             :
-            <div className={styles.upCover} style={styleDisabled} onClick={!disabled ? this.handleCreateJigsaw : () => {}}>
-              <Icon type="plus" />
-              <p style={{ fontSize: 14 }}>添加搭配图</p>
+          }
+          { props.value.length < props.max &&
+            <div style={{ width: 200, height: 200, display: 'inline-block' }}>
+              <div className={styles.upCover} style={styleDisabled} onClick={!disabled ? this.handleCreateJigsaw : () => {}}>
+                <Icon type="plus" />
+                <p style={{ fontSize: 14 }}>添加搭配图</p>
+              </div>
             </div>
           }
         </div>
         <AlbumModal mode="single" k={name} /*minSize={{ width: pixFilter[0], height: pixFilter[1] }}*/ onOk={this.handleChangeCover}/>
-        <AnchorModal k={name} onChange={this.handleAddAnchor} />
+        <AnchorModal props={this.props.props} k={name} onChange={this.handleAddAnchor} />
       </div>
     );
   }

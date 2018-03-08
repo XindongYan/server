@@ -41,6 +41,7 @@ export default {
       anchorKey: '',
       image: '',
       value: {},
+      index: -1,
     }
   },
 

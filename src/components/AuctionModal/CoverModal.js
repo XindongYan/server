@@ -32,53 +32,55 @@ export default class CoverChooseModal extends PureComponent {
 
   }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.visible && nextProps.visible) {
-      this.setState({
-        coverUrl: '',
-        cutCoverUrl: [],
-        checkedCutpic: false,
-        checkedLoading: false,
-        uploadBgImage: '',
-      });
-      const nicaiCrx = document.getElementById('nicaiCrx');
-      // nicaiCrx.addEventListener('setVersion', this.setVersion);
-      nicaiCrx.addEventListener('setCutpic', this.setCutpic);
-      if (!this.state.nicaiCrx) {
-        this.setState({ nicaiCrx });
-      }
-      // setTimeout(() => {
-      //   if(!this.state.version){
-      //     message.destroy();
-      //     message.warn('请安装尼采创作平台插件！', 60);
-      //   }
-      // }, 5000);
-      const { auction } = nextProps;
-      if (auction.coverUrl) {
+    if (nextProps.coverKey === nextProps.k) {
+      if (!this.props.visible && nextProps.visible) {
         this.setState({
-          coverUrl: auction.images[0],
+          coverUrl: '',
+          cutCoverUrl: [],
+          checkedCutpic: false,
+          checkedLoading: false,
+          uploadBgImage: '',
         });
-      }
-      if (auction.title) {
-        this.setState({
-          title: auction.title,
-        });
-      }
-      if (auction.images) {
-        const arr = [];
-        for (let i = 0; i < nextProps.auction.images.length; i++) {
-          arr.push('');
+        const nicaiCrx = document.getElementById('nicaiCrx');
+        // nicaiCrx.addEventListener('setVersion', this.setVersion);
+        nicaiCrx.addEventListener('setCutpic', this.setCutpic);
+        if (!this.state.nicaiCrx) {
+          this.setState({ nicaiCrx });
         }
+        // setTimeout(() => {
+        //   if(!this.state.version){
+        //     message.destroy();
+        //     message.warn('请安装尼采创作平台插件！', 60);
+        //   }
+        // }, 5000);
+        const { auction } = nextProps;
+        if (auction.coverUrl) {
+          this.setState({
+            coverUrl: auction.images[0],
+          });
+        }
+        if (auction.title) {
+          this.setState({
+            title: auction.title,
+          });
+        }
+        if (auction.images) {
+          const arr = [];
+          for (let i = 0; i < nextProps.auction.images.length; i++) {
+            arr.push('');
+          }
+          this.setState({
+            cutCoverUrl: arr,
+            images: nextProps.auction.images,
+          });
+        }
+      } else if (this.props.visible && !nextProps.visible) {
+        const nicaiCrx = this.state.nicaiCrx || document.getElementById('nicaiCrx');
+        nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
         this.setState({
-          cutCoverUrl: arr,
-          images: nextProps.auction.images,
+          nicaiCrx: null,
         });
       }
-    } else if (this.props.visible && !nextProps.visible) {
-      const nicaiCrx = this.state.nicaiCrx || document.getElementById('nicaiCrx');
-      nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
-      this.setState({
-        nicaiCrx: null,
-      });
     }
   }
 
