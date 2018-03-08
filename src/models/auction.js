@@ -15,6 +15,10 @@ export default {
       visible: false,
       currentKey: '',
     },
+    shopList: {
+      visible: false,
+      currentKey: '',
+    },
   },
 
   effects: {
@@ -42,6 +46,18 @@ export default {
         payload: { visible: false },
       });
     },
+    *showShopList({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeShopListVisible',
+        payload: { visible: true, currentKey: payload.currentKey },
+      });
+    },
+    *hideShopList(_, { call, put }) {
+      yield put({
+        type: 'changeShopListVisible',
+        payload: { visible: false },
+      });
+    },
   },
 
   reducers: {
@@ -55,6 +71,12 @@ export default {
       return {
         ...state,
         bbuModal: { ...state.bbuModal, ...action.payload, },
+      };
+    },
+    changeShopListVisible(state, action) {
+      return {
+        ...state,
+        shopList: { ...state.shopList, ...action.payload, },
       };
     },
   },

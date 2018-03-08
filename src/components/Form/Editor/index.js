@@ -4,7 +4,8 @@ import { Icon, Divider } from 'antd';
 import { connect } from 'dva';
 import AlbumModal from '../../AlbumModal';
 import AuctionModal from '../../AuctionModal';
-import BpuModal from '../../AuctionModal/BpuModal.js';
+import BpuModal from '../../AuctionModal/BpuModal';
+import ShopListModal from '../../AuctionModal/ShopListModal';
 import styles from './index.less';
 
 @connect(() => ({
@@ -107,8 +108,39 @@ export default class Editors extends PureComponent {
       editorState
     });
   }
+  handleAddShop = (shops) => {
+    let { editorState } = this.state;
+    shops.forEach((item) => {
+      const contentState = editorState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity(
+        'SIDEBARADDSHOP',
+        'MUTABLE',
+        {
+          coverUrl: 'https://gw.alicdn.com/bao/uploaded/TB1RIsiPpXXXXXpXVXXXXXXXXXX-300-300.jpg',
+          id: item.shopId,
+          name: "",
+          reason: '',
+          score: '',
+          title: item.shopName ? item.shopName.split(' ')[0] : item.shopName,
+          type: 'SIDEBARADDSHOP',
+        }
+      );
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+      editorState = AtomicBlockUtils.insertAtomicBlock(
+        newEditorState,
+        entityKey,
+        ' ',
+      );
+    });
+    this.setState({
+      editorState
+    });
+  }
+
   customRender = (props) => {
     const key = props.block.getEntityAt(0);
+    if (key === null) return <span />;
     const entity = props.contentState.getEntity(key);
     const data = entity.getData();
     const type = entity.getType();
@@ -156,6 +188,23 @@ export default class Editors extends PureComponent {
           </div>
           <div className={styles.bpuMsgBox}>
             {data.title}
+          </div>
+          <span className={styles.closeBox}>
+            <Icon type="close-circle" onClick={() => this.removeBlock(props)} />
+          </span>
+        </div>
+      )
+    } else if (type === 'SIDEBARADDSHOP') {
+      return (
+        <div className={styles.shopBox}>
+          <div className={styles.shopImgBox}>
+            <img
+              src={data.coverUrl}
+              alt="封面图"
+            />
+          </div>
+          <div className={styles.shopMsgBox}>
+            <Icon type="shop" style={{ fontSize: 18 }}/> {data.title}
           </div>
           <span className={styles.closeBox}>
             <Icon type="close-circle" onClick={() => this.removeBlock(props)} />
@@ -249,6 +298,14 @@ export default class Editors extends PureComponent {
   sidebaraddspu = () => {
     this.props.dispatch({
       type: 'auction/showBbu',
+      payload: {
+        currentKey: 'editor'
+      }
+    });
+  }
+  sidebaraddshop = () => {
+    this.props.dispatch({
+      type: 'auction/showShopList',
       payload: {
         currentKey: 'editor'
       }
@@ -365,6 +422,10 @@ export default class Editors extends PureComponent {
                                         <Icon type="shop" />
                                         标准品牌商品
                                       </span>;
+        case 'SIDEBARADDSHOP': return <span key={index} onClick={this.sidebaraddshop}>
+                                        <Icon type="shop" />
+                                        店铺
+                                      </span>;
         default: return '';
       }
     } else {
@@ -400,6 +461,7 @@ export default class Editors extends PureComponent {
         <AlbumModal k="editor" onOk={this.handleAddImg} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} activityId={this.props.activityId} />
         <BpuModal k="editor" onOk={this.handleAddBpu} />
+        <ShopListModal k="editor" onOk={this.handleAddShop} />
       </div>
     );
   }

@@ -88,6 +88,30 @@
 		white-space: nowrap;
 	}
 }
+.shopBox{
+	cursor: default;
+	width: 248px;
+	position: relative;
+	.shopImgBox{
+		width: 100%;
+		height: 100%;
+		img{
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.shopMsgBox{
+		width: 100%;
+		height: 40px;
+		line-height: 40px;
+		padding: 0 5px;
+		background: #eee;
+		word-wrap:break-word;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
 .zzBox{
 	position: absolute;
 	left: 0;
@@ -109,7 +133,7 @@ span.closeBox{
 	cursor: pointer;
 	display: none;
 }
-.imgBox:hover .closeBox,.auctionBox:hover .closeBox,.bpuBox:hover .closeBox{
+.imgBox:hover .closeBox,.auctionBox:hover .closeBox,.bpuBox:hover .closeBox,.shopBox:hover .closeBox{
 	display: block;
 }
 

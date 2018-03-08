@@ -78,8 +78,36 @@ const CHANNELS = [{
   "name": "全球时尚"
 }, {
   "activityList": [{
+    "id": 6848,
+    "name": "使用教程—专用投稿通道",
+    "templates": ["post"]
+  }, {
+    "id": 6747,
+    "name": "专业推荐——专用投稿通道",
+    "templates": ["item2"]
+  }, {
+    "id": 6816,
+    "name": "心得评测—专用投稿通道",
+    "templates": ["post"]
+  }, {
     "id": 60,
-    "name": "买遍全球频道",
+    "name": "日常入口（通用）",
+    "templates": ["post"]
+  }, {
+    "id": 6819,
+    "name": "种草指南—专用投稿通道",
+    "templates": ["post"]
+  }, {
+    "id": 6818,
+    "name": "每日榜单—专用投稿通道",
+    "templates": ["post"]
+  }, {
+    "id": 6851,
+    "name": "真实心得—专用投稿通道",
+    "templates": ["post"]
+  }, {
+    "id": 6850,
+    "name": "好物盘点—专用投稿通道",
     "templates": ["post"]
   }],
   "desc": "用户只需要发一行字，一条语音、一张图片，立刻会有最匹配最有经验的一批人，告诉你最符合你需求的好东西，且所有推荐出的商品都有专门买手帮你购买的C2B社会化电商平台。",
@@ -166,6 +194,26 @@ const CHANNELS = [{
   "id": 3,
   "logo": "https://img.alicdn.com/tfs/TB19Qf1RVXXXXXZaXXXXXXXXXXX-200-200.png",
   "name": "爱逛街"
+}, {
+  "activityList": [{
+    "id": 1331,
+    "name": "图文-行业",
+    "templates": ["post"]
+  }],
+  "desc": "【每日好店】的【极致好店】图文栏目，为90后用户发现个性店铺，流量可观，审核通过后入池，获得长期个性化曝光。（每日好店为手淘唯一店铺导购产品，拥有超高比例的90后用户）。",
+  "id": 28,
+  "logo": "https://img.alicdn.com/tfs/TB1TfvRRVXXXXaPapXXXXXXXXXX-200-200.png",
+  "name": "每日好店"
+}, {
+  "activityList": [{
+    "id": 44,
+    "name": "攻略内容招稿",
+    "templates": ["post"]
+  }],
+  "desc": "必买清单是手淘最重要的内容导购阵地之一，提供具体场景下，具体问题的一站式解决方案，介绍实用or新鲜的资讯、知识，并推荐与资讯、知识非常契合的商品。",
+  "id": 4,
+  "logo": "https://img.alicdn.com/tfs/TB1_sjMRVXXXXXhaFXXXXXXXXXX-200-200.png",
+  "name": "必买清单"
 }, {
   "activityList": [{
     "id": -21,
