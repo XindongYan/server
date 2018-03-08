@@ -105,12 +105,13 @@ export default class AuctionModal extends PureComponent {
         actsLoading: false,
       });
     } else {
-      this.handleGetAuction({ pageSize: pagination.pageSize, current: 1 });
+      this.handleGetAuction({ pageSize: pagination.pageSize, current: 1, activityId: this.props.activityId });
     }
   }
   setAuction = (e) => {
     const data = JSON.parse(e.target.innerText);
     if (!data.error) {
+      console.log(data.itemList);
       this.setState({
         itemList: data.itemList || [],
         pagination: {
@@ -130,7 +131,7 @@ export default class AuctionModal extends PureComponent {
     }
   }
   handleGetAuction = (params) => {
-    this.state.nicaiCrx.innerText = JSON.stringify(params);
+    this.state.nicaiCrx.innerText = JSON.stringify({...params, categoryId: 0});
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getAuction', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
@@ -178,7 +179,7 @@ export default class AuctionModal extends PureComponent {
   renderAuctions = (auction) => {
     return (
       <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.id} >
-        { auction.item.displayStatus && auction.item.displayStatus !== '正常' &&
+        { (auction.item.displayStatus && auction.item.displayStatus !== '正常') || auction.disable &&
           <div className={styles.displayStatus}>选品不符</div>
         }
         <div onClick={() => this.handleChooseAuction(auction)}>
@@ -210,6 +211,7 @@ export default class AuctionModal extends PureComponent {
       this.handleGetAuction({
         pageSize,
         current,
+        activityId: this.props.activityId,
       });
     }
   }
@@ -288,7 +290,7 @@ export default class AuctionModal extends PureComponent {
 
   handleChangeTab = (e) =>{
     if (e === 'commodities') {
-      this.handleGetAuction({ pageSize: this.state.pagination.pageSize, current: 1 });
+      this.handleGetAuction({ pageSize: this.state.pagination.pageSize, current: 1, activityId: this.props.activityId });
     }
     this.setState({
       activeKey: e,
