@@ -168,6 +168,16 @@ const CHANNELS = [{
   "name": "爱逛街"
 }, {
   "activityList": [{
+    "id": 1331,
+    "name": "图文-行业",
+    "templates": ["post"]
+  }],
+  "desc": "【每日好店】的【极致好店】图文栏目，为90后用户发现个性店铺，流量可观，审核通过后入池，获得长期个性化曝光。（每日好店为手淘唯一店铺导购产品，拥有超高比例的90后用户）。",
+  "id": 28,
+  "logo": "https://img.alicdn.com/tfs/TB1TfvRRVXXXXaPapXXXXXXXXXX-200-200.png",
+  "name": "每日好店"
+}, {
+  "activityList": [{
     "id": -21,
     "name": "直播脚本",
     "templates": ["post"]
