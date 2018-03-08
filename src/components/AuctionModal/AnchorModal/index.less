@@ -58,7 +58,7 @@
 			text-align: center;
 		}
 		.anchorTags{
-			display: inline-block;
+			display: block;
 			height: 22px;
 			line-height: 22px;
 			padding: 0 5px;
@@ -67,6 +67,11 @@
 			color: #fff;
 			border-radius: 5px;
 		}
+	}
+	.anchorTagsBox:after{
+		display: block;
+		content: '';
+		clear: both;
 	}
 }
 .anchorInnerBox{

@@ -223,7 +223,7 @@ export default class AnchorImageList extends PureComponent {
             </div>
           }
         </div>
-        <AlbumModal mode="single" k={name} minSize={{ width: pixFilter[0], height: pixFilter[1] }} onOk={this.handleChangeCover}/>
+        <AlbumModal mode="single" k={name}  onOk={this.handleChangeCover}/>
         <AnchorModal props={this.props.props} k={name} onChange={this.handleAddAnchor} />
       </div>
     );

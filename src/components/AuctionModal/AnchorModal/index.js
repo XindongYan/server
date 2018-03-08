@@ -223,7 +223,7 @@ export default class AnchorModal extends PureComponent {
                       onClick={(e) => this.handleChangeAuction(e, item)}
                       style={{top: thisY, left: item.x < 50 ? thisX : 'auto', right: item.x > 50 ? (outerBoxWh - thisX - wh) : 'auto'}}>
                     <Badge status="warning" className={styles.anchorTagsDian} style={{float: item.x < 50 ? 'left' : 'right'}} />
-                    <span className={styles.anchorTags}>
+                    <span className={styles.anchorTags} style={{float: item.x < 50 ? 'left' : 'right'}}>
                       {item.data && item.data.title ? item.data.title : ''}
                     </span>
                   </div>)
