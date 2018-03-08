@@ -108,7 +108,7 @@ export default class TaskOption extends PureComponent {
                 投稿到子频道
               </div>
 
-              <div style={{ display: 'flex' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {item.activityList.map((item1, index1) => <div key={index1} className={styles.option_choose_box} onClick={() => this.handleDeliver(item.id, item1.id)}>
                   <p>{item1.name}</p>
                   <p style={{ fontSize: 12 }}>{this.handleGetRemainCount(item1.id)}</p>
