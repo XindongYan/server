@@ -326,7 +326,7 @@ export default class AuctionModal extends PureComponent {
           <div style={{ margin: '10px 0' }}>
             <p>{auctionChoose.title}</p>
             <div style={{ margin: '5px 0' }}>
-              <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice || auction.item.reservedPrice}</Tag>
+              <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice || auctionChoose.item.reservedPrice}</Tag>
               <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
               { new7 &&
                 <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
