@@ -17,6 +17,13 @@ export default class NInput extends PureComponent {
     const value = getFieldValue(name);
     const newRules = [...rules];
     const type = props.rows && props.rows > 0 ? 'textArea' : 'Input';
+    const suffix = (
+      <div
+      className={type === 'Input' ? '' : styles.textAreaCount}
+      style={{ color: value && value.length > props.maxLength ? '#f00' : '#444' }}>
+        { value ? value.length : 0}/{props.maxLength}
+      </div>
+    );
     return (
       <div className={styles.taskListInp}>
         { type === 'Input' ?
@@ -28,10 +35,12 @@ export default class NInput extends PureComponent {
               <Input
                 onChange={this.handleChange}
                 placeholder={props.placeholder}
+                suffix={suffix}
               />
             )}
           </FormItem>
-          : <FormItem colon={false} label={props.className && props.className.indexOf('creator-input-title') >= 0 ? '' : props.label}>
+          : <span>
+          <FormItem colon={false} label={props.className && props.className.indexOf('creator-input-title') >= 0 ? '' : props.label}>
             {getFieldDecorator(name, {
               initialValue: props.value,
               rules: newRules,
@@ -43,8 +52,9 @@ export default class NInput extends PureComponent {
               />
             )}
           </FormItem>
+          {suffix}
+          </span>
         }
-        <span className={type === 'Input' ? styles.InputCount : styles.textAreaCount} style={{ color: value && value.length > props.maxLength ? '#f00' : '#444' }}>{ value ? value.length : 0}/{props.maxLength}</span>
       </div>
     );
   }
