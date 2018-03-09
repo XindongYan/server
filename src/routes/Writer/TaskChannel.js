@@ -61,7 +61,8 @@ export default class TaskChannel extends PureComponent {
     const query = querystring.parse(this.props.location.search.substr(1));
     const urlObj = url.parse(btnUrl);
     const tempQuery = querystring.parse(urlObj.query);
-    this.props.dispatch(routerRedux.push(`/writer/task/create?channelId=${query.channelId}&activityId=${query.activityId}&template=${tempQuery.template}&from=${tempQuery.from}`));
+    const newQuery = { ...query, ...tempQuery };
+    this.props.dispatch(routerRedux.push(`/writer/task/create?${querystring.stringify(newQuery)}`));
   }
   handleDeliver = (template) => {
     const query = querystring.parse(this.props.location.search.substr(1));

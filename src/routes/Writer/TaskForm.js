@@ -54,7 +54,11 @@ export default class TaskForm extends PureComponent {
         }
       });
     } else {
-      queryTaskRender({ activityId: query.activityId, template: query.template }).then(result => {
+      const params = {
+        template: query.template
+      }
+      if (query.activityId && Number(query.activityId) > 0) params.activityId = query.activityId;
+      queryTaskRender(params).then(result => {
         if (!result.error) {
           this.setState({ children: result.children, formData: result.formData, needValidateFieldNames: result.children.filter(item => item.component === 'Input').map(item => item.name) });
         }
@@ -567,7 +571,7 @@ export default class TaskForm extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none', paddingBottom: 60 }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: outerWidth }} ref="taskOuterBox">
           <div style={{ width: template === 'item2' ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId} />
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId || 0} />
           </div>
           {formRight}
           { operation !== 'view' && <div className={styles.submitBox}>
