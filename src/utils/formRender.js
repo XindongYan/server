@@ -109,7 +109,7 @@ export function async(children, activityId) {
           },
           "className": "creator-single-item-center creator-no-label",
           "label": "",
-          "activityId": 414,
+          "activityId": activityId,
           "min": 1,
           "extraInfoLink": "https://docs.alipay.com/alibaba_we_guide/guide/whmudc",
           "editTriggerText": "编辑资料",
