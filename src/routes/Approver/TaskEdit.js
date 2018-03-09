@@ -70,12 +70,15 @@ export default class TaskEdit extends PureComponent {
           }
         });
       } else if (body.component === 'AnchorImageList' && body.props.value[0]) {
-        const anchors = body.props.value[0].anchors;
-        anchors.forEach(item => {
-          auctionIds.push(item.data.itemId);
+        body.props.value.forEach(({ anchors }) => {
+          anchors.forEach(item => {
+            auctionIds.push(item.data.itemId);
+          });
         });
       } else if (body.component === 'CreatorAddItem' && body.props.value[0]) {
         auctionIds.push(body.props.value[0].itemId);
+      } else if (body.component === 'CreatorAddSpu' && body.props.value[0]) {
+        auctionIds.push(body.props.value[0].spuId);
       }
     }
     return auctionIds;
