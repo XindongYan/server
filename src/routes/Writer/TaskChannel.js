@@ -19,14 +19,14 @@ function BlockCommon(props) {
       <div className={styles['block-common-detail']}>
       <h3>{title}</h3>
       {infoList.map((item, index) =>
-        <div className={styles['block-common-item']}>
+        <div className={styles['block-common-item']} key={index}>
           <label>{item.label}</label>
           {item.textList.map((item1, index1) =>
             item1.url ?
-            <div className={styles['block-common-item-desc']}>
+            <div className={styles['block-common-item-desc']} key={index1}>
               <a href={item1.url} target="_blank" style={{ fontSize: 12, display: 'block' }}>{item1.text}</a>
             </div>:
-            <div className={styles['block-common-item-desc']}>
+            <div className={styles['block-common-item-desc']} key={index1}>
               {item1.text}
             </div>
           )}
