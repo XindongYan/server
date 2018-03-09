@@ -170,3 +170,12 @@ export async function queryAuctionOrders(params) {
 export async function queryTaskRender(params) {
   return request(`/api/task/render.json?${stringify(params)}`);
 }
+
+export async function approveTaskBatch(params) {
+  return request('/api/task/approve/batch', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}

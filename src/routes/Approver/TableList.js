@@ -288,7 +288,7 @@ export default class TableList extends PureComponent {
     this.setState({ searchValue: e.target.value });
   }
   handleReject = (record) => {
-    const { dispatch, data: { pagination, approve_status }, currentUser, teamUser } = this.props;
+    const { dispatch, currentUser } = this.props;
     dispatch({
       type: 'task/reject',
       payload: { _id: record._id, approver_id: currentUser._id },
@@ -297,10 +297,26 @@ export default class TableList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'task/fetchApproverTasks',
-            payload: { ...pagination, approve_status, team_id: teamUser.team_id, user_id: this.state.user_id || currentUser._id }
-          });
+          this.handleFetch();
+        }
+      },
+    }); 
+  }
+  handleApproveBatch = () => {
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'task/approveBatch',
+      payload: {
+       user_id: currentUser._id,
+       approve_status: TASK_APPROVE_STATUS.passed,
+       list: this.state.selectedRows.map(item => ({ _id: item._id })),
+     },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          this.handleFetch();
         }
       },
     }); 
@@ -727,6 +743,14 @@ export default class TableList extends PureComponent {
               { selectedRows.length > 0 && (data.approve_status === 'passed' || data.approve_status === 'all')  && (
                   <span>
                     <Button icon="user-add" type="default" onClick={() => this.handleDarenModalVisible(true)}>指定达人</Button>
+                  </span>
+                )
+              }
+              { selectedRows.length > 0 && (data.approve_status === 'waitingForApprove')  && (
+                  <span>
+                    <Popconfirm placement="left" title={`确认通过所有选中的任务?`} onConfirm={() => this.handleApproveBatch()} okText="确认" cancelText="取消">
+                      <Button icon="user-add" type="default">批量通过</Button>
+                    </Popconfirm>
                   </span>
                 )
               }
