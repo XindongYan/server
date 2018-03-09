@@ -34,7 +34,8 @@ export default class CreatorAddImage extends PureComponent {
     const disabled = this.props.operation === 'view' ? true : false;
     const needAdd = props.value.length < props.max;
     const pixFilter = props.pixFilter.split('x').map(item => Number(item));
-    const widthHeightStyle = {width: pixFilter[0] / 4, height: pixFilter[1] / 4};
+    const width = (pixFilter[0] / 3.2) < 200 ? 200 : (pixFilter[0] / 3.2);
+    const widthHeightStyle = {width, height: pixFilter[1] / (pixFilter[0] / width) };
     const coverViewStyles = disabled ? {border: '1px solid #ccc', color: '#ccc', ...widthHeightStyle} : {...widthHeightStyle};
     return (
       <div style={{ padding: '10px 20px 0' }}>
