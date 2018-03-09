@@ -335,10 +335,10 @@ export default class SpuModal extends PureComponent {
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >
-            <TabPane tab={<span>添加商品</span>} key="add">
+            <TabPane tab={<span>添加产品</span>} key="add">
               {this.renderAddAuction()}
             </TabPane>
-            <TabPane tab={<span>商品库</span>} key="commodities">
+            <TabPane tab={<span>产品库</span>} key="commodities">
               <div>
                 <Spin spinning={actsLoading}>
                   <div style={{ height: 300, overflow: 'auto'}}>

@@ -372,7 +372,7 @@ export default class AuctionModal extends PureComponent {
     const { itemList, pagination, actsLoading, activeKey, auctionChoose, q_score, new7, qumai } = this.state;
     return (
       <Modal
-        title="添加商品"
+        title="添加宝贝"
         width="850px"
         visible={k === currentKey && visible}
         onOk={this.handleOk}
@@ -386,7 +386,7 @@ export default class AuctionModal extends PureComponent {
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >
-            <TabPane tab={<span>添加商品</span>} key="add">
+            <TabPane tab={<span>添加宝贝</span>} key="add">
               {this.renderAddAuction()}
             </TabPane>
             <TabPane tab={<span>商品库</span>} key="commodities">
