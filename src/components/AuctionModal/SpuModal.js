@@ -98,6 +98,14 @@ export default class SpuModal extends PureComponent {
       });
     }
     nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    const version = data.version;
+    if (version && version.length > 0) {
+      const arr = version.split('.');
+      const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
+      if (versionNumber < 122) { // 1.0.4
+        message.warn('请更新插件！', 60 * 60);
+      }
+    }
     if (data.error) {
       message.destroy();
       message.warn(data.msg, 60 * 60);
@@ -154,9 +162,6 @@ export default class SpuModal extends PureComponent {
     this.setState({
       search: '',
       auctionChoose: {},
-      new7: '',
-      q_score: '',
-      qumai: '',
     });
   }
   handleAddAuction = (value) => {
@@ -179,7 +184,7 @@ export default class SpuModal extends PureComponent {
   }
   renderAuctions = (auction) => {
     return (
-      <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.id} >
+      <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.spuId} >
         { auction.disable &&
           <div className={styles.displayStatus}>选品不符</div>
         }
@@ -242,9 +247,6 @@ export default class SpuModal extends PureComponent {
 
   handleChooseAuction = (auction) => {
     this.setState({
-      new7: '',
-      q_score: '',
-      qumai: '',
       auctionChoose: auction,
       search: auction.item ? auction.item.itemUrl : '',
     });
@@ -262,9 +264,6 @@ export default class SpuModal extends PureComponent {
     this.setState({
       activeKey: 'add'
     });
-  }
-  handelCutout = () => {
-    
   }
   renderAddAuction = () => {
     const { visible, k } = this.props;
