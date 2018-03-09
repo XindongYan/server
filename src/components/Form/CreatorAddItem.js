@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Form, Icon } from 'antd';
 import AuctionModal from '../AuctionModal';
 import AuctionImageModal from '../AuctionModal/AuctionImageModal';
+import CoverModal from '../AuctionModal/CoverModal';
 import styles from './index.less';
 
 const FormItem = Form.Item;
@@ -14,10 +15,9 @@ export default class CreatorAddItem extends PureComponent {
   }
   handleAuctionShow = () => {
     const { props } = this.props;
-    const k = props.enableExtraBanner ? 'havegoods' : 'creatorAddItem';
     this.props.dispatch({
       type: 'auction/show',
-      payload: { currentKey: k }
+      payload: { currentKey: this.props.name }
     });
   }
   handleAddProduct = (auction) => {
@@ -42,7 +42,8 @@ export default class CreatorAddItem extends PureComponent {
       this.props.dispatch({
         type: 'album/showAuctionImage',
         payload: {
-          formData: props.value[0] ? props.value[0] : []
+          formData: props.value[0] ? props.value[0] : [],
+          currentKey: this.props.name,
         }
       });
     }
@@ -55,20 +56,30 @@ export default class CreatorAddItem extends PureComponent {
       extraBanners: extraBanners,
     }]);
   }
+  handleChangeImg = (coverUrl, title) => {
+    const { props } = this.props;
+    if (this.props.onChange) this.props.onChange([{
+      ...props.value[0],
+      title: title,
+      coverUrl: coverUrl,
+    }]);
+  }
   handleEditProduct = () => {
     const { props } = this.props;
     if (props.enableExtraBanner) {
       this.props.dispatch({
         type: 'album/showAuctionImage',
         payload: {
-          formData: props.value[0] ? props.value[0] : []
+          formData: props.value[0] ? props.value[0] : [],
+          currentKey: this.props.name,
         }
       });
     } else {
       this.props.dispatch({
         type: 'album/showCover',
         payload: {
-          auction: props.value[0] ? props.value[0] : []
+          auction: props.value[0] ? props.value[0] : [],
+          coverKey: this.props.name,
         }
       });
     }
@@ -78,7 +89,6 @@ export default class CreatorAddItem extends PureComponent {
   }
   render() {
     const { name, props, rules } = this.props;
-    const k = props.enableExtraBanner ? 'havegoods' : 'creatorAddItem';
     return (
       <div style={{ padding: '10px 20px 0' }}>
         <div className={styles.task_img_list}>
@@ -104,8 +114,9 @@ export default class CreatorAddItem extends PureComponent {
             </div>
           }
         </div>
-        <AuctionModal k={k} onOk={this.handleAddProduct} activityId={props.activityId || 0} />
-        <AuctionImageModal onChange={this.handleChangeBodyImg} />
+        <AuctionModal k={name} onOk={this.handleAddProduct} activityId={props.activityId || 0} />
+        <AuctionImageModal k={name} onChange={this.handleChangeBodyImg} />
+        <CoverModal k={name} onOk={this.handleChangeImg} />
       </div>
     );
   }

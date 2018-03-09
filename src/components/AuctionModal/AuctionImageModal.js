@@ -8,6 +8,7 @@ const RadioGroup = Radio.Group;
 @connect(state => ({
   visible: state.album.auctionImageModal.visible,
   formData: state.album.auctionImageModal.formData,
+  currentKey: state.album.auctionImageModal.currentKey,
 }))
 export default class AuctionImageModal extends PureComponent {
   state = {
@@ -31,49 +32,51 @@ export default class AuctionImageModal extends PureComponent {
 
   }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.visible && nextProps.visible) {
-      this.setState({
-        coverUrl: '',
-        extraBanners: [],
-        checkedCutpic: false,
-        checkedLoading: false
-      });
-      const nicaiCrx = document.getElementById('nicaiCrx');
-      nicaiCrx.addEventListener('setVersion', this.setVersion);
-      nicaiCrx.addEventListener('setCutpic', this.setCutpic);
-      if (!this.state.nicaiCrx) {
-        this.setState({ nicaiCrx }, () => {
-          setTimeout(() => {
-            this.handleGetVersion();
-          }, 600);
-        });
-      }
-      setTimeout(() => {
-        if(!this.state.version){
-          message.destroy();
-          message.warn('请安装尼采创作平台插件！', 60);
-        }
-      }, 5000);
-      const { formData } = nextProps;
-      if (formData.extraBanners) {
+    if (nextProps.k === nextProps.currentKey) {
+      if (!this.props.visible && nextProps.visible) {
         this.setState({
-          extraBanners: formData.extraBanners || [],
+          coverUrl: '',
+          extraBanners: [],
+          checkedCutpic: false,
+          checkedLoading: false
         });
-      }
-      if (formData.images) {
-        const arr = [];
-        for (let i = 0; i < nextProps.formData.images.length; i++) {
-          arr.push('');
+        const nicaiCrx = document.getElementById('nicaiCrx');
+        nicaiCrx.addEventListener('setVersion', this.setVersion);
+        nicaiCrx.addEventListener('setCutpic', this.setCutpic);
+        if (!this.state.nicaiCrx) {
+          this.setState({ nicaiCrx }, () => {
+            setTimeout(() => {
+              this.handleGetVersion();
+            }, 600);
+          });
         }
-        this.setState({
-          cutCoverUrl: arr,
-          coverUrl: formData.images[0],
-          images: nextProps.formData.images,
-        });
+        setTimeout(() => {
+          if(!this.state.version){
+            message.destroy();
+            message.warn('请安装尼采创作平台插件！', 60);
+          }
+        }, 5000);
+        const { formData } = nextProps;
+        if (formData.extraBanners) {
+          this.setState({
+            extraBanners: formData.extraBanners || [],
+          });
+        }
+        if (formData.images) {
+          const arr = [];
+          for (let i = 0; i < nextProps.formData.images.length; i++) {
+            arr.push('');
+          }
+          this.setState({
+            cutCoverUrl: arr,
+            coverUrl: formData.images[0],
+            images: nextProps.formData.images,
+          });
+        }
+      } else if (this.props.visible && !nextProps.visible) {
+        const nicaiCrx = this.state.nicaiCrx || document.getElementById('nicaiCrx');
+        nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
       }
-    } else if (this.props.visible && !nextProps.visible) {
-      const nicaiCrx = this.state.nicaiCrx || document.getElementById('nicaiCrx');
-      nicaiCrx.removeEventListener('setCutpic', this.setCutpic);
     }
   }
 
@@ -273,7 +276,7 @@ export default class AuctionImageModal extends PureComponent {
         <Modal
           title="完善封面与展示图片信息"
           width="850px"
-          visible={visible}
+          visible={this.props.currentKey === this.props.k && visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           bodyStyle={{ padding: '5px 20px' }}

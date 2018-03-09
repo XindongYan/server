@@ -23,6 +23,7 @@ export default {
       cropperKey: '',
     },
     auctionImageModal: {
+      currentKey: '',
       visible: false,
       formData: {},
     },

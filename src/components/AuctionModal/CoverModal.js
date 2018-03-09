@@ -10,7 +10,7 @@ const RadioGroup = Radio.Group;
   coverKey: state.album.coverModal.coverKey,
   auction: state.album.coverModal.auction,
 }))
-export default class CoverChooseModal extends PureComponent {
+export default class CoverModal extends PureComponent {
   state = {
     coverUrl: '',
     cutCoverUrl: [],

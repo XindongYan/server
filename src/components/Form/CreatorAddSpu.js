@@ -37,13 +37,15 @@ export default class CreatorAddSpu extends PureComponent {
     this.props.dispatch({
       type: 'album/showAuctionImage',
       payload: {
-        formData: props.value[0] ? props.value[0] : []
+        formData: props.value[0] ? props.value[0] : [],
+        currentKey: this.props.name,
       }
     })
   }
   handleEditProduct = () => {
     this.props.dispatch({
       type: 'album/showAuctionImage',
+      currentKey: this.props.name,
     })
   }
   handleClearProduct = () => {
@@ -77,7 +79,7 @@ export default class CreatorAddSpu extends PureComponent {
             </div>
           }
         </div>
-        <AuctionModal k="havegoods" onOk={this.handleAddProduct} activityId={props.activityId || 0} />
+        <AuctionModal k={this.props.name} onOk={this.handleAddProduct} activityId={props.activityId || 0} />
         <AuctionImageModal onChange={this.handleChangeBodyImg} />
       </div>
     );
