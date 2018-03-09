@@ -82,10 +82,10 @@ const CHANNELS = [{
     "name": "使用教程—专用投稿通道",
     "templates": ["post"]
   }, {
-  //   "id": 6747,
-  //   "name": "专业推荐——专用投稿通道",
-  //   "templates": ["item2"]
-  // }, {
+    "id": 6747,
+    "name": "专业推荐——专用投稿通道",
+    "templates": ["item2"]
+  }, {
     "id": 6816,
     "name": "心得评测—专用投稿通道",
     "templates": ["post"]

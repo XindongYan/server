@@ -62,37 +62,76 @@ export function async(children, activityId) {
       };
     }
   }
-  if (itemSpuOption && itemSpuOption.props.value === 'spu') {
-    const bodySpuIndex = tempChildren.findIndex(item => item.name === 'bodySpu');
-    tempChildren[bodySpuIndex] = {
-      "className": "creator-single-item-center creator-no-label",
-      "component": "CreatorAddSpu",
-      "label": "商品SPU",
-      "name": "bodySpu",
-      "props": {
-        "enableExtraBanner": true,
-        "activityId": activityId,
-        "min": 1,
-        "max": 1,
-        "addImageProps": {
-          "pixFilter": "500x500"
-        },
-        "triggerTips": "添加一个产品",
+  if (itemSpuOption) {
+    if (itemSpuOption.props.value === 'spu') {
+      const bodySpuIndex = tempChildren.findIndex(item => item.name === 'body');
+      tempChildren[bodySpuIndex] = {
         "className": "creator-single-item-center creator-no-label",
+        "component": "CreatorAddSpu",
         "label": "商品SPU",
-        "value": []
-      },
-      "rules": [{
-        "min": 1,
-        "type": "array",
-        "message": "或上传1个产品"
-      }, {
-        "max": 1,
-        "type": "array",
-        "message": "最多允许1个"
-      }],
-      "updateOnChange": "true"
-    };
+        "name": "bodySpu",
+        "props": {
+          "enableExtraBanner": true,
+          "activityId": activityId,
+          "min": 1,
+          "max": 1,
+          "addImageProps": {
+            "pixFilter": "500x500"
+          },
+          "triggerTips": "添加一个产品",
+          "className": "creator-single-item-center creator-no-label",
+          "label": "商品SPU",
+          "value": []
+        },
+        "rules": [{
+          "min": 1,
+          "type": "array",
+          "message": "或上传1个产品"
+        }, {
+          "max": 1,
+          "type": "array",
+          "message": "最多允许1个"
+        }],
+        "updateOnChange": "true"
+      };
+    } else if (itemSpuOption.props.value === 'item') {
+      const bodySpuIndex = tempChildren.findIndex(item => item.name === 'bodySpu');
+      tempChildren[bodySpuIndex] = {
+        "className": "creator-single-item-center creator-no-label",
+        "component": "CreatorAddItem",
+        "label": "",
+        "name": "body",
+        "props": {
+          "enableExtraBanner": true,
+          "max": 1,
+          "addImageProps": {
+            "pixFilter": "500x500"
+          },
+          "className": "creator-single-item-center creator-no-label",
+          "label": "",
+          "activityId": 414,
+          "min": 1,
+          "extraInfoLink": "https://docs.alipay.com/alibaba_we_guide/guide/whmudc",
+          "editTriggerText": "编辑资料",
+          "categoryListApiQuery": {
+            "poolId": "58"
+          },
+          "triggerTips": "添加一个宝贝",
+          "editTitleMaxLength": 20,
+          "value": []
+        },
+        "rules": [{
+          "min": 1,
+          "type": "array",
+          "message": "请上传1个宝贝"
+        }, {
+          "max": 1,
+          "type": "array",
+          "message": "最多允许1个"
+        }],
+        "updateOnChange": "true"
+      }
+    }
   }
   if (shopStoryContentType && (shopStoryContentType.props.value === 'people' || shopStoryContentType.props.value === 'designer')) {
     if (!shopStoryKeeperDescription) {

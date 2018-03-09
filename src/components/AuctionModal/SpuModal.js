@@ -4,7 +4,6 @@ import url from 'url';
 import querystring from 'querystring';
 import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagination, Tag, Switch } from 'antd';
 import styles from './index.less';
-import { searchNew7, queryQumai } from '../../services/tool';
 import { queryYhhBody } from '../../services/task';
 import CoverModal from './CoverModal.js'
 
@@ -12,11 +11,13 @@ const TabPane = Tabs.TabPane;
 const Search = Input.Search;
 
 @connect(state => ({
-  visible: state.auction.visible,
-  currentKey: state.auction.currentKey,
+  visible: state.album.spuModal.visible,
+  currentKey: state.album.spuModal.currentKey,
+  list: state.album.spuModal.list,
+  pagination: state.album.spuModal.pagination,
 }))
   
-export default class AuctionModal extends PureComponent {
+export default class SpuModal extends PureComponent {
   state = {
     nicaiCrx: null,
     version: '',
@@ -105,7 +106,7 @@ export default class AuctionModal extends PureComponent {
         actsLoading: false,
       });
     } else {
-      this.handleGetAuction({ pageSize: pagination.pageSize, current: 1, activityId: this.props.activityId });
+      this.handleGetSpu({ pageSize: pagination.pageSize, current: 1, activityId: this.props.activityId });
     }
   }
   setAuction = (e) => {
@@ -129,15 +130,15 @@ export default class AuctionModal extends PureComponent {
       });
     }
   }
-  handleGetAuction = (params) => {
-    this.state.nicaiCrx.innerText = JSON.stringify({...params, categoryId: 0});
+  handleGetSpu = (params) => {
+    this.state.nicaiCrx.innerText = JSON.stringify({...params, categoryId: 0, resourceType: 'SPU'});
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getAuction', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
   }
   handleCancel = () => {
     this.props.dispatch({
-      type: 'auction/hide',
+      type: 'album/hideSpu',
     });
   }
   handleSearchChange = (e) => {
@@ -166,7 +167,6 @@ export default class AuctionModal extends PureComponent {
     if (value) {
       const urlobject = url.parse(value);
       const urlQuery = querystring.parse(urlobject.query);
-      this.handleSetTags(value, urlQuery.id);
       this.state.nicaiCrx.innerText = JSON.stringify(value);
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('uploadAuction', true, true);
@@ -178,7 +178,7 @@ export default class AuctionModal extends PureComponent {
   renderAuctions = (auction) => {
     return (
       <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.id} >
-        { ((auction.item.displayStatus && auction.item.displayStatus !== '正常') || auction.disable) &&
+        { auction.disable &&
           <div className={styles.displayStatus}>选品不符</div>
         }
         <div onClick={() => this.handleChooseAuction(auction)}>
@@ -190,8 +190,7 @@ export default class AuctionModal extends PureComponent {
           </div>
           <div className={styles.auctionCard}>
             <p className={styles.auctionNodes}>{auction.title}</p>
-            <p className={styles.auctionNodes} style={{ margin: '3px 0', color: '#555' }}>¥{auction.item.finalPrice || auction.item.reservedPrice}</p>
-            <p className={styles.auctionNodes}>{auction.item.taoKeDisplayPrice}</p>
+            <p className={styles.auctionNodes}>{auction.spuInfoDTO.price ? auction.spuInfoDTO.price : ''}</p>
           </div>
         </div>
       </Card>
@@ -207,7 +206,7 @@ export default class AuctionModal extends PureComponent {
     });
     if (this.state.nicaiCrx) {
       this.setState({ actsLoading: true });
-      this.handleGetAuction({
+      this.handleGetSpu({
         pageSize,
         current,
         activityId: this.props.activityId,
@@ -226,52 +225,16 @@ export default class AuctionModal extends PureComponent {
       }
     }
   }
-  handleSetTags = async (url, id) => {
-    let newUrl = url;
-    if (!/^((http:)|(https:))/.test(newUrl)) {
-      newUrl = `https:${newUrl}`;
-    }
-    const sevenResult = await searchNew7({text: newUrl});
-    const qumaiResult = await queryQumai({text: newUrl});
-    if ( this.props.k === 'havegoods') {
-      const yhhResult = await queryYhhBody({itemId: id});
-      const yhhList = yhhResult.list && yhhResult.list.length > 0 ? true : false;
-      if (yhhList) {
-        Modal.warning({
-          title: '该商品在平台内已经被其它人写过，建议选择其它商品。',
-        });
-      }
-    }
-    const index1 = qumaiResult.data.htmls.indexOf('有好货已入库');
-    const index2 = qumaiResult.data.htmls.indexOf('条');
-    if(sevenResult.data && sevenResult.data.length > 0 ){
-      const new7 = sevenResult.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
-      this.setState({
-        qumai: qumaiResult.data.htmls.substring(index1, index2+1),
-        q_score: sevenResult.data[0].q_score,
-        new7: new7,
-      });
-    }
-  }
+  
   handleOk = () => {
     if (this.state.auctionChoose && this.state.auctionChoose.url) {
-      if (this.props.k === 'editor') {
-        this.props.dispatch({
-          type: 'album/showCover',
-          payload: {
-            coverKey: `auction_${this.props.currentKey}`,
-            auction: this.state.auctionChoose,
-          }
-        });
-      } else {
-        if (this.props.onOk) this.props.onOk(this.state.auctionChoose);
-        this.props.dispatch({
-          type: 'auction/hide',
-        });
-      }
+      if (this.props.onOk) this.props.onOk(this.state.auctionChoose);
+      this.props.dispatch({
+        type: 'album/hideSpu',
+      });
     } else {
       this.props.dispatch({
-        type: 'auction/hide',
+        type: 'album/hideSpu',
       });
     }
   }
@@ -284,12 +247,11 @@ export default class AuctionModal extends PureComponent {
       auctionChoose: auction,
       search: auction.item ? auction.item.itemUrl : '',
     });
-    this.handleSetTags(auction.item.itemUrl, auction.item.itemId);
   }
 
   handleChangeTab = (e) =>{
     if (e === 'commodities') {
-      this.handleGetAuction({ pageSize: this.state.pagination.pageSize, current: 1, activityId: this.props.activityId });
+      this.handleGetSpu({ pageSize: this.state.pagination.pageSize, current: 1, activityId: this.props.activityId });
     }
     this.setState({
       activeKey: e,
@@ -305,7 +267,7 @@ export default class AuctionModal extends PureComponent {
   }
   renderAddAuction = () => {
     const { visible, k } = this.props;
-    const { search, itemList, pagination, addLoading, auctionChoose, q_score, new7, qumai } = this.state;
+    const { search, itemList, pagination, addLoading, auctionChoose } = this.state;
     return (<div style={{ padding: 10, height: 300 }}>
       <div style={{ position: 'relative' }}>
         <Search
@@ -325,19 +287,6 @@ export default class AuctionModal extends PureComponent {
         { auctionChoose && auctionChoose.title &&
           <div style={{ margin: '10px 0' }}>
             <p>{auctionChoose.title}</p>
-            <div style={{ margin: '5px 0' }}>
-              <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice || auctionChoose.item.reservedPrice}</Tag>
-              <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
-              { new7 &&
-                <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
-              }
-              { q_score &&
-                <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
-              }
-              { qumai &&
-                <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
-              }
-            </div>
             { auctionChoose && auctionChoose.title &&
               this.renderAuctions(auctionChoose)
             }
@@ -352,7 +301,7 @@ export default class AuctionModal extends PureComponent {
     auction.title = title;
     if (this.props.onOk) this.props.onOk(auction);
     this.props.dispatch({
-      type: 'auction/hide',
+      type: 'album/hideSpu',
     });
   }
   handleGetKuaixuanId = async () => {
@@ -369,10 +318,10 @@ export default class AuctionModal extends PureComponent {
   }
   render() {
     const { visible, k, currentKey, activityId } = this.props;
-    const { itemList, pagination, actsLoading, activeKey, auctionChoose, q_score, new7, qumai } = this.state;
+    const { itemList, pagination, actsLoading, activeKey, auctionChoose } = this.state;
     return (
       <Modal
-        title="添加商品"
+        title="添加产品"
         width="850px"
         visible={k === currentKey && visible}
         onOk={this.handleOk}
@@ -392,22 +341,6 @@ export default class AuctionModal extends PureComponent {
             <TabPane tab={<span>商品库</span>} key="commodities">
               <div>
                 <Spin spinning={actsLoading}>
-                  { auctionChoose && auctionChoose.title && <div style={{ marginBottom: 10 }}>
-                    <div style={{ margin: '5px 0' }}>
-                      <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice || auction.item.reservedPrice}</Tag>
-                      <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
-                      { new7 &&
-                        <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
-                      }
-                      { q_score &&
-                        <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
-                      }
-                      { qumai &&
-                        <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
-                      }
-                    </div>
-                  </div>
-                  }
                   <div style={{ height: 300, overflow: 'auto'}}>
                     {itemList.map(this.renderAuctions)}
                   </div>
@@ -423,7 +356,6 @@ export default class AuctionModal extends PureComponent {
                   />
                 </Spin>
               </div>
-              <CoverModal k={`auction_${this.props.k}`} onOk={this.handleChooseCover} />
             </TabPane>
           </Tabs>
           : this.renderAddAuction()

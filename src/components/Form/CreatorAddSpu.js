@@ -1,59 +1,68 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import { Form, Icon } from 'antd';
-import AuctionModal from '../AuctionModal';
+import SpuModal from '../AuctionModal/SpuModal';
 import AuctionImageModal from '../AuctionModal/AuctionImageModal';
 import styles from './index.less';
 
 const FormItem = Form.Item;
+@connect(state => ({
+}))
 
 export default class CreatorAddSpu extends PureComponent {
   state = {
   }
   handleAuctionShow = () => {
-    return ;
     this.props.dispatch({
-      type: 'auction/show',
-      payload: { currentKey: 'havegoods' }
+      type: 'album/showSpu',
+      payload: { currentKey: this.props.name }
     });
   }
   handleAddProduct = (auction, img) => {
+    const { props } = this.props;
     if (this.props.onChange) {
       this.props.onChange([{
-        checked: false,
-        finalPricePc:0,
-        finalPriceWap:0,
+        coverUrl: auction.coverUrl,
         images: auction.images,
-        itemId: auction.item.itemId,
         materialId: auction.materialId,
-        price: Number(auction.item.finalPrice),
-        rawTitle: auction.title,
-        resourceUrl: auction.item.itemUrl,
+        resourceType: auction.resourceType === "SPU" ? "Product" : auction.resourceType,
+        spuId: auction.spuId,
         title: auction.title,
-        coverUrl: img,
-        // extraBanners: [],
       }]);
     }
-    const { props } = this.props;
     this.props.dispatch({
       type: 'album/showAuctionImage',
       payload: {
         formData: props.value[0] ? props.value[0] : [],
         currentKey: this.props.name,
       }
-    })
+    });
   }
   handleEditProduct = () => {
-    this.props.dispatch({
-      type: 'album/showAuctionImage',
-      currentKey: this.props.name,
-    })
+    const { props } = this.props;
+    if (props.enableExtraBanner) {
+      this.props.dispatch({
+        type: 'album/showAuctionImage',
+        payload: {
+          formData: props.value[0] ? props.value[0] : [],
+          currentKey: this.props.name,
+        }
+      });
+    }
+  }
+  handleChangeBodyImg = (coverUrl, extraBanners) => {
+    const { props } = this.props;
+    if (this.props.onChange) this.props.onChange([{
+      ...props.value[0],
+      coverUrl: coverUrl,
+      extraBanners: extraBanners,
+    }]);
   }
   handleClearProduct = () => {
     if (this.props.onChange) this.props.onChange([]);
   }
   render() {
     const { name, props, rules } = this.props;
-
     return (
       <div style={{ padding: '10px 20px 0' }}>
         <div className={styles.task_img_list}>
@@ -79,8 +88,8 @@ export default class CreatorAddSpu extends PureComponent {
             </div>
           }
         </div>
-        <AuctionModal k={this.props.name} onOk={this.handleAddProduct} activityId={props.activityId || 0} />
-        <AuctionImageModal onChange={this.handleChangeBodyImg} />
+        <SpuModal k={this.props.name} onOk={this.handleAddProduct} activityId={props.activityId || 0} />
+        <AuctionImageModal k={this.props.name} onChange={this.handleChangeBodyImg} />
       </div>
     );
   }

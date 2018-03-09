@@ -4,6 +4,7 @@ import { Icon, Divider } from 'antd';
 import { connect } from 'dva';
 import AlbumModal from '../../AlbumModal';
 import AuctionModal from '../../AuctionModal';
+import SpuModal from '../../AuctionModal/SpuModal';
 import BpuModal from '../../AuctionModal/BpuModal';
 import ShopListModal from '../../AuctionModal/ShopListModal';
 import styles from './index.less';
@@ -104,6 +105,35 @@ export default class Editors extends PureComponent {
         ' ',
       );
     });
+    this.setState({
+      editorState
+    });
+  }
+  handleAddSpu = (products) => {
+    let { editorState } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'SIDEBARADDSPU',
+      'IMMUTABLE',
+      {
+        coverUrl: products.coverUrl,
+        features: "",
+        images: products.images,
+        materialId: products.materialId,
+        resourceType: products.resourceType === "SPU" ? "Product" : products.resourceType,
+        name: "",
+        spuId: products.spuId,
+        title: products.title,
+        type: "SIDEBARADDSPU",
+      }
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+    editorState = AtomicBlockUtils.insertAtomicBlock(
+      newEditorState,
+      entityKey,
+      ' ',
+    );
     this.setState({
       editorState
     });
@@ -295,13 +325,22 @@ export default class Editors extends PureComponent {
       }
     });
   }
-  sidebaraddspu = () => {
-    this.props.dispatch({
-      type: 'auction/showBbu',
-      payload: {
-        currentKey: 'editor'
-      }
-    });
+  sidebaraddspu = (props) => {
+    if (props.type === 'product') {
+      this.props.dispatch({
+        type: 'album/showSpu',
+        payload: {
+          currentKey: 'editor'
+        }
+      });
+    } else {
+      this.props.dispatch({
+        type: 'auction/showBbu',
+        payload: {
+          currentKey: 'editor'
+        }
+      });
+    }
   }
   sidebaraddshop = () => {
     this.props.dispatch({
@@ -418,9 +457,9 @@ export default class Editors extends PureComponent {
                                           <Icon type="shopping-cart" />
                                           宝贝
                                         </span>;
-        case 'SIDEBARADDSPU': return <span key={index} onClick={this.sidebaraddspu}>
+        case 'SIDEBARADDSPU': return <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
                                         <Icon type="shop" />
-                                        标准品牌商品
+                                        {item.props.title}
                                       </span>;
         case 'SIDEBARADDSHOP': return <span key={index} onClick={this.sidebaraddshop}>
                                         <Icon type="shop" />
@@ -451,7 +490,7 @@ export default class Editors extends PureComponent {
     }
     return (
       <div style={{padding: '10px 20px', marginBottom: 60}}>
-        <div onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
+        <div ref="editorToolsWrap" onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
           <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
           <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
         </div>
@@ -461,6 +500,7 @@ export default class Editors extends PureComponent {
         <AlbumModal k="editor" onOk={this.handleAddImg} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} activityId={this.props.activityId} />
         <BpuModal k="editor" onOk={this.handleAddBpu} />
+        <SpuModal k="editor" onOk={this.handleAddSpu} />
         <ShopListModal k="editor" onOk={this.handleAddShop} />
       </div>
     );

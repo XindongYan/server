@@ -43,6 +43,15 @@ export default {
       image: '',
       value: {},
       index: -1,
+    },
+    spuModal: {
+      visible: false,
+      currentKey: '',
+      list: [],
+      pagination: {
+        pageSize: 20,
+        current: 1,
+      },
     }
   },
 
@@ -142,6 +151,18 @@ export default {
         payload: { visible: false, ...payload },
       });
     },
+    *showSpu({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeSpuModal',
+        payload: { visible: true, ...payload },
+      });
+    },
+    *hideSpu({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeSpuModal',
+        payload: { visible: false, ...payload },
+      });
+    },
   },
 
   reducers: {
@@ -204,6 +225,15 @@ export default {
         ...state,
         anchorModal: {
           ...state.anchorModal,
+          ...action.payload,
+        },
+      };
+    },
+    changeSpuModal(state, action) {
+      return {
+        ...state,
+        spuModal: {
+          ...state.spuModal,
           ...action.payload,
         },
       };
