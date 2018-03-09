@@ -457,10 +457,10 @@ export default class Editors extends PureComponent {
                                           <Icon type="shopping-cart" />
                                           宝贝
                                         </span>;
-        case 'SIDEBARADDSPU': return <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
+        case 'SIDEBARADDSPU': return !item.props.type ? <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
                                         <Icon type="shop" />
                                         {item.props.title}
-                                      </span>;
+                                      </span> : '';
         case 'SIDEBARADDSHOP': return <span key={index} onClick={this.sidebaraddshop}>
                                         <Icon type="shop" />
                                         店铺
