@@ -90,7 +90,7 @@ export default class Editors extends PureComponent {
         'IMMUTABLE',
         {
           coverUrl: item.mainPicUrl,
-          features: {},
+          features: "{}",
           name: "",
           spuId: item.finalBpuId,
           title: item.title,

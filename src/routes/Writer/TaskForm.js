@@ -245,8 +245,8 @@ export default class TaskForm extends PureComponent {
         Object.keys(entityMap).forEach(item => {
           if (entityMap[item].type === 'SIDEBARSEARCHITEM') {
             auctionIds.push(Number(entityMap[item].data.itemId));
-          } else if (entityMap[item].type === 'SIDEBARADDSPU') {
-            auctionIds.push(Number(entityMap[item].data.spuId));
+          // } else if (entityMap[item].type === 'SIDEBARADDSPU') {
+          //   auctionIds.push(Number(entityMap[item].data.spuId));
           }
         });
       } else if (body.component === 'AnchorImageList' && body.props.value[0]) {
@@ -260,6 +260,9 @@ export default class TaskForm extends PureComponent {
       } else if (body.component === 'CreatorAddSpu' && body.props.value[0]) {
         auctionIds.push(body.props.value[0].spuId);
       }
+      // else if (body.component === 'StructCanvas' && body.props.value[0]) {
+
+      // }
     }
     return auctionIds;
   }
