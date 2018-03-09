@@ -648,7 +648,9 @@ export default class TableList extends PureComponent {
         <Tabs activeKey={activeKey} onChange={this.handleActiveKeyChange}>
           <TabPane tab="任务" key="table">
             <div style={{ marginBottom: 12 }}>
-              <Button disabled={formData.type === 2 ? true : false} icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
+            { formData.type !== 2 &&
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建任务</Button>
+            }
             </div>
             <RadioGroup value={projectTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>
               <RadioButton value={TASK_APPROVE_STATUS.all}>全部</RadioButton>
@@ -700,7 +702,9 @@ export default class TableList extends PureComponent {
                   {
                     selectedRows.length > 0 && (
                       <span>
-                        <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量上架</Button>
+                        { formData.type === 1 &&
+                          <Button icon="flag" type="default" onClick={() => this.publishTasks()}>批量上架</Button>
+                        }
                         <Button icon="user-add" type="default"
                         onClick={() => this.handleDarenModalVisible(true)} style={{ marginLeft: 10 }}>指定达人</Button>
                         {/*<Dropdown overlay={menu}>

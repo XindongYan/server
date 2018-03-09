@@ -394,7 +394,7 @@ export default class AlbumModal extends PureComponent {
                 />
               </Spin>
             </TabPane>}
-            <TabPane tab={<span><Icon type="upload" />上传</span>} key="upload">
+            <TabPane tab={this.props.k !== 'material' ? <span><Icon type="upload" />上传</span> :  <span></span>} key="upload">
               <div>
                 <div className={styles.uploadInpBox}>
                   <div className={styles.uploadViewBox}>
