@@ -52,7 +52,7 @@ export default class SpuModal extends PureComponent {
         if (nextProps.k !== 'material') {
           nicaiCrx.addEventListener('setVersion', this.setVersion);
           nicaiCrx.addEventListener('setAuction', this.setAuction);
-          nicaiCrx.addEventListener('resultAuction', this.resultAuction);
+          nicaiCrx.addEventListener('resultSpu', this.resultSpu);
           if (!this.state.nicaiCrx) {
             this.setState({ nicaiCrx }, () => {
               setTimeout(() => {
@@ -68,16 +68,15 @@ export default class SpuModal extends PureComponent {
             }
           }, 5000);
         } else {
-          nicaiCrx.addEventListener('resultAuction', this.resultAuction);
+          nicaiCrx.addEventListener('resultSpu', this.resultSpu);
           if (!this.state.nicaiCrx) {
             this.setState({ nicaiCrx });
           }
         }
-        this.handleGetKuaixuanId();
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('setAuction', this.setAuction);
-        nicaiCrx.removeEventListener('resultAuction', this.resultAuction);
+        nicaiCrx.removeEventListener('resultSpu', this.resultSpu);
         this.setState({
           nicaiCrx: null,
         });
@@ -106,7 +105,7 @@ export default class SpuModal extends PureComponent {
         actsLoading: false,
       });
     } else {
-      this.handleGetSpu({ pageSize: pagination.pageSize, current: 1, activityId: this.props.activityId });
+      this.handleGetSpu({ pageSize: pagination.pageSize, current: 1 });
     }
   }
   setAuction = (e) => {
@@ -131,7 +130,7 @@ export default class SpuModal extends PureComponent {
     }
   }
   handleGetSpu = (params) => {
-    this.state.nicaiCrx.innerText = JSON.stringify({...params, categoryId: 0, resourceType: 'SPU'});
+    this.state.nicaiCrx.innerText = JSON.stringify({...params, activityId: this.props.activityId, categoryId: 0, resourceType: 'SPU'});
     const customEvent = document.createEvent('Event');
     customEvent.initEvent('getAuction', true, true);
     this.state.nicaiCrx.dispatchEvent(customEvent);
@@ -165,11 +164,14 @@ export default class SpuModal extends PureComponent {
       auctionChoose: {},
     });
     if (value) {
-      const urlobject = url.parse(value);
-      const urlQuery = querystring.parse(urlobject.query);
-      this.state.nicaiCrx.innerText = JSON.stringify(value);
+      const data = {
+        url: value,
+        activityId: this.props.activityId,
+        categoryId: 0,
+      };
+      this.state.nicaiCrx.innerText = JSON.stringify(data);
       const customEvent = document.createEvent('Event');
-      customEvent.initEvent('uploadAuction', true, true);
+      customEvent.initEvent('uploadSpu', true, true);
       this.state.nicaiCrx.dispatchEvent(customEvent);
     } else {
       message.warn('请输入商品链接');
@@ -209,11 +211,10 @@ export default class SpuModal extends PureComponent {
       this.handleGetSpu({
         pageSize,
         current,
-        activityId: this.props.activityId,
       });
     }
   }
-  resultAuction = async (e) => {
+  resultSpu = async (e) => {
     const result = JSON.parse(e.target.innerText);
     if (this.props.k === this.props.currentKey) {
       if (result.error) {
@@ -251,7 +252,7 @@ export default class SpuModal extends PureComponent {
 
   handleChangeTab = (e) =>{
     if (e === 'commodities') {
-      this.handleGetSpu({ pageSize: this.state.pagination.pageSize, current: 1, activityId: this.props.activityId });
+      this.handleGetSpu({ pageSize: this.state.pagination.pageSize, current: 1 });
     }
     this.setState({
       activeKey: e,
@@ -304,18 +305,7 @@ export default class SpuModal extends PureComponent {
       type: 'album/hideSpu',
     });
   }
-  handleGetKuaixuanId = async () => {
-    const { activityId } = this.props;
-    let url = 'https://we.taobao.com/material/square/detail?kxuanParam=%7B%22nested%22%3A%22we%22%2C%22id%22%3A%220%22%7D';
-    const taskChannel = await fetch(`/jsons/taskChannel.json`).then(response => response.json());
-    const data = taskChannel.find(item => item.id === activityId && item.selectItemData);
-    if (data) {
-      url = data.selectItemData.url;
-    }
-    this.setState({
-      kuaixuanUrl: url,
-    });
-  }
+
   render() {
     const { visible, k, currentKey, activityId } = this.props;
     const { itemList, pagination, actsLoading, activeKey, auctionChoose } = this.state;
@@ -331,7 +321,6 @@ export default class SpuModal extends PureComponent {
       >
         { k !== 'material' ?
           <Tabs
-            tabBarExtraContent={<div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div>}
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >

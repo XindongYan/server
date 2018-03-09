@@ -167,7 +167,12 @@ export default class AuctionModal extends PureComponent {
       const urlobject = url.parse(value);
       const urlQuery = querystring.parse(urlobject.query);
       this.handleSetTags(value, urlQuery.id);
-      this.state.nicaiCrx.innerText = JSON.stringify(value);
+      const data = {
+        url: value,
+        activityId: this.props.activityId,
+        categoryId: 0,
+      };
+      this.state.nicaiCrx.innerText = JSON.stringify(data);
       const customEvent = document.createEvent('Event');
       customEvent.initEvent('uploadAuction', true, true);
       this.state.nicaiCrx.dispatchEvent(customEvent);
@@ -242,8 +247,8 @@ export default class AuctionModal extends PureComponent {
         });
       }
     }
-    const index1 = qumaiResult.data.htmls.indexOf('有好货已入库');
-    const index2 = qumaiResult.data.htmls.indexOf('条');
+    const index1 = qumaiResult.data ? qumaiResult.data.htmls.indexOf('有好货已入库') : '';
+    const index2 = qumaiResult.data ? qumaiResult.data.htmls.indexOf('条') : '';
     if(sevenResult.data && sevenResult.data.length > 0 ){
       const new7 = sevenResult.data[0].icon.find(item => /新7条/.test(item.innerText)) ? '符合新七条' : '不符合新七条';
       this.setState({
