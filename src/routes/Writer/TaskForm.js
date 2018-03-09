@@ -152,7 +152,6 @@ export default class TaskForm extends PureComponent {
             approve_status: TASK_APPROVE_STATUS.taken,
             publisher_id: currentUser._id,
             taker_id: currentUser._id,
-            take_time: new Date(),
           },
           callback: (result1) => {
             if (result1.error) {
@@ -166,9 +165,6 @@ export default class TaskForm extends PureComponent {
           }
         });
       } else {
-        const payload = {
-          
-        };
         this.props.dispatch({
           type: 'task/add',
           payload: {
@@ -179,32 +175,20 @@ export default class TaskForm extends PureComponent {
             source: SOURCE.deliver,
             project_id: query.project_id,
             creator_id: currentUser._id,
+            take_time: new Date(),
+            approve_status: TASK_APPROVE_STATUS.taken,
+            publisher_id: currentUser._id,
+            taker_id: currentUser._id,
           },
           callback: (result) => {
             if (result.error) {
               message.error(result.msg);
             } else {
-              this.props.dispatch({
-                type: 'task/update',
-                payload: {
-                  _id: result.task._id,
-                  approve_status: TASK_APPROVE_STATUS.taken,
-                  publisher_id: currentUser._id,
-                  taker_id: currentUser._id,
-                  take_time: new Date(),
-                },
-                callback: (result1) => {
-                  if (result1.error) {
-                    message.error(result1.msg);
-                  } else {
-                    this.handleHandin(result.task._id);
-                  }
-                  this.setState({
-                    submitLoading: false,
-                  });
-                }
-              });
+              this.handleHandin(result.task._id);
             }
+            this.setState({
+              submitLoading: false,
+            });
           },
         });
       }
@@ -245,8 +229,8 @@ export default class TaskForm extends PureComponent {
         Object.keys(entityMap).forEach(item => {
           if (entityMap[item].type === 'SIDEBARSEARCHITEM') {
             auctionIds.push(Number(entityMap[item].data.itemId));
-          } else if (entityMap[item].type === 'SIDEBARADDSPU') {
-            auctionIds.push(Number(entityMap[item].data.spuId));
+          // } else if (entityMap[item].type === 'SIDEBARADDSPU') {
+          //   auctionIds.push(Number(entityMap[item].data.spuId));
           }
         });
       } else if (body.component === 'AnchorImageList' && body.props.value[0]) {
@@ -260,6 +244,9 @@ export default class TaskForm extends PureComponent {
       } else if (body.component === 'CreatorAddSpu' && body.props.value[0]) {
         auctionIds.push(body.props.value[0].spuId);
       }
+      // else if (body.component === 'StructCanvas' && body.props.value[0]) {
+
+      // }
     }
     return auctionIds;
   }
@@ -398,7 +385,6 @@ export default class TaskForm extends PureComponent {
             payload: {
               ...values,
               _id: query._id,
-              take_time: new Date(),
               current_approvers: approvers[0],
               approvers: approvers,
             },

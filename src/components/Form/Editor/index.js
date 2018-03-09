@@ -105,7 +105,7 @@ export default class Editors extends PureComponent {
         'IMMUTABLE',
         {
           coverUrl: item.mainPicUrl,
-          features: {},
+          features: "{}",
           name: "",
           spuId: item.finalBpuId,
           title: item.title,
@@ -486,10 +486,10 @@ export default class Editors extends PureComponent {
                                           <Icon type="shopping-cart" />
                                           宝贝
                                         </span>;
-        case 'SIDEBARADDSPU': return <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
+        case 'SIDEBARADDSPU': return !item.props.type ? <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
                                         <Icon type="shop" />
                                         {item.props.type === 'product' ? '产品' : item.props.title}
-                                      </span>;
+                                      </span> : '';
         case 'SIDEBARADDSHOP': return <span key={index} onClick={this.sidebaraddshop}>
                                         <Icon type="shop" />
                                         店铺
