@@ -32,9 +32,10 @@ export default class CreatorAddImage extends PureComponent {
   render() {
     const { name, props, rules } = this.props;
     const disabled = this.props.operation === 'view' ? true : false;
-    const coverViewStyles = disabled ? {border: '1px solid #ccc', color: '#ccc'} : {};
     const needAdd = props.value.length < props.max;
     const pixFilter = props.pixFilter.split('x').map(item => Number(item));
+    const widthHeightStyle = {width: pixFilter[0] / 4, height: pixFilter[1] / 4};
+    const coverViewStyles = disabled ? {border: '1px solid #ccc', color: '#ccc', ...widthHeightStyle} : {...widthHeightStyle};
     return (
       <div style={{ padding: '10px 20px 0' }}>
         <div style={{ lineHeight: 2 }}>
@@ -42,7 +43,7 @@ export default class CreatorAddImage extends PureComponent {
         </div>
         <div>
           { props.value.map((item, index) =>
-            <div className={styles.coverPic} key={index}>
+            <div className={styles.coverPic} key={index} style={widthHeightStyle}>
               <img src={item.url} style={{ height: '100%', width: '100%' }}/>
               { !disabled &&
                 <div className={styles.coverModal} onClick={() => this.handleDeleteCover(index)}>
