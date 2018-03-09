@@ -46,7 +46,14 @@ export const TASK_TYPES = [
   { value: 2, text: '搭配', template: 'collection', logo: '//img.alicdn.com/tfs/TB14jsvRFXXXXcsXpXXXXXXXXXX-140-140.png' },
   { value: 3, text: '单品', template: 'item', logo: '//img.alicdn.com/tfs/TB1g6cGRFXXXXa9XXXXXXXXXXXX-140-140.png' },
   { value: 4, text: '视频', template: 'video', logo: '//img.alicdn.com/tfs/TB1dAT8RFXXXXX3aXXXXXXXXXXX-140-140.png' },
-  { value: 5, text: '单品-item2', template: 'item2', logo: '//img.alicdn.com/tfs/TB1g6cGRFXXXXa9XXXXXXXXXXXX-140-140.png' },
+  { value: 5, text: '单品(item2)', template: 'item2', logo: '//img.alicdn.com/tfs/TB1g6cGRFXXXXa9XXXXXXXXXXXX-140-140.png' },
+  { value: 6, text: '商品排行', template: 'itemrank', logo: '//img.alicdn.com/tfs/TB1tHkkXmBYBeNjy0FeXXbnmFXa-280-498.png' },
+  { value: 7, text: '商品推荐', template: 'iteminventory', logo: '//img.alicdn.com/tfs/TB1sbkkXmBYBeNjy0FeXXbnmFXa-280-498.png' },
+  { value: 8, text: '店铺推荐', template: 'shopinventory', logo: '//img.alicdn.com/tfs/TB1pI1CXh9YBuNjy0FfXXXIsVXa-280-498.png' },
+  { value: 9, text: '短视频', template: 'video2', logo: '//img.alicdn.com/tfs/TB1hlTbXeuSBuNjy1XcXXcYjFXa-280-498.png' },
+  { value: 10, text: '场景搭配', template: 'collection2', logo: '//img.alicdn.com/tfs/TB1LczaXgmTBuNjy1XbXXaMrVXa-280-498.png' },
+  { value: 11, text: '拼图搭配', template: 'magiccollocation', logo: '//img.alicdn.com/tfs/TB1cFLXXkyWBuNjy0FpXXassXXa-280-498.png' },
+  { value: 12, text: '互动问答', template: 'qa', logo: '//img.alicdn.com/tfs/TB1rbbXXkyWBuNjy0FpXXassXXa-280-498.png' },
 ];
 
 export const PROJECT_LEVELS = [
