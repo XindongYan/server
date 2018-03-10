@@ -30,7 +30,7 @@ export default class UserInfo extends Component {
       callback: (result) => {
         this.setState({
           currentUser: result.user,
-        })
+        });
       },
     });
     this.props.dispatch({

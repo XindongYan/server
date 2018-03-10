@@ -41,6 +41,8 @@ export default class AuctionModal extends PureComponent {
     
   }
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps.k)
+    console.log(nextProps.currentKey)
     if (nextProps.k === nextProps.currentKey) {
       if (!this.props.visible && nextProps.visible) {
         this.setState({
@@ -393,54 +395,56 @@ export default class AuctionModal extends PureComponent {
         bodyStyle={{ padding: '5px 20px' }}
         style={{ top: 20 }}
       >
-        { k !== 'material' ?
-          <Tabs
-            tabBarExtraContent={<div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div>}
-            activeKey={activeKey}
-            onChange={this.handleChangeTab}
-          >
-            <TabPane tab={<span>添加宝贝</span>} key="add">
-              {this.renderAddAuction()}
-            </TabPane>
-            <TabPane tab={<span>商品库</span>} key="commodities">
-              <div>
-                <Spin spinning={actsLoading}>
-                  { auctionChoose && auctionChoose.title && <div style={{ marginBottom: 10 }}>
-                    <div style={{ margin: '5px 0' }}>
-                      <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice || auction.item.reservedPrice}</Tag>
-                      <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
-                      { new7 &&
-                        <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
-                      }
-                      { q_score &&
-                        <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
-                      }
-                      { qumai &&
-                        <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
-                      }
+        <div>
+          { k !== 'material' ?
+            <Tabs
+              tabBarExtraContent={<div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div>}
+              activeKey={activeKey}
+              onChange={this.handleChangeTab}
+            >
+              <TabPane tab={<span>添加宝贝</span>} key="add">
+                {this.renderAddAuction()}
+              </TabPane>
+              <TabPane tab={<span>商品库</span>} key="commodities">
+                <div>
+                  <Spin spinning={actsLoading}>
+                    { auctionChoose && auctionChoose.title && <div style={{ marginBottom: 10 }}>
+                      <div style={{ margin: '5px 0' }}>
+                        <Tag style={{ cursor: 'default' }} color="red">价格 ¥{auctionChoose.item.finalPrice || auction.item.reservedPrice}</Tag>
+                        <Tag style={{ cursor: 'default' }} color="orange">佣金 {auctionChoose.item.taoKeDisplayPrice.substring(5)}</Tag>
+                        { new7 &&
+                          <Tag style={{ cursor: 'default' }} color="blue">{new7}</Tag>
+                        }
+                        { q_score &&
+                          <Tag style={{ cursor: 'default' }} color="volcano">{q_score}</Tag>
+                        }
+                        { qumai &&
+                          <Tag style={{ cursor: 'default' }} color="purple">{qumai}</Tag>
+                        }
+                      </div>
                     </div>
-                  </div>
-                  }
-                  <div style={{ height: 300, overflow: 'auto'}}>
-                    {itemList.map(this.renderAuctions)}
-                  </div>
-                  <Pagination
-                    {...{
-                      showSizeChanger: true,
-                      showQuickJumper: true,
-                      ...pagination,
-                    }}
-                    onChange={this.changeAuctionPage}
-                    onShowSizeChange={this.changeAuctionPage}
-                    style={{float: 'right', margin: '10px 20px'}}
-                  />
-                </Spin>
-              </div>
-              <CoverModal k={`auction_${this.props.k}`} onOk={this.handleChooseCover} />
-            </TabPane>
-          </Tabs>
-          : this.renderAddAuction()
-        }
+                    }
+                    <div style={{ height: 300, overflow: 'auto'}}>
+                      {itemList.map(this.renderAuctions)}
+                    </div>
+                    <Pagination
+                      {...{
+                        showSizeChanger: true,
+                        showQuickJumper: true,
+                        ...pagination,
+                      }}
+                      onChange={this.changeAuctionPage}
+                      onShowSizeChange={this.changeAuctionPage}
+                      style={{float: 'right', margin: '10px 20px'}}
+                    />
+                  </Spin>
+                </div>
+              </TabPane>
+            </Tabs>
+            : this.renderAddAuction()
+          }
+          <CoverModal k={`auction_${this.props.k}`} onOk={this.handleChooseCover} />
+        </div>
       </Modal>
     );
   }

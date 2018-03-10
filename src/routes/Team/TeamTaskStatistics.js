@@ -6,7 +6,7 @@ import querystring from 'querystring';
 import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
 Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
 import { Link } from 'dva/router';
-import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
+import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, CHANNELS } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -49,6 +49,12 @@ export default class TeamTaskStatistics extends PureComponent {
         payload: { ...pagination, approve_status, team_id },
       });
     }
+    if (teamUser.team_id) {
+      this.props.dispatch({
+        type: 'team/fetchTeamUsers',
+        payload: { team_id: teamUser.team_id },
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, teamUser, teamTask: { pagination, approve_status }, teamUser: { team_id } } = nextProps;
@@ -56,6 +62,12 @@ export default class TeamTaskStatistics extends PureComponent {
       dispatch({
         type: 'task/fetchTeamTasks',
         payload: { ...pagination, approve_status, team_id },
+      });
+    }
+    if (nextProps.teamUsers.length === 0 && nextProps.teamUser.team_id) {
+      this.props.dispatch({
+        type: 'team/fetchTeamUsers',
+        payload: { team_id: nextProps.teamUser.team_id },
       });
     }
   }
@@ -253,6 +265,7 @@ export default class TeamTaskStatistics extends PureComponent {
   render() {
     const { teamTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
+    console.log(teamUsers);
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -263,14 +276,28 @@ export default class TeamTaskStatistics extends PureComponent {
 
     const columns = [
       {
-        title: '任务ID',
-        dataIndex: 'id',
+        title: '序号',
+        key: 'index',
         width: 80,
         fixed: 'left',
-        render: (val, record) => <a onClick={() => this.handleShowDockPanel(record, 'DetailPane')}>{val}</a>,
+        render: (val, record, index) => <span>{index + 1}</span>,
       },
       {
-        title: '名称',
+        title: '昵称',
+        dataIndex: 'user_id',
+        render: val => val ? val.nickname : '',
+      },
+      {
+        title: '内容ID',
+        dataIndex: 'id',
+        render: (val, record) => (
+          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+            <TaskNameColumn text={val} length={10} />
+          </a>
+        )
+      },
+      {
+        title: '内容标题',
         dataIndex: 'name',
         render: (val, record) => (
           <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
@@ -279,37 +306,63 @@ export default class TeamTaskStatistics extends PureComponent {
         )
       },
       {
-        title: '创建时间',
-        dataIndex: 'create_time',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
-      },
-      {
-        title: '渠道',
-        dataIndex: 'channel_name',
-      },
-      {
-        title: '商家标签',
-        dataIndex: 'merchant_tag',
+        title: '进店数',
+        dataIndex: 'sumCntIpv',
         render: (record) => (
           <TaskNameColumn text={record} length={10} />
         )
       },
       {
-        title: '接单人',
-        dataIndex: 'taker_id',
-        render: (val) => val ? val.nickname : '',
+        title: '转发次数',
+        dataIndex: 'sumShareCnt',
+        render: (val) => val ? val : '',
       },
       {
-        title: '接单时间',
-        dataIndex: 'take_time',
-        render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
+        title: '互动数',
+        dataIndex: 'sumSnsCnt',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '阅读数',
+        dataIndex: 'sumReadCnt',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '点赞数',
+        dataIndex: 'sumFavorCnt',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '评论数',
+        dataIndex: 'sumCmtCnt',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '付款金额',
+        dataIndex: 'totalAlipayFee',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '淘宝佣金',
+        key: '1',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '淘宝动态奖励',
+        dataIndex: 'fee',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '尼采佣金',
+        key: '3',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '尼采奖励',
+        key: '4',
+        render: (val) => val ? val : '',
       },
     ];
-    const status = {
-      title: '状态',
-      dataIndex: 'approve_status',
-      render: val => (<TaskStatusColumn status={val}/>),
-    };
     const opera = {
       title: '操作',
       width: 80,
@@ -328,62 +381,6 @@ export default class TeamTaskStatistics extends PureComponent {
         return '';
       },
     };
-    const daren_nickname = {
-      title: '发布人',
-      dataIndex: 'daren_id',
-      width: 80,
-      render: val => val ? val.nickname : '',
-    };
-    const pushTime = {
-      title: '发布时间',
-      dataIndex: 'publish_taobao_time',
-      render: val => ( 
-        val ?
-        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).fromNow()}
-        </Tooltip> : ''
-      ),
-    };
-    const pushStatusText = {
-      title: '推送状态',
-      dataIndex: 'taobao.pushStatusText',
-      render: val => {
-        let pushStatusTextTags = '';
-        if (val) {
-          pushStatusTextTags = val.map((item, index) => <p key={index}>{item}</p>);
-        }
-        return <span>{pushStatusTextTags}</span>
-      },
-    };
-    const recruitColumn = {
-      title: '投稿状态',
-      dataIndex: 'taobao.recruitFail',
-      render: (val, record) => {
-        if (record.taobao.recruitStatusDesc) {
-          let color = '';
-          if (record.taobao.recruitStatusDesc === '审核中') {
-            color = 'rgb(252, 166, 28)';
-          } else if (record.taobao.recruitStatusDesc === '审核通过') {
-            color = 'rgb(74, 190, 90)';
-          } else if (record.taobao.recruitStatusDesc === '审核不通过') {
-            color = 'rgb(248, 109, 109)';
-          }
-          return (
-            <div>
-              <div>{record.taobao.recruitTitle ? `已投${record.taobao.recruitTitle}` : ''}</div>
-              <div><span style={{ color, marginRight: 5 }}>{record.taobao.recruitStatusDesc}</span>
-              {record.taobao.recruitStatusDesc === '审核不通过' ?
-                <Popover placement="top" content={record.taobao.recruitFailMessage} trigger="hover">
-                  <Icon type="question-circle-o" />
-                </Popover>: ''}
-              </div>
-            </div>
-          );
-        } else {
-          return '';
-        }
-      },
-    };
     const rowSelection = {
       selectedRowKeys,
       onChange: this.handleRowSelectChange,
@@ -391,50 +388,32 @@ export default class TeamTaskStatistics extends PureComponent {
         disabled: record.disabled,
       }),
     };
-    if (teamTask.approve_status === TASK_APPROVE_STATUS.all) {
-      columns.push(status);
-    } else if (teamTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || teamTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
-      columns.push(daren_nickname, pushTime, pushStatusText, recruitColumn);
-    }
     columns.push(opera);
     return (
       <div>
-        <RadioGroup value={teamTask.approve_status} style={{ marginBottom: 12 }} onChange={this.changeApproveStatus}>
-          <RadioButton value={TASK_APPROVE_STATUS.all}>全部</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.created}>已创建</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.published}>已上架</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
-          <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
-          <Tooltip placement="top" title="待发布至阿里创作平台">
-            <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
-              待发布
-            </RadioButton>
-          </Tooltip>
-          <Tooltip placement="top" title="已发布至阿里创作平台">
-            <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
-              已发布
-            </RadioButton>
-          </Tooltip>
-          <Tooltip placement="top" title="阿里创作平台不通过">
-            <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
-              淘宝不通过
-            </RadioButton>
-          </Tooltip>
-          <Tooltip placement="top" title="阿里创作平台通过">
-            <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
-              淘宝通过
-            </RadioButton>
-          </Tooltip>
-        </RadioGroup>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
-              <Tooltip placement="top" title="创建时间">
-                <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
-              </Tooltip>
+              <Select
+                mode="multiple"
+                style={{ width: '100%' }}
+                placeholder="成员"
+                onSearch={this.handleSearchApprove}
+              >
+                {//teamUsers.map((teamUser, index) => <Option key={index} value={teamUser.user_id ? teamUser.user_id._id : ''}>{teamUser.user_id.nickname}</Option>)
+              }
+              </Select>
+              <Select
+                allowClear
+                showSearch
+                style={{ width: 160, marginRight: 8 }}
+                placeholder="渠道"
+                onChange={(value) => this.handleSearch(value,'channel_name')}
+                optionFilterProp="children"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                { CHANNELS.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>) }
+              </Select>
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
@@ -442,6 +421,10 @@ export default class TeamTaskStatistics extends PureComponent {
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <Tooltip placement="top" title="发布到淘宝时间">
+                <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+              </Tooltip>
             </div>
             <Table
               scroll={{ x: 1300 }}
