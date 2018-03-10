@@ -5,15 +5,15 @@ import moment from 'moment';
 import querystring from 'querystring';
 import G2 from '@antv/g2';
 import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
-Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
+Popover, Dropdown, Icon, message, Radio, Tooltip, Cascader } from 'antd';
 import { Link } from 'dva/router';
-import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, CHANNELS, CHANNELS_FOR_CASCADER } from '../../constants';
+import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, CHANNELS, CHANNELS_FOR_CASCADER, TASK_TYPES } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
 import styles from './TeamList.less';
-import { queryTaskStatisticsByApproveStatus } from '../../services/project';
+import { queryStatisticsTotal } from '../../services/team';
 
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
@@ -24,9 +24,8 @@ const RadioGroup = Radio.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  teamTask: state.task.teamTask,
-  loading: state.task.teamTaskLoading,
-  formData: state.project.formData,
+  statisticsList: state.team.statisticsList,
+  loading: state.team.statisticsListLoading,
   currentUser: state.user.currentUser,
   suggestionUsers: state.team.suggestionUsers,
   teamUsers: state.team.teamUsers,
@@ -41,42 +40,40 @@ export default class TeamTaskStatistics extends PureComponent {
     selectedRowKeys: [],
     searchValue: '',
     task: {},
+    total: {},
   };
 
-  componentDidMount() {
-    const { dispatch, teamUser, teamTask: { pagination, approve_status }, teamUser: { team_id } } = this.props;
+  componentWillMount() {
+    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = this.props;
     if (team_id) {
-      dispatch({
-        type: 'task/fetchTeamTasks',
-        payload: { ...pagination, approve_status, team_id },
+      this.props.dispatch({
+        type: 'team/fetchStatisticsList',
+        payload: { team_id: team_id, user_id },
       });
-    }
-    if (teamUser.team_id) {
       this.props.dispatch({
         type: 'team/fetchTeamUsers',
-        payload: { team_id: teamUser.team_id },
+        payload: { team_id: team_id },
       });
+      this.getStatisticsTotal(team_id);
     }
-    this.renderResultChart();
-    this.renderChannelChart();
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, teamUser, teamTask: { pagination, approve_status }, teamUser: { team_id } } = nextProps;
-    if (teamUser.team_id !== this.props.teamUser.team_id) {
-      dispatch({
-        type: 'task/fetchTeamTasks',
-        payload: { ...pagination, approve_status, team_id },
+    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = nextProps;
+    if (!this.props.teamUser.team_id && nextProps.teamUser.team_id) {
+      this.props.dispatch({
+        type: 'team/fetchStatisticsList',
+        payload: { team_id, user_id },
       });
-    }
-    if (nextProps.teamUsers.length === 0 && nextProps.teamUser.team_id) {
       this.props.dispatch({
         type: 'team/fetchTeamUsers',
         payload: { team_id: nextProps.teamUser.team_id },
       });
+      this.getStatisticsTotal(team_id);
     }
   }
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, teamTask: { approve_status }, teamUser: { team_id } } = this.props;
+    const { dispatch, teamUser: { team_id, user_id } } = this.props;
     const { searchValue } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -85,9 +82,9 @@ export default class TeamTaskStatistics extends PureComponent {
     }, {});
     const params = {
       team_id,
+      user_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
-      approve_status,
       search: searchValue,
       ...filters,
     };
@@ -97,158 +94,48 @@ export default class TeamTaskStatistics extends PureComponent {
     
     window.scrollTo(0, 0);
     dispatch({
-      type: 'task/fetchTeamTasks',
+      type: 'team/fetchStatisticsList',
       payload: params,
     });
   }
-
-
-  handleMenuClick = (e) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'task/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-              selectedRowKeys: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
+  getStatisticsTotal = async (team_id) => {
+    const alias = await queryStatisticsTotal({ team_id });
+    if (alias.total) {
+      this.setState({
+        total: alias.total,
+      });
+    }
+    if (alias.channelCounts) {
+      const channelCounts = alias.channelCounts.map(item1 => {
+        const channel = CHANNELS.find(item => item.id === item1.channel[0]);
+        const activity = channel.activityList.find(item => item.id === item1.channel[1]);
+        return {...item1, text: `${channel.name}/${activity.name}`};
+      });
+      this.setState({
+        channelCounts: channelCounts,
+      });
+      this.renderChannelChart(channelCounts);
+      this.renderResultChart(alias.total);
     }
   }
-
-  handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-    this.setState({ selectedRowKeys, selectedRows });
-  }
-  
   handleSearch = (value, name) => {
-    const { dispatch, teamTask: { pagination, approve_status }, teamUser: { team_id } } = this.props;
+    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = this.props;
     const values = {
-      approve_status,
       team_id,
+      user_id,
       ...pagination,
     };
     if(name === 'time') {
-      values['create_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
-      values['create_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+      values['publish_taobao_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
+      values['publish_taobao_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+    } else if (name === 'channel' && value.length >= 1) {
+      values[name] = value[1];
     } else {
       values[name] = value;
     }
     dispatch({
-      type: 'task/fetchTeamTasks',
+      type: 'team/fetchStatisticsList',
       payload: values,
-    });
-  }
-
-  handleAdd = () => {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch(routerRedux.push(`/project/task/create?project_id=${query.project_id}`));
-  }
-
-  handleEdit = (record) => {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch(routerRedux.push(`/project/task/edit?project_id=${query.project_id}&_id=${record._id}`));
-  }
-  handlePublish = (record) => {
-    const { dispatch, currentUser, teamTask: { pagination, approve_status }, teamUser: { team_id } } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    dispatch({
-      type: 'task/publish',
-      payload: {
-        _id: record._id,
-        user_id: currentUser._id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-          dispatch({
-            type: 'task/fetchTeamTasks',
-            payload: { ...pagination, approve_status, team_id },
-          });
-        }
-      },
-    });
-  }
-  handleModalVisible = (flag) => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  }
-  handleShowSpecifyModal = (record) => {
-    this.handleModalVisible(true);
-    this.setState({ task: record });
-  }
-  handleDarenModalVisible = (flag) => {
-    this.setState({
-      darenModalVisible: !!flag,
-    });
-  }
-
-  handleWithdraw = (record) => {
-    const { dispatch, currentUser, teamUser: { team_id } } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    dispatch({
-      type: 'task/withdraw',
-      payload: {
-        _id: record._id,
-        user_id: currentUser._id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-          dispatch({
-            type: 'task/fetchTeamTasks',
-            payload: { team_id },
-          });
-        }
-      },
-    });
-  }
-  handleRemove = (record) => {
-    const { dispatch, currentUser, teamUser: { team_id } } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    dispatch({
-      type: 'task/remove',
-      payload: {
-        _id: record._id,
-        user_id: currentUser._id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-          dispatch({
-            type: 'task/fetchTeamTasks',
-            payload: { team_id },
-          });
-        }
-      },
-    });
-  }
-
-  changeApproveStatus = (e) => {
-    const { dispatch, teamTask, teamUser: { team_id } } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    dispatch({
-      type: 'task/fetchTeamTasks',
-      payload: { team_id, approve_status: e.target.value, },
     });
   }
   handleSearchChange = (e) => {
@@ -257,7 +144,7 @@ export default class TeamTaskStatistics extends PureComponent {
     }
     this.setState({ searchValue: e.target.value });
   }
-  handleShowDockPanel = (record, activeKey) => {
+  handleShowDockPanel = (record, activeKey) => { //分析
     this.props.dispatch({
       type: 'task/showDockPanel',
       payload: {
@@ -266,61 +153,35 @@ export default class TeamTaskStatistics extends PureComponent {
       },
     });
   }
-  renderChannelChart = () => {
+  renderChannelChart = (channelCounts) => { //饼图
     const chart = this.state.chart || new G2.Chart({
       container: document.getElementById('channelChart'),
-      width: 500,
-      height: 300,
+      forceFit: true,
+      height: 400,
     });
-    const list = [
-      { title: 'Sports', theta: 1, percent:0.12 },
-      { title: 'Strategy', theta: 2, percent:0.12 },
-      { title: 'Action', theta: 3, percent:0.12 },
-      { title: 'Shooter', theta: 4, percent:0.12 },
-      { title: 'Other', theta: 5, percent:0.12 }
-    ];
+    const list = channelCounts.map(item => ({text: item.text, value: item.value }));
     chart.source(list);
-    chart.coord('theta', {
-      radius: 0.8 // 设置饼图的大小
-    });
-    chart.legend('title', {
+    chart.legend('text', {
       offsetX: 30,
     });
-    chart.axis('percent', {
+    chart.axis('value', {
       title: null,
     });
-    chart.axis('title', {
+    chart.axis('text', {
       title: null,
     });
     // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
-    chart.intervalStack()
-    .position('percent')
-    .color('title')
-    .label('percent', {
-      formatter: (val, item) => {
-        return item.point.title + ': ' + ( val * 100).toFixed(2) + '%';
-      }
-    });
+    chart.interval().position('text*value').color('text')
     // Step 4: 渲染图表
     chart.render();
-    if (!this.state.chart) {
-      this.setState({ chart });
-    }
   }
-  renderResultChart = async () => {
+  renderResultChart = async (total) => { //柱状图
+    const data = this.renderTotalBox();
     const chart = new G2.Chart({
       container: document.getElementById('resultChart'),
-      width: 500,
-      height: 300,
+      forceFit: true,
+      height: 400,
     });
-    // const data = await queryTaskStatisticsByApproveStatus({ project_id: '5aa10cef015bb208dbbb6c71' });
-    const data = [
-      { text: 'Sports', value: 1 },
-      { text: 'Strategy', value: 2 },
-      { text: 'Action', value: 3 },
-      { text: 'Shooter', value: 4 },
-      { text: 'Other', value: 5 }
-    ];
     chart.source(data);
     chart.legend('text', {
       offsetX: 30,
@@ -336,42 +197,62 @@ export default class TeamTaskStatistics extends PureComponent {
     // Step 4: 渲染图表
     chart.render();
   }
-
-  handleChannelChange = (value) => {
-    const channel = CHANNELS_FOR_CASCADER.find(item => item.value === value[0]);
-    const activity = channel.children.find(item => item.value === value[1]);
-    const taskTypeOptions = activity.templates.map(item => TASK_TYPES.find(item1 => item === item1.template));
-    this.setState({ taskTypeOptions });
+  renderTotalBox = () => {
+    const { total } = this.state;
+    let totalList = [];
+    if (total.sumCntIpv !== undefined) {
+      totalList = [{
+        text: '总进店数',
+        value: total.sumCntIpv,
+      }, {
+        text: '总转发数',
+        value: total.sumShareCnt,
+      }, {
+        text: '总互动数',
+        value: total.sumSnsCnt,
+      }, {
+        text: '总阅读数',
+        value: total.sumReadCnt,
+      }, {
+        text: '总点赞数',
+        value: total.sumFavorCnt,
+      }, {
+        text: '总评论数',
+        value: total.sumCmtCnt,
+      }];
+    }
+    return totalList;
   }
   render() {
-    const { teamTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
-    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
+    const { statisticsList, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
+    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible, total } = this.state;
+    const totalList = this.renderTotalBox();
+    const gridStyle = {
+      width: `${1 / totalList.length * 100}%`,
+      textAlign: 'center',
+    };
     const columns = [
       {
-        title: '序号',
-        key: 'index',
-        width: 60,
-        fixed: 'left',
-        render: (val, record, index) => <span>{index + 1}</span>,
-      },
-      {
-        title: '昵称',
-        dataIndex: 'user_id',
-        render: val => val ? val.nickname : '',
-      },
-      {
-        title: '内容ID',
+        title: '任务ID',
         dataIndex: 'id',
-        width: 100,
+        width: 80,
+        fixed: 'left',
         render: (val, record) => (
-          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
-            <TaskNameColumn text={val} length={10} />
+          <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+            {val}
           </a>
         )
       },
       {
+        title: '昵称',
+        width: 120,
+        dataIndex: 'taker_id',
+        render: val => val ? val.nickname : '',
+      },
+      {
         title: '内容标题',
         dataIndex: 'name',
+        width: 180,
         render: (val, record) => (
           <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
@@ -380,59 +261,67 @@ export default class TeamTaskStatistics extends PureComponent {
       },
       {
         title: '进店数',
-        dataIndex: 'sumCntIpv',
-        render: (record) => (
-          <TaskNameColumn text={record} length={10} />
-        )
+        width: 80,
+        dataIndex: 'taobao.summary.sumCntIpv',
+        render: (val) => val ? val.value : '',
       },
       {
         title: '转发次数',
-        dataIndex: 'sumShareCnt',
-        render: (val) => val ? val : '',
+        width: 90,
+        dataIndex: 'taobao.summary.sumShareCnt',
+        render: (val) => val ? val.value : '',
       },
       {
         title: '互动数',
-        dataIndex: 'sumSnsCnt',
-        render: (val) => val ? val : '',
+        width: 80,
+        dataIndex: 'taobao.summary.sumSnsCnt',
+        render: (val) => val ? val.value : '',
       },
       {
         title: '阅读数',
-        dataIndex: 'sumReadCnt',
-        render: (val) => val ? val : '',
+        width: 80,
+        dataIndex: 'taobao.summary.sumReadCnt',
+        render: (val) => val ? val.value : '',
       },
       {
         title: '点赞数',
-        dataIndex: 'sumFavorCnt',
-        render: (val) => val ? val : '',
+        width: 80,
+        dataIndex: 'taobao.summary.sumFavorCnt',
+        render: (val) => val ? val.value : '',
       },
       {
         title: '评论数',
-        dataIndex: 'sumCmtCnt',
-        render: (val) => val ? val : '',
+        width: 80,
+        dataIndex: 'taobao.summary.sumCmtCnt',
+        render: (val) => val ? val.value : '',
       },
       {
         title: '付款金额',
+        width: 90,
         dataIndex: 'totalAlipayFee',
-        render: (val) => val ? val : '',
+        render: (val) => val ? val : 0,
       },
       {
         title: '淘宝佣金',
-        key: '1',
-        render: (val) => val ? val : '',
+        width: 90,
+        dataIndex: 'fee',
+        render: (val) => val ? val : 0,
       },
       {
         title: '淘宝动态奖励',
-        dataIndex: 'fee',
-        render: (val) => val ? val : '',
+        dataIndex: 'taobao.incomeRewards',
+        render: (val) => val && val.length > 0 ? val.reduce((a, b) => a + b, 0).toFixed(2) : '',
       },
       {
         title: '尼采佣金',
-        key: '3',
+        width: 90,
+        key: '0',
         render: (val) => val ? val : '',
       },
       {
         title: '尼采奖励',
-        key: '4',
+        width: 90,
+        key: '1',
         render: (val) => val ? val : '',
       },
     ];
@@ -441,44 +330,49 @@ export default class TeamTaskStatistics extends PureComponent {
       width: 80,
       fixed: 'right',
       render: (record) => {
-        if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || record.approve_status === TASK_APPROVE_STATUS.taobaoRejected ||
-          record.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
-          return (
-            <div>
-              <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
-                分析
-              </a>
-            </div>
-          );
-        }
-        return '';
+        return (
+          <div>
+            <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
+              分析
+            </a>
+          </div>
+        );
       },
     };
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.handleRowSelectChange,
-      getCheckboxProps: record => ({
-        disabled: record.disabled,
-      }),
-    };
-    columns.push(opera);
+    // columns.push(opera);
     return (
       <div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
+          <div>
+            <div id="channelChart"></div>
+            <div id="resultChart"></div>
+          </div>
+          <Row style={{marginBottom: 20}}>
+            { totalList.map((item, index) => <Card.Grid key={index} style={gridStyle}>
+              <div>{item.text}</div>
+              <h2>{item.value}</h2>
+            </Card.Grid>)}
+          </Row>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <Select
-                mode="multiple"
+                allowClear={true}
                 style={{ width: 160, marginRight: 8 }}
                 placeholder="成员"
-                onSearch={this.handleSearch}
+                onSelect={(e) => this.handleSearch(e, 'taker_id')}
               >
-                {//teamUsers.map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option>)
+                {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
                 }
               </Select>
 
-              <Cascader allowClear={false} showSearch={true} options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" onChange={this.handleChannelChange} />
-              
+              <Cascader
+                style={{ marginRight: 8 }}
+                allowClear={true}
+                showSearch={true}
+                options={CHANNELS_FOR_CASCADER}
+                placeholder="选择渠道"
+                onChange={(e) => this.handleSearch(e, 'channel')}
+              />
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
@@ -486,26 +380,21 @@ export default class TeamTaskStatistics extends PureComponent {
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
               />
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')} />
               <Tooltip placement="top" title="发布到淘宝时间">
                 <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
               </Tooltip>
             </div>
-            <div style={{ width: '100%', display: 'flex'}}>
-              <div style={{flex: 1}} id="resultChart"></div>
-              <div id="channelChart" style={{width: 400, flex: 1 }}></div>
-            </div>
             <Table
               scroll={{ x: 1300 }}
               loading={loading}
-              dataSource={teamTask.list}
+              dataSource={statisticsList.list}
               columns={columns}
               pagination={{
                 showSizeChanger: true,
                 showQuickJumper: true,
-                ...teamTask.pagination,
+                ...statisticsList.pagination,
               }}
-              rowSelection={rowSelection}
               onChange={this.handleStandardTableChange}
               rowKey="_id"
             />

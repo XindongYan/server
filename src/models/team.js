@@ -3,7 +3,6 @@ import { queryTeamUsers, updateUser, searchUsers, createTeamUser, removeTeamUser
 
 export default {
   namespace: 'team',
-
   state: {
     data: {
       list: [],
@@ -81,6 +80,7 @@ export default {
       if (callback) callback(result);
     },
     *toggleTeamUsersModal({ payload }, { call, put }) {
+      console.log(payload);
       yield put({
         type: 'changeTeamUsersModalVisible',
         payload,

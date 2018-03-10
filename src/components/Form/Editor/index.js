@@ -26,21 +26,20 @@ export default class Editors extends PureComponent {
     if (this.props.props && this.props.props.value.blocks.length > 0) {
       this.setState({ editorState: EditorState.createWithContent(convertFromRaw({entityMap: {}, ...this.props.props.value})) });
     }
-    // const editorOffset = $(this.refs.editorBox).offset().top + $(this.refs.editorBox).outerHeight();
-    // window.onscroll = () => {
-    //   const toolsWrapOffset = $(this.refs.editorToolsWrap).offset().top + 80;
-    //   console.log(toolsWrapOffset);
-    //   return false;
-    //   if (toolsWrapOffset >= editorOffset) {
-    //     console.log(toolsWrapOffset);
-    //     if (this.state.affix) this.setState({ affix: false });
-    //   } else {
-    //     if (!this.state.affix) this.setState({ affix: true });
-    //   }
-    // }
+    window.onscroll = () => {
+      const editorOffset = $(this.refs.editorBox) ? $(this.refs.editorBox).offset().top + $(this.refs.editorBox).innerHeight() : 0;
+      const offsetTop = window.pageYOffset;
+      if (offsetTop > editorOffset) {
+        if (this.state.affix) this.setState({ affix: false });
+      } else if (offsetTop <= editorOffset) {
+        if (!this.state.affix) this.setState({ affix: true });
+      }
+    }
 
   }
-  
+  componentWillUnmount() {
+    window.onscroll = null;
+  }
   handleAddImg = (imgs) => {
     let { editorState } = this.state;
     imgs.forEach((item) => {
