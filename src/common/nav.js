@@ -7,6 +7,7 @@ import Project from '../routes/Project/ProjectList';
 import ProjectCreate from '../routes/Project/ProjectCreate';
 import TeamUser from '../routes/Team/TeamUserList';
 import TeamTasks from '../routes/Team/TeamTasks';
+import TeamTaskStatistics from '../routes/Team/TeamTaskStatistics';
 
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
@@ -123,6 +124,10 @@ const team = {
     name: '邀请码',
     path: 'invitation-list',
     component: Invitation,
+  }, {
+    name: '统计',
+    path: 'teamTasks-statistics',
+    component: TeamTaskStatistics,
   }],
 };
 

@@ -31,7 +31,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   teamUser: state.user.teamUser,
 }))
 @Form.create()
-export default class TeamTasks extends PureComponent {
+export default class TeamTaskStatistics extends PureComponent {
   state = {
     modalVisible: false,
     darenModalVisible: false,

@@ -16,7 +16,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   teamUser: state.user.teamUser,
   currentUser: state.user.currentUser,
 }))
-export default class TableList extends PureComponent {
+export default class TeamUserList extends PureComponent {
   state = {
     modalVisible: false,
     selectedRows: [],

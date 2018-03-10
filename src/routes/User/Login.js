@@ -32,7 +32,7 @@ export default class Login extends Component {
           <a href={`${location.origin}/nicai.crx`} download="尼采插件.crx">
             尼采插件下载
           </a>
-          <span>(chrome浏览器版本 >= 59.0)</span>
+          <span>(chrome浏览器版本 > 59.0)</span>
           <p>
             <a style={{ marginRight: 15 }} href={`${location.origin}/userRegister.pdf`} target="_blank">用户注册说明</a>
             <a style={{ marginRight: 15 }} href={`${location.origin}/nicaiTeach.pdf`} target="_blank">插件安装说明</a>
