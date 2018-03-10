@@ -45,5 +45,5 @@ export async function queryTeamUsersByRole(params) {
 }
 
 export async function queryStatisticsList(params) {
-  return request(`/api/task/list/team/statistics?${stringify(params)}`);
+  return request(`/api/task/team/statistics/list?${stringify(params)}`);
 }
