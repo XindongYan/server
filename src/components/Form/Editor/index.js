@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import {Editor, EditorState, ContentState, SelectionState, RichUtils, convertToRaw, convertFromRaw, AtomicBlockUtils, Entity, Modifier } from 'draft-js';
-import { Icon, Divider } from 'antd';
+import { Icon, Divider, message, Affix } from 'antd';
 import { connect } from 'dva';
+import $ from 'jquery';
 import AlbumModal from '../../AlbumModal';
 import AuctionModal from '../../AuctionModal';
 import SpuModal from '../../AuctionModal/SpuModal';
@@ -19,11 +20,25 @@ export default class Editors extends PureComponent {
     contentState: (EditorState.createEmpty()).getCurrentContent(),
     selectionState: (EditorState.createEmpty()).getSelection(),
     inlineStyleList: [],
+    affix: true,
   }
   componentDidMount() {
     if (this.props.props && this.props.props.value.blocks.length > 0) {
       this.setState({ editorState: EditorState.createWithContent(convertFromRaw({entityMap: {}, ...this.props.props.value})) });
     }
+    // const editorOffset = $(this.refs.editorBox).offset().top + $(this.refs.editorBox).outerHeight();
+    // window.onscroll = () => {
+    //   const toolsWrapOffset = $(this.refs.editorToolsWrap).offset().top + 80;
+    //   console.log(toolsWrapOffset);
+    //   return false;
+    //   if (toolsWrapOffset >= editorOffset) {
+    //     console.log(toolsWrapOffset);
+    //     if (this.state.affix) this.setState({ affix: false });
+    //   } else {
+    //     if (!this.state.affix) this.setState({ affix: true });
+    //   }
+    // }
+
   }
   
   handleAddImg = (imgs) => {
@@ -109,22 +124,22 @@ export default class Editors extends PureComponent {
       editorState
     });
   }
-  handleAddSpu = (products) => {
+  handleAddSpu = async (products) => {
     let { editorState } = this.state;
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
       'SIDEBARADDSPU',
       'IMMUTABLE',
       {
-        coverUrl: products.coverUrl,
-        features: "",
-        images: products.images,
         materialId: products.materialId,
-        resourceType: products.resourceType === "SPU" ? "Product" : products.resourceType,
-        name: "",
+        resourceType: "Product",
+        coverUrl: products.coverUrl,
+        images: products.images,
         spuId: products.spuId,
+        price: products.spuInfoDTO.price,
+        resourceUrl: products.spuInfoDTO.spuUrl,
+        rawTitle: products.title,
         title: products.title,
-        type: "SIDEBARADDSPU",
       }
     );
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -371,7 +386,7 @@ export default class Editors extends PureComponent {
     if (type === 'atomic') {
       return {
         component: this.customRender,  // 指定组件
-        editable: false,  // 这里设置自定义的组件可不可以编辑，因为是图片，这里选择不可编辑
+        editable: false,  // 不可编辑
       };
     }
   }
@@ -457,10 +472,10 @@ export default class Editors extends PureComponent {
                                           <Icon type="shopping-cart" />
                                           宝贝
                                         </span>;
-        case 'SIDEBARADDSPU': return !item.props.type ? <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
+        case 'SIDEBARADDSPU': return <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
                                         <Icon type="shop" />
-                                        {item.props.title}
-                                      </span> : '';
+                                        {item.props.type === 'product' ? '产品' : item.props.title}
+                                      </span>;
         case 'SIDEBARADDSHOP': return <span key={index} onClick={this.sidebaraddshop}>
                                         <Icon type="shop" />
                                         店铺
@@ -476,6 +491,8 @@ export default class Editors extends PureComponent {
       }
     }
   }
+  handelChangeAffix = (e) => {
+  }
   render() {
     const { props } = this.props;
     const box = document.getElementsByClassName('DraftEditor-editorContainer')[0];
@@ -490,11 +507,20 @@ export default class Editors extends PureComponent {
     }
     return (
       <div style={{padding: '10px 20px', marginBottom: 60}}>
-        <div ref="editorToolsWrap" onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
-          <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
-          <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
-        </div>
-        <div className={styles.editorBox} onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
+        { this.state.affix ?
+          <Affix onChange={this.handelChangeAffix} style={{zIndex: 1}}>
+            <div ref="editorToolsWrap" onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
+              <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
+              <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
+            </div>
+          </Affix> :
+          <div ref="editorToolsWrap" onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
+            <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
+            <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
+          </div>
+        }
+          
+        <div ref="editorBox" className={styles.editorBox} onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
           <Editor ref={instance => {this.setState({editor: instance})}} editorState={this.state.editorState} onChange={this.handleChange} {...editorProps} />
         </div>
         <AlbumModal k="editor" onOk={this.handleAddImg} />
