@@ -198,11 +198,18 @@ export default class TableList extends PureComponent {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
       if (versionNumber < 120) { // 1.0.4
+        message.destroy();
         message.warn('请更新插件！');
       } else {
         const result = await queryTask({
           _id: record._id,
         });
+        const activityId = result.task.formData.activityId;
+        if (activityId === 1331 && versionNumber < 122) { //每日好店
+          message.destroy();
+          message.warn('请更新插件！');
+          return false;
+        }
         this.handlePublishToTaobao(result.task);
         message.destroy();
         message.loading('发布中 ...', 60);
