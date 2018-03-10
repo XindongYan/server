@@ -3,15 +3,17 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
+import G2 from '@antv/g2';
 import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
 Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
 import { Link } from 'dva/router';
-import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, CHANNELS } from '../../constants';
+import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, CHANNELS, CHANNELS_FOR_CASCADER } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
 import styles from './TeamList.less';
+import { queryTaskStatisticsByApproveStatus } from '../../services/project';
 
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
@@ -55,6 +57,8 @@ export default class TeamTaskStatistics extends PureComponent {
         payload: { team_id: teamUser.team_id },
       });
     }
+    this.renderResultChart();
+    this.renderChannelChart();
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, teamUser, teamTask: { pagination, approve_status }, teamUser: { team_id } } = nextProps;
@@ -262,23 +266,91 @@ export default class TeamTaskStatistics extends PureComponent {
       },
     });
   }
+  renderChannelChart = () => {
+    const chart = this.state.chart || new G2.Chart({
+      container: document.getElementById('channelChart'),
+      width: 500,
+      height: 300,
+    });
+    const list = [
+      { title: 'Sports', theta: 1, percent:0.12 },
+      { title: 'Strategy', theta: 2, percent:0.12 },
+      { title: 'Action', theta: 3, percent:0.12 },
+      { title: 'Shooter', theta: 4, percent:0.12 },
+      { title: 'Other', theta: 5, percent:0.12 }
+    ];
+    chart.source(list);
+    chart.coord('theta', {
+      radius: 0.8 // 设置饼图的大小
+    });
+    chart.legend('title', {
+      offsetX: 30,
+    });
+    chart.axis('percent', {
+      title: null,
+    });
+    chart.axis('title', {
+      title: null,
+    });
+    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+    chart.intervalStack()
+    .position('percent')
+    .color('title')
+    .label('percent', {
+      formatter: (val, item) => {
+        return item.point.title + ': ' + ( val * 100).toFixed(2) + '%';
+      }
+    });
+    // Step 4: 渲染图表
+    chart.render();
+    if (!this.state.chart) {
+      this.setState({ chart });
+    }
+  }
+  renderResultChart = async () => {
+    const chart = new G2.Chart({
+      container: document.getElementById('resultChart'),
+      width: 500,
+      height: 300,
+    });
+    // const data = await queryTaskStatisticsByApproveStatus({ project_id: '5aa10cef015bb208dbbb6c71' });
+    const data = [
+      { text: 'Sports', value: 1 },
+      { text: 'Strategy', value: 2 },
+      { text: 'Action', value: 3 },
+      { text: 'Shooter', value: 4 },
+      { text: 'Other', value: 5 }
+    ];
+    chart.source(data);
+    chart.legend('text', {
+      offsetX: 30,
+    });
+    chart.axis('value', {
+      title: null,
+    });
+    chart.axis('text', {
+      title: null,
+    });
+    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+    chart.interval().position('text*value').color('text')
+    // Step 4: 渲染图表
+    chart.render();
+  }
+
+  handleChannelChange = (value) => {
+    const channel = CHANNELS_FOR_CASCADER.find(item => item.value === value[0]);
+    const activity = channel.children.find(item => item.value === value[1]);
+    const taskTypeOptions = activity.templates.map(item => TASK_TYPES.find(item1 => item === item1.template));
+    this.setState({ taskTypeOptions });
+  }
   render() {
     const { teamTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
-    console.log(teamUsers);
-    const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
-
     const columns = [
       {
         title: '序号',
         key: 'index',
-        width: 80,
+        width: 60,
         fixed: 'left',
         render: (val, record, index) => <span>{index + 1}</span>,
       },
@@ -290,6 +362,7 @@ export default class TeamTaskStatistics extends PureComponent {
       {
         title: '内容ID',
         dataIndex: 'id',
+        width: 100,
         render: (val, record) => (
           <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
@@ -396,24 +469,16 @@ export default class TeamTaskStatistics extends PureComponent {
             <div className={styles.tableListOperator}>
               <Select
                 mode="multiple"
-                style={{ width: '100%' }}
-                placeholder="成员"
-                onSearch={this.handleSearchApprove}
-              >
-                {//teamUsers.map((teamUser, index) => <Option key={index} value={teamUser.user_id ? teamUser.user_id._id : ''}>{teamUser.user_id.nickname}</Option>)
-              }
-              </Select>
-              <Select
-                allowClear
-                showSearch
                 style={{ width: 160, marginRight: 8 }}
-                placeholder="渠道"
-                onChange={(value) => this.handleSearch(value,'channel_name')}
-                optionFilterProp="children"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                placeholder="成员"
+                onSearch={this.handleSearch}
               >
-                { CHANNELS.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>) }
+                {//teamUsers.map(teamUser => <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option>)
+                }
               </Select>
+
+              <Cascader allowClear={false} showSearch={true} options={CHANNELS_FOR_CASCADER} placeholder="选择渠道" onChange={this.handleChannelChange} />
+              
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
@@ -425,6 +490,10 @@ export default class TeamTaskStatistics extends PureComponent {
               <Tooltip placement="top" title="发布到淘宝时间">
                 <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
               </Tooltip>
+            </div>
+            <div style={{ width: '100%', display: 'flex'}}>
+              <div style={{flex: 1}} id="resultChart"></div>
+              <div id="channelChart" style={{width: 400, flex: 1 }}></div>
             </div>
             <Table
               scroll={{ x: 1300 }}

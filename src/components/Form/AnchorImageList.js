@@ -61,23 +61,19 @@ export default class AnchorImageList extends PureComponent {
             anchors.push({
               data: {
                 coverUrl: item.picUrl,
-                finalPricePc: 0,
-                finalPriceWap: 0,
                 itemId: item.itemId,
                 materialId: "",
-                price: 0,
                 url: 'https://item.taobao.com/item.htm?id=' + item.itemId,
               },
               type: "item",
               x: ((item.width * (item.anchorX / 100) + item.x) / 1200) * 100,
               y: ((item.height * (item.anchorY / 100) + item.y) / 1200) * 100,
-            })
+            });
           }
         }
         this.props.onChange([{
           anchors: anchors,
           features: JSON.stringify(features),
-          hotSpaces: [],
           url: result.url,
         }]);
       }
