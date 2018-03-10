@@ -164,20 +164,8 @@ export default class TeamTaskStatistics extends PureComponent {
         text: '总进店数',
         value: total.sumCntIpv,
       }, {
-        text: '总转发数',
-        value: total.sumShareCnt,
-      }, {
-        text: '总互动数',
-        value: total.sumSnsCnt,
-      }, {
         text: '总阅读数',
         value: total.sumReadCnt,
-      }, {
-        text: '总点赞数',
-        value: total.sumFavorCnt,
-      }, {
-        text: '总评论数',
-        value: total.sumCmtCnt,
       }, {
         text: '淘宝总佣金',
         value: Number(total.fee).toFixed(2),
@@ -228,33 +216,9 @@ export default class TeamTaskStatistics extends PureComponent {
         render: (val) => val ? val.value : '',
       },
       {
-        title: '转发次数',
-        width: 90,
-        dataIndex: 'taobao.summary.sumShareCnt',
-        render: (val) => val ? val.value : '',
-      },
-      {
-        title: '互动数',
-        width: 80,
-        dataIndex: 'taobao.summary.sumSnsCnt',
-        render: (val) => val ? val.value : '',
-      },
-      {
         title: '阅读数',
         width: 80,
         dataIndex: 'taobao.summary.sumReadCnt',
-        render: (val) => val ? val.value : '',
-      },
-      {
-        title: '点赞数',
-        width: 80,
-        dataIndex: 'taobao.summary.sumFavorCnt',
-        render: (val) => val ? val.value : '',
-      },
-      {
-        title: '评论数',
-        width: 80,
-        dataIndex: 'taobao.summary.sumCmtCnt',
         render: (val) => val ? val.value : '',
       },
       {
@@ -345,7 +309,7 @@ export default class TeamTaskStatistics extends PureComponent {
           </Row>
           <div className={styles.tableList}>
             <Table
-              scroll={{ x: 1300 }}
+              // scroll={{ x: 1300 }}
               loading={loading}
               dataSource={statisticsList.list}
               columns={columns}
