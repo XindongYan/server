@@ -1,5 +1,5 @@
 import { queryTeamUsers, updateUser, searchUsers, createTeamUser, removeTeamUser,
-  queryTeamUsersByRole, searchTeamUsers } from '../services/team';
+  queryTeamUsersByRole, searchTeamUsers, queryStatisticsList } from '../services/team';
 
 export default {
   namespace: 'team',
@@ -12,6 +12,11 @@ export default {
     loading: true,
     suggestionUsers: [],
     teamUsers: [],
+    statisticsList: {
+      list: [],
+      pagination: {},
+    },
+    statisticsListLoading: true,
   },
 
   effects: {
@@ -104,6 +109,23 @@ export default {
         payload: response.teamUsers,
       });
     },
+    *fetchStatisticsList({ payload }, { call, put }) {
+      yield put({
+        type: 'changeStatisticsListLoading',
+        payload: true,
+      });
+      const response = yield call(queryStatisticsList, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveStatisticsList',
+          payload: response,
+        });
+      }
+      yield put({
+        type: 'changeStatisticsListLoading',
+        payload: false,
+      });
+    },
   },
 
   reducers: {
@@ -135,6 +157,18 @@ export default {
       return {
         ...state,
         teamUsers: action.payload || [],
+      };
+    },
+    saveStatisticsList(state, action) {
+      return {
+        ...state,
+        statisticsList: action.payload,
+      };
+    },
+    changeStatisticsListLoading(state, action) {
+      return {
+        ...state,
+        statisticsListLoading: action.payload,
       };
     },
   },
