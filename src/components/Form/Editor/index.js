@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {Editor, EditorState, ContentState, SelectionState, RichUtils, convertToRaw, convertFromRaw, AtomicBlockUtils, Entity, Modifier } from 'draft-js';
-import { Icon, Divider, Affix, Anchor } from 'antd';
+import { Icon, Divider, message, Affix } from 'antd';
 import { connect } from 'dva';
 import $ from 'jquery';
 import AlbumModal from '../../AlbumModal';
@@ -126,32 +126,20 @@ export default class Editors extends PureComponent {
   }
   handleAddSpu = async (products) => {
     let { editorState } = this.state;
-    const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.innerText = JSON.stringify(products.spuInfoDTO.spuUrl);
-    const customEvent = document.createEvent('Event');
-    customEvent.initEvent('getFeatures', true, true);
-    nicaiCrx.dispatchEvent(customEvent);
-    nicaiCrx.addEventListener('setFeatures', this.setFeatures);
-  }
-  setFeatures = (e) => {
-    const result = JSON.parse(e.target.innerText);
-    let jsonStr = result.substring(result.indexOf('{'));
-    const json = jsonStr.slice(0, -2);
-    return false;
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
       'SIDEBARADDSPU',
       'IMMUTABLE',
       {
-        coverUrl: products.coverUrl,
-        features: "",
-        images: products.images,
         materialId: products.materialId,
-        resourceType: products.resourceType === "SPU" ? "Product" : products.resourceType,
-        name: "",
+        resourceType: "Product",
+        coverUrl: products.coverUrl,
+        images: products.images,
         spuId: products.spuId,
+        price: products.spuInfoDTO.price,
+        resourceUrl: products.spuInfoDTO.spuUrl,
+        rawTitle: products.title,
         title: products.title,
-        type: "SIDEBARADDSPU",
       }
     );
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -164,8 +152,6 @@ export default class Editors extends PureComponent {
     this.setState({
       editorState
     });
-    const nicaiCrx = document.getElementById('nicaiCrx');
-    nicaiCrx.removeEventListener('setFeatures', this.setFeatures);
   }
   handleAddShop = (shops) => {
     let { editorState } = this.state;
@@ -486,10 +472,10 @@ export default class Editors extends PureComponent {
                                           <Icon type="shopping-cart" />
                                           宝贝
                                         </span>;
-        case 'SIDEBARADDSPU': return !item.props.type ? <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
+        case 'SIDEBARADDSPU': return <span key={index} onClick={() => this.sidebaraddspu(item.props)}>
                                         <Icon type="shop" />
                                         {item.props.type === 'product' ? '产品' : item.props.title}
-                                      </span> : '';
+                                      </span>;
         case 'SIDEBARADDSHOP': return <span key={index} onClick={this.sidebaraddshop}>
                                         <Icon type="shop" />
                                         店铺
