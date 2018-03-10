@@ -35,8 +35,6 @@ export default class Login extends Component {
           <span>(chrome浏览器版本 > 59.0)</span>
           <p>
             <a style={{ marginRight: 15 }} href={`${location.origin}/userRegister.pdf`} target="_blank">用户注册说明</a>
-            <a style={{ marginRight: 15 }} href={`${location.origin}/nicaiTeach.pdf`} target="_blank">插件安装说明</a>
-            <a href={`${location.origin}/chromeVersion.pdf`} target="_blank">查看浏览器版本</a>
           </p>
         </div>
         
