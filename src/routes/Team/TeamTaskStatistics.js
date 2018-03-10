@@ -48,9 +48,13 @@ export default class TeamTaskStatistics extends PureComponent {
   componentWillMount() {
     const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = this.props;
     if (team_id) {
+      const publish_taobao_time_start = new Date();
+      publish_taobao_time_start.setDate(1);
+      publish_taobao_time_start.setHours(0, 0, 0, 0);
+      const publish_taobao_time_end = new Date();
       this.props.dispatch({
         type: 'team/fetchStatisticsList',
-        payload: { team_id: team_id, user_id },
+        payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
       });
       this.props.dispatch({
         type: 'team/fetchTeamUsers',
@@ -58,13 +62,18 @@ export default class TeamTaskStatistics extends PureComponent {
       });
       this.getStatisticsTotal({team_id});
     }
+
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = nextProps;
     if (!this.props.teamUser.team_id && nextProps.teamUser.team_id) {
+      const publish_taobao_time_start = new Date();
+      publish_taobao_time_start.setDate(1);
+      publish_taobao_time_start.setHours(0, 0, 0, 0);
+      const publish_taobao_time_end = new Date();
       this.props.dispatch({
         type: 'team/fetchStatisticsList',
-        payload: { team_id, user_id },
+        payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
       });
       this.props.dispatch({
         type: 'team/fetchTeamUsers',
@@ -99,6 +108,10 @@ export default class TeamTaskStatistics extends PureComponent {
       type: 'team/fetchStatisticsList',
       payload: params,
     });
+  }
+
+  handleSetTime = () => {
+
   }
   getStatisticsTotal = async (params) => {
     const alias = await queryStatisticsTotal(params);
@@ -177,6 +190,7 @@ export default class TeamTaskStatistics extends PureComponent {
     const { statisticsList, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
     const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible, total } = this.state;
     const totalList = this.renderTotalBox();
+
     const gridStyle = {
       width: `${1 / totalList.length * 100}%`,
       textAlign: 'center',
@@ -289,17 +303,19 @@ export default class TeamTaskStatistics extends PureComponent {
               placeholder="选择渠道"
               onChange={(e) => this.handleSearch(e, 'channel')}
             />
-            <Search
-              style={{ width: 260, float: 'right' }}
-              placeholder="ID／名称／商家标签"
-              onChange={this.handleSearchChange}
-              onSearch={(value) => this.handleSearch(value, 'search')}
-              enterButton
-            />
-            <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')} />
+            <RangePicker allowClear={false} style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')} />
             <Tooltip placement="top" title="发布到淘宝时间">
               <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
             </Tooltip>
+            {
+            //   <Search
+            //   style={{ width: 260, float: 'right' }}
+            //   placeholder="ID／名称／商家标签"
+            //   onChange={this.handleSearchChange}
+            //   onSearch={(value) => this.handleSearch(value, 'search')}
+            //   enterButton
+            // />
+            }
           </div>
           <Row style={{margin: '20px 0'}}>
             { totalList.map((item, index) => <Card.Grid key={index} style={gridStyle}>
