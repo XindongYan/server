@@ -218,7 +218,7 @@ export default class TeamTaskStatistics extends PureComponent {
         dataIndex: 'name',
         width: 180,
         render: (val, record) => (
-          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+          <a target="_blank" href={record.taobao && record.taobao.url ? record.taobao.url : ''}>
             <TaskNameColumn text={val} length={10} />
           </a>
         )
