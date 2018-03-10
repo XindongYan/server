@@ -360,6 +360,7 @@ export default class TeamTaskStatistics extends PureComponent {
                 style={{ width: 160, marginRight: 8 }}
                 placeholder="成员"
                 onSelect={(e) => this.handleSearch(e, 'taker_id')}
+                onChange={(e) => this.handleSearch(e, 'taker_id')}
               >
                 {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
                 }
