@@ -129,7 +129,7 @@ export default class TeamTaskStatistics extends PureComponent {
       values['publish_taobao_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['publish_taobao_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
     } else if (name === 'channel' && value.length >= 1) {
-      values[name] = value[1];
+      values[name] = JSON.stringify(value);
     } else {
       values[name] = value;
     }
