@@ -41,6 +41,8 @@ export default class TeamTaskStatistics extends PureComponent {
     searchValue: '',
     task: {},
     total: {},
+    resultChart: null,
+    channelChart: null,
   };
 
   componentWillMount() {
@@ -54,7 +56,7 @@ export default class TeamTaskStatistics extends PureComponent {
         type: 'team/fetchTeamUsers',
         payload: { team_id: team_id },
       });
-      this.getStatisticsTotal(team_id);
+      this.getStatisticsTotal({team_id});
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -68,7 +70,7 @@ export default class TeamTaskStatistics extends PureComponent {
         type: 'team/fetchTeamUsers',
         payload: { team_id: nextProps.teamUser.team_id },
       });
-      this.getStatisticsTotal(team_id);
+      this.getStatisticsTotal({team_id});
     }
   }
 
@@ -98,8 +100,8 @@ export default class TeamTaskStatistics extends PureComponent {
       payload: params,
     });
   }
-  getStatisticsTotal = async (team_id) => {
-    const alias = await queryStatisticsTotal({ team_id });
+  getStatisticsTotal = async (params) => {
+    const alias = await queryStatisticsTotal(params);
     if (alias.total) {
       this.setState({
         total: alias.total,
@@ -114,8 +116,6 @@ export default class TeamTaskStatistics extends PureComponent {
       this.setState({
         channelCounts: channelCounts,
       });
-      this.renderChannelChart(channelCounts);
-      this.renderResultChart(alias.total);
     }
   }
   handleSearch = (value, name) => {
@@ -123,7 +123,6 @@ export default class TeamTaskStatistics extends PureComponent {
     const values = {
       team_id,
       user_id,
-      ...pagination,
     };
     if(name === 'time') {
       values['publish_taobao_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
@@ -135,8 +134,9 @@ export default class TeamTaskStatistics extends PureComponent {
     }
     dispatch({
       type: 'team/fetchStatisticsList',
-      payload: values,
+      payload: { ...values, ...pagination},
     });
+    this.getStatisticsTotal(values);
   }
   handleSearchChange = (e) => {
     if (e.target.value.length === 0) {
@@ -153,55 +153,14 @@ export default class TeamTaskStatistics extends PureComponent {
       },
     });
   }
-  renderChannelChart = (channelCounts) => { //饼图
-    const chart = this.state.chart || new G2.Chart({
-      container: document.getElementById('channelChart'),
-      forceFit: true,
-      height: 400,
-    });
-    const list = channelCounts.map(item => ({text: item.text, value: item.value }));
-    chart.source(list);
-    chart.legend('text', {
-      offsetX: 30,
-    });
-    chart.axis('value', {
-      title: null,
-    });
-    chart.axis('text', {
-      title: null,
-    });
-    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
-    chart.interval().position('text*value').color('text')
-    // Step 4: 渲染图表
-    chart.render();
-  }
-  renderResultChart = async (total) => { //柱状图
-    const data = this.renderTotalBox();
-    const chart = new G2.Chart({
-      container: document.getElementById('resultChart'),
-      forceFit: true,
-      height: 400,
-    });
-    chart.source(data);
-    chart.legend('text', {
-      offsetX: 30,
-    });
-    chart.axis('value', {
-      title: null,
-    });
-    chart.axis('text', {
-      title: null,
-    });
-    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
-    chart.interval().position('text*value').color('text')
-    // Step 4: 渲染图表
-    chart.render();
-  }
   renderTotalBox = () => {
     const { total } = this.state;
     let totalList = [];
     if (total.sumCntIpv !== undefined) {
       totalList = [{
+        text: '总文章数',
+        value: total.sumTaskCnt,
+      }, {
         text: '总进店数',
         value: total.sumCntIpv,
       }, {
@@ -219,6 +178,9 @@ export default class TeamTaskStatistics extends PureComponent {
       }, {
         text: '总评论数',
         value: total.sumCmtCnt,
+      }, {
+        text: '淘宝总佣金',
+        value: Number(total.fee).toFixed(2),
       }];
     }
     return totalList;
@@ -343,49 +305,45 @@ export default class TeamTaskStatistics extends PureComponent {
     return (
       <div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
-          <div>
-            <div id="channelChart"></div>
-            <div id="resultChart"></div>
+          <div className={styles.tableListOperator}>
+            <Select
+              allowClear={true}
+              style={{ width: 160, marginRight: 8 }}
+              placeholder="成员"
+              onSelect={(e) => this.handleSearch(e, 'taker_id')}
+              onChange={(e) => this.handleSearch(e, 'taker_id')}
+            >
+              {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
+              }
+            </Select>
+
+            <Cascader
+              style={{ marginRight: 8 }}
+              allowClear={true}
+              showSearch={true}
+              options={CHANNELS_FOR_CASCADER}
+              placeholder="选择渠道"
+              onChange={(e) => this.handleSearch(e, 'channel')}
+            />
+            <Search
+              style={{ width: 260, float: 'right' }}
+              placeholder="ID／名称／商家标签"
+              onChange={this.handleSearchChange}
+              onSearch={(value) => this.handleSearch(value, 'search')}
+              enterButton
+            />
+            <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')} />
+            <Tooltip placement="top" title="发布到淘宝时间">
+              <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+            </Tooltip>
           </div>
-          <Row style={{marginBottom: 20}}>
+          <Row style={{margin: '20px 0'}}>
             { totalList.map((item, index) => <Card.Grid key={index} style={gridStyle}>
               <div>{item.text}</div>
               <h2>{item.value}</h2>
             </Card.Grid>)}
           </Row>
           <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Select
-                allowClear={true}
-                style={{ width: 160, marginRight: 8 }}
-                placeholder="成员"
-                onSelect={(e) => this.handleSearch(e, 'taker_id')}
-                onChange={(e) => this.handleSearch(e, 'taker_id')}
-              >
-                {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
-                }
-              </Select>
-
-              <Cascader
-                style={{ marginRight: 8 }}
-                allowClear={true}
-                showSearch={true}
-                options={CHANNELS_FOR_CASCADER}
-                placeholder="选择渠道"
-                onChange={(e) => this.handleSearch(e, 'channel')}
-              />
-              <Search
-                style={{ width: 260, float: 'right' }}
-                placeholder="ID／名称／商家标签"
-                onChange={this.handleSearchChange}
-                onSearch={(value) => this.handleSearch(value, 'search')}
-                enterButton
-              />
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')} />
-              <Tooltip placement="top" title="发布到淘宝时间">
-                <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
-              </Tooltip>
-            </div>
             <Table
               scroll={{ x: 1300 }}
               loading={loading}
