@@ -41,8 +41,6 @@ export default class AuctionModal extends PureComponent {
     
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.k)
-    console.log(nextProps.currentKey)
     if (nextProps.k === nextProps.currentKey) {
       if (!this.props.visible && nextProps.visible) {
         this.setState({

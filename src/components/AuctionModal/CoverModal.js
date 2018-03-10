@@ -32,8 +32,6 @@ export default class CoverModal extends PureComponent {
 
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.coverKey);
-    console.log(nextProps.k);
     if (nextProps.coverKey === nextProps.k) {
       if (!this.props.visible && nextProps.visible) {
         this.setState({
