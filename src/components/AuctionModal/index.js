@@ -12,9 +12,9 @@ const TabPane = Tabs.TabPane;
 const Search = Input.Search;
 
 @connect(state => ({
-  taskChannel: state.auction.taskChannel,
   visible: state.auction.visible,
   currentKey: state.auction.currentKey,
+  taskChannel: state.auction.taskChannel,
 }))
   
 export default class AuctionModal extends PureComponent {

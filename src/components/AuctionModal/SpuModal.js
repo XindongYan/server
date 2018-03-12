@@ -15,6 +15,7 @@ const Search = Input.Search;
   currentKey: state.album.spuModal.currentKey,
   list: state.album.spuModal.list,
   pagination: state.album.spuModal.pagination,
+  taskChannel: state.auction.taskChannel,
 }))
   
 export default class SpuModal extends PureComponent {
@@ -36,7 +37,7 @@ export default class SpuModal extends PureComponent {
     search: '',
     qumai: '',
     activeKey: 'add',
-    kuaixuanUrl: '',
+    kuaixuanUrl: 'https://we.taobao.com/material/square/detail?kxuanParam=%7B%22nested%22%3A%22we%22%2C%22id%22%3A%220%22%7D',
   }
   componentDidMount() {
     
@@ -73,6 +74,7 @@ export default class SpuModal extends PureComponent {
             this.setState({ nicaiCrx });
           }
         }
+        this.handleGetKuaixuanId();
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = document.getElementById('nicaiCrx');
         nicaiCrx.removeEventListener('setAuction', this.setAuction);
@@ -265,6 +267,15 @@ export default class SpuModal extends PureComponent {
       activeKey: 'add'
     });
   }
+  handleGetKuaixuanId = async () => {
+    const { activityId, taskChannel } = this.props;
+    const data = taskChannel.find(item => item.id === activityId && item.selectItemData);
+    if (data && data.selectItemData.url) {
+      this.setState({
+        kuaixuanUrl: data.selectItemData.url,
+      });
+    }
+  }
   renderAddAuction = () => {
     const { visible, k } = this.props;
     const { search, itemList, pagination, addLoading, auctionChoose } = this.state;
@@ -320,6 +331,7 @@ export default class SpuModal extends PureComponent {
       >
         { k !== 'material' ?
           <Tabs
+            tabBarExtraContent={<div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div>}
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >
