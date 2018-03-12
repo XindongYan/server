@@ -91,7 +91,7 @@ export default class AnchorImageList extends PureComponent {
     if (version && version.length > 0) {
       const arr = version.split('.');
       const versionNumber = Number(arr[0]) * 100 + Number(arr[1]) * 10 + Number(arr[2]);
-      if (versionNumber < 106) { // 1.0.4
+      if (versionNumber < 122) { // 1.0.4
         message.warn('请更新插件！', 60 * 60);
       }
     }
@@ -195,7 +195,7 @@ export default class AnchorImageList extends PureComponent {
                   {item.anchors && item.anchors.map((anchor, index) => {
                     const thisY = (anchor.y / 100 * outerBoxWh) - wh/2;
                     const thisX = (anchor.x / 100 * outerBoxWh) - wh/2;
-                    return (
+                    return anchor.data && anchor.data.title ?
                       <div
                         key={index}
                         className={styles.anchorTagsBox}
@@ -204,7 +204,7 @@ export default class AnchorImageList extends PureComponent {
                       <span className={styles.anchorTags}>
                         {anchor.data && anchor.data.title ? anchor.data.title : ''}
                       </span>
-                    </div>)
+                    </div> : ''
                   })}
                 </div>
               }
