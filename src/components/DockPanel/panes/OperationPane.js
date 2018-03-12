@@ -41,7 +41,7 @@ export default class OperationPane extends PureComponent {
             return (
               <Timeline.Item color={color} key={index}>
                 <p>{item.operation}</p>
-                <p>{moment(item.time).format('YYYY-MM-DD HH:mm')} {item.user_id ? item.user_id.name : ''}</p>
+                <p>{moment(item.time).format('YYYY-MM-DD HH:mm')}<span style={{ marginLeft: 20 }}>{item.user_id ? item.user_id.nickname : ''}</span></p>
               </Timeline.Item>
             );
           })}
