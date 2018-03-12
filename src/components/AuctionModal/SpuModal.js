@@ -331,7 +331,7 @@ export default class SpuModal extends PureComponent {
       >
         { k !== 'material' ?
           <Tabs
-            tabBarExtraContent={<div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div>}
+            tabBarExtraContent={activityId === 60 ? <div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div> : ''}
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >
