@@ -379,17 +379,16 @@ export default class ProjectList extends PureComponent {
               <RadioButton value={3}>派单活动</RadioButton>
             </RadioGroup>
           </div>
-          <div>
-            <RadioGroup value={status} onChange={this.changeStatus}> 
-              <RadioButton value={-4}>全部</RadioButton>
-              {type !== 3 &&
+          {type !== 3 &&
+            <div>
+              <RadioGroup value={status} onChange={this.changeStatus}> 
+                <RadioButton value={-4}>全部</RadioButton>
                 <RadioButton value={2}>已上架</RadioButton>
-              }
-              {type !== 3 &&
                 <RadioButton value={3}>已下架</RadioButton>
-              }
-            </RadioGroup>
-          </div>
+              </RadioGroup>
+            </div>
+          }
+            
         </div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
