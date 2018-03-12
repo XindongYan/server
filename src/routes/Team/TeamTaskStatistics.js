@@ -249,7 +249,7 @@ export default class TeamTaskStatistics extends PureComponent {
       {
         title: '淘宝动态奖励',
         dataIndex: 'taobao.incomeRewards',
-        render: (val) => val && val.length > 0 ? val.reduce((a, b) => a + b, 0).toFixed(2) : '',
+        render: (val) => val && val.length > 0 ? val.map(item => item.fee).reduce((a, b) => a + b, 0).toFixed(2) : '',
       },
       {
         title: '尼采佣金',
@@ -302,7 +302,10 @@ export default class TeamTaskStatistics extends PureComponent {
               placeholder="选择渠道"
               onChange={(e) => this.handleSearch(e, 'channel')}
             />
-            <RangePicker allowClear={false} style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')} />
+            <RangePicker allowClear={false} style={{ width: 240 }}
+              value={[moment(statisticsList.publish_taobao_time_start || new Date()), moment(statisticsList.publish_taobao_time_end || new Date())]}
+              onChange={(value) => this.handleSearch(value, 'time')}
+            />
             <Tooltip placement="top" title="发布到淘宝时间">
               <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
             </Tooltip>
