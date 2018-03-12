@@ -5,6 +5,7 @@ import moment from 'moment';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
 import TaskNameColumn from '../../components/TaskNameColumn';
+import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import TaskIdColumn from '../../components/TaskIdColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
@@ -466,7 +467,7 @@ export default class TableList extends PureComponent {
         title: '商家标签',
         dataIndex: 'merchant_tag',
         render: (record) => (
-          <TaskNameColumn text={record} length={10} />
+          <TrimSpan text={record} length={10} />
         )
       },
     ];

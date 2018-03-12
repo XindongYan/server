@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
 import TaskNameColumn from '../../components/TaskNameColumn';
+import TrimSpan from '../../components/TrimSpan';
 import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message, Radio, DatePicker, Tooltip } from 'antd';
 import { Link } from 'dva/router';
 import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
@@ -273,8 +274,8 @@ export default class ProjectList extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
-        render: (record) => (
-          <TaskNameColumn text={record} length={10} />
+        render: (val) => (
+          <TrimSpan text={val} length={10} />
         )
       },
       {

@@ -11,6 +11,7 @@ import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, RIGHT } from '../../
 import FinanceList from './FinanceList.js';
 import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
+import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
 import DockPanel from '../../components/DockPanel';
@@ -465,8 +466,8 @@ export default class TableList extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
-        render: (record) => (
-          <TaskNameColumn text={record} length={10} />
+        render: (val) => (
+          <TrimSpan text={val} length={10} />
         )
       },
       {

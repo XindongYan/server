@@ -8,6 +8,7 @@ import $ from 'jquery';
 import fetch from 'dva/fetch';
 import { stringify } from 'qs';
 import TaskNameColumn from '../../components/TaskNameColumn';
+import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import TaskIdColumn from '../../components/TaskIdColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
@@ -466,8 +467,8 @@ export default class TableList extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
-        render: (record) => (
-          <TaskNameColumn text={record} length={10} />
+        render: (val) => (
+          <TrimSpan text={val} length={10} />
         )
       },
     ];

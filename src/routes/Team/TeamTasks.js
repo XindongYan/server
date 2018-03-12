@@ -9,6 +9,7 @@ import { Link } from 'dva/router';
 import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
+import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import ProjectDetail from '../../components/ProjectDetail';
 import styles from './TeamList.less';
@@ -290,8 +291,8 @@ export default class TeamTasks extends PureComponent {
       {
         title: '商家标签',
         dataIndex: 'merchant_tag',
-        render: (record) => (
-          <TaskNameColumn text={record} length={10} />
+        render: (val) => (
+          <TrimSpan text={val} length={10} />
         )
       },
       {

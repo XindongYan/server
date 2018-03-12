@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Popover, Timeline, Button } from 'antd';
+import { Popover, Timeline, Button } from 'antd';
 import moment from 'moment';
 import { TASK_APPROVE_STATUS } from '../../constants';
 
