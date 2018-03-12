@@ -57,7 +57,7 @@ export default class TaskForm extends PureComponent {
       const params = {
         template: query.template
       }
-      if (query.activityId && Number(query.activityId) > 0) params.activityId = query.activityId;
+      if (query.activityId && (Number(query.activityId) > 0 || Number(query.activityId) === -21)) params.activityId = query.activityId;
       queryTaskRender(params).then(result => {
         if (!result.error) {
           this.setState({ children: result.children, formData: result.formData, needValidateFieldNames: result.children.filter(item => item.component === 'Input').map(item => item.name) });

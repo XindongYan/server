@@ -188,7 +188,7 @@ export default class AnalyzePane extends PureComponent {
           <Card.Grid style={{ width: `50%`, textAlign: 'center' }}>
             <div>
               付款金额
-              <Tooltip placement="top" title="【订单结算】与【订单付款】的付款金额之和">
+              <Tooltip placement="top" title="订单状态为【订单结算】与【订单付款】的付款金额之和">
                 <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
               </Tooltip>
             </div>
@@ -199,7 +199,7 @@ export default class AnalyzePane extends PureComponent {
           <Card.Grid style={{ width: `50%`, textAlign: 'center' }}>
             <div>
               效果预估
-              <Tooltip placement="top" title="【订单结算】与【订单付款】的效果预估之和">
+              <Tooltip placement="top" title="订单状态为【订单结算】与【订单付款】的效果预估之和">
                 <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
               </Tooltip>
             </div>
