@@ -453,7 +453,7 @@ export default class TableList extends PureComponent {
         title: '名称',
         dataIndex: 'name',
         render: (val, record) => (
-          <a target="_blank" href={`/task/detail.html?_id=${record._id}`}>
+          <a target="_blank" href={record.taobao && record.taobao.url ? record.taobao.url : `/task/detail.html?_id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
           </a>
         ),
