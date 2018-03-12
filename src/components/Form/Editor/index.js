@@ -525,7 +525,7 @@ export default class Editors extends PureComponent {
         <AlbumModal k="editor" onOk={this.handleAddImg} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} activityId={this.props.activityId} />
         <BpuModal k="editor" onOk={this.handleAddBpu} />
-        <SpuModal k="editor" onOk={this.handleAddSpu} />
+        <SpuModal k="editor" onOk={this.handleAddSpu} activityId={this.props.activityId} />
         <ShopListModal k="editor" onOk={this.handleAddShop} />
       </div>
     );
