@@ -12,7 +12,7 @@ import TeamTaskStatistics from '../routes/Team/TeamTaskStatistics';
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
 
-import Daren from '../routes/Daren/TableList';
+// import Daren from '../routes/Daren/TableList';
 
 import TaskSquare from '../routes/TaskSquare/ProjectList';
 import SubmissionList from '../routes/TaskSquare/SubmissionList';
@@ -71,16 +71,16 @@ const creation = {
   }],
 };
 
-const publish = {
-  name: '发布',
-  path: 'daren',
-  icon: 'fork',
-  children: [{
-    name: '全部作品',
-    path: 'daren-list',
-    component: Daren,
-  }],
-};
+// const publish = {
+//   name: '发布',
+//   path: 'daren',
+//   icon: 'fork',
+//   children: [{
+//     name: '全部作品',
+//     path: 'daren-list',
+//     component: Daren,
+//   }],
+// };
 
 const project = {
   name: '活动',

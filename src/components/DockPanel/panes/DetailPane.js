@@ -18,7 +18,7 @@ export default class DetailPane extends PureComponent {
       <Card bordered={false} style={{ padding: '0 0 40px' }}>
           <Row gutter={2} style={rowStyle}>
             <Col {...labelSpan} style={labelStyle}>
-              任务标题：
+              任务名称：
             </Col>
             <Col {...valueSpan}>
               <div>{task.name || '无'}</div>
@@ -50,7 +50,7 @@ export default class DetailPane extends PureComponent {
           </Row>
           <Row gutter={2} style={rowStyle}>
             <Col {...labelSpan} style={labelStyle}>
-              附 件：
+              附件：
             </Col>
             <Col {...valueSpan}>
               { task.attachments && task.attachments.length > 0 ?
