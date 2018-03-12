@@ -42,19 +42,15 @@ function BlockCommon(props) {
 
 
 @connect(state => ({
-
+  taskChannel: state.auction.taskChannel,
 }))
 
 export default class TaskChannel extends PureComponent {
   state = {
-    data: [],
     currentKey: 'post',
   }
-  async componentDidMount() {
-    const data = await fetch(`/jsons/taskChannel.json`).then(response => response.json());
-    this.setState({
-      data,
-    });
+  componentWillMount() {
+
   }
 
   handleDeliverWeitao = (btnUrl) => {
@@ -354,9 +350,9 @@ export default class TaskChannel extends PureComponent {
     );
   }
   render() {
+    const { taskChannel } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { data } = this.state;
-    const details = data.filter(item => item.id == query.activityId);
+    const details = taskChannel.filter(item => item.id == query.activityId);
     const detail = details && details.length > 0 ? details[0] : {};
     return (
       <div>

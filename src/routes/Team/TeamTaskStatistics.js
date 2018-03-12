@@ -43,8 +43,6 @@ export default class TeamTaskStatistics extends PureComponent {
     total: {},
     resultChart: null,
     channelChart: null,
-    publish_taobao_time_start: null,
-    publish_taobao_time_end: null,
   };
 
   componentWillMount() {
@@ -53,9 +51,6 @@ export default class TeamTaskStatistics extends PureComponent {
     publish_taobao_time_start.setDate(1);
     publish_taobao_time_start.setHours(0, 0, 0, 0);
     const publish_taobao_time_end = new Date();
-    this.setState({
-      publish_taobao_time_start, publish_taobao_time_end,
-    });
     if (team_id) {
       this.props.dispatch({
         type: 'team/fetchStatisticsList',
@@ -83,10 +78,7 @@ export default class TeamTaskStatistics extends PureComponent {
         type: 'team/fetchTeamUsers',
         payload: { team_id: nextProps.teamUser.team_id },
       });
-      this.getStatisticsTotal({team_id});
-      this.setState({
-        publish_taobao_time_start, publish_taobao_time_end,
-      });
+      this.getStatisticsTotal({team_id, publish_taobao_time_start, publish_taobao_time_end});
     }
   }
 
@@ -310,9 +302,7 @@ export default class TeamTaskStatistics extends PureComponent {
               placeholder="选择渠道"
               onChange={(e) => this.handleSearch(e, 'channel')}
             />
-            <RangePicker allowClear={false} style={{ width: 240 }}
-            value={[moment(statisticsList.publish_taobao_time_start || new Date()), moment(statisticsList.publish_taobao_time_end || new Date())]}
-            onChange={(value) => this.handleSearch(value, 'time')} />
+            <RangePicker allowClear={false} style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')} />
             <Tooltip placement="top" title="发布到淘宝时间">
               <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
             </Tooltip>

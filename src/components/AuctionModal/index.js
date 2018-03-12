@@ -12,6 +12,7 @@ const TabPane = Tabs.TabPane;
 const Search = Input.Search;
 
 @connect(state => ({
+  taskChannel: state.auction.taskChannel,
   visible: state.auction.visible,
   currentKey: state.auction.currentKey,
 }))
@@ -369,9 +370,8 @@ export default class AuctionModal extends PureComponent {
     });
   }
   handleGetKuaixuanId = async () => {
-    const { activityId } = this.props;
+    const { activityId, taskChannel } = this.props;
     let url = 'https://we.taobao.com/material/square/detail?kxuanParam=%7B%22nested%22%3A%22we%22%2C%22id%22%3A%220%22%7D';
-    const taskChannel = await fetch(`/jsons/taskChannel.json`).then(response => response.json());
     const data = taskChannel.find(item => item.id === activityId && item.selectItemData);
     if (data) {
       url = data.selectItemData.url;

@@ -1,3 +1,4 @@
+import { queryChannels } from '../services/auction';
 export default {
   namespace: 'auction',
   state: {
@@ -19,6 +20,7 @@ export default {
       visible: false,
       currentKey: '',
     },
+    taskChannel: [],
   },
 
   effects: {
@@ -58,6 +60,13 @@ export default {
         payload: { visible: false },
       });
     },
+    *fetchChannel({ payload, callback }, { call, put }) {
+      const response = yield call(queryChannels);
+      yield put({
+        type: 'changeTaskChannel',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -77,6 +86,12 @@ export default {
       return {
         ...state,
         shopList: { ...state.shopList, ...action.payload, },
+      };
+    },
+    changeTaskChannel(state, action) {
+      return {
+        ...state,
+        taskChannel: [ ...state.taskChannel, ...action.payload ],
       };
     },
   },

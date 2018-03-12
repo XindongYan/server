@@ -78,6 +78,11 @@ class BasicLayout extends React.PureComponent {
     });
     return { location, breadcrumbNameMap };
   }
+  componentWillMount() {
+    this.props.dispatch({
+      type: 'auction/fetchChannel',
+    });
+  }
   componentDidMount() {
     this.props.dispatch({
       type: 'user/fetchCurrent',
