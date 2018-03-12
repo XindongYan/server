@@ -124,10 +124,10 @@ const team = {
     name: '邀请码',
     path: 'invitation-list',
     component: Invitation,
-  }, {
-    name: '统计',
-    path: 'teamTasks-statistics',
-    component: TeamTaskStatistics,
+  // }, {
+  //   name: '统计',
+  //   path: 'teamTasks-statistics',
+  //   component: TeamTaskStatistics,
   }],
 };
 
