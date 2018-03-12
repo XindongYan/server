@@ -307,7 +307,7 @@ export default class TaskEdit extends PureComponent {
             </div>
           }
         </div>
-        { showApproveLog && <TaskChat taskId={query._id} /> }
+        {/* showApproveLog && <TaskChat taskId={query._id} /> */}
         { showApproveLog && <ApproveLog approveData={approveData}/> }
       </Card>
     );
