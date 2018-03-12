@@ -43,15 +43,20 @@ export default class TeamTaskStatistics extends PureComponent {
     total: {},
     resultChart: null,
     channelChart: null,
+    publish_taobao_time_start: null,
+    publish_taobao_time_end: null,
   };
 
   componentWillMount() {
     const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = this.props;
+    const publish_taobao_time_start = new Date();
+    publish_taobao_time_start.setDate(1);
+    publish_taobao_time_start.setHours(0, 0, 0, 0);
+    const publish_taobao_time_end = new Date();
+    this.setState({
+      publish_taobao_time_start, publish_taobao_time_end,
+    });
     if (team_id) {
-      const publish_taobao_time_start = new Date();
-      publish_taobao_time_start.setDate(1);
-      publish_taobao_time_start.setHours(0, 0, 0, 0);
-      const publish_taobao_time_end = new Date();
       this.props.dispatch({
         type: 'team/fetchStatisticsList',
         payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
@@ -60,9 +65,8 @@ export default class TeamTaskStatistics extends PureComponent {
         type: 'team/fetchTeamUsers',
         payload: { team_id: team_id },
       });
-      this.getStatisticsTotal({team_id});
+      this.getStatisticsTotal({team_id, publish_taobao_time_start, publish_taobao_time_end});
     }
-
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = nextProps;
@@ -80,6 +84,9 @@ export default class TeamTaskStatistics extends PureComponent {
         payload: { team_id: nextProps.teamUser.team_id },
       });
       this.getStatisticsTotal({team_id});
+      this.setState({
+        publish_taobao_time_start, publish_taobao_time_end,
+      });
     }
   }
 
