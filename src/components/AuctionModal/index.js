@@ -192,21 +192,23 @@ export default class AuctionModal extends PureComponent {
   renderAuctions = (auction) => {
     return (
       <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.id} >
-        { ((auction.item.displayStatus && auction.item.displayStatus !== '正常') || auction.disable) &&
-          <div className={styles.displayStatus}>选品不符</div>
-        }
-        <div onClick={() => this.handleChooseAuction(auction)}>
-          <div className={styles.customImageBox}>
+        <div>
+          <div className={styles.customImageBox} onClick={() => this.handleChooseAuction(auction)}>
             <img className={styles.customImage} src={auction.url} />
             { this.state.auctionChoose && auction.id === this.state.auctionChoose.id &&
               <div className={styles.customImgZz}><Icon type="check" /></div>
             }
+            { ((auction.item.displayStatus && auction.item.displayStatus !== '正常') || auction.disable) &&
+              <div className={styles.displayStatus}>选品不符</div>
+            }
           </div>
-          <div className={styles.auctionCard}>
-            <p className={styles.auctionNodes}>{auction.title}</p>
-            <p className={styles.auctionNodes} style={{ margin: '3px 0', color: '#555' }}>¥{auction.item.finalPrice || auction.item.reservedPrice}</p>
-            <p className={styles.auctionNodes}>{auction.item.taoKeDisplayPrice}</p>
-          </div>
+          <a target="_blank" href={auction.item.itemUrl}>
+            <div className={styles.auctionCard}>
+              <p className={styles.auctionNodes}>{auction.title}</p>
+              <p className={styles.auctionNodes} style={{ margin: '3px 0', color: '#555' }}>¥{auction.item.finalPrice || auction.item.reservedPrice}</p>
+              <p className={styles.auctionNodes}>{auction.item.taoKeDisplayPrice}</p>
+            </div>
+          </a>
         </div>
       </Card>
     );
