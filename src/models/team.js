@@ -14,6 +14,8 @@ export default {
     statisticsList: {
       list: [],
       pagination: {},
+      publish_taobao_time_end: null,
+      publish_taobao_time_start: null,
     },
     statisticsListLoading: true,
   },
@@ -118,7 +120,7 @@ export default {
       if (!response.error) {
         yield put({
           type: 'saveStatisticsList',
-          payload: response,
+          payload: { ...payload, ...response },
         });
       }
       yield put({
