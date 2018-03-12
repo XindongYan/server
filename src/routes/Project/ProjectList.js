@@ -240,13 +240,17 @@ export default class ProjectList extends PureComponent {
   }
   changeType = (e) => {
     const { dispatch, teamUser, currentUser, data: { pagination, status } } = this.props;
+    let newStatus = status;
+    if (e.target.value === 3) {
+      newStatus = -4;
+    }
     dispatch({
       type: 'project/fetch',
       payload: {
         ...pagination,
         team_id: teamUser.team_id,
         user_id: currentUser._id,
-        status,
+        status: newStatus,
         type: e.target.value,
       },
     });
@@ -378,8 +382,12 @@ export default class ProjectList extends PureComponent {
           <div>
             <RadioGroup value={status} onChange={this.changeStatus}> 
               <RadioButton value={-4}>全部</RadioButton>
-              <RadioButton value={2}>已上架</RadioButton>
-              <RadioButton value={3}>已下架</RadioButton>
+              {type !== 3 &&
+                <RadioButton value={2}>已上架</RadioButton>
+              }
+              {type !== 3 &&
+                <RadioButton value={3}>已下架</RadioButton>
+              }
             </RadioGroup>
           </div>
         </div>

@@ -191,6 +191,16 @@
 			#editor img{
 				margin: 10px auto 10px;
 			}
+			.anchorImageList{
+				width: 100%;
+				height: 375px;
+				margin-bottom: 20px;
+				display: none;
+			}
+			.anchorImageList>img{
+				width: 100%;
+				height: 100%;
+			}
 		</style>
 	</head>
 	<body>
@@ -206,6 +216,9 @@
 					</a>
 					<div id="nice-auction-button">
 					</div>
+				</div>
+				<div class="anchorImageList" id="anchorImageList">
+
 				</div>
 				<div style="margin-bottom: 20px;">
 					<h2 id="title"></h2>
@@ -283,6 +296,8 @@
 							setEditor(item.props.value);
 						} else if (item.component === 'CreatorAddItem') {
 							setCreatorAddItem(item.props.value);
+						} else if (item.component === 'AnchorImageList') {
+							setAnchorImageList(item.props.value);
 						}
 					});
 				}
@@ -392,6 +407,12 @@
 							}
 						});
 						$(html).appendTo($('#editor'));
+					}
+				}
+				function setAnchorImageList(value) {
+					if (value.length > 0) {
+						$('#anchorImageList').show();
+						$('#anchorImageList').html('<img src="'+ value[0].url +'" />');
 					}
 				}
 			});
