@@ -4,7 +4,7 @@ import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radi
 Tooltip, Divider, Form, Modal, Popover } from 'antd';
 import { Link } from 'dva/router';
 import moment from 'moment';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNELS, RIGHT, ORIGIN } from '../../constants';
+import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNELS, RIGHT } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -422,7 +422,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'name',
         width: 200,
         render: (val, record) => (
-          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+          <a target="_blank" href={`/task/detail.html?_id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
           </a>
         )

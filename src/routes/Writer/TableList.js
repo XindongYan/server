@@ -11,7 +11,7 @@ import TaskIdColumn from '../../components/TaskIdColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, SOURCE, ORIGIN } from '../../constants';
+import { TASK_APPROVE_STATUS, SOURCE } from '../../constants';
 import styles from './TableList.less';
 import { queryTask } from '../../services/task';
 
@@ -453,7 +453,7 @@ export default class TableList extends PureComponent {
         title: '名称',
         dataIndex: 'name',
         render: (val, record) => (
-          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+          <a target="_blank" href={`/task/detail.html?_id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
           </a>
         ),

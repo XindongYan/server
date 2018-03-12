@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>详情</title>
+		<link rel="stylesheet" href="/stylesheets/base.css" />
+		<script src="/javascripts/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			*{padding:0;margin:0;font-size:14px;font-family: "微软雅黑";}
+			ul,ol,dl{padding:0;margin:0;}
+			li{list-style:none;}
+			a{text-decoration:none;color:#000;}
+			.clearfix:after{display:block;content:'';clear:both;}
+			.clearfix{zoom:1;}
+			.fl{float:left;}
+			.fr{float:right;}
+			a img{border:none;}
+
+			.nice-auction{
+				display: block;
+				width: 100%;
+				height: 240px;
+				overflow: hidden;
+				position: relative;
+			}
+			#nice-auction-box{
+				transition: 1s all ease;
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 240px;
+				line-height: 240px;
+				margin: auto;
+				padding: 0;
+				background: #f9f9f9;
+			}
+			#nice-auction-box div{
+				float: left;
+				width: 375px;
+				height: 240px;
+				height: 240px;
+				text-align: center;
+				top: 0;
+				left: 0;
+			}
+			#nice-auction-box img{
+				max-width: 100%;
+				max-height: 100%;
+				width: auto;
+				height: auto;
+			}
+			#nice-auction-button{
+				position: absolute;
+				height: 20px;
+				bottom: 20px;
+				left: 0;
+				right: 0;
+				margin: auto;
+				width: 100%;
+				text-align: center;
+			}
+			#nice-auction-button i{
+				display: inline-block;
+				width: 10px;
+				height: 10px;
+				margin: 2px;
+				border-radius: 50%;
+				background: #fff;
+				cursor: pointer;
+				box-shadow: 0 0 6px 2px rgba(0,0,0,0.2);
+			}
+			#nice-auction-button i.btnActive{
+				background: #faad14;
+			}
+			.nice-details-box{
+				width: 100%;
+			}
+			.nice-details-box h2{
+				width: 100%;
+				font-size: 18px;
+				font-weight: bold;
+				color: #000;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.nice-content-title{
+				text-align: center;
+				margin-bottom: 20px;
+			}
+			.nice-content-title span{
+				color: #000;
+				font-size: 16px;
+			}
+			.nice-content-title div{
+				width: 28px;
+				height: 2px;
+				margin: 2px auto;
+				background: #000;
+			}
+			.nice-content-list li{
+				width: 100%;
+				height: 28px;
+				line-height: 28px;
+			}
+			.nice-content-list li>span{
+				display: inline-block;
+				width: 8px;
+				height: 8px;
+				margin: 0 10px;
+				border-radius: 50%;
+				background: #faad14;
+			}
+			.nice-content-text{
+				margin-bottom: 10px;
+				line-height: 1.6;
+				word-wrap: break-word;
+			}
+			.nice-content-img>img{
+				width: 100%;
+				height: auto;
+			}
+			
+			body,html{
+				background: #ececec;
+				-webkit-font-smoothing: antialiased;
+				color: #333;
+			}
+			#app{
+				width: 375px;
+				margin: 20px auto;
+				padding: 20px;
+				background: #fff;
+			}
+			#app *{
+				word-wrap:break-word;
+			}
+
+			#app div{
+				line-height: 24px;
+				font-size: 16px;
+			}
+			#app p{
+				line-height: 24px;
+				word-wrap:break-word;
+			}
+			h2#title{
+				width: 100%;
+				font-size: 18px;
+				font-weight: bold;
+				color: #000;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.summary{
+				margin-top: 10px;
+				font-size: 14px;
+				line-height: 14px;
+				color: #888;
+				border-left: 1px solid #eee;
+				padding-left: 6px;
+				display: none;
+			}
+			#subTitle{
+				display: none;
+			}
+			.coverImg{
+				width: 100%;
+				height: 220px;
+				line-height: 220px;
+				margin-bottom: 10px;
+				display: none;
+			}
+			img{
+				max-width: 100%;
+				max-height: 100%;
+				height: auto;
+				margin: auto;
+				display: block;
+			}
+
+			#coverImageMore{
+				position: relative;
+				display: none;
+				margin-bottom: 10px;
+			}
+			#niceListBox{
+				display: none;
+			}
+			#editor img{
+				margin: 10px auto 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box" id="app">
+			<section id="taskBox" style="display: none;">
+				<div class="coverImg" id="coverImg">
+					<img src="//img.alicdn.com/imgextra/i1/2244176898/TB23C5baHGYBuNjy0FoXXciBFXa_!!2244176898-2-daren.png_294x430q90.jpg" style="width: 100%; height: 100%;" />
+				</div>
+				<div id="coverImageMore">
+					<a target="_blank" href="javascript:;" class="nice-auction">
+						<div id="nice-auction-box" class="clearfix">
+						</div>
+					</a>
+					<div id="nice-auction-button">
+					</div>
+				</div>
+				<div style="margin-bottom: 20px;">
+					<h2 id="title"></h2>
+					<h3 class="summary" id="summary"></h3>
+					<h3 id="subTitle"></h3>
+				</div>
+				<div class="clearfix" style="color: rgb(255, 80, 0);display: none;">
+					<span class="fr" id="goodsPrice"></span>
+				</div>
+				<div class="content" id="editor"></div>
+				<div><a target="_blank" id="endlink" href="" style="font-size: 14px; color: #6AF; display: none;"></a></div>
+				<div id="niceListBox">
+					<div class="nice-content-title">
+						<span>好在哪里</span>
+						<div></div>
+					</div>
+					<ul class="nice-content-list" id="niceContentList"></ul>
+				</div>
+				<div id="niceContent"></div>
+			</section>
+		</div>
+		<script>
+			$(function(){
+				$('#nice-auction-button').on('click', 'i', function(e){
+					$('#nice-auction-box').css({left: '-'+ $(this).index()*375 +'px' });
+					$('#nice-auction-button i').removeClass('btnActive');
+					$(this).addClass('btnActive');
+				});
+				var strHref = decodeURI(location.href).substring(decodeURI(location.href).indexOf('?')+1).split('&');
+				var query = {};
+				for (var i = 0; i < strHref.length;i++) {
+					var arr = strHref[i].split('=');
+					query[arr[0]] = arr[1];
+				}
+				if (query._id) {
+					getTask();
+				}
+				function getTask(){
+					var hostname = location.hostname;
+					var origin = '';
+					if (hostname === 'localhost' || hostname === 'test.nicai360.com') {
+						origin = 'http://testapi.nicai360.com';
+					} else {
+						origin = 'http://api.nicai360.com';
+					}
+					$.ajax({
+						type: "GET",
+						url: origin + "/api/task",
+						data: {
+							 _id: query._id
+						},
+						success: function(result) {
+							if(!result.error && result.task && result.task.children){
+								setTask(result.task.children);
+							}
+						}
+					});
+				}
+				function setTask(children) {
+					$('#taskBox').show();
+					children.forEach(function(item) {
+						if (item.name === 'title') {
+							setTitle(item.props.value);
+						} else if (item.name === 'summary') {
+							setSummary(item.props.value);
+						} else if (item.name === 'subTitle') {
+							setSubTitle(item.props.value);
+						} else if (item.name === 'standardCoverUrl') {
+							setCoverImg(item.props.value);
+						} else if (item.name === 'bodyStruct') {
+							setBodyStruct(item.props.value);
+						} else if (item.name === 'link') {
+							setLink(item.props.value);
+						} else if (item.component === 'Editor') {
+							setEditor(item.props.value);
+						} else if (item.component === 'CreatorAddItem') {
+							setCreatorAddItem(item.props.value);
+						}
+					});
+				}
+				function setTitle(value) {
+					$('#title').html(value || '');
+				}
+				function setSummary(value) {
+					if (value) {
+						$('#summary').show();
+						$('#summary').html(value);
+					}
+				}
+				function setSubTitle(value) {
+					if (value) {
+						// $('#subTitle').show();
+						$('#subTitle').html(value);
+					}
+				}
+				function setCoverImg(value) {
+					if (value && value.length === 1) {
+						$('#coverImg').show();
+						$('#coverImg').html('<img src="'+ value[0].url +'" />');
+					} else if (value && value.length > 1){
+						$('#coverImageMore').show();
+						value.forEach(function(item, index){
+							$('<div><img src="'+ item.url +'" alt=""></div>').appendTo($('#nice-auction-box'));
+							if (index === 0) {
+								$('<i></i>').addClass('btnActive').appendTo($('#nice-auction-button'));
+							} else {
+								$('<i></i>').appendTo($('#nice-auction-button'));
+							}
+							$('#nice-auction-box').css({ width: (value.length) * 100 + '%'});
+						});
+					}
+				}
+				function setLink(value) {
+					if (value && value.length > 0) {
+						$('#endlink').show();
+						$('#endlink').html(value[0].text);
+						$('#endlink').prop('href', value[0].link);
+					}
+				}
+				function setCreatorAddItem(value) {
+					if (value && value.length > 0) {
+						var auction = value[0];
+						$('#coverImageMore').show();
+						$('#coverImageMore>a').prop('href', auction.resourceUrl);
+						$('<div><img src="'+ auction.coverUrl +'" alt=""></div>').appendTo($('#nice-auction-box'));
+						$('<i></i>').addClass('btnActive').appendTo($('#nice-auction-button'));
+						$('#nice-auction-box').css({ width: (auction.extraBanners.length + 1) * 100 + '%'});
+						if (auction.extraBanners && auction.extraBanners.length > 0) {
+							for (var i = 0; i < auction.extraBanners.length; i++) {
+								$('<div><img src="'+ auction.extraBanners[i] +'" alt=""></div>').appendTo($('#nice-auction-box'));
+								$('<i></i>').appendTo($('#nice-auction-button'));
+							}
+						}
+						if (auction.price) {
+							$('#goodsPrice').parent().show();
+							$('#goodsPrice').html('¥'+auction.price);
+						}
+					}
+				}
+				function setBodyStruct(value) {
+					if (value[0].data.features && value[0].data.features.length > 0) {
+						$('#niceListBox').show();
+						var goodsList = '';
+						value[0].data.features.forEach(function(item){
+							goodsList += '<li><span></span>'+ item +'</li>';
+						});
+						$(goodsList).appendTo($('#niceContentList'));
+					}
+					if (value.length > 1) {
+						var bodyStruct = value.slice(1);
+						var goodsContent = '';
+						bodyStruct.forEach(function(item){
+							if (item.data.title) {
+								goodsContent += '<article>'+
+									'<div class="nice-content-title">'+
+										'<span>'+ item.data.title +'</span>'+
+										'<div></div>'+
+									'</div>'+
+									'<div class="nice-content-text">'+ item.data.desc +'</div>'+
+									'<div class="nice-content-img">'+
+										'<img src="'+ item.data.images[0].picUrl +'">'+
+									'</div>'+
+								'</article>';
+							}
+						});
+						$(goodsContent).appendTo($('#niceContent'));
+					}
+				}
+				function setEditor(value) {
+					var count = 0;
+					var html = '';
+					if (value && value.blocks.length > 0) {
+						value.blocks.forEach(function(item, index){
+							if (item.type === 'atomic' && item.entityRanges && item.entityRanges.length > 0 ) {
+								var entity = value.entityMap[item.entityRanges[0].key];
+								if (entity.type && entity.type === 'SIDEBARIMAGE') {
+									html += '<p><img src="'+ entity.data.url +'"></p>';
+								} else {
+									html += '<p><a target="_blank" href="'+ entity.data.resourceUrl +'"><img src="'+ entity.data.coverUrl +'"></a></p>';
+								} 
+								count += 1;
+							} else if (item.text) {
+								html += '<p>'+ item.text +'</p>';
+							}
+						});
+						$(html).appendTo($('#editor'));
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -6,7 +6,7 @@ import querystring from 'querystring';
 import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
 Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
 import { Link } from 'dva/router';
-import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
+import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
@@ -274,7 +274,7 @@ export default class TeamTasks extends PureComponent {
         title: '名称',
         dataIndex: 'name',
         render: (val, record) => (
-          <a target="_blank" href={`${ORIGIN}/public/task/details?id=${record._id}`}>
+          <a target="_blank" href={`/task/detail.html?_id=${record._id}`}>
             <TaskNameColumn text={val} length={10} />
           </a>
         )
