@@ -110,7 +110,12 @@ export default class AnalyzePane extends PureComponent {
     };
     const columns = [
       {
-        title: '商品',
+        title: <div>
+                商品
+                <Tooltip placement="top" title="同一订单出现在多个任务下，说明这些任务都写了这一宝贝">
+                  <Icon type="question-circle-o" style={{ marginLeft: 4 }} />
+                </Tooltip>
+              </div>,
         dataIndex: 'auctionTitle',
         render: (val, record) => <a href={record.auctionUrl} target="_blank">{val}</a>,
       },
