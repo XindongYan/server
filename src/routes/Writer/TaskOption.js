@@ -1,9 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import { Card, message } from 'antd';
+import { Card, message, Anchor } from 'antd';
 import styles from './TaskOption.less';
 import { CHANNELS } from '../../constants/taobao';
+
+const { Link } = Anchor;
 
 @connect(state => ({
 
@@ -92,6 +94,7 @@ export default class TaskOption extends PureComponent {
   render() {
     return (
       <div>
+        
         {
           CHANNELS.map( (item, index) =>
             <Card key={index} bodyStyle={{ background: '#fff', padding: 20 }} style={{ marginBottom: 20 }}>
