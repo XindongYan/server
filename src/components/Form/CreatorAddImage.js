@@ -32,7 +32,7 @@ export default class CreatorAddImage extends PureComponent {
   render() {
     const { name, props, rules } = this.props;
     const disabled = this.props.operation === 'view' ? true : false;
-    const needAdd = props.value.length < props.min;
+    const needAdd = props.value.length < props.max;
     const pixFilter = props.pixFilter.split('x').map(item => Number(item));
     const width = (pixFilter[0] / 3.2) < 200 ? 200 : (pixFilter[0] / 3.2);
     const widthHeightStyle = {width, height: pixFilter[1] / (pixFilter[0] / width) };
@@ -62,7 +62,7 @@ export default class CreatorAddImage extends PureComponent {
           }
         </div>
         <p style={{ height: 18, lineHeight: '18px', fontSize: '12px', color: '#999', marginTop: 5 }} dangerouslySetInnerHTML={{__html: props.tips}}></p>
-        { props.value && props.value.length > 0 && needAdd &&
+        { props.value && props.value.length > 0 && props.value.length < props.min &&
           <p className={styles.errMsg}>至少要有{props.min}个</p>
         }
         <AlbumModal mode="single" k={name} minSize={{ width: pixFilter[0], height: pixFilter[1] }} onOk={this.handleChangeCover}/>
