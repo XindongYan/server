@@ -254,7 +254,7 @@ export default class SpuModal extends PureComponent {
   handleChooseAuction = (auction) => {
     this.setState({
       auctionChoose: auction,
-      search: auction.item ? auction.spuInfoDTO.spuUrl : '',
+      search: auction.spuInfoDTO ? auction.spuInfoDTO.spuUrl : '',
     });
   }
 

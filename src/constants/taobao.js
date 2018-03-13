@@ -179,7 +179,7 @@ const CHANNELS = [{
 }, {
   "activityList": [{
     "id": 47,
-    "name": "日常投稿.",
+    "name": "日常投稿",
     "templates": [/*"video",*/ "post", "collection"]
   }, {
     "id": 1377,
