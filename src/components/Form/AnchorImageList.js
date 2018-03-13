@@ -170,6 +170,7 @@ export default class AnchorImageList extends PureComponent {
     const { name, props, disabled } = this.props;
     const pixFilter = props.imgSpaceProps.pixFilter.split('x').map(item => Number(item));
     const outerBoxWh = 200;
+    const needAdd = props.value.length < props.min;
     const wh = 22;
     const styleDisabled = disabled ? {
       padding: '60px 0',
@@ -219,6 +220,9 @@ export default class AnchorImageList extends PureComponent {
             </div>
           }
         </div>
+        { props.value && props.value.length > 0 && needAdd &&
+          <p className={styles.errMsg}>至少要有{props.min}个</p>
+        }
         <AlbumModal mode="single" k={name} minSize={{ width: pixFilter[0], height: pixFilter[1] }} onOk={this.handleChangeCover}/>
         <AnchorModal props={this.props.props} k={name} onChange={this.handleAddAnchor} />
       </div>
