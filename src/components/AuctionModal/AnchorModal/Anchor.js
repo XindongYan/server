@@ -54,6 +54,7 @@ export default class Anchor extends PureComponent {
       price: auction.item.finalPrice,
       rawTitle: auction.title,
       resourceUrl: auction.item.itemUrl,
+      title: auction.title,
       url: auction.item.itemUrl,
     };
     this.setState({

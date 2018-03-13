@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import { Card, message, Anchor } from 'antd';
+import { Card, message, Anchor, Affix } from 'antd';
 import styles from './TaskOption.less';
 import { CHANNELS } from '../../constants/taobao';
 
@@ -93,11 +93,19 @@ export default class TaskOption extends PureComponent {
   }
   render() {
     return (
-      <div>
-        
+      <div style={{position: 'relative'}}>
+        <Affix offsetTop={40} style={{position: 'absolute', top: 0, right: 0, zIndex: 2}}>
+          <Anchor style={{ width: 120, paddingLeft: 5 }}>
+            <div style={{width: 120, float: 'right', background: '#fff', opacity: 0.5, padding: 10}}>
+              {
+                CHANNELS.map((item, index) => <Link key={index} href={`#${index}`} title={item.name} />)
+              }
+            </div>
+          </Anchor>
+        </Affix>
         {
           CHANNELS.map( (item, index) =>
-            <Card key={index} bodyStyle={{ background: '#fff', padding: 20 }} style={{ marginBottom: 20 }}>
+            <Card key={index} id={index} bodyStyle={{ background: '#fff', padding: 20 }} style={{ marginBottom: 20 }}>
               <div className={styles.option_box_top}>
                 <div className={styles.option_box_img}>
                   <img src={item.logo} alt={item.name} />
