@@ -222,9 +222,19 @@ export default class TableList extends PureComponent {
         const result = await queryTask({
           _id: record._id,
         });
-        this.handlePublishToTaobao(result.task);
-        message.destroy();
-        message.loading('发布中 ...', 60);
+        const activityId = result.task.formData.activityId;
+        if (activityId === 1331 && versionNumber < 122) { //每日好店
+          message.destroy();
+          message.warn('请更新插件！');
+        } else if ((result.task.formData.template === 'magiccollocation' || activityId === 1437 || activityId === 1413
+          || activityId === 1377) && versionNumber < 123) {
+          message.destroy();
+          message.warn('请更新插件！');
+        } else {
+          this.handlePublishToTaobao(result.task);
+          message.destroy();
+          message.loading('发布中 ...', 60);
+        }
       }
     } else {
       message.destroy();
