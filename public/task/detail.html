@@ -322,6 +322,8 @@
 							setEditor(item.props.value);
 						} else if (item.component === 'CreatorAddItem') {
 							setCreatorAddItem(item.props.value);
+						} else if (item.component === 'CreatorAddSpu') {
+							setCreatorAddSpu(item.props.value);
 						} else if (item.component === 'AnchorImageList') {
 							setAnchorImageList(item.props.value);
 						}
@@ -383,6 +385,22 @@
 						if (auction.price) {
 							$('#goodsPrice').parent().show();
 							$('#goodsPrice').html('¥'+auction.price);
+						}
+					}
+				}
+				function setCreatorAddSpu(value) {
+					if (value && value.length > 0) {
+						var auction = value[0];
+						$('#coverImageMore').show();
+						$('#coverImageMore>a').prop('href', 'https://spu.taobao.com/product/detail.htm?spuId='+ auction.spuId);
+						$('<div><img src="'+ auction.coverUrl +'" alt=""></div>').appendTo($('#nice-auction-box'));
+						$('<i></i>').addClass('btnActive').appendTo($('#nice-auction-button'));
+						$('#nice-auction-box').css({ width: (auction.extraBanners.length + 1) * 100 + '%'});
+						if (auction.extraBanners && auction.extraBanners.length > 0) {
+							for (var i = 0; i < auction.extraBanners.length; i++) {
+								$('<div><img src="'+ auction.extraBanners[i] +'" alt=""></div>').appendTo($('#nice-auction-box'));
+								$('<i></i>').appendTo($('#nice-auction-button'));
+							}
 						}
 					}
 				}
