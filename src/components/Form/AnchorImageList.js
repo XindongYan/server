@@ -51,7 +51,7 @@ export default class AnchorImageList extends PureComponent {
             area: result.area,
             bannerSize: result.size,
           },
-          dapeiId: result.id
+          dapeiId: "",
         }
         const rawData = JSON.parse(result.rawData);
         const anchors = [];

@@ -6,6 +6,7 @@ import { Row, Col, Card, Modal, message, Icon, Button, Input, Tabs, Spin, Pagina
 import styles from './index.less';
 import { queryYhhBody } from '../../services/task';
 import CoverModal from './CoverModal.js'
+import { CHANNELS } from '../../constants/taobao';
 
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
@@ -37,6 +38,7 @@ export default class SpuModal extends PureComponent {
     search: '',
     qumai: '',
     activeKey: 'add',
+    kuaixuan: false,
     kuaixuanUrl: 'https://we.taobao.com/material/square/detail?kxuanParam=%7B%22nested%22%3A%22we%22%2C%22id%22%3A%220%22%7D',
   }
   componentDidMount() {
@@ -252,7 +254,7 @@ export default class SpuModal extends PureComponent {
   handleChooseAuction = (auction) => {
     this.setState({
       auctionChoose: auction,
-      search: auction.item ? auction.item.itemUrl : '',
+      search: auction.item ? auction.spuInfoDTO.spuUrl : '',
     });
   }
 
@@ -273,7 +275,20 @@ export default class SpuModal extends PureComponent {
     const { activityId, taskChannel } = this.props;
     const data = taskChannel.find(item => item.id === activityId && item.selectItemData);
     if (data && data.selectItemData.url) {
+      let channelId = 0;
+      let kuaixuan = false;
+      CHANNELS.forEach(item => {
+        item.activityList.forEach(item1 => {
+          if (item1.id == activityId) {
+            channelId = item.id;
+          }
+        });
+      });
+      if (channelId === 26) {
+        kuaixuan = true;
+      }
       this.setState({
+        kuaixuan,
         kuaixuanUrl: data.selectItemData.url,
       });
     }
@@ -284,7 +299,7 @@ export default class SpuModal extends PureComponent {
     return (<div style={{ padding: 10, height: 300 }}>
       <div style={{ position: 'relative' }}>
         <Search
-          placeholder="输入商品链接"
+          placeholder="输入产品链接"
           value={search}
           onSearch={this.handleAddAuction}
           onChange={this.handleSearchChange}
@@ -320,7 +335,7 @@ export default class SpuModal extends PureComponent {
 
   render() {
     const { visible, k, currentKey, activityId } = this.props;
-    const { itemList, pagination, actsLoading, activeKey, auctionChoose } = this.state;
+    const { itemList, pagination, actsLoading, activeKey, auctionChoose, kuaixuan } = this.state;
     return (
       <Modal
         title="添加产品"
@@ -333,7 +348,7 @@ export default class SpuModal extends PureComponent {
       >
         { k !== 'material' ?
           <Tabs
-            tabBarExtraContent={activityId === 60 ? <div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div> : ''}
+            tabBarExtraContent={kuaixuan ? <div style={{ width: 570, lineHeight: '44px' }}><a onClick={this.handleChangeTabpane} target="_blank" href={this.state.kuaixuanUrl}>选品池</a></div> : ''}
             activeKey={activeKey}
             onChange={this.handleChangeTab}
           >
