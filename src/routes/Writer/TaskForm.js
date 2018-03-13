@@ -349,8 +349,6 @@ export default class TaskForm extends PureComponent {
                   taker_id: currentUser._id,
                   take_time: new Date(),
                   creator_id: currentUser._id,
-                  daren_id: currentUser._id,
-                  daren_time: new Date(),
                 },
                 callback: (result) => {
                   if (result.error) {
@@ -416,8 +414,6 @@ export default class TaskForm extends PureComponent {
               taker_id: currentUser._id,
               take_time: new Date(),
               creator_id: currentUser._id,
-              daren_id: currentUser._id,
-              daren_time: new Date(),
               project_id: query.project_id || undefined,
               current_approvers: approvers[0],
               approvers: approvers,
