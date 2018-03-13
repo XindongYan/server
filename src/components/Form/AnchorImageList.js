@@ -75,6 +75,7 @@ export default class AnchorImageList extends PureComponent {
           anchors: anchors,
           features: JSON.stringify(features),
           url: result.url,
+          rawData: result.rawData,
         }]);
       }
     } else {
