@@ -193,12 +193,14 @@ export default class AuctionModal extends PureComponent {
     return (
       <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.id} >
         <div>
-          <div className={styles.customImageBox} onClick={() => this.handleChooseAuction(auction)}>
-            <img className={styles.customImage} src={auction.url} />
+          <div className={styles.customImageBox}>
+            <div onClick={() => this.handleChooseAuction(auction)}>
+              <img className={styles.customImage} src={auction.url} />
+            </div>
             { this.state.auctionChoose && auction.id === this.state.auctionChoose.id &&
               <div className={styles.customImgZz}><Icon type="check" /></div>
             }
-            { ((auction.item.displayStatus && auction.item.displayStatus !== '正常') || auction.disable) &&
+            { ((auction.item && auction.item.displayStatus && auction.item.displayStatus !== '正常') || auction.disable) &&
               <div className={styles.displayStatus}>选品不符</div>
             }
           </div>
