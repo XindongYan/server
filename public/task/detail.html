@@ -312,7 +312,7 @@
 							setSummary(item.props.value);
 						} else if (item.name === 'subTitle') {
 							setSubTitle(item.props.value);
-						} else if (item.name === 'standardCoverUrl') {
+						} else if (item.name === 'standardCoverUrl' && children.findIndex(item => item.component === 'AnchorImageList') === -1) {
 							setCoverImg(item.props.value);
 						} else if (item.name === 'bodyStruct') {
 							setBodyStruct(item.props.value);
