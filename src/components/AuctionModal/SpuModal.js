@@ -190,8 +190,10 @@ export default class SpuModal extends PureComponent {
     return (
       <Card style={{ width: 120, display: 'inline-block', margin: '2px 4px', cursor: 'pointer', position: 'relative' }} bodyStyle={{ padding: 0 }} key={auction.spuId} >
         <div>
-          <div className={styles.customImageBox} onClick={() => this.handleChooseAuction(auction)}>
-            <img className={styles.customImage} src={auction.url} />
+          <div className={styles.customImageBox}>
+            <div onClick={() => this.handleChooseAuction(auction)}>
+              <img className={styles.customImage} src={auction.url} />
+            </div>
             { this.state.auctionChoose && auction.id === this.state.auctionChoose.id &&
               <div className={styles.customImgZz}><Icon type="check" /></div>
             }
