@@ -93,10 +93,10 @@ export default class TaskOption extends PureComponent {
   }
   render() {
     return (
-      <div style={{position: 'relative'}}>
-        <Affix offsetTop={40} style={{position: 'absolute', top: 0, right: 0, zIndex: 2}}>
-          <Anchor style={{ width: 120, paddingLeft: 5 }}>
-            <div style={{width: 120, float: 'right', background: '#fff', opacity: 0.5, padding: 10}}>
+      <div>
+        <Affix offsetTop={65} style={{position: 'absolute', top: 65, right: 0, zIndex: 2}}>
+          <Anchor className={styles.AnchorBox} style={{ width: 120, paddingLeft: 5 }}>
+            <div>
               {
                 CHANNELS.map((item, index) => <Link key={index} href={`#${index}`} title={item.name} />)
               }
