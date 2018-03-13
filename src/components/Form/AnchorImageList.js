@@ -221,7 +221,7 @@ export default class AnchorImageList extends PureComponent {
             </div>
           }
         </div>
-        { props.value && props.value.length > 0 && needAdd &&
+        { props.value && props.value.length > 0 && props.value.length < props.min &&
           <p className={styles.errMsg}>至少要有{props.min}个</p>
         }
         <AlbumModal mode="single" k={name} minSize={{ width: pixFilter[0], height: pixFilter[1] }} onOk={this.handleChangeCover}/>
