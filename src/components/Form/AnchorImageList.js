@@ -171,7 +171,7 @@ export default class AnchorImageList extends PureComponent {
     const { name, props, disabled } = this.props;
     const pixFilter = props.imgSpaceProps.pixFilter.split('x').map(item => Number(item));
     const outerBoxWh = 200;
-    const needAdd = props.value.length < props.min;
+    const needAdd = props.value.length < props.max;
     const wh = 22;
     const styleDisabled = disabled ? {
       padding: '60px 0',
@@ -212,7 +212,7 @@ export default class AnchorImageList extends PureComponent {
               }
             </div>)
           }
-          { props.value.length < props.max &&
+          { needAdd &&
             <div style={{ width: 200, height: 200, display: 'inline-block' }}>
               <div className={styles.upCover} style={styleDisabled} onClick={!disabled ? this.handleCreateJigsaw : () => {}}>
                 <Icon type="plus" />

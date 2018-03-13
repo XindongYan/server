@@ -98,14 +98,14 @@ export default class TaskOption extends PureComponent {
           <Anchor className={styles.AnchorBox} style={{ width: 120, paddingLeft: 5 }}>
             <div>
               {
-                CHANNELS.map((item, index) => <Link key={index} href={`#${index}`} title={item.name} />)
+                CHANNELS.map((item, index) => <Link key={index} href={`#/creation/writer-create#CHANNELS${index}`} title={item.name} />)
               }
             </div>
           </Anchor>
         </Affix>
         {
           CHANNELS.map( (item, index) =>
-            <Card key={index} id={index} bodyStyle={{ background: '#fff', padding: 20 }} style={{ marginBottom: 20 }}>
+            <Card key={index} id={`/creation/writer-create#CHANNELS${index}`} bodyStyle={{ background: '#fff', padding: 20 }} style={{ marginBottom: 20 }}>
               <div className={styles.option_box_top}>
                 <div className={styles.option_box_img}>
                   <img src={item.logo} alt={item.name} />
