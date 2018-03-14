@@ -40,10 +40,6 @@ export default class StatisticsChannel extends PureComponent {
         type: 'statistics/fetchStatisticsChannel',
         payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
       });
-      this.props.dispatch({
-        type: 'team/fetchTeamUsers',
-        payload: { team_id: team_id },
-      });
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -54,10 +50,6 @@ export default class StatisticsChannel extends PureComponent {
       this.props.dispatch({
         type: 'statistics/fetchStatisticsChannel',
         payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
-      });
-      this.props.dispatch({
-        type: 'team/fetchTeamUsers',
-        payload: { team_id: nextProps.teamUser.team_id },
       });
     }
   }
