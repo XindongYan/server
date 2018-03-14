@@ -142,14 +142,16 @@ export default class StatisticsTaker extends PureComponent {
     const columns = [
       {
         title: '写手',
-        dataIndex: 'channel',
-        width: 120,
+        dataIndex: 'taker_id',
+        width: 140,
         fixed: 'left',
-        render: (val, record) => val ? val.nickname : '',
+        render: (val, record) => (
+          val && val.nickname ? <TrimSpan text={val.nickname} length={7}/> : ''
+        ),
       },
       {
         title: '总文章数',
-        width: 80,
+        width: 110,
         dataIndex: 'sumTaskCnt',
         render: val => val ? val : '',
         sorter: true,

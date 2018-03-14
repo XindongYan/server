@@ -149,7 +149,7 @@ export default class StatisticsChannel extends PureComponent {
           const channel = CHANNELS.find(item => item.id === val[0]);
           const activity = channel.activityList.find(item => item.id === val[1]);
           return (
-            <TrimSpan text={`${channel.name} / ${activity.name}`} length={14}/> : ''
+            <TrimSpan text={`${channel.name} / ${activity.name}`} length={14}/>
           )
         }
       },
@@ -158,7 +158,6 @@ export default class StatisticsChannel extends PureComponent {
         width: 80,
         dataIndex: 'sumTaskCnt',
         render: val => val ? val : '',
-        sorter: true,
       },
       {
         title: '总阅读数',

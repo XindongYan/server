@@ -72,7 +72,7 @@ export default class TaskForm extends PureComponent {
       if (index >= 0) {
         Modal.confirm({
           title: '有自动保存的信息',
-          content: (<div>发现本地有自动保存未提交的内容，点击『确认』将会恢复未提交数据。</div>),
+          content: (<div>发现本地有自动保存未提交的内容，点击『确定』将会恢复未提交数据。</div>),
           onOk: () => {
             this.setState({ children: taskForm[index].children, formData: taskForm[index].formData, });
             taskForm.splice(index, 1);
@@ -539,7 +539,7 @@ export default class TaskForm extends PureComponent {
       if (!this.state.times) {
         console.log('start');
         clearInterval(this.state.times)
-        const times = setInterval(this.handleTaskFormSave, 1000 * 20);
+        const times = setInterval(this.handleTaskFormSave, 1000 * 30);
         this.setState({
           times,
         });
