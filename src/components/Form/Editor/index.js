@@ -490,8 +490,6 @@ export default class Editors extends PureComponent {
       }
     }
   }
-  handelChangeAffix = (e) => {
-  }
   render() {
     const { props } = this.props;
     const box = document.getElementsByClassName('DraftEditor-editorContainer')[0];
@@ -504,21 +502,18 @@ export default class Editors extends PureComponent {
       customStyleMap: this.customStyleMap,
       placeholder: this.props.props.placeholder,
     }
+    const editorToolsWrap = <div ref="editorToolsWrap" onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
+            <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
+            <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
+          </div>;
     return (
       <div style={{padding: '10px 20px', marginBottom: 60}}>
         { this.state.affix ?
-          <Affix onChange={this.handelChangeAffix} style={{zIndex: 1}}>
-            <div ref="editorToolsWrap" onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
-              <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
-              <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
-            </div>
+          <Affix style={{zIndex: 1}}>
+            {editorToolsWrap}
           </Affix> :
-          <div ref="editorToolsWrap" onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>
-            <div>{props.plugins.map((item, index) => this.renderStyleTools(item, index))}</div>
-            <div className={styles.toolsLine}>{props.plugins.map((item, index) => this.renderTools(item, index))}</div>
-          </div>
+          editorToolsWrap
         }
-          
         <div ref="editorBox" className={styles.editorBox} onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
           <Editor ref={instance => {this.setState({editor: instance})}} editorState={this.state.editorState} onChange={this.handleChange} {...editorProps} />
         </div>

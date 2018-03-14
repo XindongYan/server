@@ -506,6 +506,10 @@ export default class TaskForm extends PureComponent {
   handleChange = (children) => {
     this.setState({ children });
   }
+  handleAutomaticSave = () => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const { children } = this.state;
+  }
   render() {
     const { form: { getFieldDecorator }, operation, formData } = this.props;
     const { approveModalVisible, formData: { activityId, template }, suggestionApproves } = this.state;
