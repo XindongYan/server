@@ -205,12 +205,14 @@ export default class StatisticsTask extends PureComponent {
         width: 80,
         dataIndex: 'taobao.summary.sumCntIpv',
         render: (val) => val ? val.value : '',
+        sorter: true,
       },
       {
         title: '阅读数',
         width: 80,
         dataIndex: 'taobao.summary.sumReadCnt',
         render: (val) => val ? val.value : '',
+        sorter: true,
       },
       {
         title: '付款金额',
