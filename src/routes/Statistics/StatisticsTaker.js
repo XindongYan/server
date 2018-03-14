@@ -7,6 +7,7 @@ import G2 from '@antv/g2';
 import { Table, Card, Button, Input, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
 Popover, Dropdown, Icon, message, Radio, Tooltip, Cascader } from 'antd';
 import { Link } from 'dva/router';
+import TrimSpan from '../../components/TrimSpan';
 import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, CHANNELS, CHANNELS_FOR_CASCADER, TASK_TYPES } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -21,14 +22,14 @@ const RadioGroup = Radio.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  data: state.statistics.statisticsTask,
-  loading: state.statistics.statisticsTaskLoading,
+  data: state.statistics.statisticsTaker,
+  loading: state.statistics.statisticsTakerLoading,
   suggestionUsers: state.team.suggestionUsers,
   teamUsers: state.team.teamUsers,
   teamUser: state.user.teamUser,
 }))
 @Form.create()
-export default class StatisticsTask extends PureComponent {
+export default class StatisticsTaker extends PureComponent {
   state = {
   }
 
@@ -36,7 +37,7 @@ export default class StatisticsTask extends PureComponent {
     const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
     if (team_id) {
       this.props.dispatch({
-        type: 'statistics/fetchStatisticsTask',
+        type: 'statistics/fetchStatisticsTaker',
         payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
       });
       this.props.dispatch({
@@ -51,7 +52,7 @@ export default class StatisticsTask extends PureComponent {
       ( nextProps.teamUser.team_id && this.props.publish_taobao_time_start !==  publish_taobao_time_start) ||
       this.props.daren_id !==  daren_id) {
       this.props.dispatch({
-        type: 'statistics/fetchStatisticsTask',
+        type: 'statistics/fetchStatisticsTaker',
         payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
       });
       this.props.dispatch({
@@ -84,7 +85,7 @@ export default class StatisticsTask extends PureComponent {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
     dispatch({
-      type: 'statistics/fetchStatisticsTask',
+      type: 'statistics/fetchStatisticsTaker',
       payload: params,
     });
   }
@@ -119,13 +120,13 @@ export default class StatisticsTask extends PureComponent {
     if(name === 'time') {
       values['publish_taobao_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['publish_taobao_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
-    } else if (name === 'channel' && value.length >= 1) {
+    } else if (name === 'channel' && value && value.length) {
       values[name] = JSON.stringify(value);
     } else {
       values[name] = value;
     }
     dispatch({
-      type: 'statistics/fetchStatisticsTask',
+      type: 'statistics/fetchStatisticsTaker',
       payload: { ...values, ...pagination},
     });
   }
@@ -144,103 +145,71 @@ export default class StatisticsTask extends PureComponent {
       },
     });
   }
-  renderTotalBox = () => {
-    const { data } = this.props;
-    let totalList = [];
-    if (data.totals.sumCntIpv !== undefined) {
-      totalList = [{
-        text: '总文章数',
-        value: data.totals.sumTaskCnt,
-      }, {
-        text: '总进店数',
-        value: data.totals.sumCntIpv,
-      }, {
-        text: '总阅读数',
-        value: data.totals.sumReadCnt,
-      }, {
-        text: '淘宝总佣金',
-        value: Number(data.totals.fee).toFixed(2),
-      }];
-    }
-    return totalList;
-  }
   render() {
     const { data, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
-    const totalList = this.renderTotalBox();
-
-    const gridStyle = {
-      width: `${1 / totalList.length * 100}%`,
-      textAlign: 'center',
-    };
     const columns = [
       {
-        title: '任务ID',
-        dataIndex: 'id',
-        width: 80,
-        fixed: 'left',
-        render: (val, record) => (
-          <a onClick={() => this.handleShowDockPanel(record, 'AnalyzePane')}>
-            {val}
-          </a>
-        )
-      },
-      {
         title: '写手',
+        dataIndex: 'channel',
         width: 120,
-        dataIndex: 'taker_id',
-        render: val => val ? val.nickname : '',
+        fixed: 'left',
+        render: (val, record) => val ? val.nickname : '',
       },
       {
-        title: '内容标题',
-        dataIndex: 'name',
-        width: 200,
-        render: (val, record) => (
-          <a target="_blank" href={record.taobao && record.taobao.url ? record.taobao.url : ''}>
-            <TaskNameColumn text={val} length={10} />
-          </a>
-        )
-      },
-      {
-        title: '进店数',
+        title: '总文章数',
         width: 80,
-        dataIndex: 'taobao.summary.sumCntIpv',
+        dataIndex: 'sumTaskCnt',
+        render: val => val ? val : '',
+        sorter: true,
+      },
+      {
+        title: '总阅读数',
+        dataIndex: 'sumReadCnt',
+        width: 110,
+        render: val => val ? val : '',
+        sorter: true,
+      },
+      {
+        title: '总进店数',
+        width: 110,
+        dataIndex: 'sumCntIpv',
         render: (val) => val ? val.value : '',
         sorter: true,
       },
       {
-        title: '阅读数',
-        width: 80,
-        dataIndex: 'taobao.summary.sumReadCnt',
-        render: (val) => val ? val.value : '',
-        sorter: true,
-      },
-      {
-        title: '付款金额',
-        width: 90,
+        title: '总付款金额',
+        width: 110,
         dataIndex: 'totalAlipayFee',
         render: (val) => val ? val : 0,
       },
       {
-        title: '淘宝佣金',
-        width: 90,
+        title: '总淘宝佣金',
+        width: 110,
         dataIndex: 'fee',
         render: (val) => val ? val : 0,
       },
       {
-        title: '淘宝动态奖励',
-        dataIndex: 'taobao.incomeRewards',
+        title: '总动态奖励',
+        width: 110,
+        dataIndex: 'incomeRewards',
         render: (val) => val && val.length > 0 ? val.map(item => item.fee).reduce((a, b) => a + b, 0).toFixed(2) : '',
       },
       {
-        title: '尼采佣金',
-        width: 90,
+        title: '总尼采佣金',
+        width: 110,
         key: '0',
         render: (val) => val ? val : '',
       },
       {
-        title: '尼采奖励',
-        width: 90,
+        title: '总尼采奖励',
+        width: 110,
         key: '1',
+        render: (val) => val ? val : '',
+      },
+      {
+        title: '平均通过次数',
+        width: 110,
+        key: '2',
         render: (val) => val ? val : '',
       },
     ];
@@ -274,16 +243,6 @@ export default class StatisticsTask extends PureComponent {
             {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
             }
           </Select>
-
-          <Cascader
-            style={{ marginRight: 8 }}
-            allowClear={true}
-            showSearch={true}
-            options={CHANNELS_FOR_CASCADER}
-            placeholder="选择渠道"
-            onChange={(e) => this.handleSearch(e, 'channel')}
-          />
-
           {
           //   <Search
           //   style={{ width: 260, float: 'right' }}
@@ -294,15 +253,9 @@ export default class StatisticsTask extends PureComponent {
           // />
           }
         </div>
-        <Row style={{margin: '20px 0'}}>
-          { totalList.map((item, index) => <Card.Grid key={index} style={gridStyle}>
-            <div>{item.text}</div>
-            <h2>{item.value}</h2>
-          </Card.Grid>)}
-        </Row>
-        <div className={styles.tableList}>
+        <div style={{ marginTop: 20 }} className={styles.tableList}>
           <Table
-            // scroll={{ x: 1300 }}
+            scroll={{ x: 1200 }}
             loading={loading}
             dataSource={data.list}
             columns={columns}

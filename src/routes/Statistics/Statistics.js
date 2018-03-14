@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Card, Button, message, Menu, DatePicker, Tooltip, Icon } from 'antd';
 import StatisticsTask from './StatisticsTask';
 import StatisticsChannel from './StatisticsChannel';
+import StatisticsTaker from './StatisticsTaker';
 
 import { TASK_TYPES } from '../../constants';
 
@@ -55,6 +56,8 @@ export default class Statistics extends PureComponent {
       content = <StatisticsTask {...newProps}/>
     } else if (currentKey === 'channel') {
       content = <StatisticsChannel {...newProps}/>
+    } else if (currentKey === 'taker') {
+      content = <StatisticsTaker {...newProps}/>
     }
     return (
       <div>
