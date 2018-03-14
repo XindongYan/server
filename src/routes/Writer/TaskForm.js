@@ -37,6 +37,7 @@ export default class TaskForm extends PureComponent {
     },
     saveLoading: false,
     submitLoading: false,
+    times: null,
   }
   componentWillMount() {
     window.onbeforeunload = () => {
@@ -64,12 +65,33 @@ export default class TaskForm extends PureComponent {
         }
       });
     }
+
+    setTimeout(() => {
+      const taskForm = JSON.parse(localStorage.getItem('taskForm')) || [];
+      const index = this.handleGetTaskFormIndex(taskForm);
+      if (index >= 0) {
+        Modal.confirm({
+          title: '有自动保存的信息',
+          content: (<div>发现本地有自动保存未提交的内容，点击『确认』将会恢复未提交数据。</div>),
+          onOk: () => {
+            this.setState({ children: taskForm[index].children, formData: taskForm[index].formData, });
+            taskForm.splice(index, 1);
+            localStorage.setItem('taskForm', JSON.stringify(taskForm));
+          },
+          onCancel: () => {
+            taskForm.splice(index, 1);
+            localStorage.setItem('taskForm', JSON.stringify(taskForm));
+          },
+        });
+      }
+    }, 1000);
   }
   componentWillUnmount() {
     this.props.dispatch({
       type: 'task/clearFormData'
     });
     window.onbeforeunload = null;
+    if (this.state.times) clearInterval(this.state.times);
   }
 
   validate = (fieldNames, callback) => {
@@ -158,6 +180,7 @@ export default class TaskForm extends PureComponent {
               message.error(result1.msg);
             } else {
               this.handleHandin(query._id);
+              this.handleTaskFormRemove();
             }
             this.setState({
               submitLoading: false,
@@ -185,6 +208,7 @@ export default class TaskForm extends PureComponent {
               message.error(result.msg);
             } else {
               this.handleHandin(result.task._id);
+              this.handleTaskFormRemove();
             }
             this.setState({
               submitLoading: false,
@@ -296,6 +320,7 @@ export default class TaskForm extends PureComponent {
                     saveLoading: false,
                   })
                   message.success(result.msg);
+                  this.handleTaskFormRemove();
                 }
               }
             });
@@ -329,6 +354,7 @@ export default class TaskForm extends PureComponent {
                     message.success('保存成功');
                     query._id = result.task._id;
                     this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
+                    this.handleTaskFormRemove();
                   }
                 },
               });
@@ -360,6 +386,7 @@ export default class TaskForm extends PureComponent {
                     message.success('保存成功');
                     query._id = result.task._id;
                     this.props.dispatch(routerRedux.push(`/writer/task/edit?${querystring.stringify(query)}`));
+                    this.handleTaskFormRemove();
                   }
                 }
               });
@@ -390,6 +417,7 @@ export default class TaskForm extends PureComponent {
               if (result.error) {
                 message.error(result.msg);
               } else {
+                this.handleTaskFormRemove();
                 this.handleHandin(query._id);
               }
               this.setState({
@@ -423,6 +451,7 @@ export default class TaskForm extends PureComponent {
                 message.error(result.msg);
               } else {
                 this.handleHandin(result.task._id);
+                this.handleTaskFormRemove();
               }
             }
           });
@@ -505,10 +534,56 @@ export default class TaskForm extends PureComponent {
   }
   handleChange = (children) => {
     this.setState({ children });
+    if (!this.state.times) {
+      console.log('start');
+      clearInterval(this.state.times)
+      const times = setInterval(this.handleTaskFormSave, 1000 * 30);
+      this.setState({
+        times,
+      });
+    }
   }
-  handleAutomaticSave = () => {
+  handleTaskFormSave = () => {
+    console.log(1);
     const query = querystring.parse(this.props.location.search.substr(1));
-    const { children } = this.state;
+    const { children, formData } = this.state;
+    const taskForm = JSON.parse(localStorage.getItem('taskForm')) || [];
+    const data = {children, formData};
+    const index = this.handleGetTaskFormIndex(taskForm);
+    if (query._id) {
+      data._id = query._id;
+    }
+    if (index === -1) {
+      taskForm.push(data);
+    } else {
+      taskForm.splice(index, 1, data);
+    }
+    localStorage.setItem('taskForm', JSON.stringify(taskForm));
+  }
+  handleTaskFormRemove = () => {
+    const taskForm = JSON.parse(localStorage.getItem('taskForm')) || [];
+    const index = this.handleGetTaskFormIndex(taskForm);
+    if (index >= 0) {
+      taskForm.splice(index, 1);
+    }
+    localStorage.setItem('taskForm', JSON.stringify(taskForm));
+  }
+  handleGetTaskFormIndex = (taskForm) => {
+    const query = querystring.parse(this.props.location.search.substr(1));
+    const activityId = query.activityId && (Number(query.activityId) > 0 || Number(query.activityId) === -21) ? Number(query.activityId) : '';
+    let index = -1;
+    if (query._id) {
+      index = taskForm.findIndex(item => item._id === query._id);
+    } else {
+      index = taskForm.findIndex(item => {
+        if (activityId) {
+          return item.formData.activityId === activityId && item.formData.template === query.template;
+        } else {
+          return !item.formData.activityId && item.formData.template === query.template;
+        }
+      });
+    }
+    return index;
   }
   render() {
     const { form: { getFieldDecorator }, operation, formData } = this.props;

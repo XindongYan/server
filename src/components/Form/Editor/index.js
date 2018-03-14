@@ -37,6 +37,11 @@ export default class Editors extends PureComponent {
     }
 
   }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.props && this.props.props.value.blocks.length > 0 && nextProps.props && (nextProps.props.value.blocks[0] !== this.props.props.value.blocks[0])) {
+      this.setState({ editorState: EditorState.createWithContent(convertFromRaw({entityMap: {}, ...nextProps.props.value})) });
+    }
+  }
   componentWillUnmount() {
     window.onscroll = null;
   }
