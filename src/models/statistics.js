@@ -1,4 +1,4 @@
-import { queryStatisticsTask, queryStatisticsChannel } from '../services/statistics';
+import { queryStatisticsTask, queryStatisticsChannel, queryStatisticsTaker } from '../services/statistics';
 
 export default {
   namespace: 'statistics',
@@ -16,6 +16,11 @@ export default {
       pagination: {},
     },
     statisticsChannelLoading: true,
+    statisticsTaker: {
+      list: [],
+      pagination: {},
+    },
+    statisticsTakerLoading: true,
   },
 
   effects: {
@@ -53,6 +58,23 @@ export default {
         payload: false,
       });
     },
+    *fetchStatisticsTaker({ payload }, { call, put }) {
+      yield put({
+        type: 'changeStatisticsTakerLoading',
+        payload: true,
+      });
+      const response = yield call(queryStatisticsTaker, payload);
+      if (!response.error) {
+        yield put({
+          type: 'saveStatisticsTaker',
+          payload: { ...payload, ...response },
+        });
+      }
+      yield put({
+        type: 'changeStatisticsTakerLoading',
+        payload: false,
+      });
+    },
   },
 
   reducers: {
@@ -85,6 +107,18 @@ export default {
       return {
         ...state,
         statisticsChannelLoading: action.payload,
+      };
+    },
+    saveStatisticsTaker(state, action) {
+      return {
+        ...state,
+        statisticsTaker: action.payload,
+      };
+    },
+    changeStatisticsTakerLoading(state, action) {
+      return {
+        ...state,
+        statisticsTakerLoading: action.payload,
       };
     },
   },
