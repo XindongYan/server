@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Divider, Table, Tooltip, Icon, message } from 'antd';
+import { Card, Row, Col, Divider, Table, Tooltip, Icon, message, Alert } from 'antd';
 import moment from 'moment';
 import { queryAuctionOrders } from '../../../services/task';
 
@@ -163,6 +163,7 @@ export default class AnalyzePane extends PureComponent {
     ];
     return (
       <Card>
+        <Alert message="此功能处于公测阶段，仅供参考" type="warning" showIcon style={{ marginBottom: 20 }}/>
         <Row>
           {alias.map(item =>
             <Card.Grid key={item.value} style={gridStyle}>

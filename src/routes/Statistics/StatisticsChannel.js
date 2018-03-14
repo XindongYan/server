@@ -262,7 +262,7 @@ export default class StatisticsChannel extends PureComponent {
               ...data.pagination,
             }}
             onChange={this.handleStandardTableChange}
-            rowKey="_id"
+            rowKey={record => `${record._id.channel[0]}${record._id.channel[1]}`}
           />
           <DockPanel />
         </div>
