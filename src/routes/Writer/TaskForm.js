@@ -84,14 +84,15 @@ export default class TaskForm extends PureComponent {
           },
         });
       }
-    }, 1000);
+    }, 1500);
   }
   componentWillUnmount() {
     this.props.dispatch({
       type: 'task/clearFormData'
     });
     window.onbeforeunload = null;
-    if (this.state.times) clearInterval(this.state.times);
+    console.log('clear');
+    clearInterval(this.state.times);
   }
 
   validate = (fieldNames, callback) => {
@@ -534,14 +535,16 @@ export default class TaskForm extends PureComponent {
   }
   handleChange = (children) => {
     this.setState({ children });
-    if (!this.state.times) {
-      console.log('start');
-      clearInterval(this.state.times)
-      const times = setInterval(this.handleTaskFormSave, 1000 * 30);
-      this.setState({
-        times,
-      });
-    }
+    setTimeout(() => {
+      if (!this.state.times) {
+        console.log('start');
+        clearInterval(this.state.times)
+        const times = setInterval(this.handleTaskFormSave, 1000 * 20);
+        this.setState({
+          times,
+        });
+      }
+    }, 200);
   }
   handleTaskFormSave = () => {
     console.log(1);
@@ -567,6 +570,7 @@ export default class TaskForm extends PureComponent {
       taskForm.splice(index, 1);
     }
     localStorage.setItem('taskForm', JSON.stringify(taskForm));
+    console.log('remove');
   }
   handleGetTaskFormIndex = (taskForm) => {
     const query = querystring.parse(this.props.location.search.substr(1));
