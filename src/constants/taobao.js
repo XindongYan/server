@@ -60,7 +60,7 @@ const CHANNELS = [{
   "activityList": [{
     "id": 82,
     "name": "优质内容频道",
-    "templates": ["post"]
+    "templates": ["post", "item", "collection"]
   }],
   "desc": "淘宝第一个垂直细分的导购产品，不局限于专业货品的挖掘，引导用户在细分垂直人群领域里获得专业知识进阶。 若你在某个细分领域十分专业，欢迎加入我们这个精准的粉丝运营阵地~ 所需内容类型：单品、图文帖子、优选。",
   "id": 25,
