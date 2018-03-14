@@ -158,6 +158,7 @@ export default class StatisticsChannel extends PureComponent {
         width: 80,
         dataIndex: 'sumTaskCnt',
         render: val => val ? val : '',
+        sorter: true,
       },
       {
         title: '总阅读数',
