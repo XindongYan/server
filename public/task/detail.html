@@ -454,6 +454,8 @@
 								var entity = value.entityMap[item.entityRanges[0].key];
 								if (entity.type && entity.type === 'SIDEBARIMAGE') {
 									html += '<p><img src="'+ entity.data.url +'"></p>';
+								} else if (entity.type && entity.type === 'SIDEBARADDSHOP') {
+									html += '<p><img src="'+ entity.data.coverUrl +'"></p>';
 								} else {
 									html += '<p class="auctionBox"><a target="_blank" href="'+ entity.data.resourceUrl +'"><img src="'+ entity.data.coverUrl +'"></a><a target="_blank" href="'+ entity.data.resourceUrl +'"class="auctionPrice">';
 									if (entity.data.price) {
