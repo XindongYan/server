@@ -44,11 +44,7 @@ export default class StatisticsTask extends PureComponent {
   };
 
   componentWillMount() {
-    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = this.props;
-    const publish_taobao_time_start = new Date();
-    publish_taobao_time_start.setDate(1);
-    publish_taobao_time_start.setHours(0, 0, 0, 0);
-    const publish_taobao_time_end = new Date();
+    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = this.props;
     if (team_id) {
       this.props.dispatch({
         type: 'statistics/fetchStatisticsList',
@@ -62,12 +58,9 @@ export default class StatisticsTask extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = nextProps;
-    if (!this.props.teamUser.team_id && nextProps.teamUser.team_id) {
-      const publish_taobao_time_start = new Date();
-      publish_taobao_time_start.setDate(1);
-      publish_taobao_time_start.setHours(0, 0, 0, 0);
-      const publish_taobao_time_end = new Date();
+    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = nextProps;
+    if (this.props.teamUser.team_id !== nextProps.teamUser.team_id ||
+      ( this.props.publish_taobao_time_start !==  publish_taobao_time_start)) {
       this.props.dispatch({
         type: 'statistics/fetchStatisticsList',
         payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
@@ -279,61 +272,59 @@ export default class StatisticsTask extends PureComponent {
     // columns.push(opera);
     return (
       <div>
-        <Card bordered={false} bodyStyle={{ padding: 14 }}>
-          <div className={styles.tableListOperator}>
-            <Select
-              allowClear={true}
-              style={{ width: 160, marginRight: 8 }}
-              placeholder="成员"
-              onSelect={(e) => this.handleSearch(e, 'taker_id')}
-              onChange={(e) => this.handleSearch(e, 'taker_id')}
-            >
-              {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
-              }
-            </Select>
-
-            <Cascader
-              style={{ marginRight: 8 }}
-              allowClear={true}
-              showSearch={true}
-              options={CHANNELS_FOR_CASCADER}
-              placeholder="选择渠道"
-              onChange={(e) => this.handleSearch(e, 'channel')}
-            />
-
-            {
-            //   <Search
-            //   style={{ width: 260, float: 'right' }}
-            //   placeholder="ID／名称／商家标签"
-            //   onChange={this.handleSearchChange}
-            //   onSearch={(value) => this.handleSearch(value, 'search')}
-            //   enterButton
-            // />
+        <div className={styles.tableListOperator}>
+          <Select
+            allowClear={true}
+            style={{ width: 160, marginRight: 8 }}
+            placeholder="成员"
+            onSelect={(e) => this.handleSearch(e, 'taker_id')}
+            onChange={(e) => this.handleSearch(e, 'taker_id')}
+          >
+            {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
             }
-          </div>
-          <Row style={{margin: '20px 0'}}>
-            { totalList.map((item, index) => <Card.Grid key={index} style={gridStyle}>
-              <div>{item.text}</div>
-              <h2>{item.value}</h2>
-            </Card.Grid>)}
-          </Row>
-          <div className={styles.tableList}>
-            <Table
-              // scroll={{ x: 1300 }}
-              loading={loading}
-              dataSource={statisticsList.list}
-              columns={columns}
-              pagination={{
-                showSizeChanger: true,
-                showQuickJumper: true,
-                ...statisticsList.pagination,
-              }}
-              onChange={this.handleStandardTableChange}
-              rowKey="_id"
-            />
-            <DockPanel />
-          </div>
-        </Card>
+          </Select>
+
+          <Cascader
+            style={{ marginRight: 8 }}
+            allowClear={true}
+            showSearch={true}
+            options={CHANNELS_FOR_CASCADER}
+            placeholder="选择渠道"
+            onChange={(e) => this.handleSearch(e, 'channel')}
+          />
+
+          {
+          //   <Search
+          //   style={{ width: 260, float: 'right' }}
+          //   placeholder="ID／名称／商家标签"
+          //   onChange={this.handleSearchChange}
+          //   onSearch={(value) => this.handleSearch(value, 'search')}
+          //   enterButton
+          // />
+          }
+        </div>
+        <Row style={{margin: '20px 0'}}>
+          { totalList.map((item, index) => <Card.Grid key={index} style={gridStyle}>
+            <div>{item.text}</div>
+            <h2>{item.value}</h2>
+          </Card.Grid>)}
+        </Row>
+        <div className={styles.tableList}>
+          <Table
+            // scroll={{ x: 1300 }}
+            loading={loading}
+            dataSource={statisticsList.list}
+            columns={columns}
+            pagination={{
+              showSizeChanger: true,
+              showQuickJumper: true,
+              ...statisticsList.pagination,
+            }}
+            onChange={this.handleStandardTableChange}
+            rowKey="_id"
+          />
+          <DockPanel />
+        </div>
       </div>
     );
   }

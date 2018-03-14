@@ -9,7 +9,6 @@ import { TASK_TYPES } from '../../constants';
 const { RangePicker } = DatePicker;
 const SubMenu = Menu.SubMenu;
 
-
 @connect(state => ({
   publish_taobao_time_end: state.statistics.publish_taobao_time_end,
   publish_taobao_time_start: state.statistics.publish_taobao_time_start,
@@ -55,13 +54,13 @@ export default class Statistics extends PureComponent {
     return (
       <div>
         <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Tooltip placement="top" title="发布到淘宝的时间">
+            发布时间<Icon type="question-circle-o" style={{ margin: '0 2px 0 6px' }} /><strong style={{ margin: '0 8px 0 2px' }}>:</strong>
+          </Tooltip>
           <RangePicker allowClear={false} style={{ width: 240 }}
             value={[moment(publish_taobao_time_start || new Date()), moment(publish_taobao_time_end || new Date())]}
             onChange={(value) => this.handleTimeRangeChange(value)}
           />
-          <Tooltip placement="top" title="发布时间">
-            <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
-          </Tooltip>
           <Menu
             style={{ marginTop: 20, borderBottom: 'none' }}
             onClick={this.handleClick}
