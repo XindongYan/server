@@ -117,8 +117,14 @@ export default class Anchor extends PureComponent {
     });
   }
   render() {
-    const { data } = this.props;
+    const { data, props } = this.props;
     const { title, auction } = this.state;
+    const suffix = (
+      <div
+        style={{ color: title && title.length > props.titleMaxLength ? '#f00' : '#444' }}>
+        { title ? title.length : 0}/{props.titleMaxLength}
+      </div>
+    );
     return (
       <div>
         <div className={styles.outerAddBox}>
@@ -143,8 +149,9 @@ export default class Anchor extends PureComponent {
             <Input
               value={title}
               onChange={this.handleChangeAuctionTag}
-              placeholder="请输入不超过6个汉字"
-              maxLength="6"
+              placeholder={`请输入不超过${props.titleMaxLength}个汉字`}
+              maxLength={props.titleMaxLength ? props.titleMaxLength.toString() : '10'}
+              suffix={suffix}
             />
           </div>
           <div style={{marginTop: 10}}>

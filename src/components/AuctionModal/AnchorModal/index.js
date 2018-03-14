@@ -237,7 +237,7 @@ export default class AnchorModal extends PureComponent {
             <div className={styles.anchorInnerBox}>
               { addVisible ?
                 <div>
-                  <Anchor k={this.props.k} onChange={this.handleAddAnchor} data={this.state.anchorData.data || {}} />
+                  <Anchor k={this.props.k} props={props} onChange={this.handleAddAnchor} data={this.state.anchorData.data || {}} />
                 </div> :
                 <div style={{padding: '120px 0 0 60px', fontSize: 18, color: '#888'}}>
                   <p>请在左侧选择合适的位置点击添加宝贝标签</p>
