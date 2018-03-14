@@ -4,18 +4,15 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import querystring from 'querystring';
 import G2 from '@antv/g2';
-import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
+import { Table, Card, Button, Input, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
 Popover, Dropdown, Icon, message, Radio, Tooltip, Cascader } from 'antd';
 import { Link } from 'dva/router';
 import { ORIGIN, TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES, CHANNELS, CHANNELS_FOR_CASCADER, TASK_TYPES } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
-import ProjectDetail from '../../components/ProjectDetail';
-import styles from './TeamList.less';
-import { queryStatisticsTotal } from '../../services/team';
+import styles from './index.less';
 
-const { RangePicker } = DatePicker;
 const Search = Input.Search;
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -24,61 +21,49 @@ const RadioGroup = Radio.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  statisticsList: state.team.statisticsList,
-  loading: state.team.statisticsListLoading,
+  statisticsList: state.statistics.statisticsList,
+  loading: state.statistics.statisticsListLoading,
+  loading: state.statistics.statisticsListLoading,
   currentUser: state.user.currentUser,
   suggestionUsers: state.team.suggestionUsers,
   teamUsers: state.team.teamUsers,
   teamUser: state.user.teamUser,
 }))
 @Form.create()
-export default class TeamTaskStatistics extends PureComponent {
+export default class StatisticsTask extends PureComponent {
   state = {
-    modalVisible: false,
-    darenModalVisible: false,
-    selectedRows: [],
-    selectedRowKeys: [],
     searchValue: '',
     task: {},
     total: {},
     resultChart: null,
     channelChart: null,
-  };
+  }
 
   componentWillMount() {
-    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = this.props;
-    const publish_taobao_time_start = new Date();
-    publish_taobao_time_start.setDate(1);
-    publish_taobao_time_start.setHours(0, 0, 0, 0);
-    const publish_taobao_time_end = new Date();
+    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = this.props;
     if (team_id) {
       this.props.dispatch({
-        type: 'team/fetchStatisticsList',
+        type: 'statistics/fetchStatisticsList',
         payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
       });
       this.props.dispatch({
         type: 'team/fetchTeamUsers',
         payload: { team_id: team_id },
       });
-      this.getStatisticsTotal({team_id, publish_taobao_time_start, publish_taobao_time_end});
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = nextProps;
-    if (!this.props.teamUser.team_id && nextProps.teamUser.team_id) {
-      const publish_taobao_time_start = new Date();
-      publish_taobao_time_start.setDate(1);
-      publish_taobao_time_start.setHours(0, 0, 0, 0);
-      const publish_taobao_time_end = new Date();
+    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = nextProps;
+    if (this.props.teamUser.team_id !== nextProps.teamUser.team_id ||
+      ( nextProps.teamUser.team_id && this.props.publish_taobao_time_start !==  publish_taobao_time_start)) {
       this.props.dispatch({
-        type: 'team/fetchStatisticsList',
+        type: 'statistics/fetchStatisticsList',
         payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
       });
       this.props.dispatch({
         type: 'team/fetchTeamUsers',
         payload: { team_id: nextProps.teamUser.team_id },
       });
-      this.getStatisticsTotal({team_id, publish_taobao_time_start, publish_taobao_time_end});
     }
   }
 
@@ -104,7 +89,7 @@ export default class TeamTaskStatistics extends PureComponent {
     
     window.scrollTo(0, 0);
     dispatch({
-      type: 'team/fetchStatisticsList',
+      type: 'statistics/fetchStatisticsList',
       payload: params,
     });
   }
@@ -145,10 +130,9 @@ export default class TeamTaskStatistics extends PureComponent {
       values[name] = value;
     }
     dispatch({
-      type: 'team/fetchStatisticsList',
+      type: 'statistics/fetchStatisticsList',
       payload: { ...values, ...pagination},
     });
-    this.getStatisticsTotal(values);
   }
   handleSearchChange = (e) => {
     if (e.target.value.length === 0) {
@@ -166,28 +150,27 @@ export default class TeamTaskStatistics extends PureComponent {
     });
   }
   renderTotalBox = () => {
-    const { total } = this.state;
+    const { statisticsList } = this.props;
     let totalList = [];
-    if (total.sumCntIpv !== undefined) {
+    if (statisticsList.totals.sumCntIpv !== undefined) {
       totalList = [{
         text: '总文章数',
-        value: total.sumTaskCnt,
+        value: statisticsList.totals.sumTaskCnt,
       }, {
         text: '总进店数',
-        value: total.sumCntIpv,
+        value: statisticsList.totals.sumCntIpv,
       }, {
         text: '总阅读数',
-        value: total.sumReadCnt,
+        value: statisticsList.totals.sumReadCnt,
       }, {
         text: '淘宝总佣金',
-        value: Number(total.fee).toFixed(2),
+        value: Number(statisticsList.totals.fee).toFixed(2),
       }];
     }
     return totalList;
   }
   render() {
     const { statisticsList, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
-    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible, total } = this.state;
     const totalList = this.renderTotalBox();
 
     const gridStyle = {
@@ -281,67 +264,59 @@ export default class TeamTaskStatistics extends PureComponent {
     // columns.push(opera);
     return (
       <div>
-        <Card bordered={false} bodyStyle={{ padding: 14 }}>
-          <div className={styles.tableListOperator}>
-            <Select
-              allowClear={true}
-              style={{ width: 160, marginRight: 8 }}
-              placeholder="成员"
-              onSelect={(e) => this.handleSearch(e, 'taker_id')}
-              onChange={(e) => this.handleSearch(e, 'taker_id')}
-            >
-              {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
-              }
-            </Select>
-
-            <Cascader
-              style={{ marginRight: 8 }}
-              allowClear={true}
-              showSearch={true}
-              options={CHANNELS_FOR_CASCADER}
-              placeholder="选择渠道"
-              onChange={(e) => this.handleSearch(e, 'channel')}
-            />
-            <RangePicker allowClear={false} style={{ width: 240 }}
-              value={[moment(statisticsList.publish_taobao_time_start || new Date()), moment(statisticsList.publish_taobao_time_end || new Date())]}
-              onChange={(value) => this.handleSearch(value, 'time')}
-            />
-            <Tooltip placement="top" title="发布到淘宝时间">
-              <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
-            </Tooltip>
-            {
-            //   <Search
-            //   style={{ width: 260, float: 'right' }}
-            //   placeholder="ID／名称／商家标签"
-            //   onChange={this.handleSearchChange}
-            //   onSearch={(value) => this.handleSearch(value, 'search')}
-            //   enterButton
-            // />
+        <div className={styles.tableListOperator}>
+          <Select
+            allowClear={true}
+            style={{ width: 160, marginRight: 8 }}
+            placeholder="成员"
+            onSelect={(e) => this.handleSearch(e, 'taker_id')}
+            onChange={(e) => this.handleSearch(e, 'taker_id')}
+          >
+            {teamUsers.map(teamUser => teamUser.user_id ? <Option key={teamUser.user_id._id} value={teamUser.user_id._id}>{teamUser.user_id.nickname}</Option> : '')
             }
-          </div>
-          <Row style={{margin: '20px 0'}}>
-            { totalList.map((item, index) => <Card.Grid key={index} style={gridStyle}>
-              <div>{item.text}</div>
-              <h2>{item.value}</h2>
-            </Card.Grid>)}
-          </Row>
-          <div className={styles.tableList}>
-            <Table
-              // scroll={{ x: 1300 }}
-              loading={loading}
-              dataSource={statisticsList.list}
-              columns={columns}
-              pagination={{
-                showSizeChanger: true,
-                showQuickJumper: true,
-                ...statisticsList.pagination,
-              }}
-              onChange={this.handleStandardTableChange}
-              rowKey="_id"
-            />
-            <DockPanel />
-          </div>
-        </Card>
+          </Select>
+
+          <Cascader
+            style={{ marginRight: 8 }}
+            allowClear={true}
+            showSearch={true}
+            options={CHANNELS_FOR_CASCADER}
+            placeholder="选择渠道"
+            onChange={(e) => this.handleSearch(e, 'channel')}
+          />
+
+          {
+          //   <Search
+          //   style={{ width: 260, float: 'right' }}
+          //   placeholder="ID／名称／商家标签"
+          //   onChange={this.handleSearchChange}
+          //   onSearch={(value) => this.handleSearch(value, 'search')}
+          //   enterButton
+          // />
+          }
+        </div>
+        <Row style={{margin: '20px 0'}}>
+          { totalList.map((item, index) => <Card.Grid key={index} style={gridStyle}>
+            <div>{item.text}</div>
+            <h2>{item.value}</h2>
+          </Card.Grid>)}
+        </Row>
+        <div className={styles.tableList}>
+          <Table
+            // scroll={{ x: 1300 }}
+            loading={loading}
+            dataSource={statisticsList.list}
+            columns={columns}
+            pagination={{
+              showSizeChanger: true,
+              showQuickJumper: true,
+              ...statisticsList.pagination,
+            }}
+            onChange={this.handleStandardTableChange}
+            rowKey="_id"
+          />
+          <DockPanel />
+        </div>
       </div>
     );
   }

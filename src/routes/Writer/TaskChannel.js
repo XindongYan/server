@@ -4,7 +4,6 @@ import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import url from 'url';
 import { Card, Button, Popconfirm, message, Row, Col, Menu } from 'antd';
-import TaskChat from '../../components/TaskChat';
 import styles from './TaskChannel.less';
 import { CHANNELS } from '../../constants/taobao';
 import { TASK_TYPES } from '../../constants';

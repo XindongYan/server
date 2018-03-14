@@ -7,7 +7,7 @@ import Project from '../routes/Project/ProjectList';
 import ProjectCreate from '../routes/Project/ProjectCreate';
 import TeamUser from '../routes/Team/TeamUserList';
 import TeamTasks from '../routes/Team/TeamTasks';
-import TeamTaskStatistics from '../routes/Team/TeamTaskStatistics';
+import Statistics from '../routes/Statistics/Statistics';
 
 import Writer from '../routes/Writer/TableList';
 import TaskOption from '../routes/Writer/TaskOption';
@@ -124,10 +124,6 @@ const team = {
     name: '邀请码',
     path: 'invitation-list',
     component: Invitation,
-  // }, {
-  //   name: '统计',
-  //   path: 'teamTasks-statistics',
-  //   component: TeamTaskStatistics,
   }],
 };
 
@@ -137,6 +133,14 @@ const album = {
   icon: 'picture',
   children: [],
   component: Material,
+};
+
+const statistics = {
+  name: '统计',
+  path: 'statistics',
+  icon: 'area-chart',
+  children: [],
+  component: Statistics,
 };
 
 const tool = {
@@ -207,8 +211,11 @@ export function getNavData(user) {
     if (user.rights.indexOf(RIGHT.writer) >= 0) {
       menuItems.push(album);
     }
+    if (user.rights.indexOf(RIGHT.daren) >= 0) {
+      menuItems.push(statistics);
+    }
   } else {
-    menuItems.push(square, creation, approve, team, project, album);
+    menuItems.push(square, creation, approve, team, project, album, statistics);
   }
   menuItems.push(tool);
   data[0].children = menuItems;
