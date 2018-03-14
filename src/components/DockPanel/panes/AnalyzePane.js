@@ -163,7 +163,7 @@ export default class AnalyzePane extends PureComponent {
     ];
     return (
       <Card>
-        <Alert message="此功能处于公测阶段，仅供参考" type="warning" showIcon style={{ marginBottom: 20 }}/>
+        <Alert message="数据抓取功能正在完善中，此页面数据可能不全，仅供参考" type="warning" showIcon style={{ marginBottom: 20 }}/>
         <Row>
           {alias.map(item =>
             <Card.Grid key={item.value} style={gridStyle}>
