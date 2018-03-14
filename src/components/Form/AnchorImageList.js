@@ -221,6 +221,7 @@ export default class AnchorImageList extends PureComponent {
             </div>
           }
         </div>
+        <p style={{ height: 18, lineHeight: '18px', fontSize: '12px', color: '#999', marginTop: 5 }} dangerouslySetInnerHTML={{__html: props.tips || ''}}></p>
         { props.value && props.value.length > 0 && props.value.length < props.min &&
           <p className={styles.errMsg}>至少要有{props.min}个</p>
         }
