@@ -3,31 +3,31 @@ import { queryStatisticsList } from '../services/statistics';
 export default {
   namespace: 'statistics',
   state: {
-    statisticsList: {
+    statisticsTask: {
       list: [],
       pagination: {},
       totals: {},
     },
-    statisticsListLoading: true,
+    statisticsTaskLoading: true,
     publish_taobao_time_start: null,
     publish_taobao_time_end: null,
   },
 
   effects: {
-    *fetchStatisticsList({ payload }, { call, put }) {
+    *fetchStatisticsTask({ payload }, { call, put }) {
       yield put({
-        type: 'changeStatisticsListLoading',
+        type: 'changeStatisticsTaskLoading',
         payload: true,
       });
       const response = yield call(queryStatisticsList, payload);
       if (!response.error) {
         yield put({
-          type: 'saveStatisticsList',
+          type: 'saveStatisticsTask',
           payload: { ...payload, ...response },
         });
       }
       yield put({
-        type: 'changeStatisticsListLoading',
+        type: 'changeStatisticsTaskLoading',
         payload: false,
       });
     },
@@ -41,16 +41,16 @@ export default {
         publish_taobao_time_end: action.payload.publish_taobao_time_end,
       };
     },
-    saveStatisticsList(state, action) {
+    saveStatisticsTask(state, action) {
       return {
         ...state,
-        statisticsList: action.payload,
+        statisticsTask: action.payload,
       };
     },
-    changeStatisticsListLoading(state, action) {
+    changeStatisticsTaskLoading(state, action) {
       return {
         ...state,
-        statisticsListLoading: action.payload,
+        statisticsTaskLoading: action.payload,
       };
     },
   },

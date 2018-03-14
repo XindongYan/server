@@ -21,10 +21,8 @@ const RadioGroup = Radio.Group;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 @connect(state => ({
-  statisticsList: state.statistics.statisticsList,
-  loading: state.statistics.statisticsListLoading,
-  loading: state.statistics.statisticsListLoading,
-  currentUser: state.user.currentUser,
+  data: state.statistics.statisticsTask,
+  loading: state.statistics.statisticsTaskLoading,
   suggestionUsers: state.team.suggestionUsers,
   teamUsers: state.team.teamUsers,
   teamUser: state.user.teamUser,
@@ -40,11 +38,11 @@ export default class StatisticsTask extends PureComponent {
   }
 
   componentWillMount() {
-    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = this.props;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
     if (team_id) {
       this.props.dispatch({
-        type: 'statistics/fetchStatisticsList',
-        payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
+        type: 'statistics/fetchStatisticsTask',
+        payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
       });
       this.props.dispatch({
         type: 'team/fetchTeamUsers',
@@ -53,12 +51,13 @@ export default class StatisticsTask extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = nextProps;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = nextProps;
     if (this.props.teamUser.team_id !== nextProps.teamUser.team_id ||
-      ( nextProps.teamUser.team_id && this.props.publish_taobao_time_start !==  publish_taobao_time_start)) {
+      ( nextProps.teamUser.team_id && this.props.publish_taobao_time_start !==  publish_taobao_time_start) ||
+      this.props.daren_id !==  daren_id) {
       this.props.dispatch({
-        type: 'statistics/fetchStatisticsList',
-        payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
+        type: 'statistics/fetchStatisticsTask',
+        payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
       });
       this.props.dispatch({
         type: 'team/fetchTeamUsers',
@@ -68,7 +67,7 @@ export default class StatisticsTask extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = this.props;
+    const { dispatch, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
     const { searchValue } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -78,6 +77,7 @@ export default class StatisticsTask extends PureComponent {
     const params = {
       team_id,
       user_id,
+      daren_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       search: searchValue,
@@ -91,14 +91,11 @@ export default class StatisticsTask extends PureComponent {
     
     window.scrollTo(0, 0);
     dispatch({
-      type: 'statistics/fetchStatisticsList',
+      type: 'statistics/fetchStatisticsTask',
       payload: params,
     });
   }
 
-  handleSetTime = () => {
-
-  }
   getStatisticsTotal = async (params) => {
     const alias = await queryStatisticsTotal(params);
     if (alias.total) {
@@ -118,10 +115,13 @@ export default class StatisticsTask extends PureComponent {
     }
   }
   handleSearch = (value, name) => {
-    const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id } } = this.props;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
     const values = {
       team_id,
       user_id,
+      publish_taobao_time_start,
+      publish_taobao_time_end,
+      daren_id,
     };
     if(name === 'time') {
       values['publish_taobao_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
@@ -132,7 +132,7 @@ export default class StatisticsTask extends PureComponent {
       values[name] = value;
     }
     dispatch({
-      type: 'statistics/fetchStatisticsList',
+      type: 'statistics/fetchStatisticsTask',
       payload: { ...values, ...pagination},
     });
   }
@@ -152,27 +152,27 @@ export default class StatisticsTask extends PureComponent {
     });
   }
   renderTotalBox = () => {
-    const { statisticsList } = this.props;
+    const { data } = this.props;
     let totalList = [];
-    if (statisticsList.totals.sumCntIpv !== undefined) {
+    if (data.totals.sumCntIpv !== undefined) {
       totalList = [{
         text: '总文章数',
-        value: statisticsList.totals.sumTaskCnt,
+        value: data.totals.sumTaskCnt,
       }, {
         text: '总进店数',
-        value: statisticsList.totals.sumCntIpv,
+        value: data.totals.sumCntIpv,
       }, {
         text: '总阅读数',
-        value: statisticsList.totals.sumReadCnt,
+        value: data.totals.sumReadCnt,
       }, {
         text: '淘宝总佣金',
-        value: Number(statisticsList.totals.fee).toFixed(2),
+        value: Number(data.totals.fee).toFixed(2),
       }];
     }
     return totalList;
   }
   render() {
-    const { statisticsList, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
+    const { data, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
     const totalList = this.renderTotalBox();
 
     const gridStyle = {
@@ -192,7 +192,7 @@ export default class StatisticsTask extends PureComponent {
         )
       },
       {
-        title: '昵称',
+        title: '写手',
         width: 120,
         dataIndex: 'taker_id',
         render: val => val ? val.nickname : '',
@@ -307,12 +307,12 @@ export default class StatisticsTask extends PureComponent {
           <Table
             // scroll={{ x: 1300 }}
             loading={loading}
-            dataSource={statisticsList.list}
+            dataSource={data.list}
             columns={columns}
             pagination={{
               showSizeChanger: true,
               showQuickJumper: true,
-              ...statisticsList.pagination,
+              ...data.pagination,
             }}
             onChange={this.handleStandardTableChange}
             rowKey="_id"

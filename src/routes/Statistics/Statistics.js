@@ -12,6 +12,7 @@ const SubMenu = Menu.SubMenu;
 @connect(state => ({
   publish_taobao_time_end: state.statistics.publish_taobao_time_end,
   publish_taobao_time_start: state.statistics.publish_taobao_time_start,
+  currentUser: state.user.currentUser,
 }))
 
 export default class Statistics extends PureComponent {
@@ -44,9 +45,9 @@ export default class Statistics extends PureComponent {
   }
   
   render() {
-    const { publish_taobao_time_start, publish_taobao_time_end } = this.props;
+    const { publish_taobao_time_start, publish_taobao_time_end, currentUser } = this.props;
     const { currentKey } = this.state;
-    const newProps = { publish_taobao_time_start, publish_taobao_time_end };
+    const newProps = { publish_taobao_time_start, publish_taobao_time_end, daren_id: currentUser._id };
     let content = currentKey;
     if (currentKey === 'task') {
       content = <StatisticsTask {...newProps}/>
