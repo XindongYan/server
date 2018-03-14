@@ -6,6 +6,7 @@ export default {
     statisticsList: {
       list: [],
       pagination: {},
+      totals: {},
     },
     statisticsListLoading: true,
     publish_taobao_time_start: null,

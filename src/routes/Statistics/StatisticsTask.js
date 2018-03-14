@@ -12,7 +12,6 @@ import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import styles from './index.less';
-import { queryStatisticsTotal } from '../../services/statistics';
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -24,6 +23,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 @connect(state => ({
   statisticsList: state.statistics.statisticsList,
   loading: state.statistics.statisticsListLoading,
+  loading: state.statistics.statisticsListLoading,
   currentUser: state.user.currentUser,
   suggestionUsers: state.team.suggestionUsers,
   teamUsers: state.team.teamUsers,
@@ -32,16 +32,12 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 @Form.create()
 export default class StatisticsTask extends PureComponent {
   state = {
-    modalVisible: false,
-    darenModalVisible: false,
-    selectedRows: [],
-    selectedRowKeys: [],
     searchValue: '',
     task: {},
     total: {},
     resultChart: null,
     channelChart: null,
-  };
+  }
 
   componentWillMount() {
     const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = this.props;
@@ -54,13 +50,12 @@ export default class StatisticsTask extends PureComponent {
         type: 'team/fetchTeamUsers',
         payload: { team_id: team_id },
       });
-      this.getStatisticsTotal({team_id, publish_taobao_time_start, publish_taobao_time_end});
     }
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, statisticsList: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = nextProps;
     if (this.props.teamUser.team_id !== nextProps.teamUser.team_id ||
-      ( this.props.publish_taobao_time_start !==  publish_taobao_time_start)) {
+      ( nextProps.teamUser.team_id && this.props.publish_taobao_time_start !==  publish_taobao_time_start)) {
       this.props.dispatch({
         type: 'statistics/fetchStatisticsList',
         payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end },
@@ -69,7 +64,6 @@ export default class StatisticsTask extends PureComponent {
         type: 'team/fetchTeamUsers',
         payload: { team_id: nextProps.teamUser.team_id },
       });
-      this.getStatisticsTotal({team_id, publish_taobao_time_start, publish_taobao_time_end});
     }
   }
 
@@ -139,7 +133,6 @@ export default class StatisticsTask extends PureComponent {
       type: 'statistics/fetchStatisticsList',
       payload: { ...values, ...pagination},
     });
-    this.getStatisticsTotal(values);
   }
   handleSearchChange = (e) => {
     if (e.target.value.length === 0) {
@@ -157,28 +150,27 @@ export default class StatisticsTask extends PureComponent {
     });
   }
   renderTotalBox = () => {
-    const { total } = this.state;
+    const { statisticsList } = this.props;
     let totalList = [];
-    if (total.sumCntIpv !== undefined) {
+    if (statisticsList.totals.sumCntIpv !== undefined) {
       totalList = [{
         text: '总文章数',
-        value: total.sumTaskCnt,
+        value: statisticsList.totals.sumTaskCnt,
       }, {
         text: '总进店数',
-        value: total.sumCntIpv,
+        value: statisticsList.totals.sumCntIpv,
       }, {
         text: '总阅读数',
-        value: total.sumReadCnt,
+        value: statisticsList.totals.sumReadCnt,
       }, {
         text: '淘宝总佣金',
-        value: Number(total.fee).toFixed(2),
+        value: Number(statisticsList.totals.fee).toFixed(2),
       }];
     }
     return totalList;
   }
   render() {
     const { statisticsList, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
-    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible, total } = this.state;
     const totalList = this.renderTotalBox();
 
     const gridStyle = {
