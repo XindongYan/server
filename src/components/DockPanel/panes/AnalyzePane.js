@@ -112,7 +112,7 @@ export default class AnalyzePane extends PureComponent {
       {
         title: <div>
                 商品
-                <Tooltip placement="top" title="同一订单出现在多个任务下，说明这些任务都写了这一宝贝">
+                <Tooltip placement="top" title="如果在多个稿子里写了同一商品, 目前数据无法区分订单来源于哪个稿子,所以同一订单会出现在多个稿子的数据里">
                   <Icon type="question-circle-o" style={{ marginLeft: 4 }} />
                 </Tooltip>
               </div>,
