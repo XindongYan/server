@@ -88,8 +88,6 @@ export default class StatisticsTask extends PureComponent {
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
-    
-    window.scrollTo(0, 0);
     dispatch({
       type: 'statistics/fetchStatisticsTask',
       payload: params,
