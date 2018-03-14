@@ -68,7 +68,7 @@ export default class StatisticsTask extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, teamUser: { team_id, user_id } } = this.props;
+    const { dispatch, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end } = this.props;
     const { searchValue } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -82,6 +82,8 @@ export default class StatisticsTask extends PureComponent {
       pageSize: pagination.pageSize,
       search: searchValue,
       ...filters,
+      publish_taobao_time_start,
+      publish_taobao_time_end,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -198,7 +200,7 @@ export default class StatisticsTask extends PureComponent {
       {
         title: '内容标题',
         dataIndex: 'name',
-        width: 180,
+        width: 200,
         render: (val, record) => (
           <a target="_blank" href={record.taobao && record.taobao.url ? record.taobao.url : ''}>
             <TaskNameColumn text={val} length={10} />
