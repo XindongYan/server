@@ -185,8 +185,6 @@ export default class TableList extends PureComponent {
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
-
-    window.scrollTo(0, 0);
     dispatch({
       type: 'task/fetchTakerTasks',
       payload: params,

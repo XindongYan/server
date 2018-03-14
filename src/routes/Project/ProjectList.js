@@ -84,7 +84,6 @@ export default class ProjectList extends PureComponent {
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
-    window.scrollTo(0, 0);
     dispatch({
       type: 'project/fetch',
       payload: params,

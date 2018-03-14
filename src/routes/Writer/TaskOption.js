@@ -73,7 +73,6 @@ export default class TaskOption extends PureComponent {
     }
   }
   handleDeliver = (channelId, activityId) => {
-    window.scrollTo(0, 0);
     this.props.dispatch(routerRedux.push(`/writer/task/channel?channelId=${channelId}&activityId=${activityId}`));
   }
   handleGetRemainCount = (id) => {
