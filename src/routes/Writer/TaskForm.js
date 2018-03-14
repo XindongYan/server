@@ -470,6 +470,7 @@ export default class TaskForm extends PureComponent {
           message.error(result.msg);
         } else {
           this.props.dispatch(routerRedux.push(`/writer/task/handin/success?_id=${_id}`));
+          window.scroll(0, 0);
         }
         if (callback) callback(result);
       }
@@ -569,7 +570,6 @@ export default class TaskForm extends PureComponent {
       taskForm.splice(index, 1);
     }
     localStorage.setItem('taskForm', JSON.stringify(taskForm));
-    console.log('remove');
   }
   handleGetTaskFormIndex = (taskForm) => {
     const query = querystring.parse(this.props.location.search.substr(1));

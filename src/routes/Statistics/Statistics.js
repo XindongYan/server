@@ -4,6 +4,8 @@ import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import { Card, Button, message, Menu, DatePicker, Tooltip, Icon } from 'antd';
 import StatisticsTask from './StatisticsTask';
+import StatisticsChannel from './StatisticsChannel';
+
 import { TASK_TYPES } from '../../constants';
 
 const { RangePicker } = DatePicker;
@@ -51,6 +53,8 @@ export default class Statistics extends PureComponent {
     let content = currentKey;
     if (currentKey === 'task') {
       content = <StatisticsTask {...newProps}/>
+    } else if (currentKey === 'channel') {
+      content = <StatisticsChannel {...newProps}/>
     }
     return (
       <div>
@@ -74,7 +78,7 @@ export default class Statistics extends PureComponent {
             <Menu.Item key="channel">
               渠道
             </Menu.Item>
-            <Menu.Item key="writer">
+            <Menu.Item key="taker">
               写手
             </Menu.Item>
             <Menu.Item key="shop" disabled={true}>

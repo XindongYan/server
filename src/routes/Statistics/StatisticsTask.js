@@ -30,11 +30,6 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 @Form.create()
 export default class StatisticsTask extends PureComponent {
   state = {
-    searchValue: '',
-    task: {},
-    total: {},
-    resultChart: null,
-    channelChart: null,
   }
 
   componentWillMount() {
