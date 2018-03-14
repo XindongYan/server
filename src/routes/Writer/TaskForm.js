@@ -38,6 +38,7 @@ export default class TaskForm extends PureComponent {
     saveLoading: false,
     submitLoading: false,
     times: null,
+    taskFormConfirm: null,
   }
   componentWillMount() {
     window.onbeforeunload = () => {
@@ -66,7 +67,7 @@ export default class TaskForm extends PureComponent {
       });
     }
 
-    setTimeout(() => {
+    const taskFormConfirm = setTimeout(() => {
       const taskForm = JSON.parse(localStorage.getItem('taskForm')) || [];
       const index = this.handleGetTaskFormIndex(taskForm);
       if (index >= 0) {
@@ -85,14 +86,17 @@ export default class TaskForm extends PureComponent {
         });
       }
     }, 1500);
+    this.setState({
+      taskFormConfirm,
+    });
   }
   componentWillUnmount() {
     this.props.dispatch({
       type: 'task/clearFormData'
     });
     window.onbeforeunload = null;
-    console.log('clear');
     clearInterval(this.state.times);
+    clearInterval(this.state.taskFormConfirm);
   }
 
   validate = (fieldNames, callback) => {

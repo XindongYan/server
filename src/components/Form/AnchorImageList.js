@@ -203,7 +203,7 @@ export default class AnchorImageList extends PureComponent {
                         className={styles.anchorTagsBox}
                         style={{top: thisY, left: anchor.x < 50 ? thisX : 'auto', right: anchor.x > 50 ? (outerBoxWh - thisX - wh) : 'auto'}}>
                       <Badge status="warning" className={styles.anchorTagsDian} style={{float: anchor.x < 50 ? 'left' : 'right'}} />
-                      <span className={styles.anchorTags}>
+                      <span className={styles.anchorTags} style={{float: anchor.x < 50 ? 'left' : 'right'}}>
                         {anchor.data && anchor.data.title ? anchor.data.title : ''}
                       </span>
                     </div> : ''
