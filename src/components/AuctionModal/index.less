@@ -50,18 +50,23 @@
   white-space: nowrap;
 }
 .customImageBox {
-  position: relative;
-  width: 100%; 
-  height: 120px;
-  text-align: center;
-  line-height: 116px;
+  	position: relative;
+  	width: 100%; 
+  	height: 120px;
+  	text-align: center;
+  	line-height: 116px;
+  	&>div{
+		width: 100%;
+		height: 100%;
+  	}
+  	.customImage{
+  		max-width: 100%;
+	  	max-height: 100%;
+	  	width: auto;
+	  	height: auto;
+	}
 }
-.customImage{
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-}
+
 .customImgZz{
 	position: absolute;
 	width: 100%;
