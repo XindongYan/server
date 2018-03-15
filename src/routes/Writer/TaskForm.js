@@ -559,7 +559,6 @@ export default class TaskForm extends PureComponent {
     // }, 200);
   }
   handleTaskFormSave = () => {
-    console.log(1);
     const query = querystring.parse(this.props.location.search.substr(1));
     const { children, formData } = this.state;
     const taskForm = JSON.parse(localStorage.getItem('taskForm')) || [];
