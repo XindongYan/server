@@ -2,7 +2,7 @@ const CHANNELS = [{
   "activityList": [{
     "id": -11,
     "name": "帖子",
-    "templates": ["post", /*"itemrank", "iteminventory", "shopinventory"*/, "collection2", "magiccollocation", "item2", "qa"]
+    "templates": ["post", /*"itemrank", "iteminventory", "shopinventory"*/, "collection2", "magiccollocation", "item2"/*, "qa"*/]
   }],
   "desc": "",
   "id": -1,
