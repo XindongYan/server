@@ -1,8 +1,24 @@
 const CHANNELS = [{
   "activityList": [{
     "id": -11,
-    "name": "微淘",
-    "templates": ["post", "item2"]
+    "name": "帖子",
+    "templates": ["post", /*"itemrank", "iteminventory", "shopinventory"*/]
+  // }, {
+  //   "id": -12,
+  //   "name": "短视频",
+  //   "templates": ["video2"]
+  }, {
+    "id": -13,
+    "name": "搭配",
+    "templates": ["collection2", "magiccollocation"]
+  }, {
+    "id": -14,
+    "name": "单品",
+    "templates": ["item2"]
+  // }, {
+  //   "id": -15,
+  //   "name": "问答",
+  //   "templates": ["qa"]
   }],
   "desc": "",
   "id": -1,
