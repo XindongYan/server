@@ -7,6 +7,8 @@ export default {
       list: [],
       pagination: {},
       totals: {},
+      taker_id: '',
+      channel: '',
     },
     statisticsTaskLoading: true,
     publish_taobao_time_start: null,
@@ -14,11 +16,13 @@ export default {
     statisticsChannel: {
       list: [],
       pagination: {},
+      channel: '',
     },
     statisticsChannelLoading: true,
     statisticsTaker: {
       list: [],
       pagination: {},
+      taker_id: '',
     },
     statisticsTakerLoading: true,
   },
