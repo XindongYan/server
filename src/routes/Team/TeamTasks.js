@@ -1,10 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import querystring from 'querystring';
-import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
+import { Table, Card, Button, Input, DatePicker, Form, Popconfirm, Modal, Select,
 Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
-import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -34,13 +32,12 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 @Form.create()
 export default class TeamTasks extends PureComponent {
   state = {
-    modalVisible: false,
-    darenModalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
-    searchValue: '',
-    task: {},
-  };
+    search: '',
+    create_time_start: null,
+    create_time_end: null,
+  }
 
   componentDidMount() {
     const { dispatch, teamUser, teamTask: { pagination, approve_status }, teamUser: { team_id } } = this.props;
@@ -62,7 +59,7 @@ export default class TeamTasks extends PureComponent {
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, teamTask: { approve_status }, teamUser: { team_id } } = this.props;
-    const { searchValue } = this.state;
+    const { search, create_time_start, create_time_end } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -73,7 +70,7 @@ export default class TeamTasks extends PureComponent {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       approve_status,
-      search: searchValue,
+      search, create_time_start, create_time_end,
       ...filters,
     };
     if (sorter.field) {
@@ -85,49 +82,31 @@ export default class TeamTasks extends PureComponent {
     });
   }
 
-
-  handleMenuClick = (e) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'task/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-              selectedRowKeys: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     this.setState({ selectedRowKeys, selectedRows });
   }
   
   handleSearch = (value, name) => {
     const { dispatch, teamTask: { pagination, approve_status }, teamUser: { team_id } } = this.props;
+    const { search, create_time_start, create_time_end } = this.state;
     const values = {
+      search, create_time_start, create_time_end,
       approve_status,
       team_id,
       ...pagination,
+      currentPage: 1,
     };
     if(name === 'time') {
       values['create_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['create_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+      if (value && value[0]) {
+        this.setState({ create_time_start: value[0].toDate(), create_time_end: value[1].toDate() });
+      } else {
+        this.setState({ create_time_start: null, create_time_end: null });
+      }
     } else {
       values[name] = value;
+      this.setState({ [name]: value });
     }
     dispatch({
       type: 'task/fetchTeamTasks',
@@ -135,110 +114,19 @@ export default class TeamTasks extends PureComponent {
     });
   }
 
-  handleAdd = () => {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch(routerRedux.push(`/project/task/create?project_id=${query.project_id}`));
-  }
-
-  handleEdit = (record) => {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    this.props.dispatch(routerRedux.push(`/project/task/edit?project_id=${query.project_id}&_id=${record._id}`));
-  }
-  handlePublish = (record) => {
-    const { dispatch, currentUser, teamTask: { pagination, approve_status }, teamUser: { team_id } } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    dispatch({
-      type: 'task/publish',
-      payload: {
-        _id: record._id,
-        user_id: currentUser._id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-          dispatch({
-            type: 'task/fetchTeamTasks',
-            payload: { ...pagination, approve_status, team_id },
-          });
-        }
-      },
-    });
-  }
-  handleModalVisible = (flag) => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  }
-  handleShowSpecifyModal = (record) => {
-    this.handleModalVisible(true);
-    this.setState({ task: record });
-  }
-  handleDarenModalVisible = (flag) => {
-    this.setState({
-      darenModalVisible: !!flag,
-    });
-  }
-
-  handleWithdraw = (record) => {
-    const { dispatch, currentUser, teamUser: { team_id } } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    dispatch({
-      type: 'task/withdraw',
-      payload: {
-        _id: record._id,
-        user_id: currentUser._id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-          dispatch({
-            type: 'task/fetchTeamTasks',
-            payload: { team_id },
-          });
-        }
-      },
-    });
-  }
-  handleRemove = (record) => {
-    const { dispatch, currentUser, teamUser: { team_id } } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
-    dispatch({
-      type: 'task/remove',
-      payload: {
-        _id: record._id,
-        user_id: currentUser._id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-          dispatch({
-            type: 'task/fetchTeamTasks',
-            payload: { team_id },
-          });
-        }
-      },
-    });
-  }
-
   changeApproveStatus = (e) => {
     const { dispatch, teamTask, teamUser: { team_id } } = this.props;
-    const query = querystring.parse(this.props.location.search.substr(1));
+    const { search, create_time_start, create_time_end } = this.state;
     dispatch({
       type: 'task/fetchTeamTasks',
-      payload: { team_id, approve_status: e.target.value, },
+      payload: { team_id, approve_status: e.target.value, search, create_time_start, create_time_end },
     });
   }
   handleSearchChange = (e) => {
     if (e.target.value.length === 0) {
       this.handleSearch(e.target.value, 'search');
     }
-    this.setState({ searchValue: e.target.value });
+    this.setState({ search: e.target.value });
   }
   handleShowDockPanel = (record, activeKey) => {
     this.props.dispatch({
@@ -251,14 +139,8 @@ export default class TeamTasks extends PureComponent {
   }
   render() {
     const { teamTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers } = this.props;
-    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible } = this.state;
+    const { selectedRows, selectedRowKeys } = this.state;
     const flow = APPROVE_FLOWS.find(item => item.value === formData.approve_flow);
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
 
     const columns = [
       {
@@ -432,6 +314,7 @@ export default class TeamTasks extends PureComponent {
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
+                value={this.state.search}
                 onChange={this.handleSearchChange}
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton
