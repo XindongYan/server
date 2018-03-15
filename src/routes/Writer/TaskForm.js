@@ -99,7 +99,7 @@ export default class TaskForm extends PureComponent {
       type: 'task/clearFormData'
     });
     window.onbeforeunload = null;
-    clearInterval(this.state.times);
+    // clearInterval(this.state.times);
     clearTimeout(this.state.taskFormConfirm);
     if (this.state.refTaskForm) {
       this.state.refTaskForm.destroy();
@@ -546,16 +546,17 @@ export default class TaskForm extends PureComponent {
   }
   handleChange = (children) => {
     this.setState({ children });
-    setTimeout(() => {
-      if (!this.state.times) {
-        console.log('start');
-        clearInterval(this.state.times)
-        const times = setInterval(this.handleTaskFormSave, 1000 * 30);
-        this.setState({
-          times,
-        });
-      }
-    }, 200);
+    this.handleTaskFormSave();
+    // setTimeout(() => {
+    //   if (!this.state.times) {
+    //     console.log('start');
+    //     clearInterval(this.state.times)
+    //     const times = setInterval(this.handleTaskFormSave, 1000 * 30);
+    //     this.setState({
+    //       times,
+    //     });
+    //   }
+    // }, 200);
   }
   handleTaskFormSave = () => {
     console.log(1);
