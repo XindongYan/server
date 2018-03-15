@@ -737,7 +737,7 @@ export default class TableList extends PureComponent {
                   >
                     { CHANNELS.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>) }
                   </Select>
-                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')}
+                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')}
                   value={handin_time_start ? [ moment(handin_time_start), moment(handin_time_end) ] : []} />
                   <Tooltip placement="top" title="提交时间">
                     <Icon type="question-circle-o" style={{ marginLeft: 8 }} />

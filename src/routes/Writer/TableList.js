@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message, Form, Select, Modal, Button, Progress, Icon, Popover } from 'antd';
 import querystring from 'querystring';
+import moment from 'moment';
 import { Link, routerRedux } from 'dva/router';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
@@ -46,10 +47,14 @@ export default class TableList extends PureComponent {
     queue: [],
     queueNumber: 0,
     channel_list: [],
+    take_time_start: null,
+    take_time_end: null,
+    search: '',
   }
 
   componentDidMount() {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
+    const { search, take_time_start, take_time_end } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id) {
       dispatch({
@@ -58,7 +63,10 @@ export default class TableList extends PureComponent {
           ...pagination,
           team_id: teamUser.team_id,
           approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
-          user_id: currentUser._id
+          user_id: currentUser._id,
+          take_time_start,
+          take_time_end,
+          search,
         },
       });
     }
@@ -76,6 +84,7 @@ export default class TableList extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = nextProps;
+    const { search, take_time_start, take_time_end } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id !== this.props.currentUser._id) {
       dispatch({
@@ -85,6 +94,9 @@ export default class TableList extends PureComponent {
           team_id: teamUser.team_id,
           approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
           user_id: currentUser._id,
+          take_time_start,
+          take_time_end,
+          search,
         },
       });
     }
@@ -160,14 +172,15 @@ export default class TableList extends PureComponent {
   }
   handleFetch = () => {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
+    const { search, take_time_start, take_time_end } = this.state;
     dispatch({
       type: 'task/fetchTakerTasks',
-      payload: { ...pagination, approve_status, user_id: currentUser._id, currentPage: 1, team_id: teamUser.team_id, },
+      payload: { ...pagination, approve_status, user_id: currentUser._id, currentPage: 1, team_id: teamUser.team_id, take_time_start, take_time_end, search },
     });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, currentUser, teamUser, data: { approve_status } } = this.props;
-
+    const { search, take_time_start, take_time_end } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -181,6 +194,9 @@ export default class TableList extends PureComponent {
       team_id: teamUser.team_id,
       approve_status,
       ...filters,
+      take_time_start,
+      take_time_end,
+      search,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -252,16 +268,26 @@ export default class TableList extends PureComponent {
   }
   handleSearch = (value, name) => {
     const { dispatch, data: { pagination, approve_status }, currentUser, teamUser } = this.props;
+    const { search, take_time_start, take_time_end } = this.state;
     const values = {
       team_id: teamUser.team_id,
       user_id: currentUser._id,
       approve_status,
+      take_time_start,
+      take_time_end,
+      search,
     };
     if(name === 'time') {
       values['take_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['take_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+      if (value && value[0]) {
+        this.setState({ take_time_start: value[0].toDate(), take_time_end: value[1].toDate() });
+      } else {
+        this.setState({ take_time_start: null, take_time_end: null });
+      }
     } else {
       values[name] = value;
+      this.setState({ [name]: value });
     }
     dispatch({
       type: 'task/fetchTakerTasks',
@@ -281,9 +307,10 @@ export default class TableList extends PureComponent {
   }
   changeApproveStatus = (e) => {
     const { dispatch, currentUser, teamUser, data: { pagination } } = this.props;
+    const { search, take_time_start, take_time_end } = this.state;
     dispatch({
       type: 'task/fetchTakerTasks',
-      payload: { ...pagination, user_id: currentUser._id, team_id: teamUser.team_id, approve_status: e.target.value, currentPage: 1, }
+      payload: { ...pagination, user_id: currentUser._id, team_id: teamUser.team_id, approve_status: e.target.value, currentPage: 1, take_time_start, take_time_end, search }
     });
   }
 
@@ -441,9 +468,15 @@ export default class TableList extends PureComponent {
       },
     });
   }
+  handleChange = (e) => {
+    if (!e.target.value) {
+      this.handleSearch(e.target.value, 'search')
+    }
+    this.setState({ search: e.target.value });
+  }
   render() {
     const { data, loading, form: { getFieldDecorator }, suggestionUsers, currentUser } = this.props;
-    const { modalVisible, publishVisible, selectedRowKeys, approveModalVisible, suggestionApproves, selectedRows, percent, channel_list } = this.state;
+    const { modalVisible, publishVisible, selectedRowKeys, approveModalVisible, suggestionApproves, selectedRows, percent, channel_list, take_time_start, take_time_end } = this.state;
     const columns = [
       {
         title: '任务ID',
@@ -740,7 +773,8 @@ export default class TableList extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')}
+                value={take_time_start ? [ moment(take_time_start), moment(take_time_end) ] : []}/>
               <Tooltip placement="top" title="接单／创建时间">
                 <Icon type="question-circle-o" />
               </Tooltip>
@@ -748,6 +782,8 @@ export default class TableList extends PureComponent {
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
                 onSearch={(value) => this.handleSearch(value, 'search')}
+                onChange={this.handleChange}
+                value={this.state.search}
                 enterButton
               />
               {/* selectedRows.length > 0 && (
