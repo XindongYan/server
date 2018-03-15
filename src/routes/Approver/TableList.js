@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radio, Popconfirm, DatePicker,
+import { Table, Card, Input, Select, Icon, Button, Checkbox, message, Radio, Popconfirm, DatePicker,
 Tooltip, Divider, Form, Modal, Popover } from 'antd';
+import moment from 'moment';
 import { Link } from 'dva/router';
-import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNELS, RIGHT } from '../../constants';
+import { TASK_APPROVE_STATUS, CHANNELS, RIGHT } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
@@ -50,7 +51,10 @@ export default class TableList extends PureComponent {
     queue: [],
     queueNumber: 0,
     channel_list: [],
-    searchValue: '',
+    search: '',
+    channel_name: undefined,
+    handin_time_start: null,
+    handin_time_end: null,
   }
 
   componentDidMount() {
@@ -178,14 +182,15 @@ export default class TableList extends PureComponent {
   }
   handleFetch = () => {
     const { data: { pagination, approve_status }, dispatch, currentUser, teamUser } = this.props;
+    const { search, channel_name, handin_time_start, handin_time_end } = this.state;
     dispatch({
       type: 'task/fetchApproverTasks',
-      payload: { ...pagination, user_id: this.state.user_id || currentUser._id, approve_status, team_id: teamUser.team_id, }
+      payload: { ...pagination, user_id: this.state.user_id || currentUser._id, approve_status, team_id: teamUser.team_id, search, channel_name, handin_time_start, handin_time_end }
     });
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, currentUser, teamUser, data: { approve_status } } = this.props;
-
+    const { search, channel_name, handin_time_start, handin_time_end } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -199,7 +204,7 @@ export default class TableList extends PureComponent {
       user_id: this.state.user_id || currentUser._id,
       approve_status,
       ...filters,
-      search: this.state.searchValue,
+      search, channel_name, handin_time_start, handin_time_end,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -250,18 +255,20 @@ export default class TableList extends PureComponent {
   handleSelectTeamUser = (value) => {
     this.setState({ user_id: value });
     const { data: { pagination, approve_status }, dispatch, teamUser } = this.props;
+    const { search, channel_name, handin_time_start, handin_time_end } = this.state;
     dispatch({
       type: 'task/fetchApproverTasks',
-      payload: { ...pagination, user_id: value, approve_status, team_id: teamUser.team_id, }
+      payload: { ...pagination, user_id: value, approve_status, team_id: teamUser.team_id, search, channel_name, handin_time_start, handin_time_end }
     });
   }
   handleChangeTeamUser = (value) => {
     if (!value) {
       this.setState({ user_id: '' });
       const { data: { pagination, approve_status }, dispatch, currentUser, teamUser } = this.props;
+      const { search, channel_name, handin_time_start, handin_time_end } = this.state;
       dispatch({
         type: 'task/fetchApproverTasks',
-        payload: { ...pagination, user_id: currentUser._id, approve_status, team_id: teamUser.team_id, }
+        payload: { ...pagination, user_id: currentUser._id, approve_status, team_id: teamUser.team_id, search, channel_name, handin_time_start, handin_time_end }
       });
     }
   }
@@ -270,6 +277,7 @@ export default class TableList extends PureComponent {
   }
   handleSearch = (value, name) => {
     const { dispatch, data: { pagination, approve_status }, currentUser, teamUser } = this.props;
+    const { search, channel_name, handin_time_start, handin_time_end } = this.state;
     const values = {
       user_id: this.state.user_id || currentUser._id,
       approve_status,
@@ -277,8 +285,14 @@ export default class TableList extends PureComponent {
     if(name === 'time') {
       values['handin_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['handin_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+      if (value && value[0]) {
+        this.setState({ handin_time_start: value[0].toDate(), handin_time_end: value[1].toDate() });
+      } else {
+        this.setState({ handin_time_start: null, handin_time_end: null });
+      }
     } else {
       values[name] = value;
+      this.setState({ [name]: value });
     }
     dispatch({
       type: 'task/fetchApproverTasks',
@@ -286,6 +300,7 @@ export default class TableList extends PureComponent {
         team_id: teamUser.team_id,
         currentPage: pagination.current,
         pageSize: pagination.pageSize,
+        search, channel_name, handin_time_start, handin_time_end,
         ...values, 
       }
     });
@@ -294,7 +309,7 @@ export default class TableList extends PureComponent {
     if (!e.target.value) {
       this.handleSearch(e.target.value, 'search')
     }
-    this.setState({ searchValue: e.target.value });
+    this.setState({ search: e.target.value });
   }
   handleReject = (record) => {
     const { dispatch, currentUser } = this.props;
@@ -332,9 +347,10 @@ export default class TableList extends PureComponent {
   }
   changeApproveStatus = (e) => {
     const { data: { pagination }, dispatch, currentUser, teamUser } = this.props;
+    const { search, channel_name, handin_time_start, handin_time_end } = this.state;
     dispatch({
       type: 'task/fetchApproverTasks',
-      payload: { ...pagination, team_id: teamUser.team_id, user_id: this.state.user_id || currentUser._id, approve_status: e.target.value, }
+      payload: { ...pagination, team_id: teamUser.team_id, user_id: this.state.user_id || currentUser._id, approve_status: e.target.value, search, channel_name, handin_time_start, handin_time_end }
     });
     this.handleRowSelectChange([], []);
   }
@@ -370,10 +386,7 @@ export default class TableList extends PureComponent {
             } else {
               message.success(result.msg);
               this.handleDarenModalVisible(false);
-              dispatch({
-                type: 'task/fetchApproverTasks',
-                payload: { ...pagination, approve_status, team_id: teamUser.team_id, user_id: currentUser._id }
-              });
+              this.handleFetch();
               this.handleRowSelectChange([], []);
             }
           },
@@ -396,10 +409,7 @@ export default class TableList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'task/fetchApproverTasks',
-            payload: { ...pagination, approve_status, team_id: teamUser.team_id, user_id: currentUser._id }
-          });
+          this.handleFetch();
         }
       },
     });
@@ -418,7 +428,7 @@ export default class TableList extends PureComponent {
   }
   render() {
     const { data, loading, currentUser, teamUsers, form: { getFieldDecorator }, suggestionUsers } = this.props;
-    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible, channel_list } = this.state;
+    const { selectedRows, modalVisible, selectedRowKeys, darenModalVisible, channel_list, handin_time_start, handin_time_end } = this.state;
     const columns = [
       {
         title: '任务ID',
@@ -723,17 +733,19 @@ export default class TableList extends PureComponent {
                     onChange={(value) => this.handleSearch(value,'channel_name')}
                     optionFilterProp="children"
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    value={this.state.channel_name}
                   >
                     { CHANNELS.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>) }
                   </Select>
-                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+                  <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')}
+                  value={handin_time_start ? [ moment(handin_time_start), moment(handin_time_end) ] : []} />
                   <Tooltip placement="top" title="提交时间">
                     <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
                   </Tooltip>
                   <Search
                     style={{ width: 260, float: 'right'}}
                     placeholder="ID／名称／商家标签／昵称"
-                    value={this.state.searchValue}
+                    value={this.state.search}
                     onChange={this.handleChange}
                     onSearch={(value) => this.handleSearch(value, 'search')}
                     enterButton
