@@ -510,9 +510,6 @@ export default class Editors extends PureComponent {
       }
     }
   }
-  handleBlockCancel = () => {
-
-  }
   render() {
     const { props } = this.props;
     const box = document.getElementsByClassName('DraftEditor-editorContainer')[0];
@@ -540,7 +537,7 @@ export default class Editors extends PureComponent {
         <div ref="editorBox" className={styles.editorBox} onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
           <Editor ref={instance => {this.setState({editor: instance})}} editorState={this.state.editorState} onChange={this.handleChange} {...editorProps} />
         </div>
-        <AlbumModal k="editor" onOk={this.handleAddImg} onCancel={this.handleBlockCancel} />
+        <AlbumModal k="editor" onOk={this.handleAddImg} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} activityId={this.props.activityId} />
         <BpuModal k="editor" onOk={this.handleAddBpu} />
         <SpuModal k="editor" onOk={this.handleAddSpu} activityId={this.props.activityId} />
