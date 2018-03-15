@@ -6,7 +6,7 @@ import moment from 'moment';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import DateTimeColumn from '../../components/DateTimeColumn';
-import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message, Radio, DatePicker, Tooltip } from 'antd';
+import { Row, Col, Card, Input, Select, Icon, Button, Menu, Popconfirm, Modal, Table, message, Radio, DatePicker, Tooltip } from 'antd';
 import { Link } from 'dva/router';
 import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
 
@@ -123,11 +123,6 @@ export default class ProjectList extends PureComponent {
     }
   }
 
-  handleSelectRows = (rows) => {
-    this.setState({
-      selectedRows: rows,
-    });
-  }
   handleAdd = () => {
     this.props.dispatch(routerRedux.push('/project/create'));
   }
