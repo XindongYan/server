@@ -3,12 +3,10 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import url from 'url';
-import { Card, Button, Popconfirm, message, Row, Col, Menu } from 'antd';
+import { Card, Button, Menu } from 'antd';
 import styles from './TaskChannel.less';
 import { CHANNELS } from '../../constants/taobao';
 import { TASK_TYPES } from '../../constants';
-
-const SubMenu = Menu.SubMenu;
 
 function BlockCommon(props) {
   const { btnText, btnUrl, img, infoList, title } = props;
@@ -47,9 +45,6 @@ function BlockCommon(props) {
 export default class TaskChannel extends PureComponent {
   state = {
     currentKey: 'post',
-  }
-  componentWillMount() {
-
   }
 
   handleDeliverWeitao = (btnUrl) => {

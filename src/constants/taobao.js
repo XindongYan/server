@@ -2,23 +2,7 @@ const CHANNELS = [{
   "activityList": [{
     "id": -11,
     "name": "帖子",
-    "templates": ["post", /*"itemrank", "iteminventory", "shopinventory"*/]
-  // }, {
-  //   "id": -12,
-  //   "name": "短视频",
-  //   "templates": ["video2"]
-  }, {
-    "id": -13,
-    "name": "搭配",
-    "templates": ["collection2", "magiccollocation"]
-  }, {
-    "id": -14,
-    "name": "单品",
-    "templates": ["item2"]
-  // }, {
-  //   "id": -15,
-  //   "name": "问答",
-  //   "templates": ["qa"]
+    "templates": ["post", /*"itemrank", "iteminventory", "shopinventory"*/, "collection2", "magiccollocation", "item2"/*, "qa"*/]
   }],
   "desc": "",
   "id": -1,
@@ -246,7 +230,7 @@ const CHANNELS_FOR_CASCADER = CHANNELS.map(item => {
   return {
     value: item.id,
     label: item.name,
-    children: item.activityList.map(item1 => ({ value: item1.id, label: item1.name, templates: item1.templates })),
+    children: item.activityList ? item.activityList.map(item1 => ({ value: item1.id, label: item1.name, templates: item1.templates })) : [],
   };
 })
 export { CHANNELS, CHANNELS_FOR_CASCADER };
