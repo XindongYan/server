@@ -311,7 +311,6 @@ export default class TableList extends PureComponent {
     if (!e.target.value) {
       this.handleSearch(e.target.value, 'search')
     }
-    this.setState({ search: e.target.value });
   }
   handleReject = (record) => {
     const { dispatch, currentUser } = this.props;
