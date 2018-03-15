@@ -273,7 +273,7 @@ export default class TableList extends PureComponent {
       values['take_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['take_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
       if (value && value[0]) {
-        this.setState({ take_time_start: value[0].toDate(), take_time_end: value[1].toDate() });
+        this.setState({ take_time_start: value[0].format('YYYY-MM-DD 00:00:00'), take_time_end: value[1].format('YYYY-MM-DD 23:59:59') });
       } else {
         this.setState({ take_time_start: null, take_time_end: null });
       }

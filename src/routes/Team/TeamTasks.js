@@ -100,7 +100,7 @@ export default class TeamTasks extends PureComponent {
       values['create_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['create_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
       if (value && value[0]) {
-        this.setState({ create_time_start: value[0].toDate(), create_time_end: value[1].toDate() });
+        this.setState({ create_time_start: value[0].format('YYYY-MM-DD 00:00:00'), create_time_end: value[1].format('YYYY-MM-DD 23:59:59') });
       } else {
         this.setState({ create_time_start: null, create_time_end: null });
       }

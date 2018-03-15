@@ -288,7 +288,7 @@ export default class TableList extends PureComponent {
       values['handin_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['handin_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
       if (value && value[0]) {
-        this.setState({ handin_time_start: value[0].toDate(), handin_time_end: value[1].toDate() });
+        this.setState({ handin_time_start: value[0].format('YYYY-MM-DD 00:00:00'), handin_time_end: value[1].format('YYYY-MM-DD 23:59:59') });
       } else {
         this.setState({ handin_time_start: null, handin_time_end: null });
       }
