@@ -46,22 +46,6 @@ export default class TaskChannel extends PureComponent {
   state = {
     currentKey: 'post',
   }
-  componentWillMount() {
-    const query = querystring.parse(this.props.location.search.substr(1));
-    let currentKey = this.state.currentKey;
-    if (query.activityId === '-11') {
-      currentKey = 'post';
-    } else if (query.activityId === '-12') {
-      currentKey = 'video';
-    } else if (query.activityId === '-13') {
-      currentKey = 'collection';
-    } else if (query.activityId === '-14') {
-      currentKey = 'item';
-    } else if (query.activityId === '-15') {
-      currentKey = 'answer';
-    }
-    this.setState({ currentKey });
-  }
 
   handleDeliverWeitao = (btnUrl) => {
     const query = querystring.parse(this.props.location.search.substr(1));
