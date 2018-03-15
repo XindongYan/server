@@ -1,10 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import querystring from 'querystring';
-import { Table, Card, Button, Input, DatePicker, Form, Menu, Checkbox, Popconfirm, Modal, Select, Row, Col,
+import { Table, Card, Button, Input, DatePicker, Form, Popconfirm, Modal, Select,
 Popover, Dropdown, Icon, message, Radio, Tooltip } from 'antd';
-import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS, APPROVE_FLOWS, APPROVE_ROLES } from '../../constants';
 import DockPanel from '../../components/DockPanel';
 import TaskNameColumn from '../../components/TaskNameColumn';
@@ -119,7 +117,6 @@ export default class TeamTasks extends PureComponent {
   changeApproveStatus = (e) => {
     const { dispatch, teamTask, teamUser: { team_id } } = this.props;
     const { search, create_time_start, create_time_end } = this.state;
-    const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/fetchTeamTasks',
       payload: { team_id, approve_status: e.target.value, search, create_time_start, create_time_end },
@@ -129,6 +126,7 @@ export default class TeamTasks extends PureComponent {
     if (e.target.value.length === 0) {
       this.handleSearch(e.target.value, 'search');
     }
+    this.setState({ search: e.target.value });
   }
   handleShowDockPanel = (record, activeKey) => {
     this.props.dispatch({
@@ -316,6 +314,7 @@ export default class TeamTasks extends PureComponent {
               <Search
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
+                value={this.state.search}
                 onChange={this.handleSearchChange}
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 enterButton

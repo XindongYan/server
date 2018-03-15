@@ -21,7 +21,7 @@ export default class TeamUserList extends PureComponent {
     modalVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
-    searchValue: '',
+    search: '',
     user_id: '',
     user: {},
     addTeamUserModalVisible: false,
@@ -53,7 +53,7 @@ export default class TeamUserList extends PureComponent {
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, teamUser } = this.props;
-    const { searchValue } = this.state;
+    const { search } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -65,7 +65,7 @@ export default class TeamUserList extends PureComponent {
       team_id: teamUser.team_id,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
-      search: searchValue,
+      search,
       ...filters,
     };
     if (sorter.field) {
@@ -86,7 +86,7 @@ export default class TeamUserList extends PureComponent {
     if (e.target.value.length === 0) {
       this.handleSearch(e.target.value, 'search');
     }
-    this.setState({ searchValue: e.target.value });
+    this.setState({ search: e.target.value });
   }
   handleSearch = (value, name) => {
     const { dispatch, teamUser, team: { data: { pagination } } } = this.props;
@@ -304,6 +304,7 @@ export default class TeamUserList extends PureComponent {
             <Search
               style={{ width: 260, float: 'right' }}
               placeholder="姓名/昵称/电话"
+              value={this.state.search}
               onChange={this.handleSearchChange}
               onSearch={(value) => this.handleSearch(value, 'search')}
               enterButton

@@ -307,10 +307,11 @@ export default class TableList extends PureComponent {
       }
     });
   }
-  handleChange = (e) => {
+  handleSearchChange = (e) => {
     if (!e.target.value) {
       this.handleSearch(e.target.value, 'search')
     }
+    this.setState({ search: e.target.value });
   }
   handleReject = (record) => {
     const { dispatch, currentUser } = this.props;
@@ -747,7 +748,7 @@ export default class TableList extends PureComponent {
                     style={{ width: 260, float: 'right'}}
                     placeholder="ID／名称／商家标签／昵称"
                     value={this.state.search}
-                    onChange={this.handleChange}
+                    onChange={this.handleSearchChange}
                     onSearch={(value) => this.handleSearch(value, 'search')}
                     enterButton
                   />
