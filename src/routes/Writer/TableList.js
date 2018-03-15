@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Table, Card, Radio, Input, DatePicker, Tooltip, Divider, Popconfirm, message, Form, Select, Modal, Button, Progress, Icon, Popover } from 'antd';
-import moment from 'moment';
 import querystring from 'querystring';
 import { Link, routerRedux } from 'dva/router';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
 import TaskIdColumn from '../../components/TaskIdColumn';
+import DateTimeColumn from '../../components/DateTimeColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
@@ -476,23 +476,13 @@ export default class TableList extends PureComponent {
     const times = [{
       title: '修改时间',
       dataIndex: 'last_update_time',
-      render: (val) =>
-        val ?
-        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).fromNow()}
-        </Tooltip>
-        : '',
+      render: (val) => <DateTimeColumn value={val} />,
       sorter: true,
     },
     {
       title: '截止时间',
       dataIndex: 'deadline',
-      render: (val) =>
-        val ?
-        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).format('MM/DD')}
-        </Tooltip>
-        : '',
+      render: (val) => <DateTimeColumn value={val} />,
       sorter: true,
     }]
     const approver = {
@@ -503,12 +493,7 @@ export default class TableList extends PureComponent {
     const approveTime = {
       title: '审核时间',
       dataIndex: 'approve_time',
-      render: val => ( 
-        val ?
-        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).format('MM/DD')}
-        </Tooltip> : ''
-      ),
+      render: (val) => <DateTimeColumn value={val} />,
     };
     const pushStatusText = {
       title: '推送状态',
@@ -558,12 +543,7 @@ export default class TableList extends PureComponent {
     const pushTime = {
       title: '发布时间',
       dataIndex: 'publish_taobao_time',
-      render: val => ( 
-        val ?
-        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).fromNow()}
-        </Tooltip> : ''
-      ),
+      render: (val) => <DateTimeColumn value={val} />,
     };
     const status = {
       title: '状态',

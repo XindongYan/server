@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import { Row, Col, Card, Icon, Table, Form, Checkbox, Avatar, Modal, Button, Select, Popconfirm, Tooltip, Input, message } from 'antd';
+import DateTimeColumn from '../../components/DateTimeColumn';
 import { RIGHTS, APPROVE_ROLES, RIGHT } from '../../constants';
 import styles from './TeamList.less';
 
@@ -266,7 +266,7 @@ export default class TeamUserList extends PureComponent {
       {
         title: '创建时间',
         dataIndex: 'create_time',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+        render: (val) => <DateTimeColumn value={val} />,
       },
       {
         title: '操作',

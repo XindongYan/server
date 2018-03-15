@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import { Card, Icon, Table, Button, Badge, message, Radio } from 'antd';
+import DateTimeColumn from '../../components/DateTimeColumn';
 import { INVITATION_ROLE } from '../../constants';
 import styles from './InvitationList.less';
 
@@ -151,7 +151,7 @@ export default class TableList extends PureComponent {
       {
         title: '使用时间',
         dataIndex: 'use_time',
-        render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
+        render: (val) => <DateTimeColumn value={val} />,
       },
       {
         title: '创建者',
@@ -163,7 +163,7 @@ export default class TableList extends PureComponent {
       {
         title: '创建时间',
         dataIndex: 'create_time',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+        render: (val) => <DateTimeColumn value={val} />,
       },
     ];
     const paginationProps = {

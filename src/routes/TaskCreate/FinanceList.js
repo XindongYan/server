@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import moment from 'moment';
 import querystring from 'querystring';
 import { Table, Card, Button, Input, Form, Menu, Modal, Icon, message, Radio, Popconfirm, DatePicker, Tooltip } from 'antd';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
+import DateTimeColumn from '../../components/DateTimeColumn';
 import DockPanel from '../../components/DockPanel';
 import { Link } from 'dva/router';
 import { TASK_APPROVE_STATUS } from '../../constants';
@@ -183,12 +183,7 @@ export default class FinanceList extends PureComponent {
     const pushTime = {
       title: '发布时间',
       dataIndex: 'publish_taobao_time',
-      render: val => ( 
-        val ?
-        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).fromNow()}
-        </Tooltip> : ''
-      ),
+      render: (val) => <DateTimeColumn value={val} />,
     };
     if (projectFinanceTask.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || projectFinanceTask.approve_status === TASK_APPROVE_STATUS.taobaoRejected || projectFinanceTask.approve_status === TASK_APPROVE_STATUS.taobaoAccepted) {
       columns.push(daren_nickname, pushTime, opera);

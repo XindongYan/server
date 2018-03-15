@@ -12,7 +12,7 @@ export default class TrimSpan extends PureComponent {
         </Tooltip>
       )
     } else {
-      return <span>{text || ''}</span> ;
+      return <span>{text || ''}</span>;
     }
   }
 }
