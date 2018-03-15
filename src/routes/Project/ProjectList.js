@@ -202,7 +202,7 @@ export default class ProjectList extends PureComponent {
       if (value && value[0]) {
         this.setState({ create_time_start: value[0].toDate(), create_time_end: value[1].toDate() });
       } else {
-        this.setState({ take_time_start: null, take_time_end: null });
+        this.setState({ create_time_start: null, create_time_end: null });
       }
     } else {
       values[name] = value;
