@@ -22,6 +22,12 @@ export default class Editors extends PureComponent {
     inlineStyleList: [],
     affix: true,
   }
+  // new SelectionState({
+  //     anchorKey: blockKey,
+  //     anchorOffset: 0,
+  //     focusKey: blockKey,
+  //     focusOffset: block.getLength()
+  //   })
   componentDidMount() {
     if (this.props.props && this.props.props.value.blocks.length > 0) {
       this.setState({ editorState: EditorState.createWithContent(convertFromRaw({entityMap: {}, ...this.props.props.value})) });
@@ -394,15 +400,15 @@ export default class Editors extends PureComponent {
       };
     }
   }
-  customStyleMap = (block) => {
-    const blockKey = block.getKey()
-    const a = this.triggerChange(EditorState.forceSelection(this.editorState, new SelectionState({
-      anchorKey: blockKey,
-      anchorOffset: 0,
-      focusKey: blockKey,
-      focusOffset: block.getLength()
-    })));
-  }
+  // customStyleMap = (block) => {
+  //   const blockKey = block.getKey()
+  //   const a = this.triggerChange(EditorState.forceSelection(this.editorState, new SelectionState({
+  //     anchorKey: blockKey,
+  //     anchorOffset: 0,
+  //     focusKey: blockKey,
+  //     focusOffset: block.getLength()
+  //   })));
+  // }
 
   getBlockStyle = (block) => {
     switch (block.getType()) {
@@ -504,7 +510,7 @@ export default class Editors extends PureComponent {
     const editorProps = {
       blockRendererFn: this.myBlockRenderer,
       blockStyleFn: this.getBlockStyle,
-      customStyleMap: this.customStyleMap,
+      // customStyleMap: this.customStyleMap,
       placeholder: this.props.props.placeholder,
     }
     const editorToolsWrap = <div ref="editorToolsWrap" onMouseDown={this.preventDefault} className={styles.editorToolsWrap}>

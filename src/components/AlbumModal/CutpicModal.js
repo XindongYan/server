@@ -97,6 +97,7 @@ export default class CutpicModal extends PureComponent {
     } else {
       message.destroy();
       message.warn(response.msg);
+      this.handleCancel();
     }
   }
   uploadResult = (e) => {
