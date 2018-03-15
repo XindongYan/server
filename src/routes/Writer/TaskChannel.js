@@ -3,12 +3,10 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import url from 'url';
-import { Card, Button, Popconfirm, message, Row, Col, Menu } from 'antd';
+import { Card, Button, Menu } from 'antd';
 import styles from './TaskChannel.less';
 import { CHANNELS } from '../../constants/taobao';
 import { TASK_TYPES } from '../../constants';
-
-const SubMenu = Menu.SubMenu;
 
 function BlockCommon(props) {
   const { btnText, btnUrl, img, infoList, title } = props;
@@ -49,7 +47,20 @@ export default class TaskChannel extends PureComponent {
     currentKey: 'post',
   }
   componentWillMount() {
-
+    const query = querystring.parse(this.props.location.search.substr(1));
+    let currentKey = this.state.currentKey;
+    if (query.activityId === '-11') {
+      currentKey = 'post';
+    } else if (query.activityId === '-12') {
+      currentKey = 'video';
+    } else if (query.activityId === '-13') {
+      currentKey = 'collection';
+    } else if (query.activityId === '-14') {
+      currentKey = 'item';
+    } else if (query.activityId === '-15') {
+      currentKey = 'answer';
+    }
+    this.setState({ currentKey });
   }
 
   handleDeliverWeitao = (btnUrl) => {
