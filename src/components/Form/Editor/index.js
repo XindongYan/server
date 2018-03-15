@@ -341,6 +341,7 @@ export default class Editors extends PureComponent {
         currentKey: 'editor',
       }
     });
+    this.handleBlur();
   }
   sidebarsearchitem = () => {
     this.props.dispatch({
@@ -349,6 +350,7 @@ export default class Editors extends PureComponent {
         currentKey: 'editor',
       }
     });
+    this.handleBlur();
   }
   sidebaraddspu = (props) => {
     if (props.type === 'product') {
@@ -366,6 +368,7 @@ export default class Editors extends PureComponent {
         }
       });
     }
+    this.handleBlur();
   }
   sidebaraddshop = () => {
     this.props.dispatch({
@@ -374,6 +377,7 @@ export default class Editors extends PureComponent {
         currentKey: 'editor'
       }
     });
+    this.handleBlur();
   }
     
   removeBlock = (props) => {
@@ -424,6 +428,11 @@ export default class Editors extends PureComponent {
   }
   handleFocus = () => {
     this.state.editor.focus();
+  }
+  handleBlur = () => {
+    if (this.state.editor) {
+      this.state.editor.blur();
+    }
   }
   preventDefault = (e) => {
     e.preventDefault();
@@ -501,6 +510,9 @@ export default class Editors extends PureComponent {
       }
     }
   }
+  handleBlockCancel = () => {
+
+  }
   render() {
     const { props } = this.props;
     const box = document.getElementsByClassName('DraftEditor-editorContainer')[0];
@@ -528,7 +540,7 @@ export default class Editors extends PureComponent {
         <div ref="editorBox" className={styles.editorBox} onClick={this.handleFocus} style={{ minHeight: 320, borderBottom: '1px solid #ccc', padding: 10 }}>
           <Editor ref={instance => {this.setState({editor: instance})}} editorState={this.state.editorState} onChange={this.handleChange} {...editorProps} />
         </div>
-        <AlbumModal k="editor" onOk={this.handleAddImg} />
+        <AlbumModal k="editor" onOk={this.handleAddImg} onCancel={this.handleBlockCancel} />
         <AuctionModal k="editor" onOk={this.handleAddProduct} activityId={this.props.activityId} />
         <BpuModal k="editor" onOk={this.handleAddBpu} />
         <SpuModal k="editor" onOk={this.handleAddSpu} activityId={this.props.activityId} />

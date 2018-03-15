@@ -175,6 +175,7 @@ export default class AlbumModal extends PureComponent {
   }
   handleCancel = () => {
     const { dispatch } = this.props;
+    if (this.props.onCancel) this.props.onCancel();
     dispatch({
       type: 'album/hide',
     });
