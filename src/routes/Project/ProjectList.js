@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
+import moment from 'moment';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import DateTimeColumn from '../../components/DateTimeColumn';
@@ -28,6 +29,9 @@ export default class ProjectList extends PureComponent {
   state = {
     selectedRows: [],
     selectedRowKeys: [],
+    create_time_start: null,
+    create_time_end: null,
+    search: '',
   };
 
   componentDidMount() {
@@ -65,6 +69,7 @@ export default class ProjectList extends PureComponent {
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, teamUser, currentUser, data: { status, type } } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -80,6 +85,9 @@ export default class ProjectList extends PureComponent {
       status,
       type,
       ...filters,
+      create_time_start,
+      create_time_end,
+      search,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -146,6 +154,7 @@ export default class ProjectList extends PureComponent {
   }
   handleOffshelf = (record) => {
     const { dispatch, teamUser, currentUser, data: { pagination, status, type } } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
     dispatch({
       type: 'project/offshelf',
       payload: {
@@ -157,16 +166,7 @@ export default class ProjectList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'project/fetch',
-            payload: {
-              ...pagination,
-              team_id: teamUser.team_id,
-              user_id: currentUser._id,
-              status,
-              type,
-            },
-          });
+          this.handleFetch();
         }
       },
     });
@@ -183,34 +183,35 @@ export default class ProjectList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'project/fetch',
-            payload: {
-              ...pagination,
-              team_id: teamUser.team_id,
-              user_id: currentUser._id,
-              status,
-              type,
-            },
-          });
+          this.handleFetch();
         }
       },
     });
   }
   handleSearch = (value, name) => {
     const { dispatch, teamUser, currentUser, data: { pagination, status, type } } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
     const values = {
       ...pagination,
       team_id: teamUser.team_id,
       user_id: currentUser._id,
+      create_time_start,
+      create_time_end,
+      search,
       status,
       type,
     };
     if(name === 'time') {
       values['create_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['create_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+      if (value && value[0]) {
+        this.setState({ create_time_start: value[0].toDate(), create_time_end: value[1].toDate() });
+      } else {
+        this.setState({ take_time_start: null, take_time_end: null });
+      }
     } else {
       values[name] = value;
+      this.setState({ [name]: value });
     }
     dispatch({
       type: 'project/fetch',
@@ -226,6 +227,7 @@ export default class ProjectList extends PureComponent {
 
   changeStatus = (e) => {
     const { dispatch, teamUser, currentUser, data: { pagination, type } } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
     dispatch({
       type: 'project/fetch',
       payload: {
@@ -234,11 +236,16 @@ export default class ProjectList extends PureComponent {
         user_id: currentUser._id,
         status: e.target.value,
         type,
+        currentPage: 1,
+        create_time_start,
+        create_time_end,
+        search,
       },
     });
   }
   changeType = (e) => {
     const { dispatch, teamUser, currentUser, data: { pagination, status } } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
     let newStatus = status;
     if (e.target.value === 3) {
       newStatus = -4;
@@ -251,12 +258,39 @@ export default class ProjectList extends PureComponent {
         user_id: currentUser._id,
         status: newStatus,
         type: e.target.value,
+        create_time_start,
+        create_time_end,
+        search,
       },
     });
   }
+  handleFetch = () => {
+    const { dispatch, currentUser, teamUser, data: { pagination, status, type } } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
+    dispatch({
+      type: 'project/fetch',
+      payload: {
+        ...pagination,
+        team_id: teamUser.team_id,
+        user_id: currentUser._id,
+        status,
+        type,
+        create_time_start,
+        create_time_end,
+        search,
+        currentPage: 1,
+      },
+    });
+  }
+  handleSearchChange = (e) => {
+    if (!e.target.value) {
+      this.handleSearch(e.target.value, 'search')
+    }
+    this.setState({ search: e.target.value });
+  }
   render() {
     const { loading, data: { list, pagination, status, type } } = this.props;
-    const { selectedRows, selectedRowKeys } = this.state;
+    const { selectedRows, selectedRowKeys, create_time_start, create_time_end } = this.state;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -393,7 +427,8 @@ export default class ProjectList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               {/* <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button> */}
-              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+              <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')}
+                value={create_time_start ? [ moment(create_time_start), moment(create_time_end) ] : []} />
               <Tooltip placement="top" title="创建时间">
                 <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
               </Tooltip>
@@ -401,6 +436,8 @@ export default class ProjectList extends PureComponent {
                 style={{ width: 260, float: 'right'}}
                 placeholder="ID／名称／商家标签"
                 onSearch={(value) => this.handleSearch(value, 'search')}
+                onChange={this.handleSearchChange}
+                value={this.state.search}
                 enterButton
               />
             </div>

@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import querystring from 'querystring';
 import G2 from '@antv/g2';
+import moment from 'moment';
 import { Table, Card, Button, Input, Form, Menu, Popconfirm, Modal, Select, Row, Col, Popover,
   Dropdown, Icon, message, Radio, Tooltip, DatePicker, Tabs } from 'antd';
 import { Link } from 'dva/router';
@@ -46,6 +47,9 @@ export default class TableList extends PureComponent {
     formValues: {},
     task: {},
     activeKey: 'table',
+    create_time_start: null,
+    create_time_end: null,
+    search: '',
   }
 
   componentDidMount() {
@@ -107,6 +111,7 @@ export default class TableList extends PureComponent {
   }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch, projectTask: { approve_status } } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
     const { formValues } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
 
@@ -123,6 +128,9 @@ export default class TableList extends PureComponent {
       approve_status,
       ...formValues,
       ...filters,
+      create_time_start,
+      create_time_end,
+      search,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -173,22 +181,32 @@ export default class TableList extends PureComponent {
   }
   handleSearch = (value, name) => {
     const { dispatch, projectTask: { pagination, approve_status }, } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const values = {
       project_id: query.project_id,
       ...pagination,
+      currentPage: 1,
       approve_status,
+      create_time_start,
+      create_time_end,
+      search,
     };
     if(name === 'time') {
       values['create_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
       values['create_time_end'] = value[1] ? value[1].format('YYYY-MM-DD 23:59:59') : '';
+      if (value && value[0]) {
+        this.setState({ create_time_start: value[0].toDate(), create_time_end: value[1].toDate() });
+      } else {
+        this.setState({ take_time_start: null, take_time_end: null });
+      }
     } else {
       values[name] = value;
+      this.setState({ [name]: value });
     }
     dispatch({
       type: 'task/fetchProjectTasks',
       payload: {
-        currentPage: 1,
         ...values, 
       }
     });
@@ -212,10 +230,7 @@ export default class TableList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'task/fetchProjectTasks',
-            payload: { ...pagination, approve_status, project_id: query.project_id },
-          });
+          this.handleFetch();
           this.handleRowSelectChange([], []);
         }
       },
@@ -239,10 +254,7 @@ export default class TableList extends PureComponent {
             } else {
               message.success(result.msg);
               this.handleDarenModalVisible(false);
-              dispatch({
-                type: 'task/fetchProjectTasks',
-                payload: { ...pagination, approve_status, project_id: query.project_id },
-              });
+              this.handleFetch();
               this.handleRowSelectChange([], []);
             }
           },
@@ -266,10 +278,7 @@ export default class TableList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'task/fetchProjectTasks',
-            payload: { ...pagination, approve_status, project_id: query.project_id },
-          });
+          this.handleFetch();
         }
       },
     });
@@ -292,10 +301,7 @@ export default class TableList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'task/fetchProjectTasks',
-            payload: { ...pagination, approve_status, project_id: query.project_id },
-          });
+          this.handleFetch();
         }
       },
     });
@@ -332,10 +338,7 @@ export default class TableList extends PureComponent {
             } else {
               message.success(result.msg);
               this.handleModalVisible(false);
-              dispatch({
-                type: 'task/fetchProjectTasks',
-                payload: { ...pagination, project_id: query.project_id, approve_status },
-              });
+              this.handleFetch();
             }
           },
         });
@@ -358,10 +361,7 @@ export default class TableList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'task/fetchProjectTasks',
-            payload: { ...pagination, project_id: query.project_id, approve_status },
-          });
+          this.handleFetch();
         }
       },
     });
@@ -380,10 +380,7 @@ export default class TableList extends PureComponent {
           message.error(result.msg);
         } else {
           message.success(result.msg);
-          dispatch({
-            type: 'task/fetchProjectTasks',
-            payload: {  ...pagination, project_id: query.project_id, approve_status },
-          });
+          this.handleFetch();
         }
       },
     });
@@ -402,10 +399,11 @@ export default class TableList extends PureComponent {
   }
   changeApproveStatus = (e) => {
     const { dispatch } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/fetchProjectTasks',
-      payload: { project_id: query.project_id, approve_status: e.target.value, },
+      payload: { project_id: query.project_id, approve_status: e.target.value, create_time_start, create_time_end, search },
     });
     this.handleRowSelectChange([], []);
   }
@@ -424,6 +422,29 @@ export default class TableList extends PureComponent {
         this.renderChart();
       }
     });
+  }
+  handleFetch = () => {
+    const { dispatch, teamUser, projectTask: { pagination, approve_status } } = this.props;
+    const { create_time_start, create_time_end, search } = this.state;
+    const query = querystring.parse(this.props.location.search.substr(1));
+    dispatch({
+      type: 'task/fetchProjectTasks',
+      payload: {
+        ...pagination,
+        approve_status,
+        project_id: query.project_id,
+        create_time_start,
+        create_time_end,
+        search,
+        currentPage: 1,
+      },
+    });
+  }
+  handleSearchChange = (e) => {
+    if (!e.target.value) {
+      this.handleSearch(e.target.value, 'search')
+    }
+    this.setState({ search: e.target.value });
   }
   render() {
     const { projectTask, loading, formData, form: { getFieldDecorator }, suggestionUsers, teamUsers, currentUser } = this.props;
@@ -682,7 +703,7 @@ export default class TableList extends PureComponent {
                 <div className={styles.tableListOperator}>
                   {selectedRows.length === 0 && (
                     <span>
-                      <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')} />
+                      <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value, 'time')} />
                       <Tooltip placement="top" title="创建时间">
                         <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
                       </Tooltip>
@@ -691,6 +712,8 @@ export default class TableList extends PureComponent {
                         placeholder="ID／名称／商家标签"
                         onChange={this.handleSearchClear}
                         onSearch={(value) => this.handleSearch(value, 'search')}
+                        onChange={this.handleSearchChange}
+                        value={this.state.search}
                         enterButton
                       />
                     </span>)
