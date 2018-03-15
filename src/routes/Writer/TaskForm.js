@@ -71,7 +71,7 @@ export default class TaskForm extends PureComponent {
       const taskForm = JSON.parse(localStorage.getItem('taskForm')) || [];
       const index = this.handleGetTaskFormIndex(taskForm);
       if (index >= 0) {
-        Modal.confirm({
+        const refTaskForm = Modal.confirm({
           title: '有自动保存的信息',
           content: (<div>发现本地有自动保存未提交的内容，点击『确定』将会恢复未提交数据。</div>),
           onOk: () => {
@@ -83,6 +83,9 @@ export default class TaskForm extends PureComponent {
             taskForm.splice(index, 1);
             localStorage.setItem('taskForm', JSON.stringify(taskForm));
           },
+        });
+        this.setState({
+          refTaskForm,
         });
       }
     }, 1500);
@@ -97,6 +100,7 @@ export default class TaskForm extends PureComponent {
     window.onbeforeunload = null;
     clearInterval(this.state.times);
     clearInterval(this.state.taskFormConfirm);
+    this.state.refTaskForm.destroy();
   }
 
   validate = (fieldNames, callback) => {

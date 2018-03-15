@@ -54,7 +54,6 @@ export default class TableList extends PureComponent {
 
   componentDidMount() {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
-    const { search, take_time_start, take_time_end } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id) {
       dispatch({
@@ -64,9 +63,6 @@ export default class TableList extends PureComponent {
           team_id: teamUser.team_id,
           approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
           user_id: currentUser._id,
-          take_time_start,
-          take_time_end,
-          search,
         },
       });
     }
@@ -84,7 +80,6 @@ export default class TableList extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = nextProps;
-    const { search, take_time_start, take_time_end } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     if (currentUser._id !== this.props.currentUser._id) {
       dispatch({
@@ -94,9 +89,6 @@ export default class TableList extends PureComponent {
           team_id: teamUser.team_id,
           approve_status: query.approve_status ? Number(query.approve_status) : approve_status,
           user_id: currentUser._id,
-          take_time_start,
-          take_time_end,
-          search,
         },
       });
     }
@@ -468,7 +460,7 @@ export default class TableList extends PureComponent {
       },
     });
   }
-  handleChange = (e) => {
+  handleSearchChange = (e) => {
     if (!e.target.value) {
       this.handleSearch(e.target.value, 'search')
     }
@@ -774,7 +766,7 @@ export default class TableList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <RangePicker style={{ width: 240 }} onChange={(value) => this.handleSearch(value,'time')}
-                value={take_time_start ? [ moment(take_time_start), moment(take_time_end) ] : []}/>
+                value={take_time_start ? [ moment(take_time_start), moment(take_time_end) ] : []} />
               <Tooltip placement="top" title="接单／创建时间">
                 <Icon type="question-circle-o" />
               </Tooltip>
@@ -782,7 +774,7 @@ export default class TableList extends PureComponent {
                 style={{ width: 260, float: 'right' }}
                 placeholder="ID／名称／商家标签"
                 onSearch={(value) => this.handleSearch(value, 'search')}
-                onChange={this.handleChange}
+                onChange={this.handleSearchChange}
                 value={this.state.search}
                 enterButton
               />
