@@ -39,6 +39,7 @@ export default class TaskForm extends PureComponent {
     submitLoading: false,
     times: null,
     taskFormConfirm: null,
+    refTaskForm: null,
   }
   componentWillMount() {
     window.onbeforeunload = () => {
@@ -99,8 +100,10 @@ export default class TaskForm extends PureComponent {
     });
     window.onbeforeunload = null;
     clearInterval(this.state.times);
-    clearInterval(this.state.taskFormConfirm);
-    this.state.refTaskForm.destroy();
+    clearTimeout(this.state.taskFormConfirm);
+    if (this.state.refTaskForm) {
+      this.state.refTaskForm.destroy();
+    }
   }
 
   validate = (fieldNames, callback) => {
