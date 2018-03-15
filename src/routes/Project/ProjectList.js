@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import moment from 'moment';
 import querystring from 'querystring';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
+import DateTimeColumn from '../../components/DateTimeColumn';
 import { Row, Col, Card, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, Popconfirm, Modal, Table, message, Radio, DatePicker, Tooltip } from 'antd';
 import { Link } from 'dva/router';
 import { PROJECT_STATUS_TEXT, PROJECT_STATUS } from '../../constants';
@@ -284,7 +284,7 @@ export default class ProjectList extends PureComponent {
       {
         title: '截止时间',
         dataIndex: 'deadline',
-        render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
+        render: (val) => <DateTimeColumn value={val} />,
       },
       {
         title: '创建者',
@@ -294,7 +294,7 @@ export default class ProjectList extends PureComponent {
       {
         title: '创建时间',
         dataIndex: 'create_time',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+        render: (val) => <DateTimeColumn value={val} />,
       },
       {
         title: '状态',

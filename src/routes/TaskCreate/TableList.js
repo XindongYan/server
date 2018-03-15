@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import moment from 'moment';
 import querystring from 'querystring';
 import G2 from '@antv/g2';
 import { Table, Card, Button, Input, Form, Menu, Popconfirm, Modal, Select, Row, Col, Popover,
@@ -13,6 +12,7 @@ import styles from './TableList.less';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
+import DateTimeColumn from '../../components/DateTimeColumn';
 import ProjectDetail from '../../components/ProjectDetail';
 import DockPanel from '../../components/DockPanel';
 
@@ -455,7 +455,7 @@ export default class TableList extends PureComponent {
       {
         title: '创建时间',
         dataIndex: 'create_time',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+        render: (val) => <DateTimeColumn value={val} />,
       },
       {
         title: '渠道',
@@ -476,7 +476,7 @@ export default class TableList extends PureComponent {
       {
         title: '接单时间',
         dataIndex: 'take_time',
-        render: val => val ? <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span> : '',
+        render: (val) => <DateTimeColumn value={val} />,
       },
       {
         title: '状态',
@@ -559,12 +559,7 @@ export default class TableList extends PureComponent {
     const pushTime = {
       title: '发布时间',
       dataIndex: 'publish_taobao_time',
-      render: val => ( 
-        val ?
-        <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).fromNow()}
-        </Tooltip> : ''
-      ),
+      render: (val) => <DateTimeColumn value={val} />,
     };
     const pushStatusText = {
       title: '推送状态',

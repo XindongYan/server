@@ -11,9 +11,9 @@ export default class TaskNameColumn extends PureComponent {
         <Tooltip title={text}>
           <span>{spanText}</span>
         </Tooltip>
-      )
+      );
     } else {
-      return <span>{text || ''}</span> ;
+      return <span>{text || ''}</span>;
     }
   }
 }

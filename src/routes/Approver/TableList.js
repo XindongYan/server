@@ -3,11 +3,11 @@ import { connect } from 'dva';
 import { Table, Card, Input, Select, Icon, Button, Menu, Checkbox, message, Radio, Popconfirm, DatePicker,
 Tooltip, Divider, Form, Modal, Popover } from 'antd';
 import { Link } from 'dva/router';
-import moment from 'moment';
 import { RIGHTS, APPROVE_ROLES, ROLES, TASK_APPROVE_STATUS, CHANNELS, RIGHT } from '../../constants';
 import TaskNameColumn from '../../components/TaskNameColumn';
 import TrimSpan from '../../components/TrimSpan';
 import TaskStatusColumn from '../../components/TaskStatusColumn';
+import DateTimeColumn from '../../components/DateTimeColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
@@ -439,12 +439,7 @@ export default class TableList extends PureComponent {
       {
         title: '提交时间',
         dataIndex: 'handin_time',
-        render: val => ( 
-          val ?
-          <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-            {moment(val).fromNow()}
-          </Tooltip> : ''
-        ),
+        render: (val) => <DateTimeColumn value={val} />,
       },
       // {
       //   title: '修改',
@@ -514,11 +509,7 @@ export default class TableList extends PureComponent {
     const approveTime = {
       title: '审核时间',
       dataIndex: 'approve_time',
-      render: val => (
-        val && <Tooltip placement="top" title={moment(val).format('YYYY-MM-DD HH:mm:ss')}>
-          {moment(val).format('MM/DD')}
-        </Tooltip>
-      ),
+      render: (val) => <DateTimeColumn value={val} />,
     };
     const status = {
       title: '状态',
