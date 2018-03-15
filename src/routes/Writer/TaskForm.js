@@ -38,7 +38,6 @@ export default class TaskForm extends PureComponent {
     saveLoading: false,
     submitLoading: false,
     times: null,
-    taskFormConfirm: null,
     refTaskForm: null,
   }
   componentWillMount() {
@@ -52,7 +51,11 @@ export default class TaskForm extends PureComponent {
         payload: { _id: query._id },
         callback: (result) => {
           if (!result.error) {
-            this.setState({ children: result.task.children, formData: result.task.formData, needValidateFieldNames: result.task.children.filter(item => item.component === 'Input').map(item => item.name) });
+            this.setState({
+              children: result.task.children,
+              formData: result.task.formData,
+              needValidateFieldNames: result.task.children.filter(item => item.component === 'Input').map(item => item.name)
+            }, () => this.handleGetTaskForm());
           }
         }
       });
@@ -63,36 +66,14 @@ export default class TaskForm extends PureComponent {
       if (query.activityId && (Number(query.activityId) > 0 || Number(query.activityId) === -21)) params.activityId = query.activityId;
       queryTaskRender(params).then(result => {
         if (!result.error) {
-          this.setState({ children: result.children, formData: result.formData, needValidateFieldNames: result.children.filter(item => item.component === 'Input').map(item => item.name) });
+          this.setState({
+            children: result.children,
+            formData: result.formData,
+            needValidateFieldNames: result.children.filter(item => item.component === 'Input').map(item => item.name)
+          }, () => this.handleGetTaskForm());
         }
       });
     }
-
-    const taskFormConfirm = setTimeout(() => {
-      const taskForm = JSON.parse(localStorage.getItem('taskForm')) || [];
-      const index = this.handleGetTaskFormIndex(taskForm);
-      if (index >= 0) {
-        const refTaskForm = Modal.confirm({
-          title: '有自动保存的信息',
-          content: (<div>发现本地有自动保存未提交的内容，点击『确定』将会恢复未提交数据。</div>),
-          onOk: () => {
-            this.setState({ children: taskForm[index].children, formData: taskForm[index].formData, });
-            taskForm.splice(index, 1);
-            localStorage.setItem('taskForm', JSON.stringify(taskForm));
-          },
-          onCancel: () => {
-            taskForm.splice(index, 1);
-            localStorage.setItem('taskForm', JSON.stringify(taskForm));
-          },
-        });
-        this.setState({
-          refTaskForm,
-        });
-      }
-    }, 1500);
-    this.setState({
-      taskFormConfirm,
-    });
   }
   componentWillUnmount() {
     this.props.dispatch({
@@ -100,7 +81,6 @@ export default class TaskForm extends PureComponent {
     });
     window.onbeforeunload = null;
     // clearInterval(this.state.times);
-    clearTimeout(this.state.taskFormConfirm);
     if (this.state.refTaskForm) {
       this.state.refTaskForm.destroy();
     }
@@ -598,6 +578,28 @@ export default class TaskForm extends PureComponent {
       });
     }
     return index;
+  }
+  handleGetTaskForm = () => {
+    const taskForm = JSON.parse(localStorage.getItem('taskForm')) || [];
+    const index = this.handleGetTaskFormIndex(taskForm);
+    if (index >= 0) {
+      const refTaskForm = Modal.confirm({
+        title: '有自动保存的信息',
+        content: (<div>发现本地有自动保存未提交的内容，点击『确定』将会恢复未提交数据。</div>),
+        onOk: () => {
+          this.setState({ children: taskForm[index].children, formData: taskForm[index].formData, });
+          taskForm.splice(index, 1);
+          localStorage.setItem('taskForm', JSON.stringify(taskForm));
+        },
+        onCancel: () => {
+          taskForm.splice(index, 1);
+          localStorage.setItem('taskForm', JSON.stringify(taskForm));
+        },
+      });
+      this.setState({
+        refTaskForm,
+      });
+    }
   }
   render() {
     const { form: { getFieldDecorator }, operation, formData } = this.props;
