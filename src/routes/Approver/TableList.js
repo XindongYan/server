@@ -258,7 +258,8 @@ export default class TableList extends PureComponent {
     const { search, channel_name, handin_time_start, handin_time_end } = this.state;
     dispatch({
       type: 'task/fetchApproverTasks',
-      payload: { ...pagination, user_id: value, approve_status, team_id: teamUser.team_id, search, channel_name, handin_time_start, handin_time_end }
+      payload: { ...pagination, currentPage: 1, user_id: value, approve_status, team_id: teamUser.team_id,
+        search, channel_name, handin_time_start, handin_time_end }
     });
   }
   handleChangeTeamUser = (value) => {
@@ -268,7 +269,8 @@ export default class TableList extends PureComponent {
       const { search, channel_name, handin_time_start, handin_time_end } = this.state;
       dispatch({
         type: 'task/fetchApproverTasks',
-        payload: { ...pagination, user_id: currentUser._id, approve_status, team_id: teamUser.team_id, search, channel_name, handin_time_start, handin_time_end }
+        payload: { ...pagination, currentPage: 1, user_id: currentUser._id, approve_status, team_id: teamUser.team_id,
+          search, channel_name, handin_time_start, handin_time_end }
       });
     }
   }
@@ -298,7 +300,7 @@ export default class TableList extends PureComponent {
       type: 'task/fetchApproverTasks',
       payload: { 
         team_id: teamUser.team_id,
-        currentPage: pagination.current,
+        currentPage: 1,
         pageSize: pagination.pageSize,
         search, channel_name, handin_time_start, handin_time_end,
         ...values, 
