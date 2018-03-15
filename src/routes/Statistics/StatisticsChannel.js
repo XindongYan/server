@@ -27,6 +27,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   suggestionUsers: state.team.suggestionUsers,
   teamUsers: state.team.teamUsers,
   teamUser: state.user.teamUser,
+  channel: state.statistics.statisticsChannel.channel,
 }))
 @Form.create()
 export default class StatisticsChannel extends PureComponent {
@@ -34,28 +35,28 @@ export default class StatisticsChannel extends PureComponent {
   }
 
   componentWillMount() {
-    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id, channel } = this.props;
     if (team_id) {
       this.props.dispatch({
         type: 'statistics/fetchStatisticsChannel',
-        payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
+        payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id, channel },
       });
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = nextProps;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id, channel } = nextProps;
     if (this.props.teamUser.team_id !== nextProps.teamUser.team_id ||
       ( nextProps.teamUser.team_id && this.props.publish_taobao_time_start !==  publish_taobao_time_start) ||
       this.props.daren_id !==  daren_id) {
       this.props.dispatch({
         type: 'statistics/fetchStatisticsChannel',
-        payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
+        payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id, channel },
       });
     }
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
+    const { dispatch, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id, channel } = this.props;
     const { searchValue } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -66,6 +67,7 @@ export default class StatisticsChannel extends PureComponent {
       team_id,
       user_id,
       daren_id,
+      channel,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       search: searchValue,
@@ -101,13 +103,14 @@ export default class StatisticsChannel extends PureComponent {
     }
   }
   handleSearch = (value, name) => {
-    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id, channel } = this.props;
     const values = {
       team_id,
       user_id,
       publish_taobao_time_start,
       publish_taobao_time_end,
       daren_id,
+      channel,
     };
     if(name === 'time') {
       values['publish_taobao_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';

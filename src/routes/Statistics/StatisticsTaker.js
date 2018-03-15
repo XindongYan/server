@@ -27,6 +27,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   suggestionUsers: state.team.suggestionUsers,
   teamUsers: state.team.teamUsers,
   teamUser: state.user.teamUser,
+  taker_id: state.statistics.statisticsTaker.taker_id,
 }))
 @Form.create()
 export default class StatisticsTaker extends PureComponent {
@@ -34,28 +35,28 @@ export default class StatisticsTaker extends PureComponent {
   }
 
   componentWillMount() {
-    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id, taker_id } = this.props;
     if (team_id) {
       this.props.dispatch({
         type: 'statistics/fetchStatisticsTaker',
-        payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
+        payload: { team_id: team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id, taker_id },
       });
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = nextProps;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id, taker_id } = nextProps;
     if (this.props.teamUser.team_id !== nextProps.teamUser.team_id ||
       ( nextProps.teamUser.team_id && this.props.publish_taobao_time_start !==  publish_taobao_time_start) ||
       this.props.daren_id !==  daren_id) {
       this.props.dispatch({
         type: 'statistics/fetchStatisticsTaker',
-        payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id },
+        payload: { team_id, user_id, publish_taobao_time_start, publish_taobao_time_end, daren_id, taker_id },
       });
     }
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
+    const { dispatch, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id, taker_id } = this.props;
     const { searchValue } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -72,6 +73,7 @@ export default class StatisticsTaker extends PureComponent {
       ...filters,
       publish_taobao_time_start,
       publish_taobao_time_end,
+      taker_id,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -101,13 +103,14 @@ export default class StatisticsTaker extends PureComponent {
     }
   }
   handleSearch = (value, name) => {
-    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id } = this.props;
+    const { dispatch, data: { pagination }, teamUser: { team_id, user_id }, publish_taobao_time_start, publish_taobao_time_end, daren_id, taker_id } = this.props;
     const values = {
       team_id,
       user_id,
       publish_taobao_time_start,
       publish_taobao_time_end,
       daren_id,
+      taker_id,
     };
     if(name === 'time') {
       values['publish_taobao_time_start'] = value[0] ? value[0].format('YYYY-MM-DD 00:00:00') : '';
