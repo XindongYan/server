@@ -113,10 +113,11 @@ export default class CreatorAddItem extends PureComponent {
               </div>
             </div>
           }
+          <AuctionModal k={name} onOk={this.handleAddProduct} activityId={props.activityId || 0} />
+          <AuctionImageModal k={name} onChange={this.handleChangeBodyImg} />
+          <CoverModal k={name} onOk={this.handleChangeImg} />
         </div>
-        <AuctionModal k={name} onOk={this.handleAddProduct} activityId={props.activityId || 0} />
-        <AuctionImageModal k={name} onChange={this.handleChangeBodyImg} />
-        <CoverModal k={name} onOk={this.handleChangeImg} />
+          
       </div>
     );
   }

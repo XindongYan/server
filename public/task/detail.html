@@ -417,7 +417,7 @@
 					}
 				}
 				function setBodyStruct(value) {
-					if (value[0].data.features && value[0].data.features.length > 0) {
+					if (value[0].data && value[0].data.features && value[0].data.features.length > 0) {
 						$('#niceListBox').show();
 						var goodsList = '';
 						value[0].data.features.forEach(function(item){
