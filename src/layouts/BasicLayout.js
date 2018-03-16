@@ -30,6 +30,7 @@ import ApproverTaskView from '../routes/Approver/TaskView';
 import { getNavData } from '../common/nav';
 import { getRouteData } from '../utils/utils';
 import { RIGHT } from '../constants';
+import { setUserAgent } from '../services/user';
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -66,6 +67,8 @@ class BasicLayout extends React.PureComponent {
     this.menus = getNavData(props.currentUser).reduce((arr, current) => arr.concat(current.children), []);
     this.state = {
       openKeys: this.getDefaultCollapsedSubMenus(props),
+      version: '',
+      user_id: '',
     };
   }
   getChildContext() {
@@ -90,6 +93,12 @@ class BasicLayout extends React.PureComponent {
         if (!result.user.phone) {
           this.props.dispatch(routerRedux.push('/user/register'));
         }
+        this.setState({
+          user_id: result.user._id,
+        });
+        setTimeout(() => {
+          this.handleGetVersion();
+        }, 600);
       },
     });
     const key = this.props.location.pathname.split('/') ? this.props.location.pathname.split('/')[2] : '';
@@ -108,6 +117,29 @@ class BasicLayout extends React.PureComponent {
   }
   componentWillUnmount() {
     clearTimeout(this.resizeTimeout);
+  }
+  handleGetVersion = () => {
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    nicaiCrx.addEventListener('setVersion', this.setVersion);
+    nicaiCrx.innerText = '';
+    const customEvent = document.createEvent('Event');
+    customEvent.initEvent('getVersion', true, true);
+    nicaiCrx.dispatchEvent(customEvent);
+  }
+  setVersion = (e) => {
+    const nicaiCrx = document.getElementById('nicaiCrx');
+    const data = JSON.parse(e.target.innerText);
+    if (data.version) {
+      this.setState({
+        version: data.version,
+      });
+      setUserAgent({
+        user_id: this.state.user_id,
+        user_agent: navigator.userAgent,
+        extension_version: data.version,
+      });
+      nicaiCrx.removeEventListener('setVersion', this.setVersion);
+    }
   }
   onCollapse = (collapsed) => {
     this.props.dispatch({
