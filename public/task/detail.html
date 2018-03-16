@@ -231,6 +231,17 @@
 			.alignRight{
 				text-align: right;
 			}
+
+			.messageBlock{
+				position: fixed;
+				bottom: 50%;
+				right: 2%;
+				width: 360px;
+				height: 200px;
+				background-color: #fff;
+				border-radius: 6px;
+				padding: 10px;
+			}
 		</style>
 	</head>
 	<body>
@@ -271,7 +282,11 @@
 
 			</section>
 		</div>
+		<div id="messageBlock" class="messageBlock">
+			<textarea id="message" style="width: 100%; height: 80%"></textarea>
+		</div>
 		<script>
+			var approve_note_changed = false;
 			$(function(){
 				$('#nice-auction-button').on('click', 'i', function(e){
 					$('#nice-auction-box').css({left: '-'+ $(this).index()*375 +'px' });

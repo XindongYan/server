@@ -29,12 +29,15 @@ export default class Login extends Component {
           </a>
         </div>
         <div style={{ width: 300, textAlign: 'left', margin: '60px auto 10px' }}>
-          <a href={`${location.origin}/nicai.crx`} download="尼采插件.crx">
+          <a href="/nicai.crx" download="尼采插件.crx">
             尼采插件下载
           </a>
           <span>(chrome浏览器版本 > 59.0)</span>
           <p>
-            <a style={{ marginRight: 15 }} href={`${location.origin}/userRegister.pdf`} target="_blank">用户注册说明</a>
+            <a style={{ marginRight: 15 }} href="/userRegister.pdf" target="_blank">用户注册说明</a>
+          </p>
+          <p>
+            <a style={{ marginRight: 15 }} href="http://v.youku.com/v_show/id_XMzQ1Mjc2NzUyMA==.html?spm=a2hzp.8253869.0.0" target="_blank">《网站登录注册演示视频》</a>
           </p>
         </div>
         
