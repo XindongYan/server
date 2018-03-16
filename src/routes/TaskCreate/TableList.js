@@ -483,7 +483,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'channel_name',
       },
       {
-        title: '商家标签',
+        title: '商家名称',
         dataIndex: 'merchant_tag',
         render: (val) => (
           <TrimSpan text={val} length={10} />
@@ -709,7 +709,7 @@ export default class TableList extends PureComponent {
                       </Tooltip>
                       <Search
                         style={{ width: 260, float: 'right' }}
-                        placeholder="ID／名称／商家标签"
+                        placeholder="ID／名称／商家名称"
                         onChange={this.handleSearchClear}
                         onSearch={(value) => this.handleSearch(value, 'search')}
                         onChange={this.handleSearchChange}

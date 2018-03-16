@@ -69,7 +69,7 @@ export default class TaskForm extends PureComponent {
         formComponents.push(<Title key={index} form={form} name={item.name} props={item.props} rules={item.rules} onChange={value => this.handleChange(item.name, value)} operation={operation} />);
       }
     });
-    formComponents.push(<MerchantTag key="merchant_tag" form={form} name="merchant_tag" props={{ label: '商家标签', value: extraProps.merchant_tag.value }} rules={[]}
+    formComponents.push(<MerchantTag key="merchant_tag" form={form} name="merchant_tag" props={{ label: '商家名称', value: extraProps.merchant_tag.value }} rules={[]}
           onChange={extraProps.merchant_tag.onChange} operation={operation} />);
     return (
       <div>

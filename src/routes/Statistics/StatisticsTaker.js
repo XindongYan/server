@@ -243,7 +243,7 @@ export default class StatisticsTaker extends PureComponent {
           {
           //   <Search
           //   style={{ width: 260, float: 'right' }}
-          //   placeholder="ID／名称／商家标签"
+          //   placeholder="ID／名称／商家名称"
           //   onChange={this.handleSearchChange}
           //   onSearch={(value) => this.handleSearch(value, 'search')}
           //   enterButton

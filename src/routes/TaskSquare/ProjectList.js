@@ -64,7 +64,7 @@ export default class FlowList extends PureComponent {
         <div style={{ marginBottom: 15 }} align="right">
           <Search
             style={{ width: 400 }}
-            placeholder="ID／名称／商家标签"
+            placeholder="ID／名称／商家名称"
             onChange={this.handleSearchChange}
             onSearch={(value) => this.handleSearch(value, 'search')}
             enterButton
