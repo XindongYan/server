@@ -23,6 +23,7 @@ export default class TaskEdit extends PureComponent {
   state = {
     children: [],
     formData: {},
+    merchant_tag: '',
     needValidateFieldNames: [],
     approve_notes: [],
   }
@@ -36,6 +37,7 @@ export default class TaskEdit extends PureComponent {
           this.setState({
             children: result.task.children,
             formData: result.task.formData,
+            merchant_tag: result.task.merchant_tag,
             needValidateFieldNames: result.task.children.filter(item => item.component === 'Input').map(item => item.name),
             approve_notes: result.task.approve_notes || [],
           });
@@ -55,6 +57,10 @@ export default class TaskEdit extends PureComponent {
   }
   handleChange = (children) => {
     this.setState({ children });
+  }
+  handleMerchantTagChange = (value) => {
+    // console.log(value);
+    this.setState({ merchant_tag: value.join(',') });
   }
   extractAuctionIds = (children) => {
     const auctionIds = [];
@@ -84,7 +90,7 @@ export default class TaskEdit extends PureComponent {
     return auctionIds;
   }
   handleSave = () => {
-    const { approve_notes } = this.state;
+    const { approve_notes, merchant_tag } = this.state;
     const query = querystring.parse(this.props.location.search.substr(1));
     const { formData } = this.props;
     this.props.form.validateFieldsAndScroll(['title'], (err, vals) => {
@@ -113,6 +119,7 @@ export default class TaskEdit extends PureComponent {
             type: 'task/update',
             payload: {
               ...values,
+              merchant_tag,
               _id: query._id,
               approve_notes: approve_notes,
             },
@@ -199,6 +206,7 @@ export default class TaskEdit extends PureComponent {
           type: 'task/update',
           payload: {
             ...values,
+            merchant_tag: this.state.merchant_tag,
             _id: query._id,
           },
           callback: (result) => {
@@ -254,7 +262,14 @@ export default class TaskEdit extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: template === 'item2' ? 730 : 1000 }}>
           <div style={{ width: template === 'item2' ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId} />
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId}
+            extraProps={{
+              merchant_tag: {
+                value: this.state.merchant_tag ? this.state.merchant_tag.split(',') : [],
+                onChange: this.handleMerchantTagChange
+              }
+            }}
+            />
           </div>
           <div className={styles.taskComment}>
             <Annotation

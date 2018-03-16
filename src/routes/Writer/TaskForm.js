@@ -25,6 +25,7 @@ export default class TaskForm extends PureComponent {
   state = {
     children: [],
     formData: {},
+    merchant_tag: '',
     needValidateFieldNames: [],
     approveModalVisible: false,
     approver_id: {
@@ -54,6 +55,7 @@ export default class TaskForm extends PureComponent {
             this.setState({
               children: result.task.children,
               formData: result.task.formData,
+              merchant_tag: result.task.merchant_tag,
               needValidateFieldNames: result.task.children.filter(item => item.component === 'Input').map(item => item.name)
             }, () => this.handleGetTaskForm());
           }
@@ -162,6 +164,7 @@ export default class TaskForm extends PureComponent {
           type: 'task/update',
           payload: {
             ...values,
+            merchant_tag: this.state.merchant_tag,
             _id: query._id,
             approve_status: TASK_APPROVE_STATUS.taken,
             publisher_id: currentUser._id,
@@ -184,6 +187,7 @@ export default class TaskForm extends PureComponent {
           type: 'task/add',
           payload: {
             ...values,
+            merchant_tag: this.state.merchant_tag,
             channel,
             channel_name,
             formData: this.state.formData,
@@ -302,6 +306,7 @@ export default class TaskForm extends PureComponent {
               type: 'task/update',
               payload: {
                 ...values,
+                merchant_tag: this.state.merchant_tag,
                 _id: query._id,
               },
               callback: (result) => {
@@ -323,6 +328,7 @@ export default class TaskForm extends PureComponent {
                 payload: {
                   ...values,
                   formData: this.state.formData,
+                  merchant_tag: this.state.merchant_tag,
                   source: SOURCE.deliver,
                   approve_status: TASK_APPROVE_STATUS.taken,
                   channel,
@@ -356,6 +362,7 @@ export default class TaskForm extends PureComponent {
                 payload: {
                   ...values,
                   formData: this.state.formData,
+                  merchant_tag: this.state.merchant_tag,
                   source: SOURCE.create,
                   approve_status: TASK_APPROVE_STATUS.taken,
                   channel,
@@ -401,6 +408,7 @@ export default class TaskForm extends PureComponent {
             type: 'task/update',
             payload: {
               ...values,
+              merchant_tag: this.state.merchant_tag,
               _id: query._id,
               current_approvers: approvers[0],
               approvers: approvers,
@@ -423,6 +431,7 @@ export default class TaskForm extends PureComponent {
             payload: {
               ...values,
               formData: this.state.formData,
+              merchant_tag: this.state.merchant_tag,
               source: SOURCE.create,
               approve_status: TASK_APPROVE_STATUS.taken,
               channel,
@@ -538,6 +547,9 @@ export default class TaskForm extends PureComponent {
     //   }
     // }, 200);
   }
+  handleMerchantTagChange = (value) => {
+    this.setState({ merchant_tag: value.join(',') });
+  }
   handleTaskFormSave = () => {
     const query = querystring.parse(this.props.location.search.substr(1));
     const { children, formData } = this.state;
@@ -651,7 +663,14 @@ export default class TaskForm extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none', paddingBottom: 60 }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} style={{ width: outerWidth }} ref="taskOuterBox">
           <div style={{ width: template === 'item2' ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId || 0} />
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} onChange={this.handleChange} activityId={activityId || 0}
+            extraProps={{
+              merchant_tag: {
+                value: this.state.merchant_tag ? this.state.merchant_tag.split(',') : [],
+                onChange: this.handleMerchantTagChange
+              }
+            }}
+            />
           </div>
           {formRight}
           { operation !== 'view' && <div className={styles.submitBox}>
