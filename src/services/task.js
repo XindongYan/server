@@ -139,6 +139,15 @@ export async function undarenTask(params) {
   });
 }
 
+export async function copyTask(params) {
+  return request('/api/task/copy', {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryProjectTasks(params) {
   return request(`/api/task/list/project?${stringify(params)}`);
 }

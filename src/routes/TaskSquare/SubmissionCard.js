@@ -64,7 +64,7 @@ export default class SubmissionCard extends PureComponent {
                 <Tag color={color}>{ project.channel_name }</Tag>
               }
             </Tooltip>
-            {project.merchant_tag && <Tooltip title="商家标签">
+            {project.merchant_tag && <Tooltip title="商家名称">
               <Tag color="cyan">{project.merchant_tag}</Tag>
             </Tooltip>}
           </div>

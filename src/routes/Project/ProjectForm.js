@@ -263,7 +263,7 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="商家标签"
+            label="商家名称"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >

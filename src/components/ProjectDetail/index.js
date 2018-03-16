@@ -68,7 +68,7 @@ export default class ProjectDetail extends PureComponent {
             }
           </Tooltip>
           {project.merchant_tag &&
-            <Tooltip title="商家标签">
+            <Tooltip title="商家名称">
               <Tag color="cyan">{ project.merchant_tag}</Tag>
             </Tooltip>
           }

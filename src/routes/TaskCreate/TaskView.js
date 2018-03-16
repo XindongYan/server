@@ -53,7 +53,7 @@ export default class TaskForm extends PureComponent {
             </Row>
             <Row gutter={24} className={styles.taskViewList}>
               <Col span={6}>
-                商家标签：
+                商家名称：
               </Col>
               <Col span={18}>
                 <div>{formData.merchant_tag || '无'}</div>

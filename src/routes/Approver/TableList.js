@@ -372,7 +372,7 @@ export default class TableList extends PureComponent {
     });
   }
   handleSpecifyDaren = () => {
-    const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
+    const { dispatch, currentUser,  } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err && values.target_user_id.length >= 24) {
         dispatch({
@@ -399,9 +399,27 @@ export default class TableList extends PureComponent {
     });
   }
   handleUnSpecifyDaren = (record) => {
-    const { dispatch, currentUser, teamUser, data: { pagination, approve_status } } = this.props;
+    const { dispatch, currentUser } = this.props;
     dispatch({
       type: 'task/undaren',
+      payload: {
+        _id: record._id,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          this.handleFetch();
+        }
+      },
+    });
+  }
+  handleCopy = (record) => {
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'task/copy',
       payload: {
         _id: record._id,
         user_id: currentUser._id,
@@ -468,7 +486,7 @@ export default class TableList extends PureComponent {
         render: val => val || '',
       },
       {
-        title: '商家标签',
+        title: '商家名称',
         dataIndex: 'merchant_tag',
         render: val => val ? <TrimSpan text={val} length={10}/> : '',
       },
@@ -573,6 +591,10 @@ export default class TableList extends PureComponent {
               <Link to={`/approver/task/edit?_id=${record._id}`}>
                 编辑
               </Link>
+              <Divider type="vertical" />
+              <Popconfirm placement="left" title={`确认复制?`} onConfirm={() => this.handleCopy(record)} okText="确认" cancelText="取消">
+                <a>复制</a>
+              </Popconfirm>
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
@@ -746,7 +768,7 @@ export default class TableList extends PureComponent {
                   </Tooltip>
                   <Search
                     style={{ width: 260, float: 'right'}}
-                    placeholder="ID／名称／商家标签／昵称"
+                    placeholder="ID／名称／商家名称／昵称"
                     value={this.state.search}
                     onChange={this.handleSearchChange}
                     onSearch={(value) => this.handleSearch(value, 'search')}

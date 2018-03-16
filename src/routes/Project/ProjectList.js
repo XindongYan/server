@@ -304,7 +304,7 @@ export default class ProjectList extends PureComponent {
         render: (val, record) => (<Link to={`/project/task/list?project_id=${record._id}`}><TaskNameColumn text={val} length={10}/></Link>),
       },
       {
-        title: '商家标签',
+        title: '商家名称',
         dataIndex: 'merchant_tag',
         render: (val) => (
           <TrimSpan text={val} length={10} />
@@ -429,7 +429,7 @@ export default class ProjectList extends PureComponent {
               </Tooltip>
               <Search
                 style={{ width: 260, float: 'right'}}
-                placeholder="ID／名称／商家标签"
+                placeholder="ID／名称／商家名称"
                 onSearch={(value) => this.handleSearch(value, 'search')}
                 onChange={this.handleSearchChange}
                 value={this.state.search}
