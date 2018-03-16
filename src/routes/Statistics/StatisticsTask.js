@@ -237,18 +237,18 @@ export default class StatisticsTask extends PureComponent {
         dataIndex: 'taobao.incomeRewards',
         render: (val) => val && val.length > 0 ? val.map(item => item.fee).reduce((a, b) => a + b, 0).toFixed(2) : '',
       },
-      {
-        title: '尼采佣金',
-        width: 90,
-        key: '0',
-        render: (val) => val ? val : '',
-      },
-      {
-        title: '尼采奖励',
-        width: 90,
-        key: '1',
-        render: (val) => val ? val : '',
-      },
+      // {
+      //   title: '尼采佣金',
+      //   width: 90,
+      //   key: '0',
+      //   render: (val) => val ? val : '',
+      // },
+      // {
+      //   title: '尼采奖励',
+      //   width: 90,
+      //   key: '1',
+      //   render: (val) => val ? val : '',
+      // },
     ];
     const opera = {
       title: '操作',
