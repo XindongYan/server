@@ -191,18 +191,18 @@ export default class StatisticsTaker extends PureComponent {
         dataIndex: 'incomeRewards',
         render: (val) => val && val.length > 0 ? val.map(item => item.fee).reduce((a, b) => a + b, 0).toFixed(2) : '',
       },
-      {
-        title: '总尼采佣金',
-        width: 110,
-        key: '0',
-        render: (val) => val ? val : '',
-      },
-      {
-        title: '总尼采奖励',
-        width: 110,
-        key: '1',
-        render: (val) => val ? val : '',
-      },
+      // {
+      //   title: '总尼采佣金',
+      //   width: 110,
+      //   key: '0',
+      //   render: (val) => val ? val : '',
+      // },
+      // {
+      //   title: '总尼采奖励',
+      //   width: 110,
+      //   key: '1',
+      //   render: (val) => val ? val : '',
+      // },
       {
         title: '平均通过次数',
         width: 110,

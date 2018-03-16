@@ -194,18 +194,18 @@ export default class StatisticsChannel extends PureComponent {
         dataIndex: 'incomeRewards',
         render: (val) => val && val.length > 0 ? val.map(item => item.fee).reduce((a, b) => a + b, 0).toFixed(2) : '',
       },
-      {
-        title: '总尼采佣金',
-        width: 110,
-        key: '0',
-        render: (val) => val ? val : '',
-      },
-      {
-        title: '总尼采奖励',
-        width: 110,
-        key: '1',
-        render: (val) => val ? val : '',
-      },
+      // {
+      //   title: '总尼采佣金',
+      //   width: 110,
+      //   key: '0',
+      //   render: (val) => val ? val : '',
+      // },
+      // {
+      //   title: '总尼采奖励',
+      //   width: 110,
+      //   key: '1',
+      //   render: (val) => val ? val : '',
+      // },
     ];
     const opera = {
       title: '操作',

@@ -154,7 +154,7 @@ export default class Annotation extends PureComponent {
       <div style={{height: '100%', position: 'relative'}}>
         <div className={styles.commentTitle}>
           批注
-          <Popover placement="bottom" title="商家批注" content={<pre>{approve_note}</pre>} trigger="click">
+          <Popover placement="bottom" title="商家批注" content={<div style={{ width: 340 }}>{approve_note}</div>} trigger="click">
             <a style={{ marginLeft: 160, color: '#00b395' }}>商家批注</a>
           </Popover>
           { viewStatus !== 'view' &&
