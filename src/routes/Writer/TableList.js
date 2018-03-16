@@ -12,7 +12,7 @@ import DateTimeColumn from '../../components/DateTimeColumn';
 import PublisherChannelsPopover from '../../components/PublisherChannelsPopover';
 import DockPanel from '../../components/DockPanel';
 import Extension from '../../components/Extension';
-import { TASK_APPROVE_STATUS, SOURCE } from '../../constants';
+import { TASK_APPROVE_STATUS, SOURCE, RIGHT } from '../../constants';
 import styles from './TableList.less';
 import { queryTask } from '../../services/task';
 
@@ -509,7 +509,7 @@ export default class TableList extends PureComponent {
       dataIndex: 'deadline',
       render: (val) => <DateTimeColumn value={val} />,
       sorter: true,
-    }]
+    }];
     const approver = {
       title: '审核人',
       dataIndex: 'approver_id',
@@ -726,46 +726,55 @@ export default class TableList extends PureComponent {
         disabled: record.disabled,
       }),
     } : null;
-    if (data.approve_status === -1 || data.approve_status === 0) {
+    if (data.approve_status === TASK_APPROVE_STATUS.taken || data.approve_status === TASK_APPROVE_STATUS.waitingForApprove) {
       columns.push(...times, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.publishedToTaobao || data.approve_status === TASK_APPROVE_STATUS.taobaoAccepted || data.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
       columns.push( pushStatusText, recruitColumn, daren_nickname, pushTime, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
       columns.push(...times, status, opera);
+    } else if (data.approve_status === TASK_APPROVE_STATUS.rejected) {
+      columns.push(...times, recruitColumn);
     } else {
       columns.push(...times, approveTime, opera);
+    }
+    const radioButtons = [
+      <RadioButton key={TASK_APPROVE_STATUS.all} value={TASK_APPROVE_STATUS.all}>全部</RadioButton>,
+      <Tooltip key={TASK_APPROVE_STATUS.taken} placement="top" title="待完成/草稿箱">
+        <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
+      </Tooltip>,
+      <RadioButton key={TASK_APPROVE_STATUS.waitingForApprove} value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>,
+      <RadioButton key={TASK_APPROVE_STATUS.rejected} value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>,
+      <RadioButton key={TASK_APPROVE_STATUS.passed} value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>,
+    ];
+    if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
+      radioButtons.push(
+        <Tooltip key={TASK_APPROVE_STATUS.waitingToTaobao} placement="top" title="待发布至阿里创作平台">
+          <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
+            待发布
+          </RadioButton>
+        </Tooltip>,
+        <Tooltip key={TASK_APPROVE_STATUS.publishedToTaobao} placement="top" title="已发布至阿里创作平台">
+          <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
+            已发布
+          </RadioButton>
+        </Tooltip>,
+        <Tooltip key={TASK_APPROVE_STATUS.taobaoRejected} placement="top" title="阿里创作平台不通过">
+          <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
+            淘宝不通过
+          </RadioButton>
+        </Tooltip>,
+        <Tooltip key={TASK_APPROVE_STATUS.taobaoAccepted} placement="top" title="阿里创作平台通过">
+          <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
+            淘宝通过
+          </RadioButton>
+        </Tooltip>
+      );
     }
     return (
       <div>
         <div className={styles.searchBox}>
           <RadioGroup value={data.approve_status} onChange={this.changeApproveStatus}>
-            <RadioButton value={TASK_APPROVE_STATUS.all}>全部</RadioButton>
-            <Tooltip placement="top" title="待完成/草稿箱">
-              <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
-            </Tooltip>
-            <RadioButton value={TASK_APPROVE_STATUS.waitingForApprove}>待审核</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>
-            <RadioButton value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>
-            <Tooltip placement="top" title="待发布至阿里创作平台">
-              <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
-                待发布
-              </RadioButton>
-            </Tooltip>
-            <Tooltip placement="top" title="已发布至阿里创作平台">
-              <RadioButton value={TASK_APPROVE_STATUS.publishedToTaobao}>
-                已发布
-              </RadioButton>
-            </Tooltip>
-            <Tooltip placement="top" title="阿里创作平台不通过">
-              <RadioButton value={TASK_APPROVE_STATUS.taobaoRejected}>
-                淘宝不通过
-              </RadioButton>
-            </Tooltip>
-            <Tooltip placement="top" title="阿里创作平台通过">
-              <RadioButton value={TASK_APPROVE_STATUS.taobaoAccepted}>
-                淘宝通过
-              </RadioButton>
-            </Tooltip>
+            {radioButtons}
           </RadioGroup>
         </div>
         <Card bordered={false} bodyStyle={{ padding: 14 }}>
