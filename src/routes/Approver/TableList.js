@@ -434,6 +434,24 @@ export default class TableList extends PureComponent {
       },
     });
   }
+  handleRemove = (record) => {
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'task/remove',
+      payload: {
+        _id: record._id,
+        user_id: currentUser._id,
+      },
+      callback: (result) => {
+        if (result.error) {
+          message.error(result.msg);
+        } else {
+          message.success(result.msg);
+          this.handleFetch();
+        }
+      },
+    });
+  }
   handleSearchDaren = (value) => {
     const { teamUser } = this.props;
     if (value) {
@@ -595,6 +613,12 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认复制?`} onConfirm={() => this.handleCopy(record)} okText="确认" cancelText="取消">
                 <a>复制</a>
               </Popconfirm>
+              {record.parent_id && <Divider type="vertical" />}
+              {record.parent_id &&
+                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
+                  <a>删除</a>
+                </Popconfirm>
+              }
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
