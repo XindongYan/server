@@ -263,6 +263,7 @@ export default class TaskEdit extends PureComponent {
               viewStatus={operation}
               value={approve_notes}
               onChange={this.changeApproveNode}
+              approve_note={formData.approve_note}
             />
           </div>
           { (formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove || formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.waitingToTaobao ) &&

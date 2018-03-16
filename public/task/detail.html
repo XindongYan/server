@@ -234,13 +234,26 @@
 
 			.messageBlock{
 				position: fixed;
-				bottom: 50%;
+				top: 15%;
 				right: 2%;
-				width: 360px;
-				height: 200px;
+				width: 340px;
+				height: 50%;
 				background-color: #fff;
 				border-radius: 6px;
 				padding: 10px;
+			}
+			.submit{
+				width: 100%;
+				height: 32px;
+				margin-top: 10px;
+				border-radius: 3px;
+				outline: none;
+				color: #fff;
+		    background-color: #00b395;
+		    border-color: #00b395;
+			}
+			.submit:hover{
+				cursor: pointer;
 			}
 		</style>
 	</head>
@@ -283,33 +296,66 @@
 			</section>
 		</div>
 		<div id="messageBlock" class="messageBlock">
-			<textarea id="message" style="width: 100%; height: 80%"></textarea>
+			<textarea id="message" style="width: 100%; height: 82%" oninput="handleMessageChange(this.value)"></textarea>
+			<button id="submit" class="submit" onclick="handleSubmit()">提交</button>
 		</div>
 		<script>
+			var strHref = decodeURI(location.href).substring(decodeURI(location.href).indexOf('?')+1).split('&');
+			var query = {};
+			for (var i = 0; i < strHref.length;i++) {
+				var arr = strHref[i].split('=');
+				query[arr[0]] = arr[1];
+			}
+			var hostname = location.hostname;
+			var origin = '';
+			if (hostname === 'localhost' || hostname === 'test.nicai360.com') {
+				origin = 'http://testapi.nicai360.com';
+			} else {
+				origin = 'http://api.nicai360.com';
+			}
+
 			var approve_note_changed = false;
+			var approve_note = '';
+			function handleMessageChange(value) {
+				approve_note = value;
+				approve_note_changed = true;
+			}
+			function handleSubmit() {
+				if (approve_note_changed) {
+					$.ajax({
+						type: "PUT",
+						url: origin + "/api/task/update/public",
+						data: {
+							_id: query._id,
+							approve_note: approve_note
+						},
+						success: function(result) {
+							if (!result.error) {
+								alert('提交成功');
+							} else {
+								alert(result.msg);
+							}
+						}
+					});
+				} else {
+					if (approve_note) {
+						alert('您没有做出任何修改');
+					} else {
+						alert('您还未填写要提交的内容');
+					}
+				}
+				approve_note_changed = false;
+			}
 			$(function(){
 				$('#nice-auction-button').on('click', 'i', function(e){
 					$('#nice-auction-box').css({left: '-'+ $(this).index()*375 +'px' });
 					$('#nice-auction-button i').removeClass('btnActive');
 					$(this).addClass('btnActive');
 				});
-				var strHref = decodeURI(location.href).substring(decodeURI(location.href).indexOf('?')+1).split('&');
-				var query = {};
-				for (var i = 0; i < strHref.length;i++) {
-					var arr = strHref[i].split('=');
-					query[arr[0]] = arr[1];
-				}
 				if (query._id) {
 					getTask();
 				}
 				function getTask(){
-					var hostname = location.hostname;
-					var origin = '';
-					if (hostname === 'localhost' || hostname === 'test.nicai360.com') {
-						origin = 'http://testapi.nicai360.com';
-					} else {
-						origin = 'http://api.nicai360.com';
-					}
 					$.ajax({
 						type: "GET",
 						url: origin + "/api/task",
@@ -319,6 +365,8 @@
 						success: function(result) {
 							if(!result.error && result.task && result.task.children){
 								setTask(result.task.children);
+								$('#message').val(result.task.approve_note);
+								approve_note = result.task.approve_note;
 							}
 						}
 					});

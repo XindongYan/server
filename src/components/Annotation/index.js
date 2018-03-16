@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Modal, message, Button, Popconfirm } from 'antd';
+import { Card, Modal, message, Button, Popconfirm, Popover } from 'antd';
 import $ from 'jquery';
 import styles from './index.less';
 import SignBox from './signBox.js';
@@ -147,13 +147,16 @@ export default class Annotation extends PureComponent {
     })
   }
   render() {
-    const { viewStatus, value, approve_step, approve_status } = this.props;
+    const { viewStatus, value, approve_step, approve_status, approve_note } = this.props;
     const { action, direction, signVisible, commentContent, signContent } = this.state;
     const boxSize = {width: $(this.refs.AnnotationBox).outerWidth(), height: $(this.refs.AnnotationBox).outerHeight()};
     return (
       <div style={{height: '100%', position: 'relative'}}>
         <div className={styles.commentTitle}>
           批注
+          <Popover placement="bottom" title="商家批注" content={<pre>{approve_note}</pre>} trigger="click">
+            <a style={{ marginLeft: 160, color: '#00b395' }}>商家批注</a>
+          </Popover>
           { viewStatus !== 'view' &&
             <Popconfirm placement="top" title="确认清空批注?" onConfirm={this.handleClear} okText="确认" cancelText="取消">
               <a style={{ float: 'right', marginRight: 10, color: '#00b395' }}>清空批注</a>
