@@ -89,8 +89,8 @@ export default class TaskChannel extends PureComponent {
   renderWeitaoChannel = () => {
     const weitao = {
       "description": "内容质量与粉丝效果好的微淘可以得到更多频道曝光",
-      "linkText": "模板使用帮助",
-      "linkUrl": "https://docs.alipay.com/alibaba_we_guide/guide/lbdcfg",
+      "linkText": "",
+      "linkUrl": "",
       "tabList": [{
         "blockList": [{
           "component": "BlockCommon",
@@ -106,8 +106,8 @@ export default class TaskChannel extends PureComponent {
             }, {
               "label": "创作指导：",
               "textList": [{
-                "text": "好的长文章应该怎么写？",
-                "url": "https://docs.alipay.com/alibaba_we_guide/guide/trntsx"
+                "text": "",
+                "url": ""
               }]
             }],
             "title": "长文章"
@@ -213,12 +213,6 @@ export default class TaskChannel extends PureComponent {
               "textList": [{
                 "text": "较高自由度的搭配模板，创作者自行上传搭配的完成图，自由在图片上添加标签。可上传多个带有标签的搭配图片"
               }]
-            }, {
-              "label": "创作指导：",
-              "textList": [{
-                "text": "场景搭配型内容应该怎么写？",
-                "url": "https://docs.alipay.com/alibaba_we_guide/guide/nhqgt5"
-              }]
             }],
             "title": "场景搭配"
           }
@@ -232,12 +226,6 @@ export default class TaskChannel extends PureComponent {
               "label": "模板描述：",
               "textList": [{
                 "text": "系统提供拼图工具，可以更快的生产一张精美的搭配图，在图片的编辑过程中，工具还能提供宝贝选择、抠图、编辑等功能。"
-              }]
-            }, {
-              "label": "创作指导：",
-              "textList": [{
-                "text": "拼图搭配型内容应该怎么写？",
-                "url": "https://docs.alipay.com/alibaba_we_guide/guide/hnfegg"
               }]
             }],
             "title": "拼图搭配"
@@ -257,12 +245,6 @@ export default class TaskChannel extends PureComponent {
               "label": "模板描述：",
               "textList": [{
                 "text": "围绕单个宝贝的亮点、使用心得展开介绍。好的内容将让粉丝对该商品种草"
-              }]
-            }, {
-              "label": "创作指导：",
-              "textList": [{
-                "text": "好货心得应该怎么写？",
-                "url": "https://docs.alipay.com/alibaba_we_guide/guide/xfpp6z"
               }]
             }],
             "title": "好货心得"
