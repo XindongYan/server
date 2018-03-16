@@ -17,3 +17,12 @@ export async function updateUser(params) {
 export async function queryUserBySms(params) {
   return request(`/api/user/by/sms_code?${stringify(params)}`);
 }
+
+export async function setUserAgent(params) {
+  return request('/api/user/user_agent', {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
