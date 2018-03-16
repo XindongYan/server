@@ -281,7 +281,7 @@ export default class TaskEdit extends PureComponent {
               approve_note={formData.approve_note}
             />
           </div>
-          <div className={styles.submitBox}>
+          <div className={styles.submitBox} id="subButton">
             { formData.approve_status === TASK_APPROVE_STATUS.waitingForApprove &&
               <Popconfirm
               overlayClassName={styles.popConfirm}
