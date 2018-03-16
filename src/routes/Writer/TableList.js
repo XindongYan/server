@@ -733,9 +733,7 @@ export default class TableList extends PureComponent {
     } else {
       columns.push(...times, approveTime, opera);
     }
-    if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
-      radioButtons.push(<RadioButton key={TASK_APPROVE_STATUS.all} value={TASK_APPROVE_STATUS.all}>全部</RadioButton>);
-    }
+
     const radioButtons = [
       <Tooltip key={TASK_APPROVE_STATUS.taken} placement="top" title="待完成/草稿箱">
         <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
@@ -744,6 +742,9 @@ export default class TableList extends PureComponent {
       <RadioButton key={TASK_APPROVE_STATUS.rejected} value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>,
       <RadioButton key={TASK_APPROVE_STATUS.passed} value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>,
     ];
+    if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
+      radioButtons.unshift(<RadioButton key={TASK_APPROVE_STATUS.all} value={TASK_APPROVE_STATUS.all}>全部</RadioButton>);
+    }
     if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
       radioButtons.push(
         <Tooltip key={TASK_APPROVE_STATUS.waitingToTaobao} placement="top" title="待发布至阿里创作平台">

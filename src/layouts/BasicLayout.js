@@ -327,7 +327,7 @@ class BasicLayout extends React.PureComponent {
   }
   render() {
     const { currentUser, collapsed, fetchingNotices, teamUser, team, selectedKeys } = this.props;
-
+    const showTopMenu = currentUser.rights && ( currentUser.rights.indexOf(RIGHT.teamAdmin) >= 0 || currentUser.rights.indexOf(RIGHT.approver) >= 0);
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         <Menu.Item key="setting"><Icon type="user" />个人中心</Menu.Item>
@@ -393,23 +393,26 @@ class BasicLayout extends React.PureComponent {
               type={collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />
-            <div className={styles.daren}>
-              <Link target='_blank' to="/taobao_daren/list">
-                <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>综合榜单</span>
-              </Link>
-            </div>
-            <div className={styles.daren}>
-              <Link target='_blank' to="/taobao_daren/live/list">
-                <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>直播榜单</span>
-              </Link>
-            </div>
-            <div className={styles.daren}>
-              <Dropdown overlay={bbs}>
-                <span className={styles.bbsLink}>
-                  <Icon type="link" /> <span style={{ fontSize: 14 }}>论坛链接</span>
-                </span>
-              </Dropdown>
-            </div>
+            {showTopMenu &&
+              <div className={styles.daren}>
+                <Link target='_blank' to="/taobao_daren/list">
+                  <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>综合榜单</span>
+                </Link>
+              </div>}
+            {showTopMenu &&
+              <div className={styles.daren}>
+                <Link target='_blank' to="/taobao_daren/live/list">
+                  <Icon type="area-chart" /> <span style={{ fontSize: 14 }}>直播榜单</span>
+                </Link>
+              </div>}
+            {showTopMenu &&
+              <div className={styles.daren}>
+                <Dropdown overlay={bbs}>
+                  <span className={styles.bbsLink}>
+                    <Icon type="link" /> <span style={{ fontSize: 14 }}>论坛链接</span>
+                  </span>
+                </Dropdown>
+              </div>}
             <div className={styles.right}>
               { /* <HeaderSearch
                 className={`${styles.action} ${styles.search}`}
