@@ -56,11 +56,7 @@ export default class CoverModal extends PureComponent {
         const { auction } = nextProps;
         if (auction.coverUrl) {
           this.setState({
-            coverUrl: auction.images[0],
-          });
-        }
-        if (auction.title) {
-          this.setState({
+            coverUrl: auction.coverUrl,
             title: auction.title,
           });
         }
@@ -69,10 +65,18 @@ export default class CoverModal extends PureComponent {
           for (let i = 0; i < nextProps.auction.images.length; i++) {
             arr.push('');
           }
+          if (auction.coverUrl && !auction.images.find(item => item === auction.coverUrl)) {
+            this.setState({
+              uploadBgImage: auction.coverUrl,
+            });
+          }
           this.setState({
             cutCoverUrl: arr,
             images: nextProps.auction.images,
           });
+        }
+        if (this.props.k === 'editor') {
+          if (this.props.onBlur) this.props.onBlur();
         }
       } else if (this.props.visible && !nextProps.visible) {
         const nicaiCrx = this.state.nicaiCrx || document.getElementById('nicaiCrx');

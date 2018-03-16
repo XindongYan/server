@@ -117,6 +117,18 @@ export default class StructCanvas extends PureComponent {
           rule: propsData.moduleInfo.rule,
         }
         if (this.props.onChange) this.props.onChange([ ...props.value, data ]);
+      } else if (key === 'StdParagraph') {
+        // const data = {
+        //   moduleInfo: {dataSchema: propsData.moduleInfo.dataSchema},
+        //   guid: "",
+        //   name: propsData.moduleInfo.name,
+        //   resourceId: propsData.moduleInfo.id,
+        //   rule: propsData.moduleInfo.rule,
+        //   materialId: propsData.moduleInfo.materialId,
+        //   attrs: propsData.moduleInfo.attrs || {},
+        //   data: null,
+        //   errorMsg: "",
+        // }
       }
     }
   }
