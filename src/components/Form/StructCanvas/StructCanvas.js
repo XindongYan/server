@@ -23,10 +23,6 @@ export default class StructCanvas extends PureComponent {
       this.setState({
         spot: this.props.props.value[0].data.features,
       });
-    } else {
-      const newValue = this.props.props.value;
-      newValue[0].data = { features: [] };
-      if (this.props.onChange) this.props.onChange(newValue);
     }
   }
   componentWillUnmount() {
@@ -49,7 +45,11 @@ export default class StructCanvas extends PureComponent {
     const { props } = this.props;
     if (this.state.spot.length >= 2) {
       const newValue = props.value;
-      newValue[0].data.features = this.state.spot;
+      if (newValue[0].data) {
+        newValue[0].data.features = this.state.spot;
+      } else {
+        newValue[0].data = { features: this.state.spot };
+      }
       if (this.props.onChange) this.props.onChange(newValue);
       this.setState({
         spotVisible: false,
