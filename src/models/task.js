@@ -1,6 +1,6 @@
 import { queryTask, updateTask, addTask, publishTask, queryProjectTasks, queryTakerTasks, handinTask, approveTask, rejectTask,
 queryApproverTasks, addTaskByWriter, specifyTask, withdrawTask, passTask, payoffTask, removeTask, undarenTask, queryTaskOperationRecords,
-queryTeamTasks, queryProjectFinanceTasks, queryDarenTasks, approveTaskBatch, copyTask } from '../services/task';
+queryTeamTasks, queryProjectFinanceTasks, queryDarenTasks, approveTaskBatch } from '../services/task';
 import { TASK_APPROVE_STATUS } from '../constants';
 
 export default {
@@ -136,10 +136,6 @@ export default {
     },
     *undaren({ payload, callback }, { call, put }) {
       const result = yield call(undarenTask, payload);
-      if (callback) callback(result);
-    },
-    *copy({ payload, callback }, { call, put }) {
-      const result = yield call(copyTask, payload);
       if (callback) callback(result);
     },
     *approveBatch({ payload, callback }, { call, put }) {

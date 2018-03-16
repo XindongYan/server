@@ -272,7 +272,7 @@ export default class TaskForm extends PureComponent {
             {getFieldDecorator('merchant_tag', {
             })(
                <Select
-                placeholder="请输入商家标签并按回车键确认"
+                placeholder="请输入商家名称并按回车键确认"
                 mode="tags"
                 style={{ width: '100%' }}
                 tokenSeparators={[',']}

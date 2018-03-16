@@ -646,12 +646,18 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
-              <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+              {!record.parent_id && <Divider type="vertical" />}
+              {!record.parent_id && <Popconfirm placement="left" title={`确认退回?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                 <Tooltip placement="top" title="退回给写手">
                   <a>退回</a>
                 </Tooltip>
-              </Popconfirm>
+              </Popconfirm>}
+              {record.parent_id && <Divider type="vertical" />}
+              {record.parent_id &&
+                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
+                  <a>删除</a>
+                </Popconfirm>
+              }
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.publishedToTaobao) {

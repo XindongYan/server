@@ -237,7 +237,7 @@ export default class TableList extends PureComponent {
     });
   }
   handleSpecifyDaren = () => {
-    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
+    const { dispatch, currentUser} = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     this.props.form.validateFields((err, values) => {
       if (!err && values.target_user_id.length >= 24) {
@@ -247,6 +247,7 @@ export default class TableList extends PureComponent {
             task_ids: this.state.selectedRowKeys,
             user_id: currentUser._id,
             target_user_id: values.target_user_id,
+            type: values.type,
           },
           callback: (result) => {
             if (result.error) {
@@ -265,7 +266,7 @@ export default class TableList extends PureComponent {
     });
   }
   handleUnSpecifyDaren = (record) => {
-    const { dispatch, currentUser, projectTask: { pagination, approve_status } } = this.props;
+    const { dispatch, currentUser } = this.props;
     const query = querystring.parse(this.props.location.search.substr(1));
     dispatch({
       type: 'task/undaren',
@@ -787,6 +788,25 @@ export default class TableList extends PureComponent {
                 onOk={this.handleSpecifyDaren}
                 onCancel={() => this.handleDarenModalVisible(false)}
               >
+                <FormItem
+                  label={
+                    <Tooltip placement="topLeft" title={<span>选择原稿：将此稿子指定给达人；<br/>选择复制：将此稿子复制一份，并将复制的指定给达人（不影响原稿）</span>}>
+                      类型 <Icon type="question-circle-o" />
+                    </Tooltip>
+                  }
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 20 }}
+                >
+                  {getFieldDecorator('type', {
+                    initialValue: 'original',
+                    rules: [{ required: true, message: '请选择指定类型！' }],
+                  })(
+                    <RadioGroup>
+                      <RadioButton value="original">原稿</RadioButton>
+                      <RadioButton value="copy">复制</RadioButton>
+                    </RadioGroup>
+                  )}
+                </FormItem>
                 <FormItem
                   label="达人"
                   labelCol={{ span: 4 }}

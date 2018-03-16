@@ -381,6 +381,7 @@ export default class TableList extends PureComponent {
             task_ids: this.state.selectedRowKeys,
             user_id: currentUser._id,
             target_user_id: values.target_user_id,
+            type: values.type,
           },
           callback: (result) => {
             if (result.error) {
@@ -402,24 +403,6 @@ export default class TableList extends PureComponent {
     const { dispatch, currentUser } = this.props;
     dispatch({
       type: 'task/undaren',
-      payload: {
-        _id: record._id,
-        user_id: currentUser._id,
-      },
-      callback: (result) => {
-        if (result.error) {
-          message.error(result.msg);
-        } else {
-          message.success(result.msg);
-          this.handleFetch();
-        }
-      },
-    });
-  }
-  handleCopy = (record) => {
-    const { dispatch, currentUser } = this.props;
-    dispatch({
-      type: 'task/copy',
       payload: {
         _id: record._id,
         user_id: currentUser._id,
@@ -609,16 +592,6 @@ export default class TableList extends PureComponent {
               <Link to={`/approver/task/edit?_id=${record._id}`}>
                 编辑
               </Link>
-              <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认复制?`} onConfirm={() => this.handleCopy(record)} okText="确认" cancelText="取消">
-                <a>复制</a>
-              </Popconfirm>
-              {record.parent_id && <Divider type="vertical" />}
-              {record.parent_id &&
-                <Popconfirm placement="left" title={`确认删除?`} onConfirm={() => this.handleRemove(record)} okText="确认" cancelText="取消">
-                  <a>删除</a>
-                </Popconfirm>
-              }
             </div>
           );
         } else if (record.approve_status === TASK_APPROVE_STATUS.waitingToTaobao) {
@@ -627,12 +600,12 @@ export default class TableList extends PureComponent {
               <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
                 <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
               </Popconfirm>
-              <Divider type="vertical" />
-              <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+              {!record.parent_id && <Divider type="vertical" />}
+              {!record.parent_id && <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                 <Tooltip placement="top" title="退回给写手">
                   <a>退回</a>
                 </Tooltip>
-              </Popconfirm>
+              </Popconfirm>}
               <Divider type="vertical" />
               <Popconfirm placement="left" title={`确认撤回?`} onConfirm={() => this.handleUnSpecifyDaren(record)} okText="确认" cancelText="取消">
                 <Tooltip placement="top" title="从达人撤回">
@@ -664,12 +637,12 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.taobaoRejected) {
           return (
             <div>
-              <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
+              {!record.parent_id && <Popconfirm placement="left" title={`确认退回给写手?`} onConfirm={() => this.handleReject(record)} okText="确认" cancelText="取消">
                 <Tooltip placement="top" title="退回给写手">
                   <a>退回</a>
                 </Tooltip>
-              </Popconfirm>
-              <Divider type="vertical" />
+              </Popconfirm>}
+              { record.taobao && record.taobao.url && <Divider type="vertical" />}
               { record.taobao && record.taobao.url &&
                 <a onClick={() => {this.setState({ extension: record.taobao.url, extensionVisible: true })}}>
                   推广
@@ -835,6 +808,25 @@ export default class TableList extends PureComponent {
                 onOk={this.handleSpecifyDaren}
                 onCancel={() => this.handleDarenModalVisible(false)}
               >
+                <FormItem
+                  label={
+                    <Tooltip placement="topLeft" title={<span>选择原稿：将此稿子指定给达人；<br/>选择复制：将此稿子复制一份，并将复制的指定给达人（不影响原稿）</span>}>
+                      类型 <Icon type="question-circle-o" />
+                    </Tooltip>
+                  }
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 20 }}
+                >
+                  {getFieldDecorator('type', {
+                    initialValue: 'original',
+                    rules: [{ required: true, message: '请选择指定类型！' }],
+                  })(
+                    <RadioGroup>
+                      <RadioButton value="original">原稿</RadioButton>
+                      <RadioButton value="copy">复制</RadioButton>
+                    </RadioGroup>
+                  )}
+                </FormItem>
                 <FormItem
                   label="达人"
                   labelCol={{ span: 4 }}
