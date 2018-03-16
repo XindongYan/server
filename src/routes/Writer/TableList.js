@@ -627,10 +627,6 @@ export default class TableList extends PureComponent {
         } else if (record.approve_status === TASK_APPROVE_STATUS.passed) {
           return (
             <div>
-              <Popconfirm placement="left" title={`确认发布至阿里创作平台?`} onConfirm={() => this.handlePublish(record)} okText="确认" cancelText="取消">
-                <a><PublisherChannelsPopover channel_list={channel_list} >发布</PublisherChannelsPopover></a>
-              </Popconfirm>
-              <Divider type="vertical" />
               <Link to={`/writer/task/view?_id=${record._id}`}>
                 查看
               </Link>
@@ -733,12 +729,14 @@ export default class TableList extends PureComponent {
     } else if (data.approve_status === TASK_APPROVE_STATUS.all) {
       columns.push(...times, status, opera);
     } else if (data.approve_status === TASK_APPROVE_STATUS.rejected) {
-      columns.push(...times, recruitColumn);
+      columns.push(...times, approveTime, recruitColumn, opera);
     } else {
       columns.push(...times, approveTime, opera);
     }
+    if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
+      radioButtons.push(<RadioButton key={TASK_APPROVE_STATUS.all} value={TASK_APPROVE_STATUS.all}>全部</RadioButton>);
+    }
     const radioButtons = [
-      <RadioButton key={TASK_APPROVE_STATUS.all} value={TASK_APPROVE_STATUS.all}>全部</RadioButton>,
       <Tooltip key={TASK_APPROVE_STATUS.taken} placement="top" title="待完成/草稿箱">
         <RadioButton value={TASK_APPROVE_STATUS.taken}>待完成</RadioButton>
       </Tooltip>,
