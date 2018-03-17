@@ -742,10 +742,10 @@ export default class TableList extends PureComponent {
       <RadioButton key={TASK_APPROVE_STATUS.rejected} value={TASK_APPROVE_STATUS.rejected}>未通过</RadioButton>,
       <RadioButton key={TASK_APPROVE_STATUS.passed} value={TASK_APPROVE_STATUS.passed}>已通过</RadioButton>,
     ];
-    if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
+    // if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
       radioButtons.unshift(<RadioButton key={TASK_APPROVE_STATUS.all} value={TASK_APPROVE_STATUS.all}>全部</RadioButton>);
-    }
-    if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
+    // }
+    // if (currentUser.rights && currentUser.rights.indexOf(RIGHT.daren) >= 0) {
       radioButtons.push(
         <Tooltip key={TASK_APPROVE_STATUS.waitingToTaobao} placement="top" title="待发布至阿里创作平台">
           <RadioButton value={TASK_APPROVE_STATUS.waitingToTaobao}>
@@ -768,7 +768,7 @@ export default class TableList extends PureComponent {
           </RadioButton>
         </Tooltip>
       );
-    }
+    // }
     return (
       <div>
         <div className={styles.searchBox}>
