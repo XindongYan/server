@@ -637,7 +637,7 @@ export default class TaskForm extends PureComponent {
       if (this.props.formData.approve_status === TASK_APPROVE_STATUS.rejected) {
         formRight = (
           <div className={styles.taskComment}>
-            <Annotation viewStatus="view" value={formData.approve_notes} />
+            <Annotation viewStatus="view" value={formData.approve_notes} approve_note={formData.approve_note} />
           </div>
         );
       } else if (this.props.formData.approve_status === TASK_APPROVE_STATUS.taken) {
@@ -648,7 +648,7 @@ export default class TaskForm extends PureComponent {
       if (formData.approve_status === TASK_APPROVE_STATUS.passed || formData.approve_status === TASK_APPROVE_STATUS.rejected) {
         formRight = (
           <div className={styles.taskComment}>
-            <Annotation viewStatus="view" value={formData.approve_notes} />
+            <Annotation viewStatus="view" value={formData.approve_notes} approve_note={formData.approve_note} />
           </div>
         );
       } else {
