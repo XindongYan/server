@@ -53,7 +53,7 @@ export default class ProjectForm extends PureComponent {
         type: nextProps.formData.type,
         name: nextProps.formData.name,
         channel: nextProps.formData.channel,
-        merchant_tag: nextProps.formData.merchant_tag,
+        merchant_tag: nextProps.formData.merchant_tag ? nextProps.formData.merchant_tag.split(',') : [],
         task_type: nextProps.formData.task_type,
         desc: nextProps.formData.desc,
         deadline: nextProps.formData.deadline ? moment(nextProps.formData.deadline) : null,
@@ -103,6 +103,7 @@ export default class ProjectForm extends PureComponent {
           }) : [],
           approvers,
           channel_name: channel.label,
+          merchant_tag: values.merchant_tag.join(','),
         };
         if (this.props.operation === 'edit') {
           this.props.dispatch({
@@ -262,13 +263,19 @@ export default class ProjectForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="商家标签"
+            label="商家名称"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('merchant_tag', {
             })(
-              <Input maxLength="30" placeholder="最多输入30个字" />
+              <Select
+                placeholder="请输入商家名称并按回车键确认"
+                mode="tags"
+                style={{ width: '100%' }}
+                tokenSeparators={[',']}
+              >
+              </Select>
             )}
           </FormItem>
           <FormItem

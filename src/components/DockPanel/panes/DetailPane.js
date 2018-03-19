@@ -42,7 +42,7 @@ export default class DetailPane extends PureComponent {
           </Row>
           <Row gutter={2} style={rowStyle}>
             <Col {...labelSpan} style={labelStyle}>
-              商家标签：
+              商家名称：
             </Col>
             <Col {...valueSpan}>
               <div>{task.merchant_tag || '无'}</div>

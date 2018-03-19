@@ -84,7 +84,7 @@ export default class DockPanel extends PureComponent {
               {/*<div className={styles['dock-panel-head-extra']}>
                 <Row>
                   {this.renderExtraItem('任务名称', formData.name, 4)}
-                  {this.renderExtraItem('商家标签', formData.merchant_tag, 4)}
+                  {this.renderExtraItem('商家名称', formData.merchant_tag, 4)}
                   {this.renderExtraItem('渠道', formData.channel_name, 4)}
                   {this.renderExtraItem('创建时间', moment(formData.create_time).format('YYYY-MM-DD HH:mm'), 4)}
                   {this.renderExtraItem('活动酬劳', `￥${formData.price}`, 4)}

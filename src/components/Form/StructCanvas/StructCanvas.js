@@ -108,14 +108,25 @@ export default class StructCanvas extends PureComponent {
         const data = {
           attrs: propsData.moduleInfo.attrs || {},
           data: {},
-          errorMsg: "",
-          guid: "",
+          guid: "ItemParagraph-1",
           materialId: propsData.moduleInfo.materialId,
           name: propsData.moduleInfo.name,
           resourceId: propsData.moduleInfo.id,
           moduleInfo: {dataSchema: propsData.moduleInfo.dataSchema},
           rule: propsData.moduleInfo.rule,
-        }
+        };
+        if (this.props.onChange) this.props.onChange([ ...props.value, data ]);
+      } else if (key === 'StdParagraph') {
+        const data = {
+          moduleInfo: {dataSchema: propsData.moduleInfo.dataSchema},
+          guid: "ItemParagraphSelect-1",
+          name: propsData.moduleInfo.name,
+          resourceId: propsData.moduleInfo.id,
+          rule: propsData.moduleInfo.rule,
+          materialId: propsData.moduleInfo.materialId,
+          data: null,
+          attrs: propsData.moduleInfo.attrs || {},
+        };
         if (this.props.onChange) this.props.onChange([ ...props.value, data ]);
       }
     }
@@ -195,7 +206,7 @@ export default class StructCanvas extends PureComponent {
             overlayClassName={styles.popover_box}
             placement="right"
             title={this.renderBodyStructTitle()}
-            content={<BodyStructContent onChange={this.handleChangeBodyStruct} value={item.data} index={index + 1} />}
+            content={<BodyStructContent onChange={this.handleChangeBodyStruct} props={props} value={item} index={index + 1} />}
             trigger="click"
             visible={this.state.paragraphVisible === index ? true : false}
             autoAdjustOverflow={false}

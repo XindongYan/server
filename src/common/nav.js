@@ -211,9 +211,9 @@ export function getNavData(user) {
     if (user.rights.indexOf(RIGHT.writer) >= 0) {
       menuItems.push(album);
     }
-    if (user.rights.indexOf(RIGHT.daren) >= 0) {
-      menuItems.push(statistics);
-    }
+    // if (user.rights.indexOf(RIGHT.daren) >= 0) {
+    //   menuItems.push(statistics);
+    // }
   } else {
     menuItems.push(square, creation, approve, team, project, album, statistics);
   }

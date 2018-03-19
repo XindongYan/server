@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import $ from 'jquery';
 import AlbumModal from '../../AlbumModal';
 import AuctionModal from '../../AuctionModal';
+import CoverModal from '../../AuctionModal/CoverModal';
 import SpuModal from '../../AuctionModal/SpuModal';
 import BpuModal from '../../AuctionModal/BpuModal';
 import ShopListModal from '../../AuctionModal/ShopListModal';
@@ -21,6 +22,7 @@ export default class Editors extends PureComponent {
     selectionState: (EditorState.createEmpty()).getSelection(),
     inlineStyleList: [],
     affix: true,
+    editAuctionKey: '',
   }
   // new SelectionState({
   //     anchorKey: blockKey,
@@ -221,6 +223,7 @@ export default class Editors extends PureComponent {
               src={data.coverUrl}
               alt="封面图"
             />
+            <div className={styles.editImgBox} onClick={() => this.editBlock(props)}>点击完善资料</div>
           </div>
           <div className={styles.auctionMsgBox}>
             <p>{data.title}</p>
@@ -379,7 +382,30 @@ export default class Editors extends PureComponent {
     });
     this.handleBlur();
   }
-    
+  handelChangeAuctionData = (image, title) => {
+    const contentState = this.state.editorState.getCurrentContent();
+    const newContentState = contentState.mergeEntityData(this.state.editAuctionKey, { coverUrl: image, title, });
+    let newEditorState = EditorState.createWithContent(newContentState);
+    this.setState({
+      editorState: newEditorState,
+    });
+  }
+  editBlock = (props) => {
+    const key = props.block.getEntityAt(0);
+    const entity = props.contentState.getEntity(key);
+    const data = entity.getData();
+    this.setState({
+      editAuctionKey: key,
+    });
+    this.props.dispatch({
+      type: 'album/showCover',
+      payload: {
+        coverKey: "editor",
+        auction: data,
+      }
+    });
+    this.handleFocus();
+  }
   removeBlock = (props) => {
     let nextContentState, nextEditorState;
     const blockKey = props.block.getKey();
@@ -542,6 +568,7 @@ export default class Editors extends PureComponent {
         <BpuModal k="editor" onOk={this.handleAddBpu} />
         <SpuModal k="editor" onOk={this.handleAddSpu} activityId={this.props.activityId} />
         <ShopListModal k="editor" onOk={this.handleAddShop} />
+        <CoverModal k="editor" onOk={this.handelChangeAuctionData} onBlur={this.handleBlur} />
       </div>
     );
   }

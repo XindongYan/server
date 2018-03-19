@@ -21,6 +21,7 @@ export default class TaskView extends PureComponent {
   state = {
     children: [],
     formData: {},
+    merchant_tag: '',
     approve_notes: [],
   }
   componentWillMount() {
@@ -33,6 +34,7 @@ export default class TaskView extends PureComponent {
           this.setState({
             children: result.task.children,
             formData: result.task.formData,
+            merchant_tag: result.task.merchant_tag,
             approve_notes: result.task.approve_notes || [],
           });
         }
@@ -57,7 +59,13 @@ export default class TaskView extends PureComponent {
       <Card bordered={false} title="" style={{ background: 'none' }} bodyStyle={{ padding: 0 }}>
         <div className={styles.taskOuterBox} ref="taskOuterBox" style={{ width: template === 'item2' ? 730 : 1000 }}>
           <div style={{ width: template === 'item2' ? 375 : 650 }}>
-            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} activityId={activityId} />
+            <NicaiForm form={this.props.form} children={this.state.children} operation={operation} activityId={activityId}
+            extraProps={{
+              merchant_tag: {
+                value: this.state.merchant_tag ? this.state.merchant_tag.split(',') : [],
+              }
+            }}
+            />
           </div>  
           { showAnnotation &&
             <div className={styles.taskComment}>

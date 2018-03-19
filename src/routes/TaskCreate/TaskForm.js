@@ -37,7 +37,7 @@ export default class TaskForm extends PureComponent {
         price: formData.price,
         channel: formData.channel,
         task_type: formData.task_type,
-        merchant_tag: formData.merchant_tag,
+        merchant_tag: formData.merchant_tag ? formData.merchant_tag.split(',') : [],
       });
       if (formData.channel && formData.channel.length >= 2) {
         this.handleChannelChange(formData.channel);
@@ -51,7 +51,7 @@ export default class TaskForm extends PureComponent {
             const f = {
               channel: result.project.channel,
               task_type: result.project.task_type,
-              merchant_tag: result.project.merchant_tag,
+              merchant_tag: result.project.merchant_tag ? result.project.merchant_tag.split(',') : [],
             };
             this.props.form.setFieldsValue(f);
             if (result.project.channel && result.project.channel.length >= 2) {
@@ -75,7 +75,7 @@ export default class TaskForm extends PureComponent {
         price: nextProps.formData.price,
         channel: nextProps.formData.channel,
         task_type: nextProps.formData.task_type,
-        merchant_tag: nextProps.formData.merchant_tag,
+        merchant_tag: nextProps.formData.merchant_tag.split(',') ? nextProps.formData.merchant_tag.split(',') : [],
       };
       this.props.form.setFieldsValue(f);
       if (nextProps.formData.channel && nextProps.formData.channel.length >= 2) {
@@ -107,6 +107,7 @@ export default class TaskForm extends PureComponent {
           project_id: query.project_id,
           creator_id: teamUser.user_id,
           channel_name: channel.label,
+          merchant_tag: values.merchant_tag.join(','),
           'formData.activityId': values.channel[1],
           'formData.template': task_type.template,
         };
@@ -152,7 +153,7 @@ export default class TaskForm extends PureComponent {
                   const f = {
                     channel: this.props.projectFormData.channel,
                     task_type: this.props.projectFormData.task_type,
-                    merchant_tag: this.props.projectFormData.merchant_tag,
+                    merchant_tag: this.props.projectFormData.merchant_tag ? this.props.projectFormData.merchant_tag.split(',') : [],
                   };
                   this.props.form.setFieldsValue(f);
 
@@ -264,13 +265,19 @@ export default class TaskForm extends PureComponent {
             )}
           </FormItem>
           <FormItem
-            label="商家标签"
+            label="商家名称"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 8 }}
           >
             {getFieldDecorator('merchant_tag', {
             })(
-              <Input maxLength="30" placeholder="最多输入30个字" />
+               <Select
+                placeholder="请输入商家名称并按回车键确认"
+                mode="tags"
+                style={{ width: '100%' }}
+                tokenSeparators={[',']}
+              >
+              </Select>
             )}
           </FormItem>
           <FormItem
